@@ -1,0 +1,67 @@
+/* RTL Support for Arabic Language */
+[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .filament-sidebar {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .filament-main-content {
+    margin-left: 0;
+    margin-right: 280px;
+}
+
+[dir="rtl"] .filament-navigation-item {
+    text-align: right;
+}
+
+[dir="rtl"] .filament-form-component {
+    text-align: right;
+}
+
+[dir="rtl"] .filament-table {
+    direction: rtl;
+}
+
+[dir="rtl"] .filament-page-heading {
+    text-align: right;
+}
+
+/* Arabic font improvements */
+[dir="rtl"] body {
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+}
+
+/* Fix table column alignment for RTL */
+[dir="rtl"] .filament-table th,
+[dir="rtl"] .filament-table td {
+    text-align: right;
+}
+
+[dir="rtl"] .filament-table th:first-child,
+[dir="rtl"] .filament-table td:first-child {
+    text-align: right;
+}
+
+/* Fix form layout for RTL */
+[dir="rtl"] .filament-form-grid {
+    direction: rtl;
+}
+
+/* Fix badge alignment */
+[dir="rtl"] .filament-badge {
+    direction: ltr;
+    display: inline-block;
+}
+
+/* Fix icons in RTL */
+[dir="rtl"] .filament-icon {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .heroicon {
+    transform: scaleX(-1);
+}

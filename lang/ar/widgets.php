@@ -1,0 +1,58 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'stats' => [
+        'total_centers' => [
+            'label' => 'إجمالي المراكز',
+            'description' => 'المراكز المعتمدة في النظام',
+        ],
+        'active_centers' => [
+            'label' => 'المراكز النشطة',
+            'description' => 'المراكز النشطة حالياً',
+        ],
+        'total_certifications' => [
+            'label' => 'إجمالي الشهادات',
+            'description' => 'الشهادات المصدرة',
+        ],
+        'pending_requests' => [
+            'label' => 'الطلبات المعلقة',
+            'description' => 'في انتظار المراجعة',
+        ],
+        'admin_users' => [
+            'label' => 'المستخدمون الإداريون',
+            'description' => 'مديرو النظام',
+        ],
+        'monthly_certifications' => [
+            'label' => 'شهادات هذا الشهر',
+            'description' => 'المصدرة هذا الشهر',
+        ],
+        'this_month' => [
+            'label' => 'هذا الشهر',
+            'description' => 'الشهادات المصدرة هذا الشهر',
+        ],
+        'accreditation_status' => [
+            'label' => 'حالة الاعتماد',
+            'description' => 'حالة الاعتماد الحالية',
+        ],
+    ],
+    'charts' => [
+        'accreditation_requests' => [
+            'heading' => 'طلبات الاعتماد',
+            'label' => 'طلبات الاعتماد',
+        ],
+        'monthly_certifications' => [
+            'heading' => 'الشهادات الشهرية',
+            'label' => 'الشهادات المصدرة',
+        ],
+    ],
+    'status' => [
+        'active' => 'نشط',
+        'expired' => 'منتهي الصلاحية',
+        'no_accreditation_period' => 'لم يتم تحديد فترة الاعتماد',
+        'accreditation_expired' => 'انتهت صلاحية الاعتماد',
+        'expires_in_days' => 'ينتهي خلال :days أيام',
+        'valid_until' => 'صالح حتى :date',
+    ],
+];
