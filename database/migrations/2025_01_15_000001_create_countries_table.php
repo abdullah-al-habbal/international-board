@@ -1,5 +1,5 @@
 <?php
-
+// 2025_01_15_000001_create_countries_table.php
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,9 +13,9 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('code', 3)->unique(); // ISO 3166-1 alpha-3
-            $table->string('code_2', 2)->unique(); // ISO 3166-1 alpha-2
-            $table->string('nationality')->nullable(); // e.g., "Saudi" for Saudi Arabia
+            $table->string('code', 3)->unique();
+            $table->string('code_2', 2)->unique();
+            $table->string('nationality')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
