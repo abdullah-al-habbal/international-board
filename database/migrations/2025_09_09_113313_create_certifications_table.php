@@ -1,5 +1,5 @@
 <?php
-// 2025_09_09_113313_create_certifications_table.php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,7 +13,6 @@ return new class extends Migration
         Schema::create('certifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('certified_center_id')->nullable()->constrained()->onDelete('cascade');
-
             $table->string('trainee_name')->nullable();
             $table->string('accredited_serial_number')->nullable();
             $table->string('document_code')->nullable();
@@ -26,7 +25,6 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->string('certificate_type')->nullable();
             $table->timestamps();
-
             $table->index(['certified_center_id', 'certificate_type']);
             $table->index('accredited_serial_number');
             $table->index('trainee_name');

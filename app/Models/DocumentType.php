@@ -15,8 +15,4 @@ class DocumentType extends Model
     public $translatable = ['name'];
 
     protected $fillable = ['key', 'name'];
-
-    protected $casts = [
-        'name' => 'array',
-    ];
 }

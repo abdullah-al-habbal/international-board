@@ -1,5 +1,5 @@
 <?php
-// 2025_01_15_000001_create_countries_table.php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;

@@ -33,12 +33,10 @@ class Certification extends Model
         'accredited_serial_number',
         'document_code',
         'accreditation_number',
-        'document_type',
         'document_type_id',
         'accreditation_date',
         'trainer_name',
         'trainer_id',
-        'nationality',
         'country_id',
         'paper_received',
         'notes',
@@ -50,27 +48,6 @@ class Certification extends Model
             'accreditation_date' => 'date',
             'certificate_type' => CertificateType::class,
             'paper_received' => 'boolean',
-        ];
-    }
-
-    public static function getValidationRules(): array
-    {
-        return [
-            'certified_center_id' => 'nullable|exists:certified_centers,id',
-            'certificate_type' => ['required', new Enum(CertificateType::class)],
-            'trainee_name' => 'required|string|max:255',
-            'accredited_serial_number' => 'required|string|max:255|unique:certifications,accredited_serial_number',
-            'document_code' => 'nullable|string|max:255',
-            'accreditation_number' => 'nullable|string|max:255',
-            'document_type' => 'nullable|string|max:255',
-            'document_type_id' => 'nullable|exists:document_types,id',
-            'accreditation_date' => 'required|date|after:1900-01-01|before_or_equal:today',
-            'trainer_name' => 'nullable|string|max:255',
-            'trainer_id' => 'nullable|exists:trainers,id',
-            'nationality' => 'nullable|string|max:255',
-            'country_id' => 'nullable|exists:countries,id',
-            'paper_received' => 'nullable|boolean',
-            'notes' => 'nullable|string',
         ];
     }
 }
