@@ -42,9 +42,9 @@ trait CertificationCheckers
 
     public function hasValidData(): bool
     {
-        return !empty($this->trainee_name) &&
+        return !empty($this->trainee_id) &&
             !empty($this->accredited_serial_number) &&
-            !empty($this->document_type) &&
+            !empty($this->document_type_id) &&
             !empty($this->accreditation_date);
     }
 

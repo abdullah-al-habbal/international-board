@@ -2,5 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Console\Commands\MigrateTrainees;
 
-return [];
+return [
+    MigrateTrainees::class,
+];

@@ -29,10 +29,10 @@ trait CertificationHelpers
 
     public function isComplete(): bool
     {
-        return !empty($this->trainee_name) &&
+        return !empty($this->trainee_id) &&
             !empty($this->accredited_serial_number) &&
             !empty($this->accreditation_date) &&
-            !empty($this->document_type);
+            !empty($this->document_type_id);
     }
 
     public function hasValidDate(): bool
@@ -51,9 +51,9 @@ trait CertificationHelpers
         $maxScore = 10;
 
         // Essential fields (5 points)
-        if (!empty($this->trainee_name)) $score += 1;
+        if (!empty($this->trainee_id)) $score += 1;
         if (!empty($this->accredited_serial_number)) $score += 1;
-        if (!empty($this->document_type)) $score += 1;
+        if (!empty($this->document_type_id)) $score += 1;
         if (!empty($this->accreditation_date)) $score += 1;
         if ($this->hasValidDate()) $score += 1;
 

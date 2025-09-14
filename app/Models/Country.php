@@ -34,7 +34,12 @@ class Country extends Model
 
     public function certifications(): HasMany
     {
-        return $this->hasMany(Certification::class, 'nationality', 'name');
+        return $this->hasMany(Certification::class);
+    }
+
+    public function trainees(): HasMany
+    {
+        return $this->hasMany(Trainee::class);
     }
 
     public function scopeActive($query)

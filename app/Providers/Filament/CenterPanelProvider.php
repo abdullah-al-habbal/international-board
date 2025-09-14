@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetLocale;
+use App\Providers\Traits\ResolvesFilamentColor;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -12,7 +13,6 @@ use Filament\Navigation\MenuItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -21,45 +21,55 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class CenterPanelProvider extends PanelProvider
+final class CenterPanelProvider extends PanelProvider
 {
+    use ResolvesFilamentColor;
+
     public function panel(Panel $panel): Panel
     {
+        $config = config('panels.center');
+
         return $panel
-            ->id('center')
-            ->path('/center')
+            ->id($config['id'])
+            ->path($config['path'])
             ->login()
-            ->colors([
-                'primary' => Color::Blue,
-            ])
-            ->authGuard('certified_center')
-            ->authPasswordBroker('certified_centers')
+            ->colors(['primary' => $this->resolveColor($config['color'])])
+            ->authGuard($config['guard'])
+            ->authPasswordBroker($config['password_broker'])
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.dashboard'))
             ->favicon(asset('favicon.ico'))
-            ->discoverResources(in: app_path('Filament/Center/Resources'), for: 'App\\Filament\\Center\\Resources')
-            ->discoverPages(in: app_path('Filament/Center/Pages'), for: 'App\\Filament\\Center\\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
-            ->discoverWidgets(in: app_path('Filament/Center/Widgets'), for: 'App\\Filament\\Center\\Widgets')
+            ->discoverResources(in: app_path('Filament/Center/Resources'), for: $config['resources_path'])
+            ->discoverPages(in: app_path('Filament/Center/Pages'), for: $config['pages_path'])
+            ->pages([Dashboard::class])
+            ->discoverWidgets(in: app_path('Filament/Center/Widgets'), for: $config['widgets_path'])
             ->widgets([])
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-                SetLocale::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ]);
+            ->middleware($this->getMiddleware())
+            ->authMiddleware($this->getAuthMiddleware());
+    }
+
+    private function getMiddleware(): array
+    {
+        return [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+            SetLocale::class,
+        ];
+    }
+
+    private function getAuthMiddleware(): array
+    {
+        return [
+            Authenticate::class,
+        ];
     }
 
     private function getUserMenuItems(): array
