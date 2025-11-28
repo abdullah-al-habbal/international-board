@@ -16,11 +16,11 @@ class StaticPageSeeder extends Seeder
                 'slug' => 'about-us',
                 'title' => [
                     'en' => 'About Us',
-                    'ar' => 'من نحن'
+                    'ar' => 'من نحن',
                 ],
                 'content' => [
                     'en' => 'We are a leading certification board committed to excellence in training and accreditation.',
-                    'ar' => 'نحن مجلس اعتماد رائد ملتزم بالتميز في التدريب والاعتماد.'
+                    'ar' => 'نحن مجلس اعتماد رائد ملتزم بالتميز في التدريب والاعتماد.',
                 ],
                 'is_active' => true,
             ],
@@ -28,11 +28,11 @@ class StaticPageSeeder extends Seeder
                 'slug' => 'our-services',
                 'title' => [
                     'en' => 'Our Services',
-                    'ar' => 'خدماتنا'
+                    'ar' => 'خدماتنا',
                 ],
                 'content' => [
                     'en' => 'We provide comprehensive certification and training services.',
-                    'ar' => 'نقدم خدمات شاملة للاعتماد والتدريب.'
+                    'ar' => 'نقدم خدمات شاملة للاعتماد والتدريب.',
                 ],
                 'is_active' => true,
             ],
@@ -40,11 +40,11 @@ class StaticPageSeeder extends Seeder
                 'slug' => 'contact-us',
                 'title' => [
                     'en' => 'Contact Us',
-                    'ar' => 'اتصل بنا'
+                    'ar' => 'اتصل بنا',
                 ],
                 'content' => [
                     'en' => 'Get in touch with us for any inquiries.',
-                    'ar' => 'تواصل معنا لأي استفسارات.'
+                    'ar' => 'تواصل معنا لأي استفسارات.',
                 ],
                 'is_active' => true,
             ],

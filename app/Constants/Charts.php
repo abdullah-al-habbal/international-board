@@ -18,7 +18,7 @@ final class Charts
         'Sep',
         'Oct',
         'Nov',
-        'Dec'
+        'Dec',
     ];
 
     public const CHART_TYPES = [

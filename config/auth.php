@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Models\{User, CertifiedCenter};
-
+use App\Models\CertifiedCenter;
+use App\Models\User;
 
 return [
     'defaults' => [

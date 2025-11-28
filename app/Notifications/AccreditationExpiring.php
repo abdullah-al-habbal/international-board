@@ -7,14 +7,15 @@ namespace App\Notifications;
 use App\Models\CertifiedCenter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 final class AccreditationExpiring extends Notification implements ShouldQueue
 {
     use Queueable;
 
     private const CHANNELS = ['mail', 'database'];
+
     private const ROUTE = '/center/accreditation-requests/create';
 
     public function __construct(

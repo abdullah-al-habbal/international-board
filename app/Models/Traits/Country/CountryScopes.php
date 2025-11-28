@@ -36,7 +36,7 @@ trait CountryScopes
     #[Scope]
     protected function byName(Builder $query, string $name): void
     {
-        $query->where('name', 'like', '%' . $name . '%');
+        $query->where('name', 'like', '%'.$name.'%');
     }
 
     #[Scope]

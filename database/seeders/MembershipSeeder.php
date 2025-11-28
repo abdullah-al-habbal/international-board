@@ -15,11 +15,11 @@ class MembershipSeeder extends Seeder
             [
                 'title' => [
                     'en' => 'Basic Membership',
-                    'ar' => 'العضوية الأساسية'
+                    'ar' => 'العضوية الأساسية',
                 ],
                 'description' => [
                     'en' => 'Basic membership with access to essential features.',
-                    'ar' => 'عضوية أساسية مع الوصول للميزات الأساسية.'
+                    'ar' => 'عضوية أساسية مع الوصول للميزات الأساسية.',
                 ],
                 'is_active' => true,
                 'sort_order' => 1,
@@ -27,11 +27,11 @@ class MembershipSeeder extends Seeder
             [
                 'title' => [
                     'en' => 'Premium Membership',
-                    'ar' => 'العضوية المميزة'
+                    'ar' => 'العضوية المميزة',
                 ],
                 'description' => [
                     'en' => 'Premium membership with access to all features.',
-                    'ar' => 'عضوية مميزة مع الوصول لجميع الميزات.'
+                    'ar' => 'عضوية مميزة مع الوصول لجميع الميزات.',
                 ],
                 'is_active' => true,
                 'sort_order' => 2,
@@ -39,11 +39,11 @@ class MembershipSeeder extends Seeder
             [
                 'title' => [
                     'en' => 'Corporate Membership',
-                    'ar' => 'العضوية المؤسسية'
+                    'ar' => 'العضوية المؤسسية',
                 ],
                 'description' => [
                     'en' => 'Corporate membership for organizations.',
-                    'ar' => 'عضوية مؤسسية للمنظمات.'
+                    'ar' => 'عضوية مؤسسية للمنظمات.',
                 ],
                 'is_active' => true,
                 'sort_order' => 3,

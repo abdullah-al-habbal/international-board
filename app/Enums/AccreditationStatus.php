@@ -33,6 +33,6 @@ enum AccreditationStatus: string
 
     public function label(): string
     {
-        return __('enums.accreditation_status.' . $this->value);
+        return __('enums.accreditation_status.'.$this->value);
     }
 }

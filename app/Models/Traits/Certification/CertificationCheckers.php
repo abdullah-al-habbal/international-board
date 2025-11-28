@@ -11,12 +11,14 @@ trait CertificationCheckers
         if (is_string($this->paper_received)) {
             return in_array(strtoupper($this->paper_received), ['YES', 'YAS', '1', 'TRUE']);
         }
+
         return (bool) $this->paper_received;
     }
 
     public function isTrainingCertificate(): bool
     {
         $documentType = strtolower($this->document_type ?? '');
+
         return str_contains($documentType, 'training of trainers') ||
             str_contains($documentType, 'tot');
     }
@@ -24,28 +26,31 @@ trait CertificationCheckers
     public function isAccreditationCenterCertificate(): bool
     {
         $documentType = strtolower($this->document_type ?? '');
+
         return str_contains($documentType, 'accreditation center');
     }
 
     public function isExperienceCertificate(): bool
     {
         $documentType = strtolower($this->document_type ?? '');
+
         return str_contains($documentType, 'experience');
     }
 
     public function isConsultantCertificate(): bool
     {
         $documentType = strtolower($this->document_type ?? '');
+
         return str_contains($documentType, 'adviser') ||
             str_contains($documentType, 'consultant');
     }
 
     public function hasValidData(): bool
     {
-        return !empty($this->trainee_id) &&
-            !empty($this->accredited_serial_number) &&
-            !empty($this->document_type_id) &&
-            !empty($this->accreditation_date);
+        return ! empty($this->trainee_id) &&
+            ! empty($this->accredited_serial_number) &&
+            ! empty($this->document_type_id) &&
+            ! empty($this->accreditation_date);
     }
 
     public function isRecent(): bool
@@ -76,8 +81,8 @@ trait CertificationCheckers
         $nationality = strtolower(trim($this->nationality));
         $standardNationalities = ['libyan', 'egyptian', 'syrian', 'yemeni', 'mauritanian'];
 
-        return !in_array($nationality, $standardNationalities) &&
-            !in_array($nationality, ['libya', 'egypt', 'syria', 'yemen', 'mauritania']);
+        return ! in_array($nationality, $standardNationalities) &&
+            ! in_array($nationality, ['libya', 'egypt', 'syria', 'yemen', 'mauritania']);
     }
 
     private function hasInconsistentPaperStatus(): bool
@@ -87,6 +92,7 @@ trait CertificationCheckers
         }
 
         $status = strtoupper(trim($this->paper_received));
-        return !in_array($status, ['YES', 'NO', 'TRUE', 'FALSE', '1', '0']);
+
+        return ! in_array($status, ['YES', 'NO', 'TRUE', 'FALSE', '1', '0']);
     }
 }

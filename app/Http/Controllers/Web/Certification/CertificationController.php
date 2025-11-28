@@ -20,7 +20,8 @@ final class CertificationController extends Controller
     public function show(string $code): View
     {
         $certification = $this->service->getByCode($code);
-        abort_if(!$certification, 404);
+        abort_if(! $certification, 404);
+
         return view('web.certification.show', compact('certification'));
     }
 }

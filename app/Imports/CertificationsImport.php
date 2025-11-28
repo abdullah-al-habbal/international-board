@@ -11,26 +11,32 @@ use App\Models\DocumentType;
 use App\Models\Trainer;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-final class CertificationsImport implements ToCollection, WithHeadingRow, WithBatchInserts, WithChunkReading
+final class CertificationsImport implements ToCollection, WithBatchInserts, WithChunkReading, WithHeadingRow
 {
     private const BATCH_SIZE = 500;
+
     private const CHUNK_SIZE = 500;
 
     private int $totalRows = 0;
+
     private int $successfulImports = 0;
+
     private int $failedImports = 0;
+
     private int $skippedRows = 0;
+
     private int $countriesCreated = 0;
+
     private int $trainersCreated = 0;
 
     private array $countryCache = [];
+
     private array $trainerCache = [];
 
     public function collection(Collection $rows): void
@@ -51,7 +57,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
                 Log::error('Failed to insert certifications batch', [
                     'error' => $e->getMessage(),
                     'count' => $certifications->count(),
-                    'trace' => $e->getTraceAsString()
+                    'trace' => $e->getTraceAsString(),
                 ]);
             }
         }
@@ -71,6 +77,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
     {
         if ($this->isRowEmpty($row)) {
             $this->skippedRows++;
+
             return null;
         }
 
@@ -84,57 +91,58 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
             $traineeNameRaw = $this->getValueMultipleKeys($row, [
                 'asm_almtdrb',
                 'trainee_name',
-                'اسم المتدرب'
+                'اسم المتدرب',
             ]);
             $serialNumberRaw = $this->getValueMultipleKeys($row, [
                 'alrkm_almtslsl_almaatmd',
                 'serial_number',
-                'الرقم المتسلسل المعتمد'
+                'الرقم المتسلسل المعتمد',
             ]);
             $documentCodeRaw = $this->getValueMultipleKeys($row, [
                 'alrmz',
                 'document_code',
-                'الرمز'
+                'الرمز',
             ]);
             $accreditationNumberRaw = $this->getValueMultipleKeys($row, [
                 'rkm_alaaatmad',
                 'accreditation_number',
-                'رقم الاعتماد'
+                'رقم الاعتماد',
             ]);
             $documentTypeRaw = $this->getValueMultipleKeys($row, [
                 'noaa_alothyk',
                 'document_type',
-                'نوع الوثيقة'
+                'نوع الوثيقة',
             ]);
             $accreditationDateRaw = $this->getValueMultipleKeys($row, [
                 'tarykh_alaaatmad',
                 'accreditation_date',
-                'تاريخ الاعتماد'
+                'تاريخ الاعتماد',
             ]);
             $trainerNameRaw = $this->getValueMultipleKeys($row, [
                 'asm_almdrb',
                 'trainer_name',
-                'اسم المدرب'
+                'اسم المدرب',
             ]);
             $nationalityRaw = $this->getValueMultipleKeys($row, [
                 'alhnsy',
                 'nationality',
-                'الجنسية'
+                'الجنسية',
             ]);
             $paperReceivedRaw = $this->getValueMultipleKeys($row, [
                 'alhsol_aal_alothyk_orkya',
                 'paper_received',
-                'الحصول على الوثيقة ورقيا'
+                'الحصول على الوثيقة ورقيا',
             ]);
             $notesRaw = $this->getValueMultipleKeys($row, [
                 'mlahthat',
                 'notes',
-                'ملاحظات'
+                'ملاحظات',
             ]);
 
             // Skip if essential data is missing
             if (empty($traineeNameRaw) || empty($serialNumberRaw)) {
                 $this->skippedRows++;
+
                 return null;
             }
 
@@ -174,9 +182,10 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
         } catch (\Exception $e) {
             Log::error('Error transforming row', [
                 'error' => $e->getMessage(),
-                'row_data' => $row->toArray()
+                'row_data' => $row->toArray(),
             ]);
             $this->skippedRows++;
+
             return null;
         }
     }
@@ -213,7 +222,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
             $value = $row->get(trim($key)) ?? $row->get(str_replace(' ', '_', $key));
         }
 
-        Log::debug("Looking for key: '{$key}', Found value: " . ($value ?? 'NULL'));
+        Log::debug("Looking for key: '{$key}', Found value: ".($value ?? 'NULL'));
 
         if ($value === null || $value === '' || $value === 'null') {
             return null;
@@ -239,6 +248,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
                     // Validate date range
                     if ($date->year < 1900 || $date->isFuture()) {
                         Log::warning("Invalid date detected: {$dateString}");
+
                         return null;
                     }
 
@@ -251,12 +261,14 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
             // Validate date range
             if ($date->year < 1900 || $date->isFuture()) {
                 Log::warning("Invalid date detected: {$dateString}");
+
                 return null;
             }
 
             return $date;
         } catch (\Exception $e) {
             Log::warning("Failed to parse date: {$dateString}", ['error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -264,7 +276,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
     private function isRowEmpty(Collection $row): bool
     {
         return $row->filter(function ($value) {
-            return !empty($value) && $value !== '';
+            return ! empty($value) && $value !== '';
         })->isEmpty();
     }
 
@@ -277,17 +289,17 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
                 // Handle duplicate entries gracefully
                 if (str_contains($e->getMessage(), 'Duplicate entry')) {
                     Log::warning('Duplicate entries detected, inserting individually', [
-                        'count' => $chunk->count()
+                        'count' => $chunk->count(),
                     ]);
 
                     $chunk->each(function ($certification) {
                         try {
                             Certification::create($certification);
                         } catch (\Exception $e) {
-                            if (!str_contains($e->getMessage(), 'Duplicate entry')) {
+                            if (! str_contains($e->getMessage(), 'Duplicate entry')) {
                                 Log::error('Failed to insert individual certification', [
                                     'error' => $e->getMessage(),
-                                    'serial' => $certification['accredited_serial_number'] ?? 'unknown'
+                                    'serial' => $certification['accredited_serial_number'] ?? 'unknown',
                                 ]);
                             }
                         }
@@ -317,7 +329,9 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
     // Helper methods for data cleaning and relationship management
     private function cleanPersonName(?string $name): ?string
     {
-        if (empty($name)) return null;
+        if (empty($name)) {
+            return null;
+        }
 
         $cleaned = preg_replace('/\s+/', ' ', trim($name));
         $cleaned = trim($cleaned, ' .,;-_');
@@ -332,13 +346,15 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
 
     private function cleanSerialNumber(?string $serial): ?string
     {
-        if (empty($serial)) return null;
+        if (empty($serial)) {
+            return null;
+        }
 
         $cleaned = trim($serial);
 
         // Ensure uppercase for letter parts
         if (preg_match('/^([A-Za-z]+)(\d+)$/', $cleaned, $matches)) {
-            $cleaned = strtoupper($matches[1]) . $matches[2];
+            $cleaned = strtoupper($matches[1]).$matches[2];
         }
 
         return $cleaned;
@@ -346,7 +362,9 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
 
     private function cleanNationality(?string $nationality): ?string
     {
-        if (empty($nationality)) return null;
+        if (empty($nationality)) {
+            return null;
+        }
 
         $cleaned = trim($nationality);
 
@@ -367,7 +385,9 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
 
     private function normalizePaperStatus(?string $status): ?string
     {
-        if (empty($status)) return null;
+        if (empty($status)) {
+            return null;
+        }
 
         $statusMap = [
             'YAS' => 'YES',
@@ -395,7 +415,9 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
 
     private function getOrCreateCountry(?string $nationality): ?int
     {
-        if (empty($nationality)) return null;
+        if (empty($nationality)) {
+            return null;
+        }
 
         // Check cache first
         if (isset($this->countryCache[$nationality])) {
@@ -409,7 +431,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
                 'code' => strtoupper(substr($nationality, 0, 2)),
                 'code_2' => strtoupper(substr($nationality, 0, 2)),
                 'nationality' => $nationality,
-                'is_active' => true
+                'is_active' => true,
             ]
         );
 
@@ -419,12 +441,15 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
         }
 
         $this->countryCache[$nationality] = $country->id;
+
         return $country->id;
     }
 
     private function getOrCreateTrainer(?string $trainerName): ?int
     {
-        if (empty($trainerName)) return null;
+        if (empty($trainerName)) {
+            return null;
+        }
 
         // Check cache first
         if (isset($this->trainerCache[$trainerName])) {
@@ -439,7 +464,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
                 'phone' => null,
                 'country_id' => null,
                 'specializations' => ['Training'],
-                'is_active' => true
+                'is_active' => true,
             ]
         );
 
@@ -449,22 +474,25 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
         }
 
         $this->trainerCache[$trainerName] = $trainer->id;
+
         return $trainer->id;
     }
 
     private function getDocumentTypeId(?string $documentTypeName): ?int
     {
-        if (empty($documentTypeName)) return null;
+        if (empty($documentTypeName)) {
+            return null;
+        }
 
         $documentType = DocumentType::whereRaw('LOWER(name) = ?', [strtolower($documentTypeName)])->first();
-        
+
         if ($documentType) {
             return $documentType->id;
         }
 
         $documentType = DocumentType::create([
             'key' => strtolower(str_replace(' ', '_', $documentTypeName)),
-            'name' => ['en' => $documentTypeName, 'ar' => $documentTypeName]
+            'name' => ['en' => $documentTypeName, 'ar' => $documentTypeName],
         ]);
 
         return $documentType->id;

@@ -54,6 +54,7 @@ class SetLocale
         if ($request->has('lang') && in_array($request->get('lang'), $supportedLocales, true)) {
             return $request->get('lang');
         }
+
         return null;
     }
 
@@ -63,6 +64,7 @@ class SetLocale
         if ($sessionLocale && in_array($sessionLocale, $supportedLocales, true)) {
             return $sessionLocale;
         }
+
         return null;
     }
 
@@ -72,6 +74,7 @@ class SetLocale
         if ($preferredLocale && in_array($preferredLocale, $supportedLocales, true)) {
             return $preferredLocale;
         }
+
         return null;
     }
 

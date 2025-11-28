@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CertificateType;
-use App\Models\Traits\Certification\{
-    CertificationActions,
-    CertificationCheckers,
-    CertificationHelpers,
-    CertificationRelations,
-    CertificationScopes
-};
+use App\Models\Traits\Certification\CertificationActions;
+use App\Models\Traits\Certification\CertificationCheckers;
+use App\Models\Traits\Certification\CertificationHelpers;
+use App\Models\Traits\Certification\CertificationRelations;
+use App\Models\Traits\Certification\CertificationScopes;
 use App\Policies\CertificationPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,9 +18,9 @@ use Illuminate\Database\Eloquent\Model;
 #[UsePolicy(CertificationPolicy::class)]
 class Certification extends Model
 {
-    use HasFactory;
     use CertificationActions, CertificationCheckers, CertificationHelpers;
     use CertificationRelations, CertificationScopes;
+    use HasFactory;
 
     protected $fillable = [
         'certified_center_id',

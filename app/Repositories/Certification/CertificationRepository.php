@@ -110,7 +110,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 
@@ -126,7 +126,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 }

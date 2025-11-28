@@ -41,7 +41,6 @@ trait TraineeHelpers
             ->toArray();
     }
 
-
     public function getUniqueDocumentTypes(): array
     {
         return $this->certifications()

@@ -8,7 +8,7 @@ trait TrainerCheckers
 {
     public function hasValidEmail(): bool
     {
-        return !empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
+        return ! empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
     }
 
     public function hasValidPhone(): bool
@@ -19,41 +19,43 @@ trait TrainerCheckers
 
         // Basic phone validation - can be enhanced based on requirements
         $phone = preg_replace('/[^0-9+]/', '', $this->phone);
+
         return strlen($phone) >= 7 && strlen($phone) <= 15;
     }
 
     public function hasCompleteProfile(): bool
     {
-        return !empty($this->name) &&
-            !empty($this->email) &&
-            !empty($this->phone) &&
-            !empty($this->country_id);
+        return ! empty($this->name) &&
+            ! empty($this->email) &&
+            ! empty($this->phone) &&
+            ! empty($this->country_id);
     }
 
     public function hasSpecializations(): bool
     {
         $specializations = $this->getSpecializationsList();
-        return !empty($specializations);
+
+        return ! empty($specializations);
     }
 
     public function hasAddress(): bool
     {
-        return !empty($this->address);
+        return ! empty($this->address);
     }
 
     public function hasBio(): bool
     {
-        return !empty($this->bio);
+        return ! empty($this->bio);
     }
 
     public function hasAvatar(): bool
     {
-        return !empty($this->avatar);
+        return ! empty($this->avatar);
     }
 
     public function isRecentlyActive(): bool
     {
-        if (!$this->updated_at) {
+        if (! $this->updated_at) {
             return false;
         }
 
@@ -88,8 +90,8 @@ trait TrainerCheckers
         return empty($this->bio) ||
             empty($this->avatar) ||
             empty($this->specializations) ||
-            !$this->hasValidEmail() ||
-            !$this->hasValidPhone();
+            ! $this->hasValidEmail() ||
+            ! $this->hasValidPhone();
     }
 
     public function canBeDeactivated(): bool
@@ -99,7 +101,7 @@ trait TrainerCheckers
             ->where('accreditation_date', '>=', now()->subDays(90))
             ->exists();
 
-        return !$hasRecentCertifications;
+        return ! $hasRecentCertifications;
     }
 
     public function hasIncompleteData(): bool

@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CenterStatus;
-use App\Models\Traits\CertifiedCenter\{CertifiedCenterCheckers, CertifiedCenterRelations, CertifiedCenterScopes};
+use App\Models\Traits\CertifiedCenter\CertifiedCenterCheckers;
+use App\Models\Traits\CertifiedCenter\CertifiedCenterRelations;
+use App\Models\Traits\CertifiedCenter\CertifiedCenterScopes;
 use App\Observers\CertifiedCenterObserver;
 use App\Policies\CertifiedCenterPolicy;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\Attributes\{ObservedBy, UsePolicy};
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,8 +21,8 @@ use Illuminate\Notifications\Notifiable;
 #[ObservedBy([CertifiedCenterObserver::class])]
 class CertifiedCenter extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable;
     use CertifiedCenterCheckers, CertifiedCenterRelations, CertifiedCenterScopes;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',

@@ -34,11 +34,11 @@ final class ListCertifications extends ListRecords
             ->icon('heroicon-o-arrow-down-tray')
             ->action(function () {
                 try {
-                    return Excel::download(new CertificationsExport(), 'admin-certifications.xlsx');
+                    return Excel::download(new CertificationsExport, 'admin-certifications.xlsx');
                 } catch (\Exception $e) {
                     Notification::make()
                         ->title('Export failed')
-                        ->body('An error occurred during export: ' . $e->getMessage())
+                        ->body('An error occurred during export: '.$e->getMessage())
                         ->danger()
                         ->send();
                 }
@@ -68,7 +68,7 @@ final class ListCertifications extends ListRecords
                 try {
                     $startTime = microtime(true);
 
-                    $import = new CertificationsImport();
+                    $import = new CertificationsImport;
                     Excel::import($import, $data['file']);
 
                     $stats = $import->getSummaryReport();
@@ -78,7 +78,7 @@ final class ListCertifications extends ListRecords
                     Notification::make()
                         ->title('Import Completed')
                         ->body(sprintf(
-                            "Imported %d out of %d rows (%.1f%%) in %.2fs",
+                            'Imported %d out of %d rows (%.1f%%) in %.2fs',
                             $stats['successful_imports'],
                             $stats['total_rows'],
                             $stats['success_rate'],
@@ -92,7 +92,7 @@ final class ListCertifications extends ListRecords
                 } catch (\Exception $e) {
                     Notification::make()
                         ->title('Import Failed')
-                        ->body('Error: ' . $e->getMessage())
+                        ->body('Error: '.$e->getMessage())
                         ->danger()
                         ->duration(10000)
                         ->send();

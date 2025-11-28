@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Traits\Trainer\{
-    TrainerCheckers,
-    TrainerHelpers,
-    TrainerRelations,
-    TrainerScopes
-};
+use App\Models\Traits\Trainer\TrainerCheckers;
+use App\Models\Traits\Trainer\TrainerHelpers;
+use App\Models\Traits\Trainer\TrainerRelations;
+use App\Models\Traits\Trainer\TrainerScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,5 +36,4 @@ class Trainer extends Model
             'is_active' => 'boolean',
         ];
     }
-
 }

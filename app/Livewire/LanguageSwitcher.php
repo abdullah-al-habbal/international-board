@@ -11,7 +11,7 @@ class LanguageSwitcher extends Component
 {
     public function switchLanguage(string $locale): void
     {
-        if (!in_array($locale, ['en', 'ar'], true)) {
+        if (! in_array($locale, ['en', 'ar'], true)) {
             return;
         }
 
@@ -37,13 +37,13 @@ class LanguageSwitcher extends Component
             'en' => [
                 'name' => 'English',
                 'flag' => '🇺🇸',
-                'native' => 'English'
+                'native' => 'English',
             ],
             'ar' => [
                 'name' => 'Arabic',
                 'flag' => '🇸🇦',
-                'native' => 'العربية'
-            ]
+                'native' => 'العربية',
+            ],
         ];
     }
 }

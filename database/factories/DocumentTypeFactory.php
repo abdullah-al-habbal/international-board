@@ -22,7 +22,7 @@ class DocumentTypeFactory extends Factory
             'key' => $key,
             'name' => [
                 'en' => ucwords(str_replace('-', ' ', $key)),
-                'ar' => 'نوع ' . $this->faker->word(),
+                'ar' => 'نوع '.$this->faker->word(),
             ],
         ];
     }

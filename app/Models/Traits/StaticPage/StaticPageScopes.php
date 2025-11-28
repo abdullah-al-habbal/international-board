@@ -24,7 +24,7 @@ trait StaticPageScopes
     #[Scope]
     protected function localizedSlug(Builder $query, string $slug): void
     {
-        $query->where("slug->" . app()->getLocale(), $slug);
+        $query->where('slug->'.app()->getLocale(), $slug);
     }
 
     #[Scope]
@@ -37,6 +37,6 @@ trait StaticPageScopes
     #[Scope]
     protected function orderByTitle(Builder $query, string $direction = 'asc'): void
     {
-        $query->orderBy("title->" . app()->getLocale(), $direction);
+        $query->orderBy('title->'.app()->getLocale(), $direction);
     }
 }

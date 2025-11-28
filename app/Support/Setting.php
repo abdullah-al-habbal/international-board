@@ -13,8 +13,7 @@ class Setting
         return cache()->remember(
             "setting_{$key}",
             3600,
-            fn() =>
-            ApplicationSetting::where('key', $key)->value('value')
+            fn () => ApplicationSetting::where('key', $key)->value('value')
         );
     }
 }

@@ -5,19 +5,21 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
-use App\Models\Traits\AccreditationRequest\{AccreditationRequestRelations, AccreditationRequestScopes};
+use App\Models\Traits\AccreditationRequest\AccreditationRequestRelations;
+use App\Models\Traits\AccreditationRequest\AccreditationRequestScopes;
 use App\Observers\AccreditationRequestObserver;
 use App\Policies\AccreditationRequestPolicy;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Attributes\{UsePolicy, ObservedBy};
 
 #[UsePolicy(AccreditationRequestPolicy::class)]
 #[ObservedBy([AccreditationRequestObserver::class])]
 class AccreditationRequest extends Model
 {
-    use HasFactory;
     use AccreditationRequestRelations, AccreditationRequestScopes;
+    use HasFactory;
 
     protected $fillable = [
         'certified_center_id',

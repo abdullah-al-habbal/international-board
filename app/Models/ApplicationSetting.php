@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApplicationSetting extends Model
 {
-    use HasFactory;
     use ApplicationSettingHelpers;
+    use HasFactory;
 
     protected $fillable = [
         'key',

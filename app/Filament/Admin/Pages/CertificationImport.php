@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Pages;
 
 use App\Imports\CertificationsImport;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
@@ -13,7 +14,6 @@ use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use BackedEnum;
 use UnitEnum;
 
 class CertificationImport extends Page
@@ -73,7 +73,7 @@ class CertificationImport extends Page
             // Use database transaction for import
             DB::beginTransaction();
 
-            $import = new CertificationsImport();
+            $import = new CertificationsImport;
             Excel::import($import, $data['file']);
 
             $stats = $import->getSummaryReport();
@@ -85,16 +85,16 @@ class CertificationImport extends Page
 
             // Create detailed success notification
             $message = sprintf(
-                "Import completed successfully!\n\n" .
-                    "📊 Statistics:\n" .
-                    "• Total rows processed: %d\n" .
-                    "• Successfully imported: %d\n" .
-                    "• Skipped rows: %d\n" .
-                    "• Failed imports: %d\n" .
-                    "• Countries created: %d\n" .
-                    "• Trainers created: %d\n" .
-                    "• Success rate: %.1f%%\n" .
-                    "• Execution time: %.2fs",
+                "Import completed successfully!\n\n".
+                    "📊 Statistics:\n".
+                    "• Total rows processed: %d\n".
+                    "• Successfully imported: %d\n".
+                    "• Skipped rows: %d\n".
+                    "• Failed imports: %d\n".
+                    "• Countries created: %d\n".
+                    "• Trainers created: %d\n".
+                    "• Success rate: %.1f%%\n".
+                    '• Execution time: %.2fs',
                 $stats['total_rows'],
                 $stats['successful_imports'],
                 $stats['skipped_rows'],
@@ -116,7 +116,7 @@ class CertificationImport extends Page
             Log::info('Certification import completed', [
                 'file' => $data['file'],
                 'stats' => $stats,
-                'execution_time' => $executionTime
+                'execution_time' => $executionTime,
             ]);
 
             $this->redirect('/admin/certifications');
@@ -124,13 +124,13 @@ class CertificationImport extends Page
             // Rollback transaction on error
             DB::rollBack();
 
-            $errorMessage = 'Import failed: ' . $e->getMessage();
+            $errorMessage = 'Import failed: '.$e->getMessage();
 
             // Log detailed error
             Log::error('Certification import failed', [
                 'file' => $data['file'] ?? 'unknown',
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             Notification::make()

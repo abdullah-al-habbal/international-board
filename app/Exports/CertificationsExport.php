@@ -6,15 +6,15 @@ namespace App\Exports;
 
 use App\Models\Certification;
 use App\Models\CertifiedCenter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Database\Eloquent\Builder;
 
-final class CertificationsExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading
+final class CertificationsExport implements FromQuery, WithChunkReading, WithHeadings, WithMapping
 {
     use Exportable;
 
@@ -52,6 +52,7 @@ final class CertificationsExport implements FromQuery, WithHeadings, WithMapping
     private function isCenterUser(): bool
     {
         $user = Auth::guard('web')->user();
+
         return $user instanceof CertifiedCenter;
     }
 

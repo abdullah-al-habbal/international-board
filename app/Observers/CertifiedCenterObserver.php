@@ -11,6 +11,7 @@ use Carbon\Carbon;
 final class CertifiedCenterObserver
 {
     private const NOTIFICATION_THRESHOLDS = [30, 15, 7, 1];
+
     private const MIN_VALID_DAYS = 0;
 
     public function creating(CertifiedCenter $center): void
@@ -61,11 +62,11 @@ final class CertifiedCenterObserver
 
     private function handleExpirationNotification(CertifiedCenter $center): void
     {
-        if (!$this->canSendNotification($center)) {
+        if (! $this->canSendNotification($center)) {
             return;
         }
 
-        if (!$center->wasChanged(['accreditation_period_end', 'is_active'])) {
+        if (! $center->wasChanged(['accreditation_period_end', 'is_active'])) {
             return;
         }
 

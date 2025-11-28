@@ -23,6 +23,7 @@ class CertificationSeeder extends Seeder
             ->make()
             ->map(function ($certification) use ($centerIds) {
                 $certification->certified_center_id = fake()->randomElement($centerIds);
+
                 return $certification->toArray();
             })
             ->toArray();

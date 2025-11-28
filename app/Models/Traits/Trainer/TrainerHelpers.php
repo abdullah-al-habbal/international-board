@@ -18,7 +18,7 @@ trait TrainerHelpers
 
     public function hasContactInfo(): bool
     {
-        return !empty($this->email) || !empty($this->phone);
+        return ! empty($this->email) || ! empty($this->phone);
     }
 
     public function getContactInfo(): array
@@ -37,7 +37,7 @@ trait TrainerHelpers
 
         $address = is_array($this->address) ? $this->address : json_decode($this->address, true);
 
-        if (!is_array($address)) {
+        if (! is_array($address)) {
             return null;
         }
 
@@ -62,6 +62,7 @@ trait TrainerHelpers
     public function hasSpecialization(string $specialization): bool
     {
         $specializations = $this->getSpecializationsList();
+
         return in_array($specialization, $specializations);
     }
 
@@ -69,7 +70,7 @@ trait TrainerHelpers
     {
         $specializations = $this->getSpecializationsList();
 
-        if (!in_array($specialization, $specializations)) {
+        if (! in_array($specialization, $specializations)) {
             $specializations[] = $specialization;
             $this->update(['specializations' => $specializations]);
         }
@@ -78,7 +79,7 @@ trait TrainerHelpers
     public function removeSpecialization(string $specialization): void
     {
         $specializations = $this->getSpecializationsList();
-        $specializations = array_filter($specializations, fn($spec) => $spec !== $specialization);
+        $specializations = array_filter($specializations, fn ($spec) => $spec !== $specialization);
         $this->update(['specializations' => array_values($specializations)]);
     }
 

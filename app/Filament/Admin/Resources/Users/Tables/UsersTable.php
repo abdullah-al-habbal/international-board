@@ -37,7 +37,7 @@ class UsersTable
                 TextColumn::make('type')
                     ->label(__('User Type'))
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'admin' => 'danger',
                         'client' => 'info',
                         default => 'gray',

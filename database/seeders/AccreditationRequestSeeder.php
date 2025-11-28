@@ -23,6 +23,7 @@ class AccreditationRequestSeeder extends Seeder
             ->make()
             ->map(function ($request) use ($centerIds) {
                 $request->certified_center_id = fake()->randomElement($centerIds);
+
                 return $request->toArray();
             })
             ->toArray();

@@ -11,7 +11,7 @@ class StaticPageFactory extends Factory
     public function definition(): array
     {
         $titleEn = fake()->sentence(3);
-        $titleAr = 'صفحة ' . fake()->word();
+        $titleAr = 'صفحة '.fake()->word();
 
         return [
             'slug' => fake()->unique()->slug(3),
@@ -21,7 +21,7 @@ class StaticPageFactory extends Factory
             ],
             'content' => [
                 'en' => fake()->paragraphs(3, true),
-                'ar' => 'محتوى الصفحة ' . fake()->paragraph(),
+                'ar' => 'محتوى الصفحة '.fake()->paragraph(),
             ],
             'image' => fake()->boolean(30) ? fake()->imageUrl(800, 600) : null,
             'is_active' => fake()->boolean(85),

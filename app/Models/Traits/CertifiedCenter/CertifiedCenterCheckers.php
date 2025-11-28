@@ -17,7 +17,7 @@ trait CertifiedCenterCheckers
 
     public function isAccreditationActive(): bool
     {
-        if (!$this->accreditation_period_start || !$this->accreditation_period_end) {
+        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
             return false;
         }
 

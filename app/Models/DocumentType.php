@@ -12,8 +12,8 @@ use Spatie\Translatable\HasTranslations;
 
 class DocumentType extends Model
 {
-    use HasFactory, HasTranslations;
     use DocumentTypeRelations, DocumentTypeScopes;
+    use HasFactory, HasTranslations;
 
     public $translatable = ['name'];
 

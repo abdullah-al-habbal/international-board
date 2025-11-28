@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\Country;
 use App\Models\DocumentType;
 use App\Models\Membership;
@@ -17,6 +16,7 @@ use App\Policies\MembershipPolicy;
 use App\Policies\TraineePolicy;
 use App\Policies\TrainerPolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {

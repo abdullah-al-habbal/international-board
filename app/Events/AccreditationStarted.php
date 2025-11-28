@@ -21,7 +21,7 @@ class AccreditationStarted
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('accreditation.' . $this->accreditationRequest->certified_center_id),
+            new PrivateChannel('accreditation.'.$this->accreditationRequest->certified_center_id),
         ];
     }
 }

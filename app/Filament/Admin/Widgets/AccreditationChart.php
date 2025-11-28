@@ -21,7 +21,7 @@ final class AccreditationChart extends ChartWidget
         $this->heading = __('widgets.charts.accreditation_requests.heading');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return $this->heading ?? __('widgets.charts.accreditation_requests.heading');
     }
@@ -51,7 +51,7 @@ final class AccreditationChart extends ChartWidget
     private function mapColors(array $statuses): array
     {
         return array_map(
-            fn(string $status) => AccreditationStatus::tryFrom($status)?->rgb() ?? ChartColors::Default->value,
+            fn (string $status) => AccreditationStatus::tryFrom($status)?->rgb() ?? ChartColors::Default->value,
             $statuses
         );
     }
@@ -59,7 +59,7 @@ final class AccreditationChart extends ChartWidget
     private function mapLabels(array $statuses): array
     {
         return array_map(
-            fn(string $status) => AccreditationStatus::tryFrom($status)?->label() ?? $status,
+            fn (string $status) => AccreditationStatus::tryFrom($status)?->label() ?? $status,
             $statuses
         );
     }

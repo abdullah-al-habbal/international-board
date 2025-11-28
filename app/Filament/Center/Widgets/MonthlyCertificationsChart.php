@@ -21,7 +21,7 @@ class MonthlyCertificationsChart extends ChartWidget
         $this->heading = __('widgets.charts.monthly_certifications.heading');
     }
 
-    public function getHeading(): string | Htmlable | null
+    public function getHeading(): string|Htmlable|null
     {
         return $this->heading ?? __('widgets.charts.monthly_certifications.heading');
     }

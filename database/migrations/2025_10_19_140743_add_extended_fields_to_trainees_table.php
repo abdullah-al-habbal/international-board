@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('emergency_contact_phone')->nullable()->after('emergency_contact_name');
             $table->text('medical_info')->nullable()->after('emergency_contact_phone');
             $table->text('notes')->nullable()->after('medical_info');
-            
+
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
         });
     }
@@ -50,7 +50,7 @@ return new class extends Migration
                 'emergency_contact_name',
                 'emergency_contact_phone',
                 'medical_info',
-                'notes'
+                'notes',
             ]);
         });
     }

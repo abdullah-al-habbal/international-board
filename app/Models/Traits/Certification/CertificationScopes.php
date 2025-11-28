@@ -56,7 +56,7 @@ trait CertificationScopes
     protected function createdThisMonth(Builder $query): void
     {
         $query->whereMonth('created_at', now()->month)
-              ->whereYear('created_at', now()->year);
+            ->whereYear('created_at', now()->year);
     }
 
     #[Scope]

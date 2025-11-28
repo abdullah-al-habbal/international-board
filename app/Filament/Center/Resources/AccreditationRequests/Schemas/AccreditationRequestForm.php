@@ -5,8 +5,8 @@ namespace App\Filament\Center\Resources\AccreditationRequests\Schemas;
 use App\Enums\AccreditationStatus;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class AccreditationRequestForm
@@ -18,8 +18,8 @@ class AccreditationRequestForm
                 Select::make('certified_center_id')
                     ->relationship('certifiedCenter', 'name')
                     ->default(function () {
-                        return auth()->guard('web')->check() && auth()->guard('web')->user() instanceof \App\Models\CertifiedCenter 
-                            ? auth()->guard('web')->id() 
+                        return auth()->guard('web')->check() && auth()->guard('web')->user() instanceof \App\Models\CertifiedCenter
+                            ? auth()->guard('web')->id()
                             : null;
                     })
                     ->disabled(function () {

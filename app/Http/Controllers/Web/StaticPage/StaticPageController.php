@@ -14,7 +14,8 @@ final class StaticPageController
     public function show(string $slug): View
     {
         $page = $this->service->getBySlug($slug);
-        abort_if(!$page, 404);
+        abort_if(! $page, 404);
+
         return view('web.page.show', compact('page'));
     }
 }

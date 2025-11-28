@@ -15,6 +15,7 @@ final class AccreditationRequestController extends Controller
     public function status(int $centerId): View
     {
         $request = $this->service->getLatestForCenter($centerId);
+
         return view('web.accreditation.status', compact('request'));
     }
 }

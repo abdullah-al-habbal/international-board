@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Traits\Trainee\{
-    TraineeCheckers,
-    TraineeHelpers,
-    TraineeRelations,
-    TraineeScopes
-};
+use App\Models\Traits\Trainee\TraineeCheckers;
+use App\Models\Traits\Trainee\TraineeHelpers;
+use App\Models\Traits\Trainee\TraineeRelations;
+use App\Models\Traits\Trainee\TraineeScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

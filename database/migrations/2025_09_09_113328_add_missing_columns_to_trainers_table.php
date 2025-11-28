@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('country_id')->nullable()->after('address')->constrained('countries')->nullOnDelete();
             $table->json('specializations')->nullable()->after('country_id');
             $table->boolean('is_active')->default(true)->index()->after('avatar');
-            
+
             // Add index for email for searching
             $table->index('email');
         });
@@ -44,4 +44,3 @@ return new class extends Migration
         });
     }
 };
-

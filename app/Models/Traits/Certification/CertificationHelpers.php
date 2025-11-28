@@ -24,10 +24,10 @@ trait CertificationHelpers
 
     public function isComplete(): bool
     {
-        return !empty($this->trainee_id) &&
-            !empty($this->accredited_serial_number) &&
-            !empty($this->accreditation_date) &&
-            !empty($this->document_type_id);
+        return ! empty($this->trainee_id) &&
+            ! empty($this->accredited_serial_number) &&
+            ! empty($this->accreditation_date) &&
+            ! empty($this->document_type_id);
     }
 
     public function hasValidDate(): bool
@@ -46,20 +46,40 @@ trait CertificationHelpers
         $maxScore = 10;
 
         // Essential fields (5 points)
-        if (!empty($this->trainee_id)) $score += 1;
-        if (!empty($this->accredited_serial_number)) $score += 1;
-        if (!empty($this->document_type_id)) $score += 1;
-        if (!empty($this->accreditation_date)) $score += 1;
-        if ($this->hasValidDate()) $score += 1;
+        if (! empty($this->trainee_id)) {
+            $score += 1;
+        }
+        if (! empty($this->accredited_serial_number)) {
+            $score += 1;
+        }
+        if (! empty($this->document_type_id)) {
+            $score += 1;
+        }
+        if (! empty($this->accreditation_date)) {
+            $score += 1;
+        }
+        if ($this->hasValidDate()) {
+            $score += 1;
+        }
 
         // Relationship fields (3 points)
-        if (!empty($this->country_id)) $score += 1;
-        if (!empty($this->trainer_id)) $score += 1;
-        if (!empty($this->certified_center_id)) $score += 1;
+        if (! empty($this->country_id)) {
+            $score += 1;
+        }
+        if (! empty($this->trainer_id)) {
+            $score += 1;
+        }
+        if (! empty($this->certified_center_id)) {
+            $score += 1;
+        }
 
         // Additional fields (2 points)
-        if (!empty($this->paper_received)) $score += 1;
-        if (!empty($this->notes)) $score += 1;
+        if (! empty($this->paper_received)) {
+            $score += 1;
+        }
+        if (! empty($this->notes)) {
+            $score += 1;
+        }
 
         return (int) round(($score / $maxScore) * 100);
     }

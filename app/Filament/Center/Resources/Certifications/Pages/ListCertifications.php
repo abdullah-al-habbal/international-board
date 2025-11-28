@@ -43,7 +43,7 @@ final class ListCertifications extends ListRecords
             ])
             ->action(function (array $data): void {
                 try {
-                    Excel::import(new CertificationsImport(), $data['file']);
+                    Excel::import(new CertificationsImport, $data['file']);
 
                     Notification::make()
                         ->title('Import completed successfully')
@@ -52,7 +52,7 @@ final class ListCertifications extends ListRecords
                 } catch (\Exception $e) {
                     Notification::make()
                         ->title('Import failed')
-                        ->body('An error occurred during import: ' . $e->getMessage())
+                        ->body('An error occurred during import: '.$e->getMessage())
                         ->danger()
                         ->send();
                 }
@@ -66,11 +66,11 @@ final class ListCertifications extends ListRecords
             ->icon('heroicon-o-arrow-down-tray')
             ->action(function () {
                 try {
-                    return Excel::download(new CertificationsExport(), 'my-certifications.xlsx');
+                    return Excel::download(new CertificationsExport, 'my-certifications.xlsx');
                 } catch (\Exception $e) {
                     Notification::make()
                         ->title('Export failed')
-                        ->body('An error occurred during export: ' . $e->getMessage())
+                        ->body('An error occurred during export: '.$e->getMessage())
                         ->danger()
                         ->send();
                 }

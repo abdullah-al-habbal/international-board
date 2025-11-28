@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 final class AccreditationRequestObserver
 {
     private const WEB_GUARD = 'web';
+
     public function creating(AccreditationRequest $accreditationRequest): void
     {
         $this->assignCenterIdIfNeeded($accreditationRequest);
@@ -45,7 +46,7 @@ final class AccreditationRequestObserver
 
     private function shouldAssignCenterId(AccreditationRequest $accreditationRequest): bool
     {
-        return !$accreditationRequest->certified_center_id && $this->isWebGuardAuthenticated();
+        return ! $accreditationRequest->certified_center_id && $this->isWebGuardAuthenticated();
     }
 
     private function isWebGuardAuthenticated(): bool
@@ -56,6 +57,7 @@ final class AccreditationRequestObserver
     private function getAuthenticatedCenter(): ?CertifiedCenter
     {
         $user = auth()->guard(self::WEB_GUARD)->user();
+
         return $user instanceof CertifiedCenter ? $user : null;
     }
 

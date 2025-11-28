@@ -15,6 +15,7 @@ final class AccreditationStatusChanged extends Notification implements ShouldQue
     use Queueable;
 
     private const CHANNELS = ['mail', 'database'];
+
     private const CENTER_ROUTE = '/center';
 
     public function __construct(
@@ -32,7 +33,7 @@ final class AccreditationStatusChanged extends Notification implements ShouldQue
             ->subject($this->getMailSubject())
             ->greeting($this->getGreeting($notifiable))
             ->line($this->getStatusMessage())
-            ->when($this->hasAdminNotes(), fn(MailMessage $message) => $this->addAdminNotesLine($message))
+            ->when($this->hasAdminNotes(), fn (MailMessage $message) => $this->addAdminNotesLine($message))
             ->action($this->getActionText(), $this->getActionUrl())
             ->line($this->getThankYouMessage());
     }
@@ -67,13 +68,13 @@ final class AccreditationStatusChanged extends Notification implements ShouldQue
 
     private function hasAdminNotes(): bool
     {
-        return !empty($this->accreditationRequest->admin_notes);
+        return ! empty($this->accreditationRequest->admin_notes);
     }
 
     private function addAdminNotesLine(MailMessage $message): MailMessage
     {
         return $message->line(
-            __('notifications.accreditation_status_changed.admin_notes') . ': ' . $this->accreditationRequest->admin_notes
+            __('notifications.accreditation_status_changed.admin_notes').': '.$this->accreditationRequest->admin_notes
         );
     }
 
@@ -99,6 +100,6 @@ final class AccreditationStatusChanged extends Notification implements ShouldQue
 
     private function getLocalizedStatus(): string
     {
-        return __('enums.accreditation_status.' . $this->getStatusValue());
+        return __('enums.accreditation_status.'.$this->getStatusValue());
     }
 }
