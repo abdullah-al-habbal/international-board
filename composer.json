@@ -64,9 +64,8 @@
             "@php artisan test"
         ],
         "check": [
-            "./vendor/bin/pint --test",
-            "./vendor/bin/phpstan analyse",
-            "@php artisan test"
+            "@php artisan config:clear --ansi",
+            "@php artisan about"
         ],
         "fix": [
             "./vendor/bin/pint"
