@@ -1,5 +1,7 @@
 <?php
 
+// database/migrations/0001_01_01_000000_create_users_table.php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;

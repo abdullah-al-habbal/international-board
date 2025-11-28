@@ -24,6 +24,21 @@ class ApplicationSettingResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'key';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('app.application_settings');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('app.application_setting');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('app.application_settings');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ApplicationSettingForm::configure($schema);

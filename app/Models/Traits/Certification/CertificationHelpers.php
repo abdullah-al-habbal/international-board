@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Models\Traits\Certification;
 
 use App\Enums\CertificateType;
-use App\Enums\DocumentType;
 
 trait CertificationHelpers
 {
-    public function getDocumentTypeEnum(): ?DocumentType
+    public function getDocumentTypeName(): ?string
     {
-        if (empty($this->document_type)) {
-            return null;
-        }
-
-        return DocumentType::tryFrom($this->document_type);
+        return $this->documentType?->name;
     }
 
     public function getCertificateTypeEnum(): ?CertificateType

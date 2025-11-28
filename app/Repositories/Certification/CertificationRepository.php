@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repositories\Certification;
 
 use App\Enums\CertificateType;
-use App\Enums\DocumentType;
 use App\Models\Certification;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -43,9 +42,9 @@ final class CertificationRepository
         return $this->model->ofType($type)->count();
     }
 
-    public function getCountByDocumentType(DocumentType|string $documentType): int
+    public function getCountByDocumentType(int $documentTypeId): int
     {
-        return $this->model->ofDocumentType($documentType)->count();
+        return $this->model->ofDocumentType($documentTypeId)->count();
     }
 
     public function getTotalCountByCenter(int $centerId): int

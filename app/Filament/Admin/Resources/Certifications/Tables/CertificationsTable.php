@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
-use App\Enums\DocumentType;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -54,29 +53,13 @@ class CertificationsTable
                         default => 'heroicon-o-document',
                     }),
 
-                TextColumn::make('document_type')
+                TextColumn::make('documentType.name')
                     ->label('Document Type')
                     ->searchable()
                     ->sortable()
                     ->badge()
-                    ->formatStateUsing(function (?string $state) {
-                        if (!$state) return '-';
-
-                        $enum = DocumentType::tryFrom($state);
-                        return $enum?->getLabel() ?? ucfirst(str_replace('_', ' ', $state));
-                    })
-                    ->color(function (?string $state) {
-                        if (!$state) return 'gray';
-
-                        $enum = DocumentType::tryFrom($state);
-                        return $enum?->getColor() ?? 'gray';
-                    })
-                    ->icon(function (?string $state) {
-                        if (!$state) return 'heroicon-o-document';
-
-                        $enum = DocumentType::tryFrom($state);
-                        return $enum?->getIcon() ?? 'heroicon-o-document';
-                    }),
+                    ->color('info')
+                    ->icon('heroicon-o-document'),
 
                 TextColumn::make('accredited_serial_number')
                     ->label('Serial Number')
@@ -157,9 +140,11 @@ class CertificationsTable
                         'specialist' => 'Specialist',
                     ]),
 
-                SelectFilter::make('document_type')
+                SelectFilter::make('document_type_id')
                     ->label('Document Type')
-                    ->options(DocumentType::getOptionsArray()),
+                    ->relationship('documentType', 'name')
+                    ->searchable()
+                    ->preload(),
 
                 SelectFilter::make('certified_center_id')
                     ->label('Center')

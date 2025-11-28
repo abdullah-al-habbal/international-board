@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
-use App\Enums\DocumentType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -119,23 +118,24 @@ class CertificationForm
                                     ->maxLength(255),
 
                                 TextInput::make('accreditation_number')
-                                    ->label('Accreditation Number')
+                                    ->label(__('app.accreditation_number'))
                                     ->maxLength(255)
-                                    ->helperText('Will be auto-generated if left empty'),
+                                    ->helperText(__('app.will_be_auto_generated')),
                             ]),
 
-                        Select::make('document_type')
+                        Select::make('document_type_id')
                             ->label(__('app.document_type'))
-                            ->options(DocumentType::getOptionsArray())
+                            ->relationship('documentType', 'name')
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->preload(),
 
                         Select::make('paper_received')
-                            ->label('Paper Document Received')
+                            ->label(__('app.paper_document_received'))
                             ->options([
-                                'YES' => 'Yes',
-                                'NO' => 'No',
-                                'PENDING' => 'Pending',
+                                'YES' => __('app.yes'),
+                                'NO' => __('app.no'),
+                                'PENDING' => __('app.pending'),
                             ])
                             ->default('NO'),
                     ]),

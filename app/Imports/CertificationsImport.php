@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Imports;
 
 use App\Enums\CertificateType;
-use App\Enums\DocumentType;
 use App\Models\Certification;
 use App\Models\Country;
+use App\Models\DocumentType;
 use App\Models\Trainer;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -141,7 +141,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
             // Clean and process data
             $traineeName = $this->cleanPersonName($traineeNameRaw);
             $serialNumber = $this->cleanSerialNumber($serialNumberRaw);
-            $documentType = DocumentType::normalize($documentTypeRaw);
+            $documentTypeId = $this->getDocumentTypeId($documentTypeRaw);
             $accreditationDate = $this->parseDate($accreditationDateRaw);
             $trainerName = $this->cleanPersonName($trainerNameRaw);
             $nationality = $this->cleanNationality($nationalityRaw);
@@ -157,7 +157,7 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
                 'accredited_serial_number' => $serialNumber,
                 'document_code' => $this->cleanValue($documentCodeRaw),
                 'accreditation_number' => $this->cleanValue($accreditationNumberRaw),
-                'document_type' => $documentType,
+                'document_type_id' => $documentTypeId,
                 'accreditation_date' => $accreditationDate,
                 'trainer_name' => $trainerName,
                 'trainer_id' => $trainerId,
@@ -450,5 +450,23 @@ final class CertificationsImport implements ToCollection, WithHeadingRow, WithBa
 
         $this->trainerCache[$trainerName] = $trainer->id;
         return $trainer->id;
+    }
+
+    private function getDocumentTypeId(?string $documentTypeName): ?int
+    {
+        if (empty($documentTypeName)) return null;
+
+        $documentType = DocumentType::whereRaw('LOWER(name) = ?', [strtolower($documentTypeName)])->first();
+        
+        if ($documentType) {
+            return $documentType->id;
+        }
+
+        $documentType = DocumentType::create([
+            'key' => strtolower(str_replace(' ', '_', $documentTypeName)),
+            'name' => ['en' => $documentTypeName, 'ar' => $documentTypeName]
+        ]);
+
+        return $documentType->id;
     }
 }

@@ -45,10 +45,42 @@ return [
     'application_settings' => 'Application Settings',
     'application_setting' => 'Application Setting',
 
-    'name' => 'Name',
+    // Trainee fields
+    'trainee' => 'Trainee',
+    'trainees' => 'Trainees',
     'email' => 'Email',
-    'password' => 'Password',
     'phone' => 'Phone',
+    'date_of_birth' => 'Date of Birth',
+    'gender' => 'Gender',
+    'occupation' => 'Occupation',
+    'organization' => 'Organization',
+    'address' => 'Address',
+    'emergency_contact_name' => 'Emergency Contact Name',
+    'emergency_contact_phone' => 'Emergency Contact Phone',
+    'medical_info' => 'Medical Information',
+
+    // Document Type
+    'document_type' => 'Document Type',
+    'document_types' => 'Document Types',
+
+    // Country/Nationality
+    'country' => 'Country',
+    'countries' => 'Countries',
+    'nationality' => 'Nationality',
+
+    // Gender options
+    'male' => 'Male',
+    'female' => 'Female',
+    'other' => 'Other',
+
+    // Additional form labels
+    'paper_document_received' => 'Paper Document Received',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'will_be_auto_generated' => 'Will be auto-generated if left empty',
+
+    'name' => 'Name',
+    'password' => 'Password',
     'address' => 'Address',
     'manager_name' => 'Manager Name',
     'accreditation_number' => 'Accreditation Number',

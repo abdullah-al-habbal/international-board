@@ -45,6 +45,35 @@ return [
     'application_settings' => 'إعدادات التطبيق',
     'application_setting' => 'إعداد التطبيق',
 
+    // Trainee fields
+    'trainee' => 'متدرب',
+    'trainees' => 'المتدربون',
+    'date_of_birth' => 'تاريخ الميلاد',
+    'gender' => 'الجنس',
+    'occupation' => 'المهنة',
+    'organization' => 'المنظمة',
+    'emergency_contact_name' => 'اسم جهة الاتصال في حالات الطوارئ',
+    'emergency_contact_phone' => 'هاتف جهة الاتصال في حالات الطوارئ',
+    'medical_info' => 'المعلومات الطبية',
+
+    // Document Type
+    'document_types' => 'أنواع الوثائق',
+
+    // Country/Nationality
+    'country' => 'البلد',
+    'countries' => 'البلدان',
+
+    // Gender options
+    'male' => 'ذكر',
+    'female' => 'أنثى',
+    'other' => 'آخر',
+
+    // Additional form labels
+    'paper_document_received' => 'استلام الوثيقة الورقية',
+    'yes' => 'نعم',
+    'no' => 'لا',
+    'will_be_auto_generated' => 'سيتم إنشاؤها تلقائياً إذا تركت فارغة',
+
     'name' => 'الاسم',
     'email' => 'البريد الإلكتروني',
     'password' => 'كلمة المرور',

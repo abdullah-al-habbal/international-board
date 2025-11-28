@@ -20,10 +20,25 @@ class Trainee extends Model
 
     protected $fillable = [
         'name',
+        'email',
+        'phone',
+        'country_id',
+        'date_of_birth',
+        'nationality',
+        'gender',
+        'occupation',
+        'organization',
+        'address',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'medical_info',
+        'notes',
     ];
 
     protected function casts(): array
     {
-        return [];
+        return [
+            'date_of_birth' => 'date',
+        ];
     }
 }

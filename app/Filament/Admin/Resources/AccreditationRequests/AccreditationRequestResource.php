@@ -24,6 +24,21 @@ class AccreditationRequestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('app.accreditation_requests');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('app.accreditation_request');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('app.accreditation_requests');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return AccreditationRequestForm::configure($schema);

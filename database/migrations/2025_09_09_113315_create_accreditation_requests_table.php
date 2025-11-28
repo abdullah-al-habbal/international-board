@@ -1,5 +1,7 @@
 <?php
 
+// database/migrations/2025_09_09_113315_create_accreditation_requests_table.php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;

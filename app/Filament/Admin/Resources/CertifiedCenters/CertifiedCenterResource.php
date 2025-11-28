@@ -24,6 +24,21 @@ class CertifiedCenterResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getNavigationLabel(): string
+    {
+        return __('app.certified_centers');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('app.certified_center');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('app.certified_centers');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CertifiedCenterForm::configure($schema);

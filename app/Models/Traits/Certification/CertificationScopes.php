@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Traits\Certification;
 
 use App\Enums\CertificateType;
-use App\Enums\DocumentType;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,9 +23,9 @@ trait CertificationScopes
     }
 
     #[Scope]
-    protected function ofDocumentType(Builder $query, DocumentType|string $documentType): void
+    protected function ofDocumentType(Builder $query, int $documentTypeId): void
     {
-        $query->where('document_type', $documentType instanceof DocumentType ? $documentType->value : $documentType);
+        $query->where('document_type_id', $documentTypeId);
     }
 
     #[Scope]

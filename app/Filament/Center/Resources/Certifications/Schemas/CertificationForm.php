@@ -2,7 +2,6 @@
 
 namespace App\Filament\Center\Resources\Certifications\Schemas;
 
-use App\Enums\DocumentType;
 use App\Models\CertifiedCenter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -134,11 +133,12 @@ class CertificationForm
                                     ->helperText('Will be auto-generated if left empty'),
                             ]),
 
-                        Select::make('document_type')
+                        Select::make('document_type_id')
                             ->label(__('app.document_type'))
-                            ->options(DocumentType::getOptionsArray())
+                            ->relationship('documentType', 'name')
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->preload(),
 
                         Select::make('paper_received')
                             ->label('Paper Document Received')
