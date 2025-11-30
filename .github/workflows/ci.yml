@@ -59,10 +59,10 @@ jobs:
             echo "🔗 Connecting to Hostinger..."
 
             if [ "${GITHUB_REF##*/}" = "production" ]; then
-              DEPLOY_PATH="~/public_html/production"
+              DEPLOY_PATH="~/domains/internationalboard.uk/public_html/production"
               BRANCH="production"
             else
-              DEPLOY_PATH="~/public_html/dev"
+              DEPLOY_PATH="~/domains/internationalboard.uk/public_html/dev"
               BRANCH="dev"
             fi
 
