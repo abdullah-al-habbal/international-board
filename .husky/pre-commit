@@ -2,4 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "🔍 Running pre-commit checks..."
-npm run check-all
+npm run check-local

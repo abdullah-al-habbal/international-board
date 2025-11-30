@@ -6,6 +6,7 @@
         "build": "vite build",
         "dev": "vite",
         "prepare": "husky install",
+        "check-local": "composer check-local",
         "check-all": "composer check-all"
     },
     "devDependencies": {
