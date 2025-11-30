@@ -5,7 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "check-all": "composer check-all"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

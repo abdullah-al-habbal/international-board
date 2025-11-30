@@ -1,28 +1,95 @@
 name: CI/CD Pipeline
+# path: .github/workflows/ci.yml
 
 on:
   push:
     branches:
       - main
+      - dev
+      - production
   pull_request:
     branches:
       - main
 
 jobs:
   check:
+    name: Project checks
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: ⚙️ Setup PHP 8.4 with extensions
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, pdo_mysql, bcmath, intl
+          coverage: none
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+      - name: 📦 Install Composer dependencies
+        run: |
+          echo "Installing project dependencies..."
+          composer install --no-interaction --prefer-dist
+          echo "✅ Dependencies installed successfully."
 
-      - name: Run project checks
-        run: composer check
+      - name: 🔍 Run unified project checks
+        run: |
+          echo "Running full check-all script..."
+          composer check-all
+          echo "✅ All checks passed."
+
+  deploy:
+    name: Deploy to Hostinger
+    needs: check
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/production'
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            echo "🔗 Connecting to Hostinger..."
+
+            if [ "${GITHUB_REF##*/}" = "production" ]; then
+              DEPLOY_PATH="~/public_html/production"
+              BRANCH="production"
+            else
+              DEPLOY_PATH="~/public_html/dev"
+              BRANCH="dev"
+            fi
+
+            echo "📂 Deploy path: $DEPLOY_PATH"
+            echo "🌿 Branch: $BRANCH"
+
+            cd "$DEPLOY_PATH"
+
+            echo "🔄 Pulling latest code..."
+            git fetch origin
+            git reset --hard origin/$BRANCH
+
+            echo "📦 Installing optimized dependencies..."
+            composer install --no-dev --optimize-autoloader
+
+            echo "🧹 Clearing old caches..."
+            php artisan config:clear || true
+            php artisan route:clear || true
+            php artisan view:clear || true
+
+            echo "🧽 Running Pint auto-fix..."
+            ./vendor/bin/pint
+
+            echo "⚡ Rebuilding caches..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan optimize
+
+            echo "✅ Deployment complete!"
