@@ -103,30 +103,3 @@ For detailed project documentation, see `docs/PROJECT_OVERVIEW.md`
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-
-Accreditation number in the http://127.0.0.1:8000/admin/certified-centers/create must be automatic
-
-in the http://127.0.0.1:8000/center/accreditation-requests, we must add the "create" button in the center dashbaord
-
-
-polymorephsim relation for editable records, only one pending, approve, 
-
-تعديلات قانونية tab.
-
-كل معهد اله نوع دوارات
-طلب اضافة دورة, 
-مع رسالة رفض, في حال الرفض
-او خيار قبول او رفض ل طلب اضافة نوع شهادة جديد,
-
-ضمن http://127.0.0.1:8000/admin/certified-centers/create يجب اضافة اختيار الدولة
-و يجب اضافة انواع الدوارت المسومح لهذا المركز باصدارها.
-
-
-
-الية تقييم مدربين,
-نص ثابت, 
-معلومات عامة عن المدرب, 
-
-بحث عن المدربين ضمن الموقع الاساسي.
-

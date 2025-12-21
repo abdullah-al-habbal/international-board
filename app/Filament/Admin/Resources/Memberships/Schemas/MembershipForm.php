@@ -16,21 +16,21 @@ class MembershipForm
     {
         return $schema->schema([
             TextInput::make('title')
-                ->label(__('Title'))
+                ->label(__('app.title'))
                 ->required()
                 ->maxLength(255)
                 ->autofocus()
                 ->columnSpanFull(),
 
             Textarea::make('description')
-                ->label(__('Description'))
+                ->label(__('app.description'))
                 ->maxLength(65535)
                 ->rows(4)
                 ->nullable()
                 ->columnSpanFull(),
 
             FileUpload::make('descriptive_image')
-                ->label(__('Descriptive Image'))
+                ->label(__('app.descriptive_image'))
                 ->image()
                 ->directory('memberships/images')
                 ->visibility('public')
@@ -38,14 +38,14 @@ class MembershipForm
                 ->columnSpan(1),
 
             TextInput::make('sort_order')
-                ->label(__('Sort Order'))
+                ->label(__('app.sort_order'))
                 ->numeric()
                 ->default(0)
                 ->required()
                 ->columnSpan(1),
 
             Toggle::make('is_active')
-                ->label(__('Active'))
+                ->label(__('app.active'))
                 ->default(true)
                 ->inline(false)
                 ->columnSpanFull(),

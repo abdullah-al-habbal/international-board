@@ -2,10 +2,14 @@
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
+use App\Enums\CertificateType;
+use App\Models\Country;
+use App\Models\Trainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -17,7 +21,7 @@ class CertificationForm
         return $schema
             ->components([
                 Section::make(__('app.import_page.instructions.heading'))
-                    ->description('Main certification details')
+                    ->description(__('app.certification_details_section'))
                     ->schema([
                         Grid::make(2)
                             ->schema([
@@ -30,13 +34,8 @@ class CertificationForm
 
                                 Select::make('certificate_type')
                                     ->label(__('app.certificate_type'))
-                                    ->options([
-                                        'basic' => 'Basic',
-                                        'advanced' => 'Advanced',
-                                        'professional' => 'Professional',
-                                        'specialist' => 'Specialist',
-                                    ])
-                                    ->default('basic')
+                                    ->options(CertificateType::class)
+                                    ->default(CertificateType::Basic->value)
                                     ->required(),
                             ]),
 
@@ -68,7 +67,7 @@ class CertificationForm
                                             ->preload(),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return \App\Models\Trainer::create($data)->getKey();
+                                        return Trainer::create($data)->getKey();
                                     }),
                             ]),
 
@@ -85,15 +84,15 @@ class CertificationForm
                                             ->maxLength(255),
                                         TextInput::make('code')
                                             ->maxLength(3)
-                                            ->helperText('ISO 3166-1 alpha-3 code'),
+                                            ->helperText(__('app.iso_code_3_helper')),
                                         TextInput::make('code_2')
                                             ->maxLength(2)
-                                            ->helperText('ISO 3166-1 alpha-2 code'),
+                                            ->helperText(__('app.iso_code_2_helper')),
                                         TextInput::make('nationality')
                                             ->maxLength(255),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return \App\Models\Country::create($data)->getKey();
+                                        return Country::create($data)->getKey();
                                     }),
 
                                 DatePicker::make('accreditation_date')
@@ -103,8 +102,8 @@ class CertificationForm
                             ]),
                     ]),
 
-                Section::make('Document Details')
-                    ->description('Certificate and document information')
+                Section::make(__('app.document_details_section'))
+                    ->description(__('app.document_details_description'))
                     ->schema([
                         Grid::make(3)
                             ->schema([
@@ -130,24 +129,19 @@ class CertificationForm
                             ->searchable()
                             ->preload(),
 
-                        Select::make('paper_received')
+                        Toggle::make('paper_received')
                             ->label(__('app.paper_document_received'))
-                            ->options([
-                                'YES' => __('app.yes'),
-                                'NO' => __('app.no'),
-                                'PENDING' => __('app.pending'),
-                            ])
-                            ->default('NO'),
+                            ->default(false),
                     ]),
 
-                Section::make('Additional Information')
-                    ->description('Notes and additional details')
+                Section::make(__('app.additional_information_section'))
+                    ->description(__('app.additional_information_description'))
                     ->schema([
                         Textarea::make('notes')
                             ->label(__('app.notes'))
                             ->rows(4)
                             ->columnSpanFull()
-                            ->placeholder('Additional notes or comments...'),
+                            ->placeholder(__('app.notes_placeholder')),
                     ])
                     ->collapsible(),
             ]);

@@ -114,6 +114,52 @@ return [
     'reviewed_by' => 'تمت المراجعة بواسطة',
     'reviewed_at' => 'تاريخ المراجعة',
 
+    // Section descriptions
+    'certification_details_section' => 'تفاصيل الشهادة الرئيسية',
+    'document_details_section' => 'تفاصيل الوثيقة',
+    'document_details_description' => 'معلومات الشهادة والوثيقة',
+    'additional_information_section' => 'معلومات إضافية',
+    'additional_information_description' => 'ملاحظات وتفاصيل إضافية',
+    'notes_placeholder' => 'ملاحظات أو تعليقات إضافية...',
+
+    // Helper texts
+    'iso_code_3_helper' => 'رمز ISO 3166-1 alpha-3',
+    'iso_code_2_helper' => 'رمز ISO 3166-1 alpha-2',
+    'iso_code_3' => 'رمز ISO (3 أحرف)',
+    'iso_code_2' => 'رمز ISO (حرفان)',
+
+    // Additional labels
+    'descriptive_image' => 'الصورة الوصفية',
+    'avatar' => 'الصورة الشخصية',
+    'biography' => 'السيرة الذاتية',
+    'specializations' => 'التخصصات',
+    'email_verified' => 'البريد الإلكتروني مؤكد',
+    'confirm_password' => 'تأكيد كلمة المرور',
+    'user_type' => 'نوع المستخدم',
+    'active' => 'نشط',
+    'country' => 'البلد',
+    'country_name' => 'اسم البلد',
+
+    // Document Type
+    'name_english' => 'الاسم (بالإنجليزية)',
+    'name_arabic' => 'الاسم (بالعربية)',
+    'document_type_key_helper' => 'معرف فريد لهذا النوع من الوثائق (مثل: training_certificate)',
+    'training_certificate_example' => 'شهادة تدريب',
+
+    // Specializations
+    'specialization_training' => 'تدريب',
+    'specialization_consulting' => 'استشارات',
+    'specialization_leadership' => 'قيادة',
+    'specialization_management' => 'إدارة',
+    'specialization_communication' => 'اتصال',
+    'specialization_technical_skills' => 'مهارات تقنية',
+    'specialization_soft_skills' => 'مهارات ناعمة',
+    'specialization_project_management' => 'إدارة المشاريع',
+    'specialization_digital_marketing' => 'التسويق الرقمي',
+    'specialization_hr' => 'الموارد البشرية',
+    'specialization_quality_management' => 'إدارة الجودة',
+    'specialization_entrepreneurship' => 'ريادة الأعمال',
+
     'created_successfully' => 'تم الإنشاء بنجاح',
     'updated_successfully' => 'تم التحديث بنجاح',
     'deleted_successfully' => 'تم الحذف بنجاح',

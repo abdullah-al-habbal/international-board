@@ -40,4 +40,21 @@ final class CertifiedCenterRepository
     {
         return $this->model->ofStatus($status)->count();
     }
+
+    public function getLastAccreditationNumberForYear(int $year): ?string
+    {
+        $prefix = "CTR-{$year}-";
+
+        return $this->model->newQuery()
+            ->where('accreditation_number', 'like', $prefix . '%')
+            ->orderBy('accreditation_number', 'desc')
+            ->value('accreditation_number');
+    }
+
+    public function accreditationNumberExists(string $accreditationNumber): bool
+    {
+        return $this->model->newQuery()
+            ->where('accreditation_number', $accreditationNumber)
+            ->exists();
+    }
 }

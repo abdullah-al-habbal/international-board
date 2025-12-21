@@ -117,6 +117,52 @@ return [
     'reviewed_by' => 'Reviewed By',
     'reviewed_at' => 'Reviewed At',
 
+    // Section descriptions
+    'certification_details_section' => 'Main certification details',
+    'document_details_section' => 'Document Details',
+    'document_details_description' => 'Certificate and document information',
+    'additional_information_section' => 'Additional Information',
+    'additional_information_description' => 'Notes and additional details',
+    'notes_placeholder' => 'Additional notes or comments...',
+
+    // Helper texts
+    'iso_code_3_helper' => 'ISO 3166-1 alpha-3 code',
+    'iso_code_2_helper' => 'ISO 3166-1 alpha-2 code',
+    'iso_code_3' => 'ISO Code (3 letters)',
+    'iso_code_2' => 'ISO Code (2 letters)',
+
+    // Additional labels
+    'descriptive_image' => 'Descriptive Image',
+    'avatar' => 'Avatar',
+    'biography' => 'Biography',
+    'specializations' => 'Specializations',
+    'email_verified' => 'Email Verified',
+    'confirm_password' => 'Confirm Password',
+    'user_type' => 'User Type',
+    'active' => 'Active',
+    'country' => 'Country',
+    'country_name' => 'Country Name',
+
+    // Document Type
+    'name_english' => 'Name (English)',
+    'name_arabic' => 'Name (Arabic)',
+    'document_type_key_helper' => 'Unique identifier for this document type (e.g., training_certificate)',
+    'training_certificate_example' => 'Training Certificate',
+
+    // Specializations
+    'specialization_training' => 'Training',
+    'specialization_consulting' => 'Consulting',
+    'specialization_leadership' => 'Leadership',
+    'specialization_management' => 'Management',
+    'specialization_communication' => 'Communication',
+    'specialization_technical_skills' => 'Technical Skills',
+    'specialization_soft_skills' => 'Soft Skills',
+    'specialization_project_management' => 'Project Management',
+    'specialization_digital_marketing' => 'Digital Marketing',
+    'specialization_hr' => 'Human Resources',
+    'specialization_quality_management' => 'Quality Management',
+    'specialization_entrepreneurship' => 'Entrepreneurship',
+
     'created_successfully' => 'Created successfully',
     'updated_successfully' => 'Updated successfully',
     'deleted_successfully' => 'Deleted successfully',

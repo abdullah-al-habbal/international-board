@@ -1,0 +1,2163 @@
+check the @app/Models/Certification.php
+
+note: we use traits,
+so, check the relations in the Traits like the @app/Models/Traits/Certification/CertificationRelations.php and check the @app/Models/CertifiedCenter.php
+and the @app/Models/Country.php and the @app/Models/DocumentType.php , @app/Models/Trainee.php and the @app/Models/Trainer.php and the @app/Models/AccreditationRequest.php
+
+BUILD A prompt for the following:
+
+laravel 12, and Filament 4,
+
+
+
+Accreditation number in the [http://127.0.0.1:8000/admin/certified-centers/create](http://127.0.0.1:8000/admin/certified-centers/create) must be automatic
+
+
+in the [http://127.0.0.1:8000/center/accreditation-requests](http://127.0.0.1:8000/center/accreditation-requests), we must add the "create" button in the center dashbaord
+
+
+
+polymorephsim relation for editable records, only one pending, approve,
+
+
+تعديلات قانونية tab.
+
+
+كل معهد اله نوع دوارات
+طلب اضافة دورة,
+مع رسالة رفض, في حال الرفض
+او خيار قبول او رفض ل طلب اضافة نوع شهادة جديد,
+
+
+ضمن [http://127.0.0.1:8000/admin/certified-centers/create](http://127.0.0.1:8000/admin/certified-centers/create) يجب اضافة اختيار الدولة
+و يجب اضافة انواع الدوارت المسومح لهذا المركز باصدارها.
+
+
+
+
+الية تقييم مدربين,
+نص ثابت,
+معلومات عامة عن المدرب,
+
+
+بحث عن المدربين ضمن الموقع الاساسي.
+
+
+
+where I Have:
+
+# Board - Certification Board Management System
+
+
+A comprehensive web application built with Laravel 12 and Filament v4 for managing certification boards, accredited training centers, certifications, trainers, and trainees. The system facilitates the accreditation process, certification issuance, and provides public-facing interfaces for certification verification.
+
+
+## 🚀 Quick Start
+
+
+### Technology Stack
+- **Framework:** Laravel 12.x
+- **Admin Panel:** Filament v4.0
+- **PHP:** 8.2+
+- **Database:** MySQL
+- **Default Locale:** Arabic (ar) with English (en) support
+
+
+### Access Points
+
+
+#### Admin Panel
+- **URL:** `http://localhost/admin`
+- **Guard:** `web` (default Laravel authentication)
+- **Model:** `App\Models\User`
+- **Access:** Full system administration
+
+
+#### Center Panel
+- **URL:** `http://localhost/center`
+- **Guard:** `certified_center` (custom authentication)
+- **Model:** `App\Models\CertifiedCenter`
+- **Access:** Limited to own center resources
+
+
+#### Public Routes
+- **Homepage:** `http://localhost/`
+- **Certification Search:** `http://localhost/certifications/search`
+- **Centers Directory:** `http://localhost/centers/`
+
+
+## 👥 Active Users
+
+
+### Admin User
+- **Email:** `admin@test.com`
+- **Password:** `12345678`
+- **Type:** Admin
+- **Panel:** `/admin`
+
+
+### Certified Center User
+- **Email:** `center.one@gmail.com`
+- **Password:** `12345678`
+- **Name:** center one
+- **Panel:** `/center`
+
+
+## 📋 Core Features
+
+
+- **Certification Management:** Create, edit, import/export certifications with serial number tracking
+- **Center Management:** Manage accredited training centers with accreditation periods
+- **Accreditation Workflow:** Request/review process with status tracking
+- **Trainer & Trainee Management:** Comprehensive profiles and relationships
+- **Bilingual Support:** Full Arabic/English interface with language switching
+- **Excel Import/Export:** Bulk operations for certifications
+- **Public Verification:** Search and verify certifications by serial number
+
+
+## 🏗️ Architecture
+
+
+### Dual-Panel System
+The application uses Filament v4 with two separate authentication panels:
+- **Admin Panel** (`/admin`) - Full system access
+- **Center Panel** (`/center`) - Center-specific access with policy-based restrictions
+
+
+### Service-Repository Pattern
+- **Services:** Business logic layer (`app/Services/`)
+- **Repositories:** Data access layer (`app/Repositories/`)
+- **Policies:** Authorization layer (`app/Policies/`)
+
+
+## 🔧 Configuration
+
+
+Key configuration files:
+- `config/panels.php` - Filament panel settings
+- `config/auth.php` - Authentication guards (web, certified_center)
+- `config/app.php` - Application settings
+- `.env` - Environment variables
+
+
+## 📝 Development
+
+
+### Common Commands
+
+
+```bash
+# Check users
+php artisan tinker
+> \App\Models\User::all(['email', 'name'])
+
+
+# Reset password
+> $user = \App\Models\User::where('email', 'admin@test.com')->first();
+> $user->password = \Illuminate\Support\Facades\Hash::make('new_password');
+> $user->save();
+
+
+# Run migrations
+php artisan migrate
+
+
+# Clear cache
+php artisan config:clear
+php artisan cache:clear
+```
+
+
+## 📚 Documentation
+
+
+For detailed project documentation, see `docs/PROJECT_OVERVIEW.md`
+
+
+## License
+
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+check some of the models like:
+
+
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Enums\CertificateType;
+use App\Models\Traits\Certification\CertificationActions;
+use App\Models\Traits\Certification\CertificationCheckers;
+use App\Models\Traits\Certification\CertificationHelpers;
+use App\Models\Traits\Certification\CertificationRelations;
+use App\Models\Traits\Certification\CertificationScopes;
+use App\Policies\CertificationPolicy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+#[UsePolicy(CertificationPolicy::class)]
+class Certification extends Model
+{
+    use CertificationActions, CertificationCheckers, CertificationHelpers;
+    use CertificationRelations, CertificationScopes;
+    use HasFactory;
+
+    protected $fillable = [
+        'certified_center_id',
+        'certificate_type',
+        'trainee_id',
+        'trainee_name',
+        'trainer_name',
+        'nationality',
+        'accredited_serial_number',
+        'document_code',
+        'accreditation_number',
+        'document_type_id',
+        'accreditation_date',
+        'trainer_id',
+        'country_id',
+        'paper_received',
+        'notes',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'accreditation_date' => 'date',
+            'certificate_type' => CertificateType::class,
+            'paper_received' => 'boolean',
+        ];
+    }
+}
+
+
+and the
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Enums\CenterStatus;
+use App\Models\Traits\CertifiedCenter\CertifiedCenterCheckers;
+use App\Models\Traits\CertifiedCenter\CertifiedCenterRelations;
+use App\Models\Traits\CertifiedCenter\CertifiedCenterScopes;
+use App\Observers\CertifiedCenterObserver;
+use App\Policies\CertifiedCenterPolicy;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+#[UsePolicy(CertifiedCenterPolicy::class)]
+#[ObservedBy([CertifiedCenterObserver::class])]
+class CertifiedCenter extends Authenticatable implements FilamentUser
+{
+    use CertifiedCenterCheckers, CertifiedCenterRelations, CertifiedCenterScopes;
+    use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'address',
+        'phone',
+        'manager_name',
+        'accreditation_period_start',
+        'accreditation_period_end',
+        'accreditation_number',
+        'status',
+        'is_active',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'accreditation_period_start' => 'datetime',
+            'accreditation_period_end' => 'datetime',
+            'status' => CenterStatus::class,
+            'is_active' => 'boolean',
+        ];
+    }
+}
+
+
+and the
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Models\Traits\Country\CountryRules;
+use App\Models\Traits\Country\CountryScopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
+
+class Country extends Model
+{
+    use CountryRules, CountryScopes;
+    use HasFactory, HasTranslations;
+
+    public $translatable = ['name', 'nationality'];
+
+    protected $fillable = [
+        'name',
+        'code',
+        'code_2',
+        'nationality',
+        'is_active',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
+}
+
+
+and the
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Models\Traits\DocumentType\DocumentTypeRelations;
+use App\Models\Traits\DocumentType\DocumentTypeScopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
+
+class DocumentType extends Model
+{
+    use DocumentTypeRelations, DocumentTypeScopes;
+    use HasFactory, HasTranslations;
+
+    public $translatable = ['name'];
+
+    protected $fillable = ['key', 'name'];
+}
+
+
+and the
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Models\Traits\Trainee\TraineeCheckers;
+use App\Models\Traits\Trainee\TraineeHelpers;
+use App\Models\Traits\Trainee\TraineeRelations;
+use App\Models\Traits\Trainee\TraineeScopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Trainee extends Model
+{
+    use HasFactory;
+    use TraineeCheckers, TraineeHelpers, TraineeRelations, TraineeScopes;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'country_id',
+        'date_of_birth',
+        'nationality',
+        'gender',
+        'occupation',
+        'organization',
+        'address',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'medical_info',
+        'notes',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'date_of_birth' => 'date',
+        ];
+    }
+}
+
+
+and the
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Models\Traits\Trainer\TrainerCheckers;
+use App\Models\Traits\Trainer\TrainerHelpers;
+use App\Models\Traits\Trainer\TrainerRelations;
+use App\Models\Traits\Trainer\TrainerScopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Trainer extends Model
+{
+    use HasFactory;
+    use TrainerCheckers, TrainerHelpers, TrainerRelations, TrainerScopes;
+
+    protected $fillable = [
+        'name',
+        'avatar',
+        'bio',
+        'email',
+        'phone',
+        'address',
+        'country_id',
+        'specializations',
+        'is_active',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'address' => 'array',
+            'specializations' => 'array',
+            'is_active' => 'boolean',
+        ];
+    }
+}
+
+
+Use this prompt directly with an AI coding assistant that has access to your repo (so it can read the models, traits, and Filament resources):
+
+***
+
+You are working on a Laravel 12 project called **“Board - Certification Board Management System”** using **Filament v4** (dual panels: `/admin` and `/center`). The project uses traits for model relations and logic, and a Service–Repository–Policy architecture.
+
+## Context and existing models
+
+Before coding, **inspect the existing models and their traits and relations**, then integrate with them instead of re‑inventing structures:
+
+- `app/Models/Certification.php`
+- `app/Models/Traits/Certification/CertificationRelations.php`
+- `app/Models/CertifiedCenter.php`
+- `app/Models/Country.php`
+- `app/Models/DocumentType.php`
+- `app/Models/Trainee.php`
+- `app/Models/Trainer.php`
+- `app/Models/AccreditationRequest.php`
+
+Important notes:
+
+- `Certification` has fields like: `certified_center_id`, `certificate_type`, `trainee_id`, `trainer_id`, `country_id`, `document_type_id`, `accreditation_number`, `accredited_serial_number`, `accreditation_date`, etc. (see `Certification::$fillable` and `CertificationRelations` for existing relations).
+- `CertifiedCenter` is an `Authenticatable` implementing `FilamentUser`, with an observer `CertifiedCenterObserver` and `CenterStatus` enum, and has `accreditation_number` and accreditation period fields.
+- `Country` and `DocumentType` use Spatie translatable.
+- `Trainee` and `Trainer` have `country_id` and other profile information; `Trainer` has `specializations` (array) and `is_active`.
+
+Use and extend the **existing relations in traits** (e.g. `CertificationRelations`, `TrainerRelations`, `CertifiedCenterRelations`) rather than defining duplicate relationships.
+
+The app already has:
+
+- **Admin panel**: `/admin`, guard `web`, model `App\Models\User`.
+- **Center panel**: `/center`, guard `certified_center`, model `App\Models\CertifiedCenter`.
+- Public routes for certification search and centers directory.
+- Service–Repository pattern under `app/Services` and `app/Repositories`.
+
+Use **Filament v4** patterns for Resources, Pages, Actions, Tabs, and Panel configuration.[1]
+
+***
+
+## Requirements
+
+Implement or update the system as follows, leveraging the existing models and traits:
+
+### 1. Automatic accreditation number for CertifiedCenter (Admin create page)
+
+On the admin page `http://127.0.0.1:8000/admin/certified-centers/create`:
+
+- Make `accreditation_number` **generated automatically** on creation for `CertifiedCenter`:
+  - Must be unique.
+  - Should follow a clean, human‑readable pattern (e.g. `CTR-YYYY-XXXXX` or similar). Propose one and implement it.
+  - The field should *not* be editable by the admin (hidden or read‑only in Filament).
+- Use the existing `CertifiedCenterObserver` or a dedicated service (e.g. `CertifiedCenterNumberGeneratorService`) to generate the accreditation number when a center is created, in line with the Service–Repository style.
+- Ensure that `Certification` records that reference `accreditation_number` remain consistent with this approach.
+
+Update:
+
+- `CertifiedCenter` model/observer/service for generation.
+- `CertifiedCenter` Filament Resource form to show accreditation number as read‑only (on edit) or hidden (on create).
+
+### 2. Add “Create” button for accreditation requests in center dashboard
+
+On the center panel route `http://127.0.0.1:8000/center/accreditation-requests`:
+
+- Add a **“Create”** button for centers to submit **accreditation requests**.
+- Use `AccreditationRequest` model, and integrate with its existing relations and traits.
+- Requirements:
+  - Only authenticated `certified_center` users can access this.
+  - Newly created `AccreditationRequest` must be linked to the logged‑in center (`certified_center_id`).
+  - Respect and reuse existing Policies for `AccreditationRequest`.
+- Implement this as:
+  - A Filament Resource under the **center panel** (if not already) with an Index page that has a **Create** action, or
+  - A custom Filament page on the center panel with a header action “Create accreditation request”.
+
+Update or create:
+
+- `AccreditationRequestResource` (or equivalent) in the center panel namespace.
+- `ListAccreditationRequests` page with a Filament `CreateAction`.
+- Any necessary Panel registration in `config/panels.php` so that the resource is only visible in `/center`.
+
+### 3. Polymorphic “editable records” relation (only one pending at a time)
+
+Introduce a polymorphic structure so various entities (e.g. `CertifiedCenter`, `Trainer`, maybe `Certification`, `CourseType` later) can have “edit requests”:
+
+- Create an `Editable` or `EditRequest` model with a polymorphic relationship:
+  - Columns: `editable_id`, `editable_type` (via `$table->morphs('editable')`), `status` (`pending`, `approved`, `rejected`), `data` (JSON for proposed changes), `approved_at`, `rejected_at`, `rejection_reason`, etc.[2]
+- Business rules:
+  - For each underlying record (same `editable_id` + `editable_type`), allow **only one `pending` edit** at a time.
+  - Support status transitions:
+    - `pending → approved`
+    - `pending → rejected` (with optional `rejection_reason` text).
+- Integrate via traits:
+  - Add a trait (e.g. `HasEditRequests`) used in models such as `CertifiedCenter`, `Trainer` (and any others you deem appropriate) to define `editRequests()` polymorphic relation (`morphMany`).
+- Validation:
+  - When creating an `EditRequest`, enforce the “only one pending per entity” rule in the service layer or model logic.
+- Filament:
+  - Admin‑side Filament Resource to manage/edit these `EditRequest`s.
+  - Provide actions to approve/reject (with rejection reason) in the table.
+
+Deliver:
+
+- Migration for the polymorphic table.
+- `EditRequest` model + polymorphic relationships.
+- Trait(s) for `HasEditRequests` and their usage in selected models.
+- A Filament Resource for `EditRequest` in the admin panel with status actions.
+
+### 4. “تعديلات قانونية” tab
+
+Add a “Legal Amendments” tab (**“تعديلات قانونية”**) in a reasonable place in the admin:
+
+- Preferably as:
+  - A dedicated Filament Resource or Page, or
+  - A tab on an existing settings/Legal resource.
+- Options:
+  - Static text: A Filament page displaying fixed Arabic text for legal amendments.
+  - Dynamic: A `LegalAmendment` model with fields like `title`, `content` (translatable using Spatie), so admins can manage legal amendments.
+
+Requirements:
+
+- Show “تعديلات قانونية” as a **Tab** (Filament Tabs component) in the chosen resource/page.
+- If dynamic, integrate translatable fields and basic CRUD.
+
+Deliver:
+
+- If static: a Filament Page with Arabic content and a Tabs UI, including a “تعديلات قانونية” tab.
+- If dynamic: `LegalAmendment` model + migration + Filament Resource with tabs, using Arabic labels.
+
+### 5. Center‑specific course types + requests workflow
+
+Requirement summary:
+
+> كل معهد اله نوع دوارات
+> طلب اضافة دورة,
+> مع رسالة رفض, في حال الرفض
+> او خيار قبول او رفض ل طلب اضافة نوع شهادة جديد,
+
+Implement a mechanism such that:
+
+- Each `CertifiedCenter` has allowed course types / document types that it can issue.
+- There is a workflow for:
+  - Requesting to add a **course** under an existing type.
+  - Requesting to add a **new certificate/document type**.
+
+Use and align with existing models:
+
+- There is `DocumentType` already. Consider:
+  - Either introduce `CourseType`/`CertificationType` that is related to `DocumentType`, or
+  - Use `DocumentType` as “type of certificate/course” directly if that fits better.
+- Create pivot(s) to link `CertifiedCenter` with allowed types:
+  - e.g. `certified_center_document_type` or `certified_center_course_type`.
+- Create a `CenterTypeRequest` or similar model for requests:
+
+Workflow:
+
+- Center panel:
+  - A page or resource for:
+    - “طلب اضافة دورة” (request to add a course based on existing type).
+    - “طلب اضافة نوع شهادة جديد” (request to add a new Document/Certificate type).
+  - Fields include:
+    - Link to `CertifiedCenter` (auto from logged‑in center),
+    - Requested type name/description,
+    - Maybe link to `DocumentType` if requesting course under existing type.
+- Admin panel:
+  - Filament resource to review these requests.
+  - Admin can **Approve** or **Reject**:
+    - On approval:
+      - If it is a new type: create a new `DocumentType` (or `CourseType`) and attach it to the center via pivot.
+      - If it is a course under an existing type: ensure necessary records are created and associated.
+    - On rejection:
+      - Store a **rejection message** and show it to the center.
+- Rules:
+  - Each request has `status` (`pending`, `approved`, `rejected`) and `rejection_message`.
+  - Center can see status and message in the center panel.
+
+Deliver:
+
+- Migrations and models for:
+  - Pivot table (center ↔ types).
+  - Request model (e.g. `CenterTypeRequest`).
+- Filament Resources:
+  - Center panel resource/page to create requests.
+  - Admin panel resource/page to review/approve/reject with message.
+- Integrate with `DocumentType` and possibly `Certification` so a center can only issue certifications for allowed types.
+
+### 6. Extend admin “Create Certified Center” page with Country + allowed types
+
+On `http://127.0.0.1:8000/admin/certified-centers/create`:
+
+- Add **country** selection:
+  - Use the existing `Country` model (Spatie translatable).
+  - Add a `country_id` foreign key to `CertifiedCenter` if not existing.
+  - In Filament form:
+    - `Select::make('country_id')` with options from `Country` (`name` in the current locale).
+    - Use Arabic label, e.g. `label('الدولة')`.
+- Add multi‑select for “أنواع الدورات المسموح لهذا المركز بإصدارها”:
+  - Use `DocumentType` or the new `CourseType/CertificationType` you define.
+  - Multi‑select component that syncs to the pivot table linking `CertifiedCenter` to allowed types.
+  - Only active types should be selectable (if you have `is_active` or similar).
+- Make sure this ties into the later logic where certifications can only be issued for allowed types by that center.
+
+Deliver:
+
+- Migration to add `country_id` to `CertifiedCenter` if needed.
+- Updated `CertifiedCenterRelations` trait to define `country()` and `allowedTypes()`/`documentTypes()` relationship.
+- Updated Filament `CertifiedCenterResource::form()` schema with:
+  - Country select.
+  - Multi‑select for allowed types.
+  - Non‑editable but displayed `accreditation_number`.
+
+### 7. Trainer evaluation mechanism + public trainer search
+
+Requirements:
+
+> الية تقييم مدربين, نص ثابت, معلومات عامة عن المدرب,
+> بحث عن المدربين ضمن الموقع الاساسي.
+
+Trainer evaluation:
+
+- Implement a simple “آلية تقييم المدربين” (trainer evaluation mechanism):
+  - A static text (could be stored in config, database, or a settings table) that explains how trainers are evaluated.
+  - Display this text on:
+    - An admin or center Filament page, and
+    - Optionally a public page.
+- Trainer data:
+  - Use the existing `Trainer` model with fields such as `name`, `avatar`, `bio`, `email`, `phone`, `address` (array), `country_id`, `specializations` (array), `is_active`.
+  - Ensure `TrainerRelations` links to `Country` and possibly `CertifiedCenter` (if not present, add a relation such as `certified_center_id` or a pivot if trainers can work with multiple centers).
+
+Public trainer search:
+
+- On the **public site (outside Filament)**:
+  - Add routes like:
+    - `GET /trainers` – search page.
+    - `GET /trainers/{trainer}` – trainer detail.
+  - Search filters:
+    - Name,
+    - Country,
+    - Specialization,
+    - (Optionally) associated center.
+  - Only show `is_active` trainers.
+- Views:
+  - Blade templates under `resources/views/trainers/`.
+  - Use simple Bootstrap/Tailwind compatible markup.
+- Also add a public page or section where the static “آلية تقييم المدربين” text is displayed.
+
+Deliver:
+
+- Any missing relationships and migrations (e.g. linking trainers to centers).
+- Controller(s) for public trainer listing and detail, with search logic.
+- Blade views for search, listing, trainer details, and evaluation text section.
+- Optionally, Filament Resource for `Trainer` on:
+  - Admin panel – full CRUD.
+  - Center panel – limited view/edit of trainers associated with that center.
+
+***
+
+## Implementation guidelines
+
+- Use **Laravel 12** idioms (typed properties, modern syntax).
+- Use **Filament 4** APIs for Resources, Pages, Forms, Tables, Actions, Tabs, and Panel registration.[3][4][1]
+- Keep business rules in Services/Repositories where appropriate rather than controllers/resources.
+- Use Arabic labels in Filament where relevant, for example:
+  - `->label('رقم الاعتماد')`
+  - `->label('الدولة')`
+  - `->label('أنواع الدورات المسموح بها')`
+  - `->label('تعديلات قانونية')`
+  - `->label('آلية تقييم المدربين')`
+- Reuse existing traits (`*Relations`, `*Scopes`, `*Helpers`, `*Checkers`) and policies instead of adding duplicate logic.
+
+---
+
+### What to return
+
+Return:
+
+1. A short overview of the architecture changes (new models/tables, new relations, new resources/pages).
+2. Concrete code snippets for:
+   - All new migrations.
+   - Updated models and traits (especially relations and casts).
+   - Updated/added Filament Resources and Pages for:
+     - CertifiedCenter (auto accreditation, country, allowed types).
+     - Center accreditation requests with a “Create” action.
+     - Editable/EditRequest polymorphic resource.
+     - Legal amendments tab.
+     - Course/type request workflow.
+     - Trainer management.
+   - Public routes, controllers, and Blade views for trainer search and trainer evaluation text.
+3. Any necessary policy/authorization updates so centers see only their own data in `/center`.
+
+Make sure all code is internally consistent with the existing models and traits in this project.
+
+Here is a clean, structured prompt you can use (for yourself, another developer, or an AI coding assistant) to implement all these requirements in your Laravel 12 + Filament 4 project:
+
+***
+
+You are working on a Laravel 12 project called **“Board - Certification Board Management System”** using **Filament v4** for admin/center panels.
+
+### Tech context
+
+- Framework: Laravel 12.x
+- Admin panel: Filament v4 (`/admin`, guard: `web`, model: `App\Models\User`)
+- Center panel: Filament v4 (`/center`, guard: `certified_center`, model: `App\Models\CertifiedCenter`)
+- Default locale: Arabic (ar) with English (en)
+- Important routes:
+  - Admin certified centers create: `http://127.0.0.1:8000/admin/certified-centers/create`
+  - Center accreditation requests: `http://127.0.0.1:8000/center/accreditation-requests`
+  - Public home: `/`
+  - Public certification search: `/certifications/search`
+  - Public centers directory: `/centers/`
+
+Use clean, modular, production-grade Laravel + Filament 4 code (resources, pages, forms, actions, relations, policies, etc.), following best practices and Arabic/English support where relevant.
+
+---
+
+### Feature requirements
+
+#### 1. Automatic accreditation number (Admin – Certified Centers create)
+
+On the admin create page for certified centers:
+
+- URL: `http://127.0.0.1:8000/admin/certified-centers/create`
+- Field: **accreditation_number** must be **automatically generated**.
+- Behavior:
+  - Generated on creation (e.g., sequential, prefix/date-based, or UUID-like – propose a clean, human‑readable scheme).
+  - Must be unique.
+  - Field should **not** be manually editable by the admin (read-only or hidden + generated in model/service).
+- Implement generation logic in a dedicated service / model event / observer (not directly in the controller), in line with the existing Service–Repository pattern.
+
+Provide:
+- Migration changes (if needed).
+- Model changes.
+- Example Filament form definition for the field.
+- Generation strategy code.
+
+***
+
+#### 2. Add “Create” button in center dashboard (Center – Accreditation requests)
+
+On the **center panel** dashboard for accreditation requests:
+
+- URL: `http://127.0.0.1:8000/center/accreditation-requests`
+- We need a **“Create” accreditation request** button available for the logged-in `CertifiedCenter`.
+- Use Filament v4 patterns:
+  - Either a dedicated **resource page** (e.g. `CreateAccreditationRequest`) with a visible button.
+  - Or a **header action** / **page action** in the index/listing page.
+
+Requirements:
+- Only accessible to authenticated `certified_center` users.
+- Requests must be linked to the current center (`certified_center_id`).
+- Follow existing policies (no center can create a request for another center).
+
+Provide:
+- Filament Resource (if missing) or update to existing `AccreditationRequestResource`.
+- Code for the “Create” button/action and routing under `/center` panel.
+
+***
+
+#### 3. Polymorphic relation for editable records (only one pending/approved, etc.)
+
+We want a **polymorphic relation** to handle “editable” records with workflow states:
+
+- Use an `editables` (or similar) table with polymorphic columns:
+  - `editable_id`
+  - `editable_type`
+  - `status` (e.g. `pending`, `approved`, `rejected`)
+  - `changes` / `data` (JSON) if needed
+- Business rule:
+  - For a given base entity (e.g. CertifiedCenter, Trainer, Course, etc.), allow **only one `pending` record** at a time.
+  - Support transitions: `pending → approved` or `pending → rejected`.
+
+Requirements:
+- Implement Eloquent polymorphic relations.
+- Add validation logic (e.g., in form request / service / model rule) to prevent creating a new `pending` record if one exists.
+- Show in Filament:
+  - List of edit requests with status.
+  - Actions to approve/reject.
+- Use clean domain logic in Services/Repositories if that pattern is already present.
+
+Provide:
+- Migration for the polymorphic table.
+- Example relation in at least one model (e.g. `CertifiedCenter` and/or `Course`).
+- Example Filament resource/page to manage these editables from admin side.
+
+***
+
+#### 4. “Legal Amendments” tab (تعديلات قانونية)
+
+We need a **“تعديلات قانونية”** tab somewhere appropriate in the admin panel (you can suggest the best place, likely under centers or global settings), with:
+
+- Static legal text (Arabic) that admins can view (and optionally manage).
+- It can be:
+  - A Filament page with static content, or
+  - Managed via a simple model (e.g. `LegalAmendment`) with title/body; admins can CRUD them.
+
+Requirements:
+- Present this as a **separate Tab** in the relevant Filament resource/page (e.g., Certified Center show page or a Settings page).
+- Use proper Filament Tabs / Tabbed forms.
+
+Provide:
+- Model + migration (if dynamic).
+- Filament resource/page with Tabs including “تعديلات قانونية”.
+- Example of bilingual fields if needed (`title_ar`, `title_en`, etc.), but Arabic only is acceptable if simpler.
+
+***
+
+#### 5. Center-specific course types and requests
+
+For each institute/center:
+
+- “كل معهد اله نوع دوارات” – Each center has specific allowed course types.
+- We need:
+  1. A mechanism to define **allowed course types per center**.
+  2. A **request flow** for the center to add a new course type / certificate type.
+
+Details:
+
+- Create models like:
+  - `CourseType` or `CertificationType`.
+  - Pivot `certified_center_course_type` (or similar) to attach allowed types to centers.
+- In the center panel:
+  - Page/form: “طلب اضافة دورة” (Request to add course).
+  - Another case: “طلب اضافة نوع شهادة جديد” (Request to add new certificate type).
+- Workflow:
+  - Center submits request.
+  - Admin can either:
+    - Accept (and add the new type to the system + assign it to center).
+    - Reject, **with a rejection message**.
+- Requirements:
+  - Status field (pending / approved / rejected).
+  - Rejection reason text stored and shown to the center.
+  - Center can only issue certificates for allowed types.
+
+Provide:
+- Migrations and models for CourseType/CertificationType + pivot.
+- Model and Filament resources for the course/certificate type **requests**.
+- Center-panel forms/actions to create these requests.
+- Admin-panel forms/actions to approve/reject with a rejection message.
+
+---
+
+#### 6. Extend admin “Create Certified Center” page (state + allowed course types)
+
+On `http://127.0.0.1:8000/admin/certified-centers/create`:
+
+- Add a **Country/State selection** field:
+  - You can call it `country_id` or `state_id`, backed by a `countries`/`states` table.
+  - Provide a simple example migration/seed for countries.
+- Add multi-select for **“أنواع الدورات المسموح لهذا المركز بإصدارها”**:
+  - Use the `CourseType`/`CertificationType` model from the previous step.
+  - Allow selecting multiple types.
+  - Store them in a pivot table between `CertifiedCenter` and `CourseType/CertificationType`.
+
+Provide:
+- Updated Filament form for `CertifiedCenterResource` (create/edit).
+- Related pivot/migration if not already covered.
+- Example of how these are later enforced when issuing certifications.
+
+***
+
+#### 7. Trainer evaluation mechanism (static text + trainer info) + public trainer search
+
+We need a basic **trainer evaluation mechanism** and **public trainer search**.
+
+Trainer evaluation:
+
+- “الية تقييم مدربين, نص ثابت, معلومات عامة عن المدرب”
+- Create:
+  - A way to display a fixed text (“آلية تقييم المدربين”) – can be:
+    - Hardcoded in a Filament page, or
+    - Stored in a `settings`/`trainer_evaluation_policies` table.
+  - A `Trainer` model (if not already existing) with general information:
+    - Name, contact, specialization, etc.
+- Allow admins (and optionally centers) to manage trainers in Filament.
+
+Public trainer search:
+
+- In the **public site (non-admin)**:
+  - Add a route & controller to search for trainers.
+  - Basic search by name, specialty, or center.
+  - Simple Blade view with results.
+- Ensure proper separation:
+  - Public controllers/views under `/` (not Filament).
+  - Respect any privacy constraints you deem standard.
+
+Provide:
+- Trainer model + migration (if not already defined).
+- Filament resource for Trainer (admin panel; optionally center panel with restrictions).
+- Public routes, controllers, and Blade views for trainer search.
+- Page or partial for displaying the static trainer evaluation mechanism text.
+
+---
+
+### What to deliver
+
+Respond with:
+
+1. Clear explanation of the architecture changes (which models, migrations, relations, resources, pages).
+2. Concrete code snippets for:
+   - Migrations.
+   - Eloquent models & relationships (including the polymorphic relation).
+   - Filament v4 resources/pages/forms/actions for:
+     - CertifiedCenter create/edit (accreditation number, country, course types).
+     - Center accreditation requests + “Create” button.
+     - Course/Certificate type requests with approve/reject + message.
+     - Legal Amendments tab.
+     - Trainer management.
+   - Public routes/controllers/views for trainer search.
+3. Any policy / authorization snippets needed (e.g. to restrict centers to their own data).
+4. Notes on where to register panel resources (admin vs center).
+
+Use modern Laravel 12 and Filament v4 syntax and features. Keep the code idiomatic and production-ready, with brief Arabic labels where relevant on Filament forms (e.g., `label('رقم الاعتماد')`, `label('أنواع الدورات المسموح بها')`, etc.).
+
+***
+
+Would you like a shorter, more compact version of this prompt (for use directly in an AI code assistant), or do you prefer this detailed version?
+
+check the existing md files:
+
+# Board - Certification Board Management System
+
+A comprehensive web application built with Laravel 12 and Filament v4 for managing certification boards, accredited training centers, certifications, trainers, and trainees. The system facilitates the accreditation process, certification issuance, and provides public-facing interfaces for certification verification.
+
+## 🚀 Quick Start
+
+### Technology Stack
+- **Framework:** Laravel 12.x
+- **Admin Panel:** Filament v4.0
+- **PHP:** 8.2+
+- **Database:** MySQL
+- **Default Locale:** Arabic (ar) with English (en) support
+
+### Access Points
+
+#### Admin Panel
+- **URL:** `http://localhost/admin`
+- **Guard:** `web` (default Laravel authentication)
+- **Model:** `App\Models\User`
+- **Access:** Full system administration
+
+#### Center Panel
+- **URL:** `http://localhost/center`
+- **Guard:** `certified_center` (custom authentication)
+- **Model:** `App\Models\CertifiedCenter`
+- **Access:** Limited to own center resources
+
+#### Public Routes
+- **Homepage:** `http://localhost/`
+- **Certification Search:** `http://localhost/certifications/search`
+- **Centers Directory:** `http://localhost/centers/`
+
+## 👥 Active Users
+
+### Admin User
+- **Email:** `admin@test.com`
+- **Password:** `12345678`
+- **Type:** Admin
+- **Panel:** `/admin`
+
+### Certified Center User
+- **Email:** `center.one@gmail.com`
+- **Password:** `12345678`
+- **Name:** center one
+- **Panel:** `/center`
+
+## 📋 Core Features
+
+- **Certification Management:** Create, edit, import/export certifications with serial number tracking
+- **Center Management:** Manage accredited training centers with accreditation periods
+- **Accreditation Workflow:** Request/review process with status tracking
+- **Trainer & Trainee Management:** Comprehensive profiles and relationships
+- **Bilingual Support:** Full Arabic/English interface with language switching
+- **Excel Import/Export:** Bulk operations for certifications
+- **Public Verification:** Search and verify certifications by serial number
+
+## 🏗️ Architecture
+
+### Dual-Panel System
+The application uses Filament v4 with two separate authentication panels:
+- **Admin Panel** (`/admin`) - Full system access
+- **Center Panel** (`/center`) - Center-specific access with policy-based restrictions
+
+### Service-Repository Pattern
+- **Services:** Business logic layer (`app/Services/`)
+- **Repositories:** Data access layer (`app/Repositories/`)
+- **Policies:** Authorization layer (`app/Policies/`)
+
+## 🔧 Configuration
+
+Key configuration files:
+- `config/panels.php` - Filament panel settings
+- `config/auth.php` - Authentication guards (web, certified_center)
+- `config/app.php` - Application settings
+- `.env` - Environment variables
+
+## 📝 Development
+
+### Common Commands
+
+```bash
+# Check users
+php artisan tinker
+> \App\Models\User::all(['email', 'name'])
+
+# Reset password
+> $user = \App\Models\User::where('email', 'admin@test.com')->first();
+> $user->password = \Illuminate\Support\Facades\Hash::make('new_password');
+> $user->save();
+
+# Run migrations
+php artisan migrate
+
+# Clear cache
+php artisan config:clear
+php artisan cache:clear
+```
+
+## 📚 Documentation
+
+For detailed project documentation, see `docs/PROJECT_OVERVIEW.md`
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+and the
+
+Project> php -v;composer --version;php artisan --version;php artisan about
+>>
+PHP 8.4.12 (cli) (built: Aug 26 2025 18:04:08) (ZTS Visual C++ 2022 x64)
+Copyright (c) The PHP Group
+Zend Engine v4.4.12, Copyright (c) Zend Technologies
+Composer version 2.8.12 2025-09-19 13:41:59
+PHP version 8.4.12 (C:\laragon\bin\php\php-8.4.12-Win32-vs17-x64\php.exe)
+Run the "diagnose" command to get more detailed diagnostics output.
+Laravel Framework 12.28.1
+
+  Environment ....................................................................................
+  Application Name ......................................................................... Board
+  Laravel Version ........................................................................ 12.28.1
+  PHP Version ............................................................................. 8.4.12
+  Composer Version ........................................................................ 2.8.12
+  Environment .............................................................................. local
+  Debug Mode ............................................................................. ENABLED
+  URL .................................................................................. localhost
+  Maintenance Mode ........................................................................... OFF
+  Timezone ................................................................................... UTC
+  Locale ...................................................................................... ar
+
+  Cache ..........................................................................................
+  Config .............................................................................. NOT CACHED
+  Events .............................................................................. NOT CACHED
+  Routes .............................................................................. NOT CACHED
+  Views ................................................................................... CACHED
+
+  Drivers ........................................................................................
+  Broadcasting ............................................................................... log
+  Cache ................................................................................. database
+  Database ................................................................................. mysql
+  Logs ..................................................................................... daily
+  Mail ....................................................................................... log
+  Queue ................................................................................. database
+  Session ............................................................................... database
+
+  Storage ........................................................................................
+  public\storage ........................................................ NOT LINKED
+
+  Filament .......................................................................................
+  Blade Icons ......................................................................... NOT CACHED
+  Packages . filament, forms, notifications, support, tables, actions, infolists, schemas, widgets
+  Panel Components .................................................................... NOT CACHED
+  Version ................................................................................. v4.0.8
+  Views ............................................................................ NOT PUBLISHED
+
+  Livewire .......................................................................................
+  Livewire ................................................................................ v3.6.4
+
+Project>
+
+# Certification Board Management System - Project Overview
+
+## 📋 Project Summary
+
+**Project Name:** Board (Certification Board Management System)
+**Purpose:** A comprehensive web application for managing certification boards, accredited training centers, certifications, trainers, and trainees. The system facilitates the accreditation process, certification issuance, and provides public-facing interfaces for certification verification.
+
+**Domain/Work Area:** Education & Training Certification Management
+**Primary Language:** Arabic (ar) with English (en) support
+**Default Locale:** Arabic (`APP_LOCALE=ar`)
+
+---
+
+## 🏗️ Architecture Overview
+
+### Technology Stack
+
+- **Framework:** Laravel 12.x
+- **Admin Panel:** Filament v4.0
+- **PHP Version:** ^8.2
+- **Database:** MySQL
+- **Translation:** Spatie Laravel Translatable (^6.11)
+- **Excel Import/Export:** Maatwebsite Excel (^3.1)
+
+### System Architecture
+
+#### Dual-Panel System
+
+The application uses **Filament v4** with two separate authentication panels:
+
+1. **Admin Panel** (`/admin`)
+   - Path: `/admin`
+   - Color Theme: Amber
+   - Guard: `web` (default)
+   - Users: `App\Models\User` with `type = 'admin'`
+   - Full system access and management
+
+2. **Center Panel** (`/center`)
+   - Path: `/center`
+   - Color Theme: Blue
+   - Guard: `certified_center`
+   - Users: `App\Models\CertifiedCenter`
+   - Limited access to own resources only
+
+#### Service Layer Pattern
+
+The application follows a **Service-Repository pattern**:
+
+- **Services:** Business logic layer (`app/Services/`)
+  - `AccreditationRequestService`
+  - `ApplicationSettingService`
+  - `CertificationService`
+  - `CertifiedCenterService`
+  - `MembershipService`
+  - `StaticPageService`
+  - `StatsService` / `CenterStatsService`
+  - `TrainerService`
+  - `UserService`
+
+- **Repositories:** Data access layer (`app/Repositories/`)
+  - One repository per domain model
+  - Handles database queries and data manipulation
+
+- **Policies:** Authorization layer (`app/Policies/`)
+  - Role-based access control
+  - Center users can only access their own resources
+
+#### Model Organization
+
+Models are organized with **Traits** for separation of concerns:
+
+- **Relations:** `*Relations.php` - Eloquent relationships
+- **Scopes:** `*Scopes.php` - Query scopes
+- **Helpers:** `*Helpers.php` - Helper methods
+- **Checkers:** `*Checkers.php` - Status/condition checks
+- **Actions:** `*Actions.php` - Business actions
+
+---
+
+## ✨ Core Features
+
+### 1. Certification Management
+
+**Purpose:** Manage all certifications issued by accredited centers
+
+**Key Features:**
+- Create, edit, view, and delete certifications
+- Excel import functionality (`CertificationsImport`)
+- Excel export functionality (`CertificationsExport`)
+- Search by serial number (`accredited_serial_number`)
+- Document type management (database-driven, not enum)
+- Denormalized fields for performance (`trainee_name`, `trainer_name`, `nationality`)
+- Paper document tracking (`paper_received`)
+- Accreditation date tracking
+- Notes and additional information
+
+**Fields:**
+- `certified_center_id` - Foreign key to certified center
+- `certificate_type` - Enum: `basic` or `accreditation`
+- `trainee_id` - Foreign key to trainee (nullable)
+- `trainee_name` - Denormalized name
+- `trainer_id` - Foreign key to trainer
+- `trainer_name` - Denormalized name
+- `document_type_id` - Foreign key to document_types table
+- `accredited_serial_number` - Unique serial number
+- `document_code` - Document code
+- `accreditation_number` - Auto-generated or manual
+- `accreditation_date` - Date of accreditation
+- `country_id` - Foreign key to countries
+- `nationality` - Denormalized nationality
+- `paper_received` - Boolean flag
+- `notes` - Additional notes
+
+**Access:**
+- **Admin:** Full CRUD access to all certifications
+- **Center:** Can create and manage only their own certifications
+- **Public:** Search and view certifications by serial number
+
+### 2. Certified Center Management
+
+**Purpose:** Manage accredited training centers
+
+**Key Features:**
+- Center registration and authentication
+- Accreditation period management (start/end dates)
+- Status management (active, inactive, pending, suspended)
+- Center profile management
+- Manager information
+- Contact details (email, phone, address)
+
+**Fields:**
+- `name` - Center name
+- `email` - Login email
+- `password` - Hashed password
+- `address` - Physical address
+- `phone` - Contact phone
+- `manager_name` - Manager's name
+- `accreditation_period_start` - Accreditation start date
+- `accreditation_period_end` - Accreditation end date
+- `accreditation_number` - Accreditation number
+- `status` - Enum: `active`, `inactive`, `pending`, `suspended`
+- `is_active` - Boolean active flag
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Center:** Can view and edit own profile
+- **Public:** View list of centers and center details
+
+### 3. Accreditation Request Workflow
+
+**Purpose:** Manage accreditation renewal/extension requests from centers
+
+**Key Features:**
+- Centers can submit accreditation requests
+- Admin can approve/reject requests
+- Request status tracking (pending, approved, rejected, under_review)
+- Request notes and admin review notes
+- Date range requests (start/end dates)
+- Automatic notifications on status change
+
+**Workflow:**
+1. Center submits request with desired dates
+2. Request status: `pending`
+3. Admin reviews and can set to `under_review`
+4. Admin approves (`approved`) or rejects (`rejected`)
+5. Center receives notification
+
+**Fields:**
+- `certified_center_id` - Foreign key to center
+- `requested_start_date` - Requested start date
+- `requested_end_date` - Requested end date
+- `request_notes` - Notes from center
+- `status` - Enum: `pending`, `approved`, `rejected`, `under_review`
+- `admin_notes` - Admin review notes
+- `reviewed_by` - Admin user ID who reviewed
+- `reviewed_at` - Review timestamp
+
+**Access:**
+- **Admin:** Full access, can approve/reject
+- **Center:** Can create and view own requests
+- **Public:** Not accessible
+
+### 4. Trainer Management
+
+**Purpose:** Manage trainers who conduct training programs
+
+**Key Features:**
+- Trainer profile management
+- Contact information
+- Specialization tracking
+- Relationship with certifications
+- Country/nationality tracking
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Center:** View only (for reference when creating certifications)
+- **Public:** Not accessible
+
+### 5. Trainee Management
+
+**Purpose:** Manage trainees who receive certifications
+
+**Key Features:**
+- Extended profile with:
+  - Basic info (name, email, phone)
+  - Personal details (date of birth, gender, nationality)
+  - Professional info (occupation, organization)
+  - Contact details (address)
+  - Emergency contact information
+  - Medical information
+  - Notes
+- Relationship with certifications
+- Country tracking
+
+**Fields:**
+- `name` - Trainee name
+- `email` - Email (unique, nullable)
+- `phone` - Phone number
+- `country_id` - Foreign key to countries
+- `date_of_birth` - Date of birth
+- `nationality` - Nationality string
+- `gender` - Enum: `male`, `female`, `other`
+- `occupation` - Occupation
+- `organization` - Organization name
+- `address` - Address text
+- `emergency_contact_name` - Emergency contact
+- `emergency_contact_phone` - Emergency phone
+- `medical_info` - Medical information
+- `notes` - Additional notes
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Center:** View only (for reference when creating certifications)
+- **Public:** Not accessible
+
+### 6. Document Type Management
+
+**Purpose:** Manage types of documents/certificates
+
+**Key Features:**
+- Database-driven (not enum-based)
+- Translatable names (Arabic/English)
+- Key-based identification
+- Used in certifications
+
+**Fields:**
+- `key` - Unique key identifier
+- `name` - Translatable name (JSON: `{en: "...", ar: "..."}`)
+- `description` - Optional description
+- `is_active` - Active flag
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Center:** View only (for reference)
+- **Public:** Not accessible
+
+### 7. Country/Nationality Management
+
+**Purpose:** Manage countries and nationalities with bilingual support
+
+**Key Features:**
+- Translatable country names (Arabic/English)
+- Translatable nationality names
+- Country codes (ISO codes)
+- Active/inactive status
+- Used in certifications, trainers, and trainees
+
+**Fields:**
+- `name` - Translatable country name (JSON: `{en: "...", ar: "..."}`)
+- `code` - Country code (e.g., "LBY")
+- `code_2` - Two-letter code (e.g., "LY")
+- `nationality` - Translatable nationality (JSON: `{en: "...", ar: "..."}`)
+- `is_active` - Active flag
+
+**Translation Status:**
+- ✅ JSON columns implemented
+- ✅ Spatie Translatable trait configured
+- ⚠️ Initial data: Both `en` and `ar` have same value (placeholder)
+- 📝 **Action Required:** Admins need to manually update Arabic translations via Filament GUI
+
+**Access:**
+- **Admin:** Full CRUD access, can edit translations
+- **Center:** View only
+- **Public:** Not accessible
+
+### 8. Static Pages Management
+
+**Purpose:** Manage public-facing static content pages
+
+**Key Features:**
+- Slug-based routing
+- Translatable content
+- SEO-friendly URLs
+- Public access via `/pages/{slug}`
+
+**Fields:**
+- `slug` - URL-friendly identifier
+- `title` - Translatable title
+- `content` - Translatable content (HTML)
+- `meta_description` - SEO meta description
+- `is_published` - Publication status
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Public:** View published pages only
+
+### 9. Application Settings
+
+**Purpose:** Manage system-wide configuration
+
+**Key Features:**
+- Key-value storage
+- Type-based settings (text, email, phone, url, number, boolean)
+- Site configuration (name, email, phone)
+- Social media links
+- Upload size limits
+- Maintenance mode
+
+**Default Settings:**
+- `site_name` - Site name
+- `site_email` - Contact email
+- `site_phone` - Contact phone
+- `facebook_url` - Facebook link
+- `twitter_url` - Twitter link
+- `linkedin_url` - LinkedIn link
+- `max_upload_size` - Max file upload size (MB)
+- `maintenance_mode` - Maintenance mode flag
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Public:** Not accessible (used in application logic)
+
+### 10. Membership Management
+
+**Purpose:** Manage memberships (if applicable)
+
+**Key Features:**
+- Membership tracking
+- Relationship with centers or users
+
+**Access:**
+- **Admin:** Full CRUD access
+- **Center/Public:** Not accessible
+
+### 11. Excel Import/Export
+
+**Purpose:** Bulk import and export of certifications
+
+**Key Features:**
+- Excel file import with Arabic header support
+- Automatic data normalization
+- Duplicate detection
+- Error handling and reporting
+- Import statistics
+- Export functionality for data backup
+
+**Import Process:**
+1. Admin navigates to Certifications → Import
+2. Uploads Excel file with certification data
+3. System validates and normalizes data
+4. Creates DocumentType records if missing
+5. Links to existing Trainers, Trainees, Countries
+6. Generates import report
+
+**Access:**
+- **Admin:** Full access to import/export
+- **Center:** Not accessible
+
+### 12. Bilingual Support (Arabic/English)
+
+**Purpose:** Full bilingual interface and content
+
+**Key Features:**
+- **Interface Translations:**
+  - All Filament resources use `__('app.key')` pattern
+  - Translation files: `lang/en/app.php` and `lang/ar/app.php`
+  - Navigation labels, form labels, table headers all translated
+  - Language switcher in user menu
+
+- **Content Translations:**
+  - Countries: Names and nationalities (Spatie Translatable)
+  - Document Types: Names (Spatie Translatable)
+  - Static Pages: Titles and content (Spatie Translatable)
+
+- **Locale Configuration:**
+  - Default: Arabic (`APP_LOCALE=ar`)
+  - Fallback: Arabic (`APP_FALLBACK_LOCALE=ar`)
+  - Faker: English (`APP_FAKER_LOCALE=en_US`)
+
+**Translation Status:**
+- ✅ All Filament resources translated
+- ✅ All form labels translated
+- ✅ All table headers translated
+- ✅ Country model configured for translations
+- ✅ DocumentType model configured for translations
+- ⚠️ Country Arabic translations need manual update (currently placeholders)
+
+---
+
+## 👥 User Roles & Access
+
+### Admin Users
+
+**Model:** `App\Models\User`
+**Type:** `UserType::Admin` (enum value: `'admin'`)
+**Authentication:** Standard Laravel authentication via `web` guard
+**Panel:** `/admin`
+
+**Capabilities:**
+- ✅ Full CRUD access to all resources
+- ✅ Manage certified centers
+- ✅ Approve/reject accreditation requests
+- ✅ Import/export certifications
+- ✅ Manage system settings
+- ✅ Manage static pages
+- ✅ View all statistics and reports
+- ✅ Manage users (admin accounts)
+
+**Default Admin Account:**
+- Email: `admin@test.com`
+- Password: (reset via Tinker if forgotten)
+
+### Certified Center Users
+
+**Model:** `App\Models\CertifiedCenter`
+**Authentication:** Custom guard `certified_center`
+**Panel:** `/center`
+
+**Capabilities:**
+- ✅ View and edit own center profile
+- ✅ Create and manage own certifications
+- ✅ Create and view own accreditation requests
+- ✅ View own statistics and reports
+- ❌ Cannot access other centers' data
+- ❌ Cannot manage system settings
+- ❌ Cannot import/export
+
+**Access Control:**
+- Policies enforce center isolation
+- Centers can only see/modify resources where `certified_center_id` matches their ID
+- Automatic filtering in queries
+
+### Public Web Interface
+
+**Access:** No authentication required
+**Routes:** Defined in `routes/web.php`
+
+**Available Endpoints:**
+- `/` - Homepage (welcome page)
+- `/pages/{slug}` - Static pages (e.g., `/pages/about`)
+- `/certifications/search` - Certification search page
+- `/certifications/{serial}` - View certification by serial number
+- `/centers/` - List all certified centers
+- `/centers/{id}` - View center details
+
+**Features:**
+- Read-only access
+- Certification verification by serial number
+- Center directory
+- Static content pages
+
+---
+
+## 🗄️ Database Schema
+
+### Core Tables
+
+#### `users`
+- Admin users table
+- Fields: `id`, `name`, `email`, `password`, `type` (enum: admin/client), `email_verified_at`, `remember_token`, `created_at`, `updated_at`
+
+#### `certified_centers`
+- Accredited training centers
+- Fields: `id`, `name`, `email`, `password`, `address`, `phone`, `manager_name`, `accreditation_period_start`, `accreditation_period_end`, `accreditation_number`, `status` (enum), `is_active`, `email_verified_at`, `remember_token`, `created_at`, `updated_at`
+
+#### `certifications`
+- Issued certifications
+- Fields: `id`, `certified_center_id`, `certificate_type` (enum), `trainee_id`, `trainee_name` (denormalized), `trainer_id`, `trainer_name` (denormalized), `document_type_id`, `accredited_serial_number` (unique), `document_code`, `accreditation_number`, `accreditation_date`, `country_id`, `nationality` (denormalized), `paper_received` (boolean), `notes`, `created_at`, `updated_at`
+
+#### `accreditation_requests`
+- Accreditation renewal requests
+- Fields: `id`, `certified_center_id`, `requested_start_date`, `requested_end_date`, `request_notes`, `status` (enum), `admin_notes`, `reviewed_by`, `reviewed_at`, `created_at`, `updated_at`
+
+#### `trainers`
+- Trainer profiles
+- Fields: `id`, `name`, `email`, `phone`, `specialization`, `country_id`, `nationality`, `is_active`, `created_at`, `updated_at`
+
+#### `trainees`
+- Trainee profiles (extended)
+- Fields: `id`, `name`, `email` (unique, nullable), `phone`, `country_id`, `date_of_birth`, `nationality`, `gender` (enum), `occupation`, `organization`, `address`, `emergency_contact_name`, `emergency_contact_phone`, `medical_info`, `notes`, `created_at`, `updated_at`
+
+#### `countries`
+- Countries with translations
+- Fields: `id`, `name` (JSON: `{en: "...", ar: "..."}`), `code`, `code_2`, `nationality` (JSON: `{en: "...", ar: "..."}`), `is_active`, `created_at`, `updated_at`
+
+#### `document_types`
+- Document type definitions
+- Fields: `id`, `key` (unique), `name` (JSON: `{en: "...", ar: "..."}`), `description`, `is_active`, `created_at`, `updated_at`
+
+#### `static_pages`
+- Public static content
+- Fields: `id`, `slug` (unique), `title` (JSON), `content` (JSON), `meta_description`, `is_published`, `created_at`, `updated_at`
+
+#### `application_settings`
+- System configuration
+- Fields: `id`, `key` (unique), `value`, `type` (enum: text/email/phone/url/number/boolean), `created_at`, `updated_at`
+
+#### `memberships`
+- Membership records
+- Fields: `id`, `...`, `created_at`, `updated_at`
+
+### Key Relationships
+
+- `Certification` belongs to `CertifiedCenter`
+- `Certification` belongs to `Trainee` (nullable)
+- `Certification` belongs to `Trainer`
+- `Certification` belongs to `Country`
+- `Certification` belongs to `DocumentType`
+- `AccreditationRequest` belongs to `CertifiedCenter`
+- `Trainee` belongs to `Country`
+- `Trainer` belongs to `Country`
+
+### Recent Migrations
+
+1. **`2025_10_19_140743_add_extended_fields_to_trainees_table.php`**
+   - Added extended fields to trainees (email, phone, country_id, date_of_birth, gender, etc.)
+   - All fields nullable to preserve existing data
+
+2. **`2025_10_19_144818_restore_countries_original_data.php`**
+   - Cleanup migration to restore country data from multi-encoded JSON
+
+3. **`2025_10_19_144925_convert_countries_to_json_with_same_values.php`**
+   - Converted `name` and `nationality` columns from varchar to JSON
+   - Populated with same value for both `en` and `ar` (placeholders)
+   - Dropped unique constraint on `name` (JSON columns can't have unique indexes in MySQL)
+
+---
+
+## ✅ Current Implementation Status
+
+### Completed Features
+
+#### Core Functionality
+- ✅ Dual-panel authentication (Admin + Center)
+- ✅ Full CRUD operations for all resources
+- ✅ Role-based access control (Policies)
+- ✅ Service-Repository pattern implementation
+- ✅ Excel import/export functionality
+- ✅ Statistics and dashboard widgets
+- ✅ Accreditation request workflow
+- ✅ Public web interface routes
+
+#### Recent Updates (October 2025)
+
+1. **DocumentType Enum Removal**
+   - ✅ Removed all references to non-existent `App\Enums\DocumentType`
+   - ✅ Updated all forms to use `documentType` relationship
+   - ✅ Updated tables to display `documentType.name`
+   - ✅ Updated imports to create/link DocumentType records
+   - ✅ Updated repositories and scopes
+
+2. **Certification Model Enhancement**
+   - ✅ Added denormalized fields: `trainee_name`, `trainer_name`, `nationality`
+   - ✅ Fields work alongside foreign keys for performance
+
+3. **Trainee Table Extension**
+   - ✅ Created migration to add extended fields
+   - ✅ All fields nullable to preserve data
+   - ✅ Added foreign key to countries table
+
+4. **Translation Support**
+   - ✅ Added `getNavigationLabel()`, `getModelLabel()`, `getPluralModelLabel()` to all resources
+   - ✅ Replaced hardcoded labels with `__('app.key')` in forms
+   - ✅ Replaced hardcoded labels with `__('app.key')` in tables
+   - ✅ Added missing translation keys to `lang/en/app.php` and `lang/ar/app.php`
+
+5. **Country Translations**
+   - ✅ Added Spatie Translatable trait to Country model
+   - ✅ Converted `name` and `nationality` columns to JSON
+   - ✅ Initial data populated with placeholders (same value for en/ar)
+   - ⚠️ **Action Required:** Admins need to manually update Arabic translations
+
+6. **Web Routes**
+   - ✅ Added public routes for static pages
+   - ✅ Added public routes for certification search/view
+   - ✅ Added public routes for center listing/view
+
+7. **Center Panel Permissions**
+   - ✅ Verified policies restrict centers to own resources
+   - ✅ Centers can create and manage own certifications
+   - ✅ Centers can create and manage own accreditation requests
+
+### Translation Status
+
+- ✅ **Interface:** Fully translated (Arabic/English)
+- ✅ **Forms:** All labels use translation keys
+- ✅ **Tables:** All headers use translation keys
+- ✅ **Navigation:** All menu items translated
+- ✅ **Models:** Country and DocumentType configured for translations
+- ⚠️ **Content:** Country Arabic translations need manual update (currently placeholders)
+
+---
+
+## 📝 To-Do List
+
+### High Priority
+
+1. **Country Arabic Translations**
+   - [ ] Update Arabic translations for all countries via Filament GUI
+   - [ ] Verify translations display correctly in both languages
+   - [ ] Test search/filter with Arabic country names
+
+2. **Public Web Interface**
+   - [ ] Create Blade templates for public pages
+   - [ ] Implement certification search functionality
+   - [ ] Implement certification verification page
+   - [ ] Implement center listing and detail pages
+   - [ ] Implement static page rendering
+   - [ ] Add theme integration (as mentioned by user)
+
+3. **Testing**
+   - [ ] Write unit tests for services
+   - [ ] Write feature tests for policies
+   - [ ] Write tests for import/export functionality
+   - [ ] Test bilingual interface switching
+   - [ ] Test center isolation (security)
+
+### Medium Priority
+
+4. **Documentation**
+   - [x] Create project overview documentation (this file)
+   - [ ] Create API documentation (if needed)
+   - [ ] Create user guides for Admin and Center panels
+   - [ ] Document import/export format
+
+5. **Enhancements**
+   - [ ] Add email notifications for accreditation status changes
+   - [ ] Add PDF export for certifications
+   - [ ] Add advanced search/filtering
+   - [ ] Add bulk operations
+   - [ ] Add audit logging
+   - [ ] Add data export scheduling
+
+6. **Performance**
+   - [ ] Optimize database queries (N+1 issues)
+   - [ ] Add caching for frequently accessed data
+   - [ ] Optimize Excel import for large files
+   - [ ] Add pagination optimization
+
+### Low Priority / Future Enhancements
+
+7. **Features**
+   - [ ] Add trainer certification tracking
+   - [ ] Add trainee certification history
+   - [ ] Add certification expiration tracking
+   - [ ] Add renewal reminders
+   - [ ] Add multi-level user roles
+   - [ ] Add file uploads for certifications
+   - [ ] Add QR code generation for certifications
+   - [ ] Add API endpoints (if needed)
+   - [ ] Add mobile app support
+
+8. **UI/UX**
+   - [ ] Improve dashboard widgets
+   - [ ] Add more chart types
+   - [ ] Add dark mode support
+   - [ ] Improve responsive design
+   - [ ] Add keyboard shortcuts
+
+---
+
+## 🔧 Technical Details
+
+### Dependencies
+
+**Core:**
+- `laravel/framework`: ^12.0
+- `filament/filament`: ^4.0
+- `spatie/laravel-translatable`: ^6.11
+- `maatwebsite/excel`: ^3.1
+
+**Development:**
+- `laravel/pint`: ^1.24 (code formatting)
+- `laravel/pail`: ^1.2.2 (log viewer)
+- `phpunit/phpunit`: ^11.5.3 (testing)
+
+### Configuration Files
+
+**Key Config Files:**
+- `config/panels.php` - Filament panel configuration
+- `config/app.php` - Application configuration
+- `config/auth.php` - Authentication guards
+- `config/translatable.php` - Spatie Translatable config
+
+**Panel Configuration:**
+```php
+'admin' => [
+    'id' => 'admin',
+    'path' => '/admin',
+    'color' => 'amber',
+],
+'center' => [
+    'id' => 'center',
+    'path' => '/center',
+    'color' => 'blue',
+    'guard' => 'certified_center',
+],
+```
+
+### Routes
+
+**Admin Panel:** Auto-discovered by Filament
+**Center Panel:** Auto-discovered by Filament
+**Public Web:** Defined in `routes/web.php`
+
+**Public Routes:**
+- `GET /` - Homepage
+- `GET /pages/{slug}` - Static pages
+- `GET /certifications/search` - Certification search
+- `GET /certifications/{serial}` - View certification
+- `GET /centers/` - List centers
+- `GET /centers/{id}` - View center
+
+### Policies
+
+All resources have corresponding policies:
+
+- `CertificationPolicy` - Restricts centers to own certifications
+- `AccreditationRequestPolicy` - Restricts centers to own requests
+- `CertifiedCenterPolicy` - Center profile access
+- `CountryPolicy` - Country management
+- `DocumentTypePolicy` - Document type management
+- `TraineePolicy` - Trainee management
+- `TrainerPolicy` - Trainer management
+- `UserPolicy` - User management
+
+### Observers
+
+- `CertifiedCenterObserver` - Handles center events
+- `AccreditationRequestObserver` - Handles request events
+
+### Enums
+
+- `UserType`: `admin`, `client`
+- `CenterStatus`: `active`, `inactive`, `pending`, `suspended`
+- `AccreditationStatus`: `pending`, `approved`, `rejected`, `under_review`
+- `CertificateType`: `basic`, `accreditation`
+- `PanelId`: `admin`, `center`
+
+---
+
+## 🚀 Development Setup
+
+### Environment Requirements
+
+- **PHP:** ^8.2
+- **MySQL:** 5.7+ (or MariaDB equivalent)
+- **Composer:** Latest
+- **Node.js:** Latest LTS (for frontend assets)
+
+### Database Setup
+
+1. **Create Database:**
+   ```sql
+   CREATE DATABASE board_app_db;
+   ```
+
+2. **Configure `.env`:**
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=board_app_db
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+3. **Run Migrations:**
+   ```bash
+   php artisan migrate
+   ```
+
+4. **Seed Database (Optional):**
+   ```bash
+   php artisan db:seed
+   ```
+
+### Key URLs
+
+**Admin Panel:**
+- Login: `http://localhost/admin/login`
+- Dashboard: `http://localhost/admin`
+
+**Center Panel:**
+- Login: `http://localhost/center/login`
+- Dashboard: `http://localhost/center`
+
+**Public Web:**
+- Homepage: `http://localhost/`
+- Static Pages: `http://localhost/pages/{slug}`
+- Certification Search: `http://localhost/certifications/search`
+- Certification View: `http://localhost/certifications/{serial}`
+- Centers List: `http://localhost/centers/`
+- Center View: `http://localhost/centers/{id}`
+
+### Default Admin Account
+
+**Email:** `admin@test.com`
+**Password:** (Reset via Tinker if forgotten)
+
+**Reset Password:**
+```bash
+php artisan tinker
+```
+```php
+$user = App\Models\User::find(1);
+$user->password = bcrypt('newpassword123');
+$user->save();
+```
+
+### Development Commands
+
+**Start Development Server:**
+```bash
+php artisan serve
+```
+
+**Run All Services (Dev Mode):**
+```bash
+composer dev
+```
+This runs:
+- PHP development server
+- Queue worker
+- Log viewer (Pail)
+- Vite dev server
+
+**Code Formatting:**
+```bash
+./vendor/bin/pint
+```
+
+**Run Tests:**
+```bash
+php artisan test
+```
+
+**Clear Caches:**
+```bash
+php artisan optimize:clear
+```
+
+---
+
+## 📊 Statistics & Widgets
+
+### Admin Dashboard Widgets
+
+1. **StatsOverview**
+   - Total Centers
+   - Active Centers
+   - Total Certifications
+   - Pending Accreditation Requests
+   - Admin Users Count
+   - Certifications This Month
+
+2. **AccreditationChart**
+   - Chart showing accreditation requests over time
+   - Status breakdown
+
+3. **CertificationChart**
+   - Chart showing certifications over time
+
+### Center Dashboard Widgets
+
+1. **CenterStatsOverview**
+   - Total Certifications (own center)
+   - This Month Certifications
+   - Pending Requests
+   - Accreditation Status
+
+2. **MonthlyCertificationsChart**
+   - Monthly certification trends for the center
+
+---
+
+## 🔐 Security Considerations
+
+### Authentication
+
+- **Admin:** Standard Laravel authentication
+- **Center:** Custom guard `certified_center`
+- **Password Hashing:** Bcrypt (12 rounds)
+
+### Authorization
+
+- **Policies:** Enforce role-based access
+- **Center Isolation:** Automatic filtering by `certified_center_id`
+- **Resource Scoping:** Centers can only access own resources
+
+### Data Protection
+
+- **CSRF Protection:** Enabled on all forms
+- **Password Hashing:** Automatic via Laravel
+- **SQL Injection:** Protected by Eloquent ORM
+- **XSS Protection:** Blade templating escapes output
+
+---
+
+## 📚 Additional Resources
+
+### File Structure
+
+```
+app/
+├── Enums/              # Application enums
+├── Events/             # Domain events
+├── Exports/            # Excel export classes
+├── Filament/           # Filament resources
+│   ├── Admin/          # Admin panel resources
+│   └── Center/        # Center panel resources
+├── Http/
+│   ├── Controllers/    # Web controllers
+│   └── Middleware/    # Custom middleware
+├── Imports/            # Excel import classes
+├── Models/             # Eloquent models
+│   └── Traits/         # Model traits
+├── Notifications/      # Email notifications
+├── Observers/          # Model observers
+├── Policies/           # Authorization policies
+├── Providers/          # Service providers
+├── Repositories/       # Data repositories
+└── Services/           # Business logic services
+
+database/
+├── factories/          # Model factories
+├── migrations/         # Database migrations
+└── seeders/            # Database seeders
+
+lang/
+├── ar/                 # Arabic translations
+└── en/                 # English translations
+
+routes/
+└── web.php             # Web routes
+
+config/
+├── panels.php          # Filament panel config
+├── auth.php            # Authentication config
+└── translatable.php    # Translation config
+```
+
+### Key Services
+
+- `StatsService` - Admin dashboard statistics
+- `CenterStatsService` - Center dashboard statistics
+- `CertificationService` - Certification business logic
+- `CertifiedCenterService` - Center management
+- `AccreditationRequestService` - Request workflow
+- `StaticPageService` - Static content management
+- `ApplicationSettingService` - Settings management
+
+---
+
+## 🎯 Project Goals
+
+### Primary Goals
+
+1. **Streamline Certification Management**
+   - Efficient certification issuance and tracking
+   - Bulk import/export capabilities
+   - Serial number verification
+
+2. **Accreditation Workflow**
+   - Automated request/review process
+   - Status tracking and notifications
+   - Period management
+
+3. **Bilingual Support**
+   - Full Arabic/English interface
+   - Translatable content
+   - Cultural localization
+
+4. **Multi-Tenant Architecture**
+   - Center isolation
+   - Role-based access control
+   - Secure data separation
+
+### Success Metrics
+
+- ✅ All core features implemented
+- ✅ Bilingual interface functional
+- ✅ Center isolation working
+- ✅ Import/export functional
+- ⚠️ Public web interface needs templates
+- ⚠️ Country translations need manual update
+
+---
+
+## 📞 Support & Maintenance
+
+### Known Issues
+
+1. **Country Translations:** Arabic translations are placeholders (same as English)
+   - **Solution:** Update via Filament GUI manually
+
+2. **Public Web Interface:** Controllers exist but Blade templates missing
+   - **Solution:** Create templates or integrate theme
+
+### Maintenance Tasks
+
+- Regular database backups
+- Update dependencies regularly
+- Monitor error logs
+- Review and update translations
+- Test import/export functionality
+- Verify center isolation security
+
+---
+
+## 📝 Notes
+
+- **Data Preservation:** All migrations preserve existing data
+- **Backward Compatibility:** Recent changes maintain compatibility
+- **Performance:** Denormalized fields used for optimization
+- **Scalability:** Service-Repository pattern supports growth
+- **Localization:** Ready for additional languages if needed
+
+---
+
+**Last Updated:** October 19, 2025
+**Version:** 1.0.0
+**Status:** Production Ready (with pending tasks)
+
+

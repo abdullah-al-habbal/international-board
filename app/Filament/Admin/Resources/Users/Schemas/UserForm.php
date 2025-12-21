@@ -16,14 +16,14 @@ class UserForm
     {
         return $schema->schema([
             TextInput::make('name')
-                ->label(__('Name'))
+                ->label(__('app.name'))
                 ->required()
                 ->maxLength(255)
                 ->autofocus()
                 ->columnSpan(1),
 
             TextInput::make('email')
-                ->label(__('Email'))
+                ->label(__('app.email'))
                 ->email()
                 ->required()
                 ->maxLength(255)
@@ -31,7 +31,7 @@ class UserForm
                 ->columnSpan(1),
 
             TextInput::make('password')
-                ->label(__('Password'))
+                ->label(__('app.password'))
                 ->password()
                 ->required()
                 ->minLength(8)
@@ -39,21 +39,21 @@ class UserForm
                 ->columnSpan(1),
 
             TextInput::make('password_confirmation')
-                ->label(__('Confirm Password'))
+                ->label(__('app.confirm_password'))
                 ->password()
                 ->required()
                 ->minLength(8)
                 ->columnSpan(1),
 
             Select::make('type')
-                ->label(__('User Type'))
+                ->label(__('app.user_type'))
                 ->options(UserType::class)
                 ->default(UserType::Admin->value)
                 ->required()
                 ->columnSpan(1),
 
             Toggle::make('email_verified')
-                ->label(__('Email Verified'))
+                ->label(__('app.email_verified'))
                 ->default(false)
                 ->columnSpan(1),
         ])->columns(2);

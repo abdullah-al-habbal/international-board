@@ -14,14 +14,19 @@ class StaticPageForm
         return $schema
             ->components([
                 TextInput::make('slug')
+                    ->label(__('app.slug'))
                     ->required(),
                 TextInput::make('title')
+                    ->label(__('app.title'))
                     ->required(),
                 FileUpload::make('image')
+                    ->label(__('app.image'))
                     ->image(),
                 TextInput::make('content')
+                    ->label(__('app.content'))
                     ->required(),
                 Toggle::make('is_active')
+                    ->label(__('app.is_active'))
                     ->required(),
             ]);
     }

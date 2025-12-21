@@ -17,14 +17,14 @@ class TrainerForm
     {
         return $schema->schema([
             TextInput::make('name')
-                ->label(__('Name'))
+                ->label(__('app.name'))
                 ->required()
                 ->maxLength(255)
                 ->autofocus()
                 ->columnSpanFull(),
 
             TextInput::make('email')
-                ->label(__('Email'))
+                ->label(__('app.email'))
                 ->email()
                 ->maxLength(255)
                 ->unique(ignoreRecord: true)
@@ -32,14 +32,14 @@ class TrainerForm
                 ->columnSpan(1),
 
             TextInput::make('phone')
-                ->label(__('Phone'))
+                ->label(__('app.phone'))
                 ->tel()
                 ->maxLength(255)
                 ->nullable()
                 ->columnSpan(1),
 
             Select::make('country_id')
-                ->label(__('Country'))
+                ->label(__('app.country'))
                 ->relationship('country', 'name')
                 ->searchable()
                 ->preload()
@@ -52,7 +52,7 @@ class TrainerForm
                 ->columnSpan(1),
 
             FileUpload::make('avatar')
-                ->label(__('Avatar'))
+                ->label(__('app.avatar'))
                 ->image()
                 ->avatar()
                 ->directory('trainers/avatars')
@@ -61,42 +61,42 @@ class TrainerForm
                 ->columnSpan(1),
 
             Textarea::make('address')
-                ->label(__('Address'))
+                ->label(__('app.address'))
                 ->maxLength(65535)
                 ->rows(2)
                 ->nullable()
                 ->columnSpanFull(),
 
             Textarea::make('bio')
-                ->label(__('Biography'))
+                ->label(__('app.biography'))
                 ->maxLength(65535)
                 ->rows(4)
                 ->nullable()
                 ->columnSpanFull(),
 
             Select::make('specializations')
-                ->label(__('Specializations'))
+                ->label(__('app.specializations'))
                 ->multiple()
                 ->options([
-                    'Training' => __('Training'),
-                    'Consulting' => __('Consulting'),
-                    'Leadership' => __('Leadership'),
-                    'Management' => __('Management'),
-                    'Communication' => __('Communication'),
-                    'Technical Skills' => __('Technical Skills'),
-                    'Soft Skills' => __('Soft Skills'),
-                    'Project Management' => __('Project Management'),
-                    'Digital Marketing' => __('Digital Marketing'),
-                    'HR' => __('Human Resources'),
-                    'Quality Management' => __('Quality Management'),
-                    'Entrepreneurship' => __('Entrepreneurship'),
+                    'Training' => __('app.specialization_training'),
+                    'Consulting' => __('app.specialization_consulting'),
+                    'Leadership' => __('app.specialization_leadership'),
+                    'Management' => __('app.specialization_management'),
+                    'Communication' => __('app.specialization_communication'),
+                    'Technical Skills' => __('app.specialization_technical_skills'),
+                    'Soft Skills' => __('app.specialization_soft_skills'),
+                    'Project Management' => __('app.specialization_project_management'),
+                    'Digital Marketing' => __('app.specialization_digital_marketing'),
+                    'HR' => __('app.specialization_hr'),
+                    'Quality Management' => __('app.specialization_quality_management'),
+                    'Entrepreneurship' => __('app.specialization_entrepreneurship'),
                 ])
                 ->searchable()
                 ->nullable()
                 ->columnSpanFull(),
 
             Toggle::make('is_active')
-                ->label(__('Active'))
+                ->label(__('app.active'))
                 ->default(true)
                 ->inline(false)
                 ->columnSpanFull(),

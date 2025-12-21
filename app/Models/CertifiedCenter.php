@@ -8,6 +8,7 @@ use App\Enums\CenterStatus;
 use App\Models\Traits\CertifiedCenter\CertifiedCenterCheckers;
 use App\Models\Traits\CertifiedCenter\CertifiedCenterRelations;
 use App\Models\Traits\CertifiedCenter\CertifiedCenterScopes;
+use App\Models\Traits\HasEditRequests;
 use App\Observers\CertifiedCenterObserver;
 use App\Policies\CertifiedCenterPolicy;
 use Filament\Models\Contracts\FilamentUser;
@@ -22,6 +23,7 @@ use Illuminate\Notifications\Notifiable;
 class CertifiedCenter extends Authenticatable implements FilamentUser
 {
     use CertifiedCenterCheckers, CertifiedCenterRelations, CertifiedCenterScopes;
+    use HasEditRequests;
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -36,6 +38,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         'accreditation_number',
         'status',
         'is_active',
+        'country_id',
     ];
 
     protected $hidden = [

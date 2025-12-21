@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Traits\HasEditRequests;
 use App\Models\Traits\Trainer\TrainerCheckers;
 use App\Models\Traits\Trainer\TrainerHelpers;
 use App\Models\Traits\Trainer\TrainerRelations;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 class Trainer extends Model
 {
     use HasFactory;
+    use HasEditRequests;
     use TrainerCheckers, TrainerHelpers, TrainerRelations, TrainerScopes;
 
     protected $fillable = [

@@ -6,6 +6,7 @@ namespace App\Observers;
 
 use App\Models\CertifiedCenter;
 use App\Notifications\AccreditationExpiring;
+use App\Services\CertifiedCenter\AccreditationNumberService;
 use Carbon\Carbon;
 
 final class CertifiedCenterObserver
@@ -18,6 +19,10 @@ final class CertifiedCenterObserver
     {
         if (is_null($center->email_verified_at)) {
             $center->email_verified_at = now();
+        }
+
+        if (empty($center->accreditation_number)) {
+            $center->accreditation_number = app(AccreditationNumberService::class)->generate();
         }
     }
 

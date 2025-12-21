@@ -14,12 +14,15 @@ class ApplicationSettingForm
         return $schema
             ->components([
                 TextInput::make('key')
+                    ->label(__('app.key'))
                     ->required(),
                 TextInput::make('value')
+                    ->label(__('app.value'))
                     ->required(),
                 Select::make('type')
+                    ->label(__('app.type'))
                     ->options(SettingType::class)
-                    ->default('text')
+                    ->default(SettingType::Text->value)
                     ->required(),
             ]);
     }

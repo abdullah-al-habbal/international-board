@@ -14,21 +14,21 @@ class DocumentTypeForm
         return $schema
             ->components([
                 TextInput::make('key')
-                    ->label(__('Key'))
+                    ->label(__('app.key'))
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
-                    ->helperText(__('Unique identifier for this document type (e.g., training_certificate)'))
+                    ->helperText(__('app.document_type_key_helper'))
                     ->placeholder('training_certificate'),
 
                 TextInput::make('name.en')
-                    ->label(__('Name (English)'))
+                    ->label(__('app.name_english'))
                     ->required()
                     ->maxLength(255)
-                    ->placeholder('Training Certificate'),
+                    ->placeholder(__('app.training_certificate_example')),
 
                 TextInput::make('name.ar')
-                    ->label(__('Name (Arabic)'))
+                    ->label(__('app.name_arabic'))
                     ->required()
                     ->maxLength(255)
                     ->placeholder('شهادة تدريب'),
