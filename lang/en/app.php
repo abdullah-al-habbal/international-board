@@ -163,6 +163,41 @@ return [
     'specialization_quality_management' => 'Quality Management',
     'specialization_entrepreneurship' => 'Entrepreneurship',
 
+    // Edit Requests
+    'edit_requests' => 'Edit Requests',
+    'edit_request' => 'Edit Request',
+    'editable_type' => 'Entity Type',
+    'editable_id' => 'Entity ID',
+    'rejection_reason' => 'Rejection Reason',
+    'edit_request_approved' => 'Edit request approved successfully',
+    'edit_request_rejected' => 'Edit request rejected',
+
+    // Center Type Requests
+    'center_type_requests' => 'Center Type Requests',
+    'center_type_request' => 'Center Type Request',
+    'request_type' => 'Request Type',
+    'requested_name' => 'Requested Name',
+    'requested_description' => 'Requested Description',
+    'rejection_message' => 'Rejection Message',
+    'center_type_request_approved' => 'Center type request approved successfully',
+    'center_type_request_rejected' => 'Center type request rejected',
+    'allowed_document_types' => 'Allowed Document Types',
+
+    // Legal Amendments
+    'legal_amendments' => 'Legal Amendments',
+    'legal_amendments_content' => 'Legal amendments content will be displayed here.',
+
+    // Trainer Evaluation
+    'trainer_evaluation_mechanism' => 'Trainer Evaluation Mechanism',
+    'trainer_evaluation_default_text' => 'Trainer evaluation criteria and process will be described here.',
+
+    // Public Trainer Search
+    'all_countries' => 'All Countries',
+    'view_details' => 'View Details',
+    'no_trainers_found' => 'No trainers found',
+    'back_to_trainers' => 'Back to Trainers',
+    'view_trainers' => 'View Trainers',
+
     'created_successfully' => 'Created successfully',
     'updated_successfully' => 'Updated successfully',
     'deleted_successfully' => 'Deleted successfully',

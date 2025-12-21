@@ -18,4 +18,21 @@ return [
         'inactive' => 'Inactive',
         'suspended' => 'Suspended',
     ],
+
+    'edit_request_status' => [
+        'pending' => 'Pending',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+    ],
+
+    'center_type_request_type' => [
+        'course' => 'Course',
+        'certificate_type' => 'Certificate Type',
+    ],
+
+    'center_type_request_status' => [
+        'pending' => 'Pending',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+    ],
 ];

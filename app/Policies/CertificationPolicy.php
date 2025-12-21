@@ -28,6 +28,19 @@ final class CertificationPolicy
         return $this->isActiveCenterUser($user);
     }
 
+    public function canCreateForDocumentType(User|CertifiedCenter $user, int $documentTypeId): bool
+    {
+        if ($this->isAdminUser($user)) {
+            return true;
+        }
+
+        if (! $this->isCenterUser($user)) {
+            return false;
+        }
+
+        return $user->allowedDocumentTypes()->where('document_types.id', $documentTypeId)->exists();
+    }
+
     public function update(User|CertifiedCenter $user, Certification $certification): bool
     {
         return $this->isAdminUser($user) || $this->canOwnerModify($user, $certification);

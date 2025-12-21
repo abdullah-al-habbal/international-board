@@ -18,4 +18,21 @@ return [
         'inactive' => 'غير نشط',
         'suspended' => 'معلق',
     ],
+
+    'edit_request_status' => [
+        'pending' => 'قيد الانتظار',
+        'approved' => 'موافق عليه',
+        'rejected' => 'مرفوض',
+    ],
+
+    'center_type_request_type' => [
+        'course' => 'دورة',
+        'certificate_type' => 'نوع شهادة',
+    ],
+
+    'center_type_request_status' => [
+        'pending' => 'قيد الانتظار',
+        'approved' => 'موافق عليه',
+        'rejected' => 'مرفوض',
+    ],
 ];

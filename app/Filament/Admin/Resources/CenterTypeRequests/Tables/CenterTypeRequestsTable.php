@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Admin\Resources\EditRequests\Tables;
+namespace App\Filament\Admin\Resources\CenterTypeRequests\Tables;
 
-use App\Enums\EditRequestStatus;
-use App\Services\EditRequest\EditRequestService;
+use App\Enums\CenterTypeRequestStatus;
+use App\Services\CenterTypeRequest\CenterTypeRequestService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -14,42 +14,38 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class EditRequestsTable
+class CenterTypeRequestsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('editable_type')
-                    ->label(__('app.editable_type'))
-                    ->searchable(),
-                TextColumn::make('editable_id')
-                    ->label(__('app.editable_id'))
+                TextColumn::make('center.name')
+                    ->label(__('app.certified_center'))
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('type')
+                    ->label(__('app.request_type'))
+                    ->badge(),
+                TextColumn::make('requested_name')
+                    ->label(__('app.requested_name'))
                     ->searchable(),
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()
-                    ->color(fn(EditRequestStatus $state): string => $state->color()),
+                    ->color(fn(CenterTypeRequestStatus $state): string => $state->color()),
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('updated_at')
-                    ->label(__('app.updated_at'))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('status')
                     ->label(__('app.status'))
-                    ->options(EditRequestStatus::class),
-                SelectFilter::make('editable_type')
-                    ->label(__('app.editable_type'))
-                    ->options([
-                        'App\Models\CertifiedCenter' => __('app.certified_center'),
-                        'App\Models\Trainer' => __('app.trainer'),
-                    ]),
+                    ->options(CenterTypeRequestStatus::class),
+                SelectFilter::make('type')
+                    ->label(__('app.request_type'))
+                    ->options(\App\Enums\CenterTypeRequestType::class),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -58,11 +54,12 @@ class EditRequestsTable
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
+                    ->visible(fn($record) => $record->status === CenterTypeRequestStatus::Pending)
                     ->action(function ($record) {
-                        app(EditRequestService::class)->approve($record);
+                        app(CenterTypeRequestService::class)->approve($record);
 
                         Notification::make()
-                            ->title(__('app.edit_request_approved'))
+                            ->title(__('app.center_type_request_approved'))
                             ->success()
                             ->send();
                     }),
@@ -70,17 +67,18 @@ class EditRequestsTable
                     ->label(__('app.reject'))
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
+                    ->visible(fn($record) => $record->status === CenterTypeRequestStatus::Pending)
                     ->form([
-                        Textarea::make('rejection_reason')
-                            ->label(__('app.rejection_reason'))
+                        Textarea::make('rejection_message')
+                            ->label(__('app.rejection_message'))
                             ->required()
                             ->rows(3),
                     ])
                     ->action(function ($record, array $data) {
-                        app(EditRequestService::class)->reject($record, $data['rejection_reason']);
+                        app(CenterTypeRequestService::class)->reject($record, $data['rejection_message']);
 
                         Notification::make()
-                            ->title(__('app.edit_request_rejected'))
+                            ->title(__('app.center_type_request_rejected'))
                             ->success()
                             ->send();
                     }),

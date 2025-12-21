@@ -160,6 +160,41 @@ return [
     'specialization_quality_management' => 'إدارة الجودة',
     'specialization_entrepreneurship' => 'ريادة الأعمال',
 
+    // Edit Requests
+    'edit_requests' => 'طلبات التعديل',
+    'edit_request' => 'طلب تعديل',
+    'editable_type' => 'نوع الكيان',
+    'editable_id' => 'معرف الكيان',
+    'rejection_reason' => 'سبب الرفض',
+    'edit_request_approved' => 'تمت الموافقة على طلب التعديل بنجاح',
+    'edit_request_rejected' => 'تم رفض طلب التعديل',
+
+    // Center Type Requests
+    'center_type_requests' => 'طلبات أنواع المراكز',
+    'center_type_request' => 'طلب نوع مركز',
+    'request_type' => 'نوع الطلب',
+    'requested_name' => 'الاسم المطلوب',
+    'requested_description' => 'الوصف المطلوب',
+    'rejection_message' => 'رسالة الرفض',
+    'center_type_request_approved' => 'تمت الموافقة على طلب نوع المركز بنجاح',
+    'center_type_request_rejected' => 'تم رفض طلب نوع المركز',
+    'allowed_document_types' => 'أنواع الوثائق المسموح بها',
+
+    // Legal Amendments
+    'legal_amendments' => 'تعديلات قانونية',
+    'legal_amendments_content' => 'سيتم عرض محتوى التعديلات القانونية هنا.',
+
+    // Trainer Evaluation
+    'trainer_evaluation_mechanism' => 'آلية تقييم المدربين',
+    'trainer_evaluation_default_text' => 'سيتم وصف معايير وعملية تقييم المدربين هنا.',
+
+    // Public Trainer Search
+    'all_countries' => 'جميع البلدان',
+    'view_details' => 'عرض التفاصيل',
+    'no_trainers_found' => 'لم يتم العثور على مدربين',
+    'back_to_trainers' => 'العودة إلى المدربين',
+    'view_trainers' => 'عرض المدربين',
+
     'created_successfully' => 'تم الإنشاء بنجاح',
     'updated_successfully' => 'تم التحديث بنجاح',
     'deleted_successfully' => 'تم الحذف بنجاح',
