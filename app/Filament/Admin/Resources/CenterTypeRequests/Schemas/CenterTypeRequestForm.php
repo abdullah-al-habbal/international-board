@@ -20,12 +20,15 @@ class CenterTypeRequestForm
                 Select::make('type')
                     ->label(__('app.request_type'))
                     ->options(\App\Enums\CenterTypeRequestType::class)
-                    ->required(),
+                    ->required()
+                    ->live(),
                 Select::make('document_type_id')
                     ->label(__('app.document_type'))
                     ->relationship('documentType', 'name')
                     ->visible(fn($get) => $get('type') === 'course')
-                    ->required(fn($get) => $get('type') === 'course'),
+                    ->required(fn($get) => $get('type') === 'course')
+                    ->searchable()
+                    ->preload(),
                 TextInput::make('requested_name')
                     ->label(__('app.requested_name'))
                     ->required()

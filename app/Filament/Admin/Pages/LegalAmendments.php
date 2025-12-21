@@ -10,7 +10,7 @@ class LegalAmendments extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static string $view = 'filament.admin.pages.legal-amendments';
+    protected string $view = 'filament.admin.pages.legal-amendments';
 
     protected static ?string $navigationLabel = null;
 
@@ -26,8 +26,6 @@ class LegalAmendments extends Page
 
     protected function getHeaderActions(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }
