@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\EditRequests\Schemas;
 
+use App\Enums\EditRequestStatus;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -14,7 +15,7 @@ class EditRequestForm
             ->components([
                 Select::make('status')
                     ->label(__('app.status'))
-                    ->options(\App\Enums\EditRequestStatus::class)
+                    ->options(EditRequestStatus::class)
                     ->required(),
                 Textarea::make('rejection_reason')
                     ->label(__('app.rejection_reason'))

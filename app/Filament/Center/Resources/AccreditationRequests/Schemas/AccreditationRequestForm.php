@@ -3,6 +3,7 @@
 namespace App\Filament\Center\Resources\AccreditationRequests\Schemas;
 
 use App\Enums\AccreditationStatus;
+use App\Models\CertifiedCenter;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -18,10 +19,10 @@ class AccreditationRequestForm
                 Select::make('certified_center_id')
                     ->label(__('app.certified_center'))
                     ->relationship('certifiedCenter', 'name')
-                    ->default(fn (): int|string|null => auth()->guard('web')->check() && auth()->guard('web')->user() instanceof \App\Models\CertifiedCenter
+                    ->default(fn(): int|string|null => auth()->guard('web')->check() && auth()->guard('web')->user() instanceof CertifiedCenter
                         ? auth()->guard('web')->id()
                         : null)
-                    ->disabled(condition: fn (): bool => auth()->guard('web')->check() && auth()->guard('web')->user() instanceof \App\Models\CertifiedCenter)
+                    ->disabled(condition: fn(): bool => auth()->guard('web')->check() && auth()->guard('web')->user() instanceof CertifiedCenter)
                     ->required(),
                 DateTimePicker::make('requested_start_date')
                     ->label(__('app.requested_start_date'))

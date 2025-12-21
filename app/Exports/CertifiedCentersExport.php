@@ -16,7 +16,7 @@ class CertifiedCentersExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return CertifiedCenter::query();
+        return CertifiedCenter::with('country');
     }
 
     public function headings(): array
@@ -28,6 +28,7 @@ class CertifiedCentersExport implements FromQuery, WithHeadings, WithMapping
             'Address',
             'Phone',
             'Manager Name',
+            'Country',
             'Accreditation Start',
             'Accreditation End',
             'Accreditation Number',
@@ -46,6 +47,7 @@ class CertifiedCentersExport implements FromQuery, WithHeadings, WithMapping
             $center->address,
             $center->phone,
             $center->manager_name,
+            $center->country?->name ?? '',
             $center->accreditation_period_start?->format('Y-m-d H:i:s'),
             $center->accreditation_period_end?->format('Y-m-d H:i:s'),
             $center->accreditation_number,

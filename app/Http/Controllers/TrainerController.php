@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\ApplicationSetting;
 use App\Models\Trainer;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -48,7 +49,7 @@ class TrainerController extends Controller
 
     public function evaluation(): View
     {
-        $evaluationText = \App\Models\ApplicationSetting::get('trainer_evaluation_text', __('app.trainer_evaluation_default_text'));
+        $evaluationText = ApplicationSetting::get('trainer_evaluation_text', __('app.trainer_evaluation_default_text'));
 
         return view('trainer-evaluation', ['evaluationText' => $evaluationText]);
     }

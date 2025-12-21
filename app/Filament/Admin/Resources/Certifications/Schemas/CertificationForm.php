@@ -105,7 +105,7 @@ class CertificationForm
                 Section::make(__('app.document_details_section'))
                     ->description(__('app.document_details_description'))
                     ->schema([
-                        Grid::make(3)
+                        Grid::make(2)
                             ->schema([
                                 TextInput::make('accredited_serial_number')
                                     ->label(__('app.accredited_serial_number'))
@@ -115,16 +115,18 @@ class CertificationForm
                                 TextInput::make('document_code')
                                     ->label(__('app.document_code'))
                                     ->maxLength(255),
-
-                                TextInput::make('accreditation_number')
-                                    ->label(__('app.accreditation_number'))
-                                    ->maxLength(255)
-                                    ->helperText(__('app.will_be_auto_generated')),
                             ]),
 
                         Select::make('document_type_id')
                             ->label(__('app.document_type'))
                             ->relationship('documentType', 'name')
+                            ->getOptionLabelFromRecordUsing(function ($record) {
+                                $name = $record->name;
+                                if (empty($name)) {
+                                    $name = $record->getTranslation('name', 'en');
+                                }
+                                return $name ?: $record->key;
+                            })
                             ->required()
                             ->searchable()
                             ->preload(),

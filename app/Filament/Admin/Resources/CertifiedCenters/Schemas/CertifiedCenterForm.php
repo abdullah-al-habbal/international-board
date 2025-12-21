@@ -53,6 +53,13 @@ class CertifiedCenterForm
                 Select::make('allowedDocumentTypes')
                     ->label(__('app.allowed_document_types'))
                     ->relationship('allowedDocumentTypes', 'name')
+                    ->getOptionLabelFromRecordUsing(function ($record) {
+                        $name = $record->name;
+                        if (empty($name)) {
+                            $name = $record->getTranslation('name', 'en');
+                        }
+                        return $name ?: $record->key;
+                    })
                     ->multiple()
                     ->searchable()
                     ->preload(),

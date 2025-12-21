@@ -6,8 +6,8 @@ namespace App\Services\CenterTypeRequest;
 
 use App\Enums\CenterTypeRequestStatus;
 use App\Enums\CenterTypeRequestType;
-use App\Models\CertifiedCenter;
 use App\Models\DocumentType;
+use App\Models\CenterTypeRequest;
 use App\Repositories\CenterTypeRequest\CenterTypeRequestRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -18,12 +18,12 @@ final class CenterTypeRequestService
         private readonly CenterTypeRequestRepository $repository
     ) {}
 
-    public function create(array $data): \App\Models\CenterTypeRequest
+    public function create(array $data): CenterTypeRequest
     {
         return $this->repository->create($data);
     }
 
-    public function approve(\App\Models\CenterTypeRequest $request): bool
+    public function approve(CenterTypeRequest $request): bool
     {
         return DB::transaction(function () use ($request) {
             $request->update([
@@ -48,7 +48,7 @@ final class CenterTypeRequestService
         });
     }
 
-    public function reject(\App\Models\CenterTypeRequest $request, string $rejectionMessage): bool
+    public function reject(CenterTypeRequest $request, string $rejectionMessage): bool
     {
         return $request->update([
             'status' => CenterTypeRequestStatus::Rejected->value,

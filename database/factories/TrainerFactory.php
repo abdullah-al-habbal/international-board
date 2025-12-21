@@ -8,9 +8,6 @@ use App\Models\Country;
 use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Trainer>
- */
 class TrainerFactory extends Factory
 {
     protected $model = Trainer::class;
@@ -35,36 +32,27 @@ class TrainerFactory extends Factory
                 'Soft Skills',
                 'Project Management',
             ], $this->faker->numberBetween(1, 4)),
-            'is_active' => $this->faker->boolean(90), // 90% active
+            'is_active' => $this->faker->boolean(90),
         ];
     }
 
-    /**
-     * Indicate that the trainer is active.
-     */
     public function active(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'is_active' => true,
         ]);
     }
 
-    /**
-     * Indicate that the trainer is inactive.
-     */
     public function inactive(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'is_active' => false,
         ]);
     }
 
-    /**
-     * Trainer without contact info.
-     */
     public function withoutContact(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email' => null,
             'phone' => null,
         ]);

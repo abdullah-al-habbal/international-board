@@ -2,6 +2,7 @@
 
 namespace App\Filament\Center\Resources\CenterTypeRequests\Tables;
 
+use App\Enums\CenterTypeRequestStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
@@ -36,7 +37,7 @@ class CenterTypeRequestsTable
             ->filters([
                 SelectFilter::make('status')
                     ->label(__('app.status'))
-                    ->options(\App\Enums\CenterTypeRequestStatus::class),
+                    ->options(CenterTypeRequestStatus::class),
             ])
             ->recordActions([
                 ViewAction::make(),

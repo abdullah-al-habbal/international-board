@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\CenterTypeRequests\Schemas;
 
+use App\Enums\CenterTypeRequestType;
+use App\Enums\CenterTypeRequestStatus;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -19,12 +21,19 @@ class CenterTypeRequestForm
                     ->required(),
                 Select::make('type')
                     ->label(__('app.request_type'))
-                    ->options(\App\Enums\CenterTypeRequestType::class)
+                    ->options(CenterTypeRequestType::class)
                     ->required()
                     ->live(),
                 Select::make('document_type_id')
                     ->label(__('app.document_type'))
                     ->relationship('documentType', 'name')
+                    ->getOptionLabelFromRecordUsing(function ($record) {
+                        $name = $record->name;
+                        if (empty($name)) {
+                            $name = $record->getTranslation('name', 'en');
+                        }
+                        return $name ?: $record->key;
+                    })
                     ->visible(fn($get) => $get('type') === 'course')
                     ->required(fn($get) => $get('type') === 'course')
                     ->searchable()
@@ -39,13 +48,13 @@ class CenterTypeRequestForm
                     ->columnSpanFull(),
                 Select::make('status')
                     ->label(__('app.status'))
-                    ->options(\App\Enums\CenterTypeRequestStatus::class)
+                    ->options(CenterTypeRequestStatus::class)
                     ->required(),
                 Textarea::make('rejection_message')
                     ->label(__('app.rejection_message'))
                     ->rows(3)
                     ->columnSpanFull()
-                    ->visible(fn($record) => $record && $record->status === \App\Enums\CenterTypeRequestStatus::Rejected),
+                    ->visible(fn($record) => $record && $record->status === CenterTypeRequestStatus::Rejected),
             ]);
     }
 }

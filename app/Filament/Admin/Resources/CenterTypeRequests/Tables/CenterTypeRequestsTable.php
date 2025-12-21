@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\CenterTypeRequests\Tables;
 
 use App\Enums\CenterTypeRequestStatus;
+use App\Enums\CenterTypeRequestType;
 use App\Services\CenterTypeRequest\CenterTypeRequestService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -45,7 +46,7 @@ class CenterTypeRequestsTable
                     ->options(CenterTypeRequestStatus::class),
                 SelectFilter::make('type')
                     ->label(__('app.request_type'))
-                    ->options(\App\Enums\CenterTypeRequestType::class),
+                    ->options(CenterTypeRequestType::class),
             ])
             ->recordActions([
                 ViewAction::make(),

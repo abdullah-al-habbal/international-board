@@ -2,6 +2,7 @@
 
 namespace App\Filament\Center\Resources\AccreditationRequests\Tables;
 
+use App\Models\CertifiedCenter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,7 +16,7 @@ class AccreditationRequestsTable
     {
         return $table
             ->modifyQueryUsing(function ($query) {
-                if (auth()->guard('web')->check() && auth()->guard('web')->user() instanceof \App\Models\CertifiedCenter) {
+                if (auth()->guard('web')->check() && auth()->guard('web')->user() instanceof CertifiedCenter) {
                     $query->where('certified_center_id', auth()->guard('web')->id());
                 }
             })

@@ -7,9 +7,6 @@ namespace Database\Factories;
 use App\Models\DocumentType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DocumentType>
- */
 class DocumentTypeFactory extends Factory
 {
     protected $model = DocumentType::class;
@@ -22,7 +19,7 @@ class DocumentTypeFactory extends Factory
             'key' => $key,
             'name' => [
                 'en' => ucwords(str_replace('-', ' ', $key)),
-                'ar' => 'نوع '.$this->faker->word(),
+                'ar' => 'نوع ' . $this->faker->word(),
             ],
         ];
     }

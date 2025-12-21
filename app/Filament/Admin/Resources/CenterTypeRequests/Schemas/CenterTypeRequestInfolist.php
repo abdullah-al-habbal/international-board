@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\CenterTypeRequests\Schemas;
 
+use App\Enums\CenterTypeRequestStatus;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -30,7 +31,7 @@ class CenterTypeRequestInfolist
                 TextEntry::make('rejection_message')
                     ->label(__('app.rejection_message'))
                     ->columnSpanFull()
-                    ->visible(fn($record) => $record->status === \App\Enums\CenterTypeRequestStatus::Rejected),
+                    ->visible(fn($record) => $record->status === CenterTypeRequestStatus::Rejected),
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime(),

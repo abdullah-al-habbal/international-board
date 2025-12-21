@@ -2,6 +2,7 @@
 
 namespace App\Filament\Center\Resources\CenterTypeRequests\Schemas;
 
+use App\Enums\CenterTypeRequestType;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,12 +16,19 @@ class CenterTypeRequestForm
             ->components([
                 Select::make('type')
                     ->label(__('app.request_type'))
-                    ->options(\App\Enums\CenterTypeRequestType::class)
+                    ->options(CenterTypeRequestType::class)
                     ->required()
                     ->live(),
                 Select::make('document_type_id')
                     ->label(__('app.document_type'))
                     ->relationship('documentType', 'name')
+                    ->getOptionLabelFromRecordUsing(function ($record) {
+                        $name = $record->name;
+                        if (empty($name)) {
+                            $name = $record->getTranslation('name', 'en');
+                        }
+                        return $name ?: $record->key;
+                    })
                     ->visible(fn($get) => $get('type') === 'course')
                     ->required(fn($get) => $get('type') === 'course')
                     ->searchable()

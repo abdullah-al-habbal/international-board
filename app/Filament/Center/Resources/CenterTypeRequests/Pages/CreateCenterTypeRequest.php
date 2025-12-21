@@ -2,6 +2,7 @@
 
 namespace App\Filament\Center\Resources\CenterTypeRequests\Pages;
 
+use App\Enums\CenterTypeRequestStatus;
 use App\Filament\Center\Resources\CenterTypeRequests\CenterTypeRequestResource;
 use App\Models\CertifiedCenter;
 use Filament\Resources\Pages\CreateRecord;
@@ -14,7 +15,7 @@ class CreateCenterTypeRequest extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['certified_center_id'] = Auth::guard('web')->id();
-        $data['status'] = \App\Enums\CenterTypeRequestStatus::Pending->value;
+        $data['status'] = CenterTypeRequestStatus::Pending->value;
 
         return $data;
     }

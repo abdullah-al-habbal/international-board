@@ -22,6 +22,9 @@ return [
     'cancel' => 'إلغاء',
     'confirm' => 'تأكيد',
     'export' => 'تصدير',
+    'export_excel' => 'تصدير Excel',
+    'export_failed' => 'فشل التصدير',
+    'export_error_message' => 'حدث خطأ أثناء التصدير: :error',
     'import' => 'استيراد',
     'active' => 'نشط',
     'inactive' => 'غير نشط',
@@ -137,8 +140,6 @@ return [
     'email_verified' => 'البريد الإلكتروني مؤكد',
     'confirm_password' => 'تأكيد كلمة المرور',
     'user_type' => 'نوع المستخدم',
-    'active' => 'نشط',
-    'country' => 'البلد',
     'country_name' => 'اسم البلد',
 
     // Document Type

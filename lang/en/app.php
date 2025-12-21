@@ -22,6 +22,9 @@ return [
     'cancel' => 'Cancel',
     'confirm' => 'Confirm',
     'export' => 'Export',
+    'export_excel' => 'Export Excel',
+    'export_failed' => 'Export Failed',
+    'export_error_message' => 'An error occurred during export: :error',
     'import' => 'Import',
     'active' => 'Active',
     'inactive' => 'Inactive',
@@ -82,7 +85,6 @@ return [
 
     'name' => 'Name',
     'password' => 'Password',
-    'address' => 'Address',
     'manager_name' => 'Manager Name',
     'accreditation_number' => 'Accreditation Number',
     'accreditation_period_start' => 'Accreditation Period Start',
@@ -105,10 +107,8 @@ return [
     'trainee_name' => 'Trainee Name',
     'accredited_serial_number' => 'Accredited Serial Number',
     'document_code' => 'Document Code',
-    'document_type' => 'Document Type',
     'accreditation_date' => 'Accreditation Date',
     'trainer_name' => 'Trainer Name',
-    'nationality' => 'Nationality',
     'notes' => 'Notes',
 
     'requested_start_date' => 'Requested Start Date',
@@ -140,8 +140,6 @@ return [
     'email_verified' => 'Email Verified',
     'confirm_password' => 'Confirm Password',
     'user_type' => 'User Type',
-    'active' => 'Active',
-    'country' => 'Country',
     'country_name' => 'Country Name',
 
     // Document Type

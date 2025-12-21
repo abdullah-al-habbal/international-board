@@ -2,6 +2,8 @@
 
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
+use App\Models\Certification;
+use App\Models\CertifiedCenter;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -23,7 +25,7 @@ class CertificationsTable
     {
         return $table
             ->modifyQueryUsing(function ($query) {
-                if (auth()->guard('web')->check() && auth()->guard('web')->user() instanceof \App\Models\CertifiedCenter) {
+                if (auth()->guard('web')->check() && auth()->guard('web')->user() instanceof CertifiedCenter) {
                     $query->where('certified_center_id', auth()->guard('web')->id());
                 }
             })
@@ -45,14 +47,14 @@ class CertificationsTable
                 TextColumn::make('certificate_type')
                     ->label('Certificate Type')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'basic' => 'gray',
                         'advanced' => 'info',
                         'professional' => 'success',
                         'specialist' => 'warning',
                         default => 'gray',
                     })
-                    ->icon(fn (string $state): string => match ($state) {
+                    ->icon(fn(string $state): string => match ($state) {
                         'basic' => 'heroicon-o-document',
                         'advanced' => 'heroicon-o-star',
                         'professional' => 'heroicon-o-academic-cap',
@@ -151,7 +153,7 @@ class CertificationsTable
                 SelectFilter::make('nationality')
                     ->label('Nationality')
                     ->options(function () {
-                        return \App\Models\Certification::whereNotNull('nationality')
+                        return Certification::whereNotNull('nationality')
                             ->distinct()
                             ->pluck('nationality', 'nationality')
                             ->toArray();
@@ -174,17 +176,17 @@ class CertificationsTable
                         return $query
                             ->when(
                                 $data['from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('accreditation_date', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('accreditation_date', '>=', $date),
                             )
                             ->when(
                                 $data['until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('accreditation_date', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('accreditation_date', '<=', $date),
                             );
                     }),
 
                 Filter::make('missing_center')
                     ->label('Missing Center Assignment')
-                    ->query(fn (Builder $query): Builder => $query->whereNull('certified_center_id'))
+                    ->query(fn(Builder $query): Builder => $query->whereNull('certified_center_id'))
                     ->toggle(),
             ])
             ->recordActions([
