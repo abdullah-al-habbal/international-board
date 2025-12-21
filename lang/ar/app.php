@@ -17,6 +17,7 @@ return [
     'edit' => 'تعديل',
     'delete' => 'حذف',
     'create' => 'إنشاء',
+    'create_certification' => 'إنشاء شهادة',
     'save' => 'حفظ',
     'cancel' => 'إلغاء',
     'confirm' => 'تأكيد',

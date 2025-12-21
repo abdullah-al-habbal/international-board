@@ -17,6 +17,7 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'create' => 'Create',
+    'create_certification' => 'Create Certification',
     'save' => 'Save',
     'cancel' => 'Cancel',
     'confirm' => 'Confirm',

@@ -25,7 +25,7 @@ final class CertificationPolicy
 
     public function create(User|CertifiedCenter $user): bool
     {
-        return $this->isActiveCenterUser($user);
+        return $this->isAdminUser($user) || $this->isActiveCenterUser($user);
     }
 
     public function canCreateForDocumentType(User|CertifiedCenter $user, int $documentTypeId): bool
