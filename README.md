@@ -1,61 +1,132 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Board - Certification Board Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive web application built with Laravel 12 and Filament v4 for managing certification boards, accredited training centers, certifications, trainers, and trainees. The system facilitates the accreditation process, certification issuance, and provides public-facing interfaces for certification verification.
 
-## About Laravel
+## 🚀 Quick Start
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Technology Stack
+- **Framework:** Laravel 12.x
+- **Admin Panel:** Filament v4.0
+- **PHP:** 8.2+
+- **Database:** MySQL
+- **Default Locale:** Arabic (ar) with English (en) support
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Access Points
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Admin Panel
+- **URL:** `http://localhost/admin`
+- **Guard:** `web` (default Laravel authentication)
+- **Model:** `App\Models\User`
+- **Access:** Full system administration
 
-## Learning Laravel
+#### Center Panel
+- **URL:** `http://localhost/center`
+- **Guard:** `certified_center` (custom authentication)
+- **Model:** `App\Models\CertifiedCenter`
+- **Access:** Limited to own center resources
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Public Routes
+- **Homepage:** `http://localhost/`
+- **Certification Search:** `http://localhost/certifications/search`
+- **Centers Directory:** `http://localhost/centers/`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 👥 Active Users
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Admin User
+- **Email:** `admin@test.com`
+- **Password:** `12345678`
+- **Type:** Admin
+- **Panel:** `/admin`
 
-## Laravel Sponsors
+### Certified Center User
+- **Email:** `center.one@gmail.com`
+- **Password:** `12345678`
+- **Name:** center one
+- **Panel:** `/center`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 📋 Core Features
 
-### Premium Partners
+- **Certification Management:** Create, edit, import/export certifications with serial number tracking
+- **Center Management:** Manage accredited training centers with accreditation periods
+- **Accreditation Workflow:** Request/review process with status tracking
+- **Trainer & Trainee Management:** Comprehensive profiles and relationships
+- **Bilingual Support:** Full Arabic/English interface with language switching
+- **Excel Import/Export:** Bulk operations for certifications
+- **Public Verification:** Search and verify certifications by serial number
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🏗️ Architecture
 
-## Contributing
+### Dual-Panel System
+The application uses Filament v4 with two separate authentication panels:
+- **Admin Panel** (`/admin`) - Full system access
+- **Center Panel** (`/center`) - Center-specific access with policy-based restrictions
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Service-Repository Pattern
+- **Services:** Business logic layer (`app/Services/`)
+- **Repositories:** Data access layer (`app/Repositories/`)
+- **Policies:** Authorization layer (`app/Policies/`)
 
-## Code of Conduct
+## 🔧 Configuration
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Key configuration files:
+- `config/panels.php` - Filament panel settings
+- `config/auth.php` - Authentication guards (web, certified_center)
+- `config/app.php` - Application settings
+- `.env` - Environment variables
 
-## Security Vulnerabilities
+## 📝 Development
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Common Commands
+
+```bash
+# Check users
+php artisan tinker
+> \App\Models\User::all(['email', 'name'])
+
+# Reset password
+> $user = \App\Models\User::where('email', 'admin@test.com')->first();
+> $user->password = \Illuminate\Support\Facades\Hash::make('new_password');
+> $user->save();
+
+# Run migrations
+php artisan migrate
+
+# Clear cache
+php artisan config:clear
+php artisan cache:clear
+```
+
+## 📚 Documentation
+
+For detailed project documentation, see `docs/PROJECT_OVERVIEW.md`
 
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+Accreditation number in the http://127.0.0.1:8000/admin/certified-centers/create must be automatic
+
+in the http://127.0.0.1:8000/center/accreditation-requests, we must add the "create" button in the center dashbaord
+
+
+polymorephsim relation for editable records, only one pending, approve, 
+
+تعديلات قانونية tab.
+
+كل معهد اله نوع دوارات
+طلب اضافة دورة, 
+مع رسالة رفض, في حال الرفض
+او خيار قبول او رفض ل طلب اضافة نوع شهادة جديد,
+
+ضمن http://127.0.0.1:8000/admin/certified-centers/create يجب اضافة اختيار الدولة
+و يجب اضافة انواع الدوارت المسومح لهذا المركز باصدارها.
+
+
+
+الية تقييم مدربين,
+نص ثابت, 
+معلومات عامة عن المدرب, 
+
+بحث عن المدربين ضمن الموقع الاساسي.
+

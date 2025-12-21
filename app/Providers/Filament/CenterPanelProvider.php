@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\SetLocale;
 use App\Providers\Traits\ResolvesFilamentColor;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -61,7 +60,6 @@ final class CenterPanelProvider extends PanelProvider
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
-            SetLocale::class,
         ];
     }
 
@@ -74,15 +72,7 @@ final class CenterPanelProvider extends PanelProvider
 
     private function getUserMenuItems(): array
     {
-        $currentLocale = app()->getLocale();
-        $isArabic = $currentLocale === 'ar';
-
         return [
-            'language_switcher' => MenuItem::make()
-                ->label($isArabic ? '🇺🇸 English' : '🇸🇦 العربية')
-                ->url(request()->fullUrlWithQuery(['lang' => $isArabic ? 'en' : 'ar']))
-                ->icon('heroicon-o-language')
-                ->sort(1),
             'profile' => MenuItem::make()
                 ->label(__('app.profile'))
                 ->icon('heroicon-o-user-circle')
