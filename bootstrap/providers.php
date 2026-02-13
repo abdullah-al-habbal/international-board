@@ -8,9 +8,24 @@ use App\Providers\Filament\CenterPanelProvider;
 use App\Providers\ObserverServiceProvider;
 use App\Providers\RepositoryServiceProvider;
 use App\Providers\ServiceRegistrationProvider;
+use App\Providers\EloquentServiceProvider;
+use App\Providers\QueryServiceProvider;
+use App\Providers\SecurityServiceProvider;
+use App\Providers\ValidationServiceProvider;
+use App\Providers\ArchitectureServiceProvider;
+use App\Providers\PerformanceServiceProvider;
+use App\Providers\MacroServiceProvider;
 
 return [
     AppServiceProvider::class,
+
+    EloquentServiceProvider::class,
+    QueryServiceProvider::class,
+    SecurityServiceProvider::class,
+    ValidationServiceProvider::class,
+    ArchitectureServiceProvider::class,
+    PerformanceServiceProvider::class,
+    MacroServiceProvider::class,
 
     RepositoryServiceProvider::class,
     ServiceRegistrationProvider::class,

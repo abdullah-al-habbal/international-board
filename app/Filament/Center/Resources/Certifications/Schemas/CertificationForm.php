@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Center\Resources\Certifications\Schemas;
 
-use App\Enums\CertificateType;
-use App\Models\{CertifiedCenter, Country, Trainer};
+use App\Models\Country;
+use App\Models\Trainee;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -12,7 +14,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Auth;
 
 class CertificationForm
 {
@@ -20,47 +21,33 @@ class CertificationForm
     {
         return $schema
             ->components([
-                Section::make(__('app.import_page.instructions.heading'))
-                    ->description(__('app.certification_details_section'))
+                Section::make(__('app.certification_details_section'))
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Select::make('certified_center_id')
-                                    ->label(__('app.certified_center'))
-                                    ->relationship('certifiedCenter', 'name')
-                                    ->default(
-                                        fn() =>
-                                        Auth::guard('web')->check() && Auth::guard('web')->user() instanceof CertifiedCenter
-                                            ? Auth::guard('web')->id()
-                                            : null
-                                    )
-                                    ->disabled(
-                                        condition: fn(): bool =>
-                                        Auth::guard('web')->check() && Auth::guard('web')->user() instanceof CertifiedCenter
-                                    )
+
+                                Select::make('document_type_id')
+                                    ->label(__('app.document_type'))
+                                    ->relationship('documentType', 'name')
+                                    ->getOptionLabelFromRecordUsing(function ($record) {
+                                        $name = $record->name;
+                                        if (empty($name)) {
+                                            $name = $record->getTranslation('name', app()->getLocale());
+                                        }
+
+                                        return $name ?: $record->key;
+                                    })
                                     ->required()
-                                    ->searchable()
-                                    ->preload(),
-
-                                Select::make('certificate_type')
-                                    ->label(__('app.certificate_type'))
-                                    ->options(CertificateType::class)
-                                    ->default(CertificateType::Basic->value)
-                                    ->required(),
-                            ]),
-
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('trainee_name')
-                                    ->label(__('app.trainee_name'))
-                                    ->required()
-                                    ->maxLength(255),
-
-                                Select::make('trainer_id')
-                                    ->label(__('app.trainer_name'))
-                                    ->relationship('trainer', 'name')
                                     ->searchable()
                                     ->preload()
+                                    ->placeholder(__('app.select_document_type')),
+
+                                Select::make('trainee_id')
+                                    ->label(__('app.trainee_name'))
+                                    ->relationship('trainee', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
                                     ->createOptionForm([
                                         TextInput::make('name')
                                             ->label(__('app.name'))
@@ -79,9 +66,14 @@ class CertificationForm
                                             ->relationship('country', 'name')
                                             ->searchable()
                                             ->preload(),
+                                        DatePicker::make('date_of_birth')
+                                            ->label(__('app.date_of_birth')),
+                                        TextInput::make('nationality')
+                                            ->label(__('app.nationality'))
+                                            ->maxLength(255),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return Trainer::create($data)->getKey();
+                                        return Trainee::create($data)->getKey();
                                     }),
                             ]),
 
@@ -94,19 +86,15 @@ class CertificationForm
                                     ->preload()
                                     ->createOptionForm([
                                         TextInput::make('name')
-                                            ->label(__('app.name'))
                                             ->required()
                                             ->maxLength(255),
                                         TextInput::make('code')
-                                            ->label(__('app.iso_code_3'))
                                             ->maxLength(3)
                                             ->helperText(__('app.iso_code_3_helper')),
                                         TextInput::make('code_2')
-                                            ->label(__('app.iso_code_2'))
                                             ->maxLength(2)
                                             ->helperText(__('app.iso_code_2_helper')),
                                         TextInput::make('nationality')
-                                            ->label(__('app.nationality'))
                                             ->maxLength(255),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
@@ -121,7 +109,6 @@ class CertificationForm
                     ]),
 
                 Section::make(__('app.document_details_section'))
-                    ->description(__('app.document_details_description'))
                     ->schema([
                         Grid::make(2)
                             ->schema([
@@ -135,27 +122,12 @@ class CertificationForm
                                     ->maxLength(255),
                             ]),
 
-                        Select::make('document_type_id')
-                            ->label(__('app.document_type'))
-                            ->relationship('documentType', 'name')
-                            ->getOptionLabelFromRecordUsing(function ($record) {
-                                $name = $record->name;
-                                if (empty($name)) {
-                                    $name = $record->getTranslation('name', 'en');
-                                }
-                                return $name ?: $record->key;
-                            })
-                            ->required()
-                            ->searchable()
-                            ->preload(),
-
                         Toggle::make('paper_received')
                             ->label(__('app.paper_document_received'))
                             ->default(false),
                     ]),
 
                 Section::make(__('app.additional_information_section'))
-                    ->description(__('app.additional_information_description'))
                     ->schema([
                         Textarea::make('notes')
                             ->label(__('app.notes'))

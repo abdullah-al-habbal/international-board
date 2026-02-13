@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('certified_center_document_type', function (Blueprint $table) {
@@ -21,13 +18,10 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['certified_center_id', 'document_type_id']);
+            $table->unique(['certified_center_id', 'document_type_id'], 'cc_doc_type_unique');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('certified_center_document_type');

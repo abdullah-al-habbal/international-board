@@ -34,13 +34,6 @@ trait TraineeCheckers
             ->exists();
     }
 
-    public function hasCertificateType(string $certificateType): bool
-    {
-        return $this->certifications()
-            ->where('certificate_type', $certificateType)
-            ->exists();
-    }
-
     public function hasTrainer(int $trainerId): bool
     {
         return $this->certifications()
@@ -57,7 +50,7 @@ trait TraineeCheckers
 
     public function isActive(): bool
     {
-        return $this->hasRecentCertifications(365); // Active if has certifications in the last year
+        return $this->hasRecentCertifications(365);
     }
 
     public function needsDataCleanup(): bool

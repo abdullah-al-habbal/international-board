@@ -8,7 +8,9 @@ use App\Repositories\Certification\CertificationRepository;
 
 final class CertificationService
 {
-    public function __construct(private readonly CertificationRepository $repo) {}
+    public function __construct(private readonly CertificationRepository $repo)
+    {
+    }
 
     public function getByCode(string $code)
     {
@@ -35,9 +37,9 @@ final class CertificationService
         return $this->repo->getCountByDateRange($startDate, $endDate);
     }
 
-    public function getCountByCertificateType(string $type): int
+    public function getCountByDocumentType(int|string $type): int
     {
-        return $this->repo->getCountByCertificateType($type);
+        return $this->repo->getCountByDocumentType($type);
     }
 
     public function getMonthlyCounts(?int $year = null): array

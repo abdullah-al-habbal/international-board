@@ -15,6 +15,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class CertificationResource extends Resource
 {
@@ -37,6 +39,26 @@ class CertificationResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.certifications');
+    }
+
+    /**
+     * Scope all queries to the authenticated center (center panel).
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof \App\Models\CertifiedCenter) {
+            $query->where('certified_center_id', Auth::guard('web')->id());
+        }
+
+        return $query->with([
+            'trainee',
+            'country',
+            'trainer',
+            'certifiedCenter',
+            'documentType',
+        ]);
     }
 
     public static function form(Schema $schema): Schema

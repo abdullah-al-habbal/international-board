@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('center_type_requests', function (Blueprint $table) {
@@ -22,8 +19,8 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->string('requested_name');
             $table->text('requested_description')->nullable();
-            $table->string('type'); // course, certificate_type
-            $table->string('status')->default('pending'); // pending, approved, rejected
+            $table->string('type');
+            $table->string('status')->default('pending');
             $table->text('rejection_message')->nullable();
             $table->timestamps();
 
@@ -32,9 +29,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
         Schema::dropIfExists('center_type_requests');

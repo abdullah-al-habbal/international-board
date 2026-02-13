@@ -59,7 +59,7 @@
             <div class="space-y-2">
                 @foreach($trainer->certifications->take(10) as $certification)
                 <div class="border-l-4 border-blue-500 pl-4 py-2">
-                    <p class="font-medium">{{ $certification->trainee_name }}</p>
+                    <p class="font-medium">{{ $certification->trainee?->name }}</p>
                     <p class="text-sm text-gray-600">{{ $certification->documentType?->name }}</p>
                     <p class="text-xs text-gray-500">{{ $certification->accreditation_date?->format('Y-m-d') }}</p>
                 </div>

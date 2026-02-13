@@ -54,6 +54,17 @@ class CertificationResource extends Resource
         return CertificationsTable::configure($table);
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->with([
+            'trainee',
+            'country',
+            'trainer',
+            'certifiedCenter',
+            'documentType',
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [];

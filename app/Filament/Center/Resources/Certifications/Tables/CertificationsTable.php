@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
 use App\Models\Certification;
-use App\Models\CertifiedCenter;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -24,92 +23,66 @@ class CertificationsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function ($query) {
-                if (auth()->guard('web')->check() && auth()->guard('web')->user() instanceof CertifiedCenter) {
-                    $query->where('certified_center_id', auth()->guard('web')->id());
-                }
-            })
             ->columns([
-                TextColumn::make('certifiedCenter.name')
-                    ->label('Center')
+                TextColumn::make('trainee.name')
+                    ->label(__('app.trainee'))
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
-                    ->badge()
-                    ->color('primary'),
+                    ->weight('bold')
+                    ->getStateUsing(fn($record) => $record->trainee?->name ?? __('app.unassigned')),
 
-                TextColumn::make('trainee_name')
-                    ->label('Trainee Name')
-                    ->searchable()
-                    ->sortable()
-                    ->weight('bold'),
-
-                TextColumn::make('certificate_type')
-                    ->label('Certificate Type')
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'basic' => 'gray',
-                        'advanced' => 'info',
-                        'professional' => 'success',
-                        'specialist' => 'warning',
-                        default => 'gray',
-                    })
-                    ->icon(fn(string $state): string => match ($state) {
-                        'basic' => 'heroicon-o-document',
-                        'advanced' => 'heroicon-o-star',
-                        'professional' => 'heroicon-o-academic-cap',
-                        'specialist' => 'heroicon-o-trophy',
-                        default => 'heroicon-o-document',
-                    }),
 
                 TextColumn::make('documentType.name')
-                    ->label('Document Type')
+                    ->label(__('app.document_type'))
                     ->searchable()
                     ->sortable()
                     ->badge()
-                    ->color('info')
-                    ->icon('heroicon-o-document'),
+                    ->color(fn($record) => $record->document_type_id ? 'info' : 'gray')
+                    ->icon('heroicon-o-document')
+                    ->getStateUsing(function ($record) {
+                        if (!$record->documentType) {
+                            return __('app.no_document_type');
+                        }
+
+                        $name = $record->documentType->name;
+                        if (empty($name)) {
+                            $name = $record->documentType->getTranslation('name', app()->getLocale());
+                        }
+
+                        return $name ?: $record->key;
+                    }),
 
                 TextColumn::make('accredited_serial_number')
-                    ->label('Serial Number')
+                    ->label(__('app.serial_number'))
                     ->searchable()
                     ->sortable()
                     ->copyable()
-                    ->copyMessage('Serial number copied!')
+                    ->copyMessage(__('app.serial_copied'))
                     ->copyMessageDuration(1500),
 
-                TextColumn::make('accreditation_number')
-                    ->label('Accreditation Number')
+                TextColumn::make('document_code')
+                    ->label(__('app.document_code'))
                     ->searchable()
                     ->sortable()
-                    ->copyable()
-                    ->copyMessage('Accreditation number copied!')
-                    ->copyMessageDuration(1500),
-
-                TextColumn::make('trainer.name')
-                    ->label('Trainer')
-                    ->searchable(['trainer_name', 'trainer.name'])
-                    ->sortable()
-                    ->toggleable()
-                    ->badge()
-                    ->color('warning'),
-
-                TextColumn::make('country.name')
-                    ->label('Country')
-                    ->searchable(['nationality', 'country.name'])
-                    ->sortable()
-                    ->badge()
-                    ->color('info')
                     ->toggleable(),
 
+                TextColumn::make('country.name')
+                    ->label(__('app.country'))
+                    ->searchable(['countries.name'])
+                    ->sortable()
+                    ->badge()
+                    ->color(fn($record) => $record->country_id ? 'info' : 'gray')
+                    ->toggleable()
+                    ->getStateUsing(fn($record) => $record->country?->name ?? __('app.unassigned')),
+
                 TextColumn::make('accreditation_date')
-                    ->label('Accreditation Date')
+                    ->label(__('app.accreditation_date'))
                     ->date('M d, Y')
                     ->sortable()
                     ->toggleable(),
 
                 IconColumn::make('paper_received')
-                    ->label('Paper Received')
+                    ->label(__('app.paper_received'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -123,35 +96,29 @@ class CertificationsTable
                     ->toggleable(),
 
                 TextColumn::make('created_at')
-                    ->label('Import Date')
-                    ->dateTime('M d, Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('updated_at')
-                    ->label('Last Updated')
+                    ->label(__('app.import_date'))
                     ->dateTime('M d, Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('certificate_type')
-                    ->label('Certificate Type')
-                    ->options([
-                        'basic' => 'Basic',
-                        'advanced' => 'Advanced',
-                        'professional' => 'Professional',
-                        'specialist' => 'Specialist',
-                    ]),
 
                 SelectFilter::make('document_type_id')
-                    ->label('Document Type')
+                    ->label(__('app.document_type'))
                     ->relationship('documentType', 'name')
+                    ->getOptionLabelFromRecordUsing(function ($record) {
+                        $name = $record->name;
+                        if (empty($name)) {
+                            $name = $record->getTranslation('name', app()->getLocale());
+                        }
+
+                        return $name ?: $record->key;
+                    })
                     ->searchable()
                     ->preload(),
 
                 SelectFilter::make('nationality')
-                    ->label('Nationality')
+                    ->label(__('app.nationality'))
                     ->options(function () {
                         return Certification::whereNotNull('nationality')
                             ->distinct()
@@ -160,17 +127,19 @@ class CertificationsTable
                     }),
 
                 SelectFilter::make('paper_received')
-                    ->label('Paper Received')
+                    ->label(__('app.paper_received'))
                     ->options([
-                        'YES' => 'Yes',
-                        'NO' => 'No',
-                        'PENDING' => 'Pending',
+                        'YES' => __('app.yes'),
+                        'NO' => __('app.no'),
+                        'PENDING' => __('app.pending'),
                     ]),
 
                 Filter::make('accreditation_date')
                     ->form([
-                        DatePicker::make('from')->label('From Date'),
-                        DatePicker::make('until')->label('Until Date'),
+                        \Filament\Forms\Components\DatePicker::make('from')
+                            ->label(__('app.from_date')),
+                        \Filament\Forms\Components\DatePicker::make('until')
+                            ->label(__('app.until_date')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -184,37 +153,62 @@ class CertificationsTable
                             );
                     }),
 
-                Filter::make('missing_center')
-                    ->label('Missing Center Assignment')
-                    ->query(fn(Builder $query): Builder => $query->whereNull('certified_center_id'))
+                Filter::make('missing_document_type')
+                    ->label(__('app.missing_document_type'))
+                    ->query(fn(Builder $query): Builder => $query->whereNull('document_type_id'))
                     ->toggle(),
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
                 Action::make('generatePdf')
-                    ->label('Certificate PDF')
+                    ->label(__('app.certificate_pdf'))
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
                     ->action(function ($record) {
-                        // PDF generation logic here: return response()->streamDownload(...)
                     }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
 
+                    BulkAction::make('assignDocumentType')
+                        ->label(__('app.assign_document_type'))
+                        ->icon('heroicon-o-document')
+                        ->color('info')
+                        ->form([
+                            \Filament\Forms\Components\Select::make('document_type_id')
+                                ->label(__('app.document_type'))
+                                ->relationship('documentType', 'name')
+                                ->getOptionLabelFromRecordUsing(function ($record) {
+                                    $name = $record->name;
+                                    if (empty($name)) {
+                                        $name = $record->getTranslation('name', app()->getLocale());
+                                    }
+
+                                    return $name ?: $record->key;
+                                })
+                                ->required()
+                                ->searchable()
+                                ->preload(),
+                        ])
+                        ->action(function (array $data, $records) {
+                            $records->each(function ($record) use ($data) {
+                                $record->update(['document_type_id' => $data['document_type_id']]);
+                            });
+                        }),
+
                     BulkAction::make('updatePaperStatus')
-                        ->label('Update Paper Status')
+                        ->label(__('app.update_paper_status'))
                         ->icon('heroicon-o-document-check')
                         ->color('warning')
                         ->form([
-                            Select::make('paper_received')
-                                ->label('Paper Received Status')
+                            \Filament\Forms\Components\Select::make('paper_received')
+                                ->label(__('app.paper_received_status'))
                                 ->options([
-                                    'YES' => 'Yes',
-                                    'NO' => 'No',
-                                    'PENDING' => 'Pending',
+                                    'YES' => __('app.yes'),
+                                    'NO' => __('app.no'),
+                                    'PENDING' => __('app.pending'),
                                 ])
                                 ->required(),
                         ])

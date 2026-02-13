@@ -49,7 +49,6 @@ return [
     'application_settings' => 'إعدادات التطبيق',
     'application_setting' => 'إعداد التطبيق',
 
-    // Trainee fields
     'trainee' => 'متدرب',
     'trainees' => 'المتدربون',
     'date_of_birth' => 'تاريخ الميلاد',
@@ -60,19 +59,15 @@ return [
     'emergency_contact_phone' => 'هاتف جهة الاتصال في حالات الطوارئ',
     'medical_info' => 'المعلومات الطبية',
 
-    // Document Type
     'document_types' => 'أنواع الوثائق',
 
-    // Country/Nationality
     'country' => 'البلد',
     'countries' => 'البلدان',
 
-    // Gender options
     'male' => 'ذكر',
     'female' => 'أنثى',
     'other' => 'آخر',
 
-    // Additional form labels
     'paper_document_received' => 'استلام الوثيقة الورقية',
     'yes' => 'نعم',
     'no' => 'لا',
@@ -118,7 +113,6 @@ return [
     'reviewed_by' => 'تمت المراجعة بواسطة',
     'reviewed_at' => 'تاريخ المراجعة',
 
-    // Section descriptions
     'certification_details_section' => 'تفاصيل الشهادة الرئيسية',
     'document_details_section' => 'تفاصيل الوثيقة',
     'document_details_description' => 'معلومات الشهادة والوثيقة',
@@ -126,13 +120,11 @@ return [
     'additional_information_description' => 'ملاحظات وتفاصيل إضافية',
     'notes_placeholder' => 'ملاحظات أو تعليقات إضافية...',
 
-    // Helper texts
     'iso_code_3_helper' => 'رمز ISO 3166-1 alpha-3',
     'iso_code_2_helper' => 'رمز ISO 3166-1 alpha-2',
     'iso_code_3' => 'رمز ISO (3 أحرف)',
     'iso_code_2' => 'رمز ISO (حرفان)',
 
-    // Additional labels
     'descriptive_image' => 'الصورة الوصفية',
     'avatar' => 'الصورة الشخصية',
     'biography' => 'السيرة الذاتية',
@@ -142,13 +134,11 @@ return [
     'user_type' => 'نوع المستخدم',
     'country_name' => 'اسم البلد',
 
-    // Document Type
     'name_english' => 'الاسم (بالإنجليزية)',
     'name_arabic' => 'الاسم (بالعربية)',
     'document_type_key_helper' => 'معرف فريد لهذا النوع من الوثائق (مثل: training_certificate)',
     'training_certificate_example' => 'شهادة تدريب',
 
-    // Specializations
     'specialization_training' => 'تدريب',
     'specialization_consulting' => 'استشارات',
     'specialization_leadership' => 'قيادة',
@@ -162,7 +152,6 @@ return [
     'specialization_quality_management' => 'إدارة الجودة',
     'specialization_entrepreneurship' => 'ريادة الأعمال',
 
-    // Edit Requests
     'edit_requests' => 'طلبات التعديل',
     'edit_request' => 'طلب تعديل',
     'editable_type' => 'نوع الكيان',
@@ -171,7 +160,6 @@ return [
     'edit_request_approved' => 'تمت الموافقة على طلب التعديل بنجاح',
     'edit_request_rejected' => 'تم رفض طلب التعديل',
 
-    // Center Type Requests
     'center_type_requests' => 'طلبات أنواع المراكز',
     'center_type_request' => 'طلب نوع مركز',
     'request_type' => 'نوع الطلب',
@@ -182,15 +170,12 @@ return [
     'center_type_request_rejected' => 'تم رفض طلب نوع المركز',
     'allowed_document_types' => 'أنواع الوثائق المسموح بها',
 
-    // Legal Amendments
     'legal_amendments' => 'تعديلات قانونية',
     'legal_amendments_content' => 'سيتم عرض محتوى التعديلات القانونية هنا.',
 
-    // Trainer Evaluation
     'trainer_evaluation_mechanism' => 'آلية تقييم المدربين',
     'trainer_evaluation_default_text' => 'سيتم وصف معايير وعملية تقييم المدربين هنا.',
 
-    // Public Trainer Search
     'all_countries' => 'جميع البلدان',
     'view_details' => 'عرض التفاصيل',
     'no_trainers_found' => 'لم يتم العثور على مدربين',
@@ -320,4 +305,43 @@ return [
             'assign_unassigned' => 'تخصيص غير المخصصة',
         ],
     ],
+
+    'not_assigned' => 'غير مخصص',
+    'unassigned' => 'غير مخصص',
+    'no_center' => 'لا يوجد مركز',
+    'no_document_type' => 'لا يوجد نوع مستند',
+    'no_trainer' => 'لا يوجد مدرب',
+    'no_country' => 'لا يوجد بلد',
+
+    'select_center' => 'اختر مركزاً',
+    'select_document_type' => 'اختر نوع المستند',
+    'select_trainer' => 'اختر مدرباً',
+    'select_country' => 'اختر بلداً',
+
+    'center_optional' => 'اختياري - يمكن تعيينه لاحقاً',
+    'trainer_optional' => 'اختياري - يمكن تعيينه لاحقاً',
+
+    'center' => 'المركز',
+    'serial_number' => 'الرقم التسلسلي',
+    'import_date' => 'تاريخ الاستيراد',
+    'last_updated' => 'آخر تحديث',
+    'paper_received' => 'استلام الورقة',
+
+    'serial_copied' => 'تم نسخ الرقم التسلسلي',
+    'accreditation_copied' => 'تم نسخ رقم الاعتماد',
+    'copied' => 'تم النسخ',
+
+    'missing_center' => 'مراكز غير مخصصة',
+    'missing_document_type' => 'نوع مستند غير محدد',
+    'from_date' => 'من تاريخ',
+    'until_date' => 'إلى تاريخ',
+
+    'assign_center' => 'تخصيص مركز',
+    'assign_document_type' => 'تخصيص نوع مستند',
+    'update_paper_status' => 'تحديث حالة الورقة',
+    'paper_received_status' => 'حالة استلام الورقة',
+
+    'certificate_pdf' => 'إنشاء شهادة PDF',
+
+    'certificate_type_migration_complete' => 'تم ترحيل أنواع الشهادات بنجاح',
 ];

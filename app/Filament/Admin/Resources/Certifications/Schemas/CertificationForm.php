@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
-use App\Enums\CertificateType;
 use App\Models\Country;
+use App\Models\Trainee;
 use App\Models\Trainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -28,23 +30,66 @@ class CertificationForm
                                 Select::make('certified_center_id')
                                     ->label(__('app.certified_center'))
                                     ->relationship('certifiedCenter', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->placeholder(__('app.select_center'))
+                                    ->helperText(__('app.center_optional')),
+
+                                // REMOVED: certificate_type field
+                                // Now using document_type_id exclusively
+
+                                Select::make('document_type_id')
+                                    ->label(__('app.document_type'))
+                                    ->relationship('documentType', 'name')
+                                    ->getOptionLabelFromRecordUsing(function ($record) {
+                                        $name = $record->name;
+                                        if (empty($name)) {
+                                            $name = $record->getTranslation('name', 'en');
+                                        }
+
+                                        return $name ?: $record->key;
+                                    })
                                     ->required()
                                     ->searchable()
-                                    ->preload(),
-
-                                Select::make('certificate_type')
-                                    ->label(__('app.certificate_type'))
-                                    ->options(CertificateType::class)
-                                    ->default(CertificateType::Basic->value)
-                                    ->required(),
+                                    ->preload()
+                                    ->placeholder(__('app.select_document_type')),
                             ]),
 
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('trainee_name')
+                                Select::make('trainee_id')
                                     ->label(__('app.trainee_name'))
+                                    ->relationship('trainee', 'name')
+                                    ->searchable()
+                                    ->preload()
                                     ->required()
-                                    ->maxLength(255),
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->label(__('app.name'))
+                                            ->required()
+                                            ->maxLength(255),
+                                        TextInput::make('email')
+                                            ->label(__('app.email'))
+                                            ->email()
+                                            ->maxLength(255),
+                                        TextInput::make('phone')
+                                            ->label(__('app.phone'))
+                                            ->tel()
+                                            ->maxLength(255),
+                                        Select::make('country_id')
+                                            ->label(__('app.country'))
+                                            ->relationship('country', 'name')
+                                            ->searchable()
+                                            ->preload(),
+                                        DatePicker::make('date_of_birth')
+                                            ->label(__('app.date_of_birth')),
+                                        TextInput::make('nationality')
+                                            ->label(__('app.nationality'))
+                                            ->maxLength(255),
+                                    ])
+                                    ->createOptionUsing(function (array $data): int {
+                                        return Trainee::create($data)->getKey();
+                                    }),
 
                                 Select::make('trainer_id')
                                     ->label(__('app.trainer_name'))
@@ -53,15 +98,19 @@ class CertificationForm
                                     ->preload()
                                     ->createOptionForm([
                                         TextInput::make('name')
+                                            ->label(__('app.name'))
                                             ->required()
                                             ->maxLength(255),
                                         TextInput::make('email')
+                                            ->label(__('app.email'))
                                             ->email()
                                             ->maxLength(255),
                                         TextInput::make('phone')
+                                            ->label(__('app.phone'))
                                             ->tel()
                                             ->maxLength(255),
                                         Select::make('country_id')
+                                            ->label(__('app.country'))
                                             ->relationship('country', 'name')
                                             ->searchable()
                                             ->preload(),
@@ -116,20 +165,6 @@ class CertificationForm
                                     ->label(__('app.document_code'))
                                     ->maxLength(255),
                             ]),
-
-                        Select::make('document_type_id')
-                            ->label(__('app.document_type'))
-                            ->relationship('documentType', 'name')
-                            ->getOptionLabelFromRecordUsing(function ($record) {
-                                $name = $record->name;
-                                if (empty($name)) {
-                                    $name = $record->getTranslation('name', 'en');
-                                }
-                                return $name ?: $record->key;
-                            })
-                            ->required()
-                            ->searchable()
-                            ->preload(),
 
                         Toggle::make('paper_received')
                             ->label(__('app.paper_document_received'))

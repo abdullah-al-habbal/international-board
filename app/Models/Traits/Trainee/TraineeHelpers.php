@@ -52,13 +52,4 @@ trait TraineeHelpers
             ->values()
             ->toArray();
     }
-
-    public function getUniqueCertificateTypes(): array
-    {
-        return $this->certifications()
-            ->whereNotNull('certificate_type')
-            ->distinct()
-            ->pluck('certificate_type')
-            ->toArray();
-    }
 }

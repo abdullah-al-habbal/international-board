@@ -49,7 +49,6 @@ return [
     'application_settings' => 'Application Settings',
     'application_setting' => 'Application Setting',
 
-    // Trainee fields
     'trainee' => 'Trainee',
     'trainees' => 'Trainees',
     'email' => 'Email',
@@ -63,21 +62,17 @@ return [
     'emergency_contact_phone' => 'Emergency Contact Phone',
     'medical_info' => 'Medical Information',
 
-    // Document Type
     'document_type' => 'Document Type',
     'document_types' => 'Document Types',
 
-    // Country/Nationality
     'country' => 'Country',
     'countries' => 'Countries',
     'nationality' => 'Nationality',
 
-    // Gender options
     'male' => 'Male',
     'female' => 'Female',
     'other' => 'Other',
 
-    // Additional form labels
     'paper_document_received' => 'Paper Document Received',
     'yes' => 'Yes',
     'no' => 'No',
@@ -118,7 +113,6 @@ return [
     'reviewed_by' => 'Reviewed By',
     'reviewed_at' => 'Reviewed At',
 
-    // Section descriptions
     'certification_details_section' => 'Main certification details',
     'document_details_section' => 'Document Details',
     'document_details_description' => 'Certificate and document information',
@@ -126,13 +120,11 @@ return [
     'additional_information_description' => 'Notes and additional details',
     'notes_placeholder' => 'Additional notes or comments...',
 
-    // Helper texts
     'iso_code_3_helper' => 'ISO 3166-1 alpha-3 code',
     'iso_code_2_helper' => 'ISO 3166-1 alpha-2 code',
     'iso_code_3' => 'ISO Code (3 letters)',
     'iso_code_2' => 'ISO Code (2 letters)',
 
-    // Additional labels
     'descriptive_image' => 'Descriptive Image',
     'avatar' => 'Avatar',
     'biography' => 'Biography',
@@ -142,13 +134,11 @@ return [
     'user_type' => 'User Type',
     'country_name' => 'Country Name',
 
-    // Document Type
     'name_english' => 'Name (English)',
     'name_arabic' => 'Name (Arabic)',
     'document_type_key_helper' => 'Unique identifier for this document type (e.g., training_certificate)',
     'training_certificate_example' => 'Training Certificate',
 
-    // Specializations
     'specialization_training' => 'Training',
     'specialization_consulting' => 'Consulting',
     'specialization_leadership' => 'Leadership',
@@ -162,7 +152,6 @@ return [
     'specialization_quality_management' => 'Quality Management',
     'specialization_entrepreneurship' => 'Entrepreneurship',
 
-    // Edit Requests
     'edit_requests' => 'Edit Requests',
     'edit_request' => 'Edit Request',
     'editable_type' => 'Entity Type',
@@ -171,7 +160,6 @@ return [
     'edit_request_approved' => 'Edit request approved successfully',
     'edit_request_rejected' => 'Edit request rejected',
 
-    // Center Type Requests
     'center_type_requests' => 'Center Type Requests',
     'center_type_request' => 'Center Type Request',
     'request_type' => 'Request Type',
@@ -182,15 +170,12 @@ return [
     'center_type_request_rejected' => 'Center type request rejected',
     'allowed_document_types' => 'Allowed Document Types',
 
-    // Legal Amendments
     'legal_amendments' => 'Legal Amendments',
     'legal_amendments_content' => 'Legal amendments content will be displayed here.',
 
-    // Trainer Evaluation
     'trainer_evaluation_mechanism' => 'Trainer Evaluation Mechanism',
     'trainer_evaluation_default_text' => 'Trainer evaluation criteria and process will be described here.',
 
-    // Public Trainer Search
     'all_countries' => 'All Countries',
     'view_details' => 'View Details',
     'no_trainers_found' => 'No trainers found',
@@ -320,4 +305,44 @@ return [
             'assign_unassigned' => 'Assign Unassigned',
         ],
     ],
+
+    'not_assigned' => 'Not Assigned',
+    'unassigned' => 'Unassigned',
+    'no_center' => 'No Center',
+    'no_document_type' => 'No Document Type',
+    'no_trainer' => 'No Trainer',
+    'no_country' => 'No Country',
+
+    'select_center' => 'Select a center',
+    'select_document_type' => 'Select document type',
+    'select_trainer' => 'Select trainer',
+    'select_country' => 'Select country',
+
+    'center_optional' => 'Optional - Can be assigned later',
+    'trainer_optional' => 'Optional - Can be assigned later',
+
+    'center' => 'Center',
+    'serial_number' => 'Serial Number',
+    'import_date' => 'Import Date',
+    'last_updated' => 'Last Updated',
+    'paper_received' => 'Paper Received',
+
+    'serial_copied' => 'Serial number copied to clipboard',
+    'accreditation_copied' => 'Accreditation number copied to clipboard',
+    'copied' => 'Copied to clipboard',
+
+    'missing_center' => 'Missing Center Assignment',
+    'missing_document_type' => 'Missing Document Type',
+    'from_date' => 'From Date',
+    'until_date' => 'Until Date',
+
+    'assign_center' => 'Assign Center',
+    'assign_document_type' => 'Assign Document Type',
+    'update_paper_status' => 'Update Paper Status',
+    'paper_received_status' => 'Paper Received Status',
+
+    'certificate_pdf' => 'Generate Certificate PDF',
+
+    'certificate_type_migration_complete' => 'Certificate type migration completed successfully',
+    'all_records_preserved' => 'All records have been preserved',
 ];

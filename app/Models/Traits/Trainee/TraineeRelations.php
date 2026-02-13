@@ -40,10 +40,4 @@ trait TraineeRelations
                 $query->where('name', 'like', "%{$documentType}%");
             });
     }
-
-    public function certificationsByCertificateType(string $certificateType): HasMany
-    {
-        return $this->hasMany(Certification::class)
-            ->where('certificate_type', $certificateType);
-    }
 }

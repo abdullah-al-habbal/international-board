@@ -4,67 +4,80 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\CertifiedCenter;
 use App\Models\Trainee;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Builder;
 
 class TraineePolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny(User|CertifiedCenter $user): bool
     {
-        return $user->isAdmin();
+        return $this->isAdminUser($user) || $this->isCenterUser($user);
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Trainee $trainee): bool
+    public function view(User|CertifiedCenter $user, Trainee $trainee): bool
     {
-        return $user->isAdmin();
+        if ($this->isAdminUser($user)) {
+            return true;
+        }
+
+        if ($this->isCenterUser($user)) {
+            return $trainee->certifications()->where('certified_center_id', $user->id)->exists();
+        }
+
+        return false;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(User|CertifiedCenter $user): bool
     {
-        return $user->isAdmin();
+        return $this->isAdminUser($user) || $this->isActiveCenterUser($user);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Trainee $trainee): bool
+    public function update(User|CertifiedCenter $user, Trainee $trainee): bool
     {
-        return $user->isAdmin();
+        if ($this->isAdminUser($user)) {
+            return true;
+        }
+
+        if ($this->isCenterUser($user)) {
+            return $trainee->certifications()->where('certified_center_id', $user->id)->exists();
+        }
+
+        return false;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Trainee $trainee): bool
+    public function delete(User|CertifiedCenter $user, Trainee $trainee): bool
     {
-        return $user->isAdmin();
+        // Only admin can delete trainees
+        return $this->isAdminUser($user);
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Trainee $trainee): bool
+    public function restore(User|CertifiedCenter $user, Trainee $trainee): bool
     {
-        return $user->isAdmin();
+        return $this->isAdminUser($user);
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Trainee $trainee): bool
+    public function forceDelete(User|CertifiedCenter $user, Trainee $trainee): bool
     {
-        return $user->isAdmin();
+        return $this->isAdminUser($user);
+    }
+
+    private function isAdminUser(User|CertifiedCenter $user): bool
+    {
+        return $user instanceof User && method_exists($user, 'isAdmin') && $user->isAdmin();
+    }
+
+    private function isCenterUser(User|CertifiedCenter $user): bool
+    {
+        return $user instanceof CertifiedCenter;
+    }
+
+    private function isActiveCenterUser(User|CertifiedCenter $user): bool
+    {
+        return $this->isCenterUser($user) && method_exists($user, 'canPerformActions') && $user->canPerformActions();
     }
 }

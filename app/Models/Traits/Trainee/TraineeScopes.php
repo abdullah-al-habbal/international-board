@@ -44,14 +44,6 @@ trait TraineeScopes
     }
 
     #[Scope]
-    protected function withCertificateType(Builder $query, string $certificateType): void
-    {
-        $query->whereHas('certifications', function (Builder $query) use ($certificateType) {
-            $query->where('certificate_type', $certificateType);
-        });
-    }
-
-    #[Scope]
     protected function withTrainer(Builder $query, int $trainerId): void
     {
         $query->whereHas('certifications', function (Builder $query) use ($trainerId) {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\CertificateType;
 use App\Models\Traits\Certification\CertificationActions;
 use App\Models\Traits\Certification\CertificationCheckers;
 use App\Models\Traits\Certification\CertificationHelpers;
@@ -22,12 +21,14 @@ class Certification extends Model
     use CertificationRelations, CertificationScopes;
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * NOTE: certificate_type REMOVED - use document_type_id instead
+     */
     protected $fillable = [
         'certified_center_id',
-        'certificate_type',
         'trainee_id',
-        'trainee_name',
-        'trainer_name',
         'nationality',
         'accredited_serial_number',
         'document_code',
@@ -40,11 +41,15 @@ class Certification extends Model
         'notes',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * NOTE: certificate_type cast REMOVED
+     */
     protected function casts(): array
     {
         return [
             'accreditation_date' => 'date',
-            'certificate_type' => CertificateType::class,
             'paper_received' => 'boolean',
         ];
     }

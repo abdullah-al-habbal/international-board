@@ -7,7 +7,7 @@ namespace App\Enums;
 enum CenterTypeRequestType: string
 {
     case Course = 'course';
-    case CertificateType = 'certificate_type';
+    case DocumentType = 'document_type';
 
     public function label(): string
     {

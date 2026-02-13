@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models\Traits\Certification;
 
-use App\Enums\CertificateType;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -17,9 +16,15 @@ trait CertificationScopes
     }
 
     #[Scope]
-    protected function ofType(Builder $query, CertificateType|string $type): void
+    protected function ofType(Builder $query, int|string $type): void
     {
-        $query->where('certificate_type', $type instanceof CertificateType ? $type->value : $type);
+        if (is_int($type)) {
+            $query->where('document_type_id', $type);
+        } else {
+            $query->whereHas('documentType', function (Builder $q) use ($type) {
+                $q->where('key', $type);
+            });
+        }
     }
 
     #[Scope]
@@ -37,13 +42,17 @@ trait CertificationScopes
     #[Scope]
     protected function byTraineeName(Builder $query, string $name): void
     {
-        $query->where('trainee_name', 'like', "%{$name}%");
+        $query->whereHas('trainee', function (Builder $q) use ($name) {
+            $q->where('name', 'like', "%{$name}%");
+        });
     }
 
     #[Scope]
     protected function byTrainerName(Builder $query, string $name): void
     {
-        $query->where('trainer_name', 'like', "%{$name}%");
+        $query->whereHas('trainer', function (Builder $q) use ($name) {
+            $q->where('name', 'like', "%{$name}%");
+        });
     }
 
     #[Scope]

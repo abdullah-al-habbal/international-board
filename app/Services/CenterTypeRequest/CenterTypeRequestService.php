@@ -16,7 +16,8 @@ final class CenterTypeRequestService
 {
     public function __construct(
         private readonly CenterTypeRequestRepository $repository
-    ) {}
+    ) {
+    }
 
     public function create(array $data): CenterTypeRequest
     {
@@ -30,7 +31,7 @@ final class CenterTypeRequestService
                 'status' => CenterTypeRequestStatus::Approved->value,
             ]);
 
-            if ($request->type === CenterTypeRequestType::CertificateType->value) {
+            if ($request->type === CenterTypeRequestType::DocumentType->value) {
                 $documentType = DocumentType::create([
                     'key' => Str::slug($request->requested_name),
                     'name' => [

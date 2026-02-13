@@ -43,12 +43,8 @@ trait TrainerRelations
     public function certificationsByDocumentType(string $documentType): HasMany
     {
         return $this->hasMany(Certification::class)
-            ->where('document_type', $documentType);
-    }
-
-    public function certificationsByCertificateType(string $certificateType): HasMany
-    {
-        return $this->hasMany(Certification::class)
-            ->where('certificate_type', $certificateType);
+            ->whereHas('documentType', function ($query) use ($documentType) {
+                $query->where('name', 'like', "%{$documentType}%");
+            });
     }
 }

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repositories\Certification;
 
-use App\Enums\CertificateType;
 use App\Models\Certification;
 use Illuminate\Database\Eloquent\Collection;
 
 final class CertificationRepository
 {
-    public function __construct(private readonly Certification $model) {}
+    public function __construct(private readonly Certification $model)
+    {
+    }
 
     public function findByDocumentCode(string $code): ?Certification
     {
@@ -37,14 +38,9 @@ final class CertificationRepository
         return $this->model->betweenDates($startDate, $endDate)->count();
     }
 
-    public function getCountByCertificateType(CertificateType|string $type): int
+    public function getCountByDocumentType(int|string $type): int
     {
         return $this->model->ofType($type)->count();
-    }
-
-    public function getCountByDocumentType(int $documentTypeId): int
-    {
-        return $this->model->ofDocumentType($documentTypeId)->count();
     }
 
     public function getTotalCountByCenter(int $centerId): int
@@ -66,7 +62,7 @@ final class CertificationRepository
             ->get();
     }
 
-    public function getCertificationsByType(CertificateType $type): Collection
+    public function getCertificationsByDocumentType(int|string $type): Collection
     {
         return $this->model
             ->ofType($type)
@@ -110,7 +106,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 
@@ -126,7 +122,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 }
