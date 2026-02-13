@@ -98,7 +98,6 @@ return [
     'value' => 'Value',
     'key' => 'Key',
 
-    'certificate_type' => 'Certificate Type',
     'trainee_name' => 'Trainee Name',
     'accredited_serial_number' => 'Accredited Serial Number',
     'document_code' => 'Document Code',
@@ -205,10 +204,6 @@ return [
         'inactive' => 'Inactive',
         'pending' => 'Pending',
         'suspended' => 'Suspended',
-    ],
-    'certificate_types' => [
-        'training_certificate' => 'Training Certificate',
-        'accreditation_certificate' => 'Accreditation Certificate',
     ],
     'accreditation_statuses' => [
         'pending' => 'Pending',

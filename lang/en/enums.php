@@ -27,7 +27,7 @@ return [
 
     'center_type_request_type' => [
         'course' => 'Course',
-        'certificate_type' => 'Certificate Type',
+        'document_type' => 'Document Type',
     ],
 
     'center_type_request_status' => [

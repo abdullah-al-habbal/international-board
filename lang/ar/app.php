@@ -96,7 +96,6 @@ return [
     'value' => 'القيمة',
     'key' => 'المفتاح',
 
-    'certificate_type' => 'نوع الشهادة',
     'trainee_name' => 'اسم المتدرب',
     'accredited_serial_number' => 'الرقم المتسلسل المعتمد',
     'document_code' => 'رمز الوثيقة',
@@ -205,10 +204,6 @@ return [
         'inactive' => 'غير نشط',
         'pending' => 'قيد الانتظار',
         'suspended' => 'معلق',
-    ],
-    'certificate_types' => [
-        'training_certificate' => 'شهادة تدريب',
-        'accreditation_certificate' => 'شهادة اعتماد',
     ],
     'accreditation_statuses' => [
         'pending' => 'قيد الانتظار',

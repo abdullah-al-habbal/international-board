@@ -27,7 +27,7 @@ return [
 
     'center_type_request_type' => [
         'course' => 'دورة',
-        'certificate_type' => 'نوع شهادة',
+        'document_type' => 'نوع وثيقة',
     ],
 
     'center_type_request_status' => [
