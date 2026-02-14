@@ -80,7 +80,7 @@ jobs:
             php artisan optimize || echo "⚠️ Warning: optimize failed"
 
             echo "🔎 Testing DB connection..."
-            php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK'; exit(0);}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage(); exit(2);}" 
+            php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK'; exit(0);}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage(); exit(2);}"
 
             echo "🔧 Fixing permissions for storage and cache..."
             # robust chown: use current user and its primary group (fallback to user)
@@ -90,3 +90,27 @@ jobs:
             chmod -R 775 storage bootstrap/cache || true
 
             echo "✅ Deployment script finished."
+
+      - name: Healthcheck (wait + retry)
+        run: |
+          URL="https://internationalboard.uk/health"
+          TOKEN="${{ secrets.HEALTH_TOKEN }}"
+          MAX=6
+          SLEEP=5
+          i=0
+          while [ $i -lt $MAX ]; do
+            if [ -n "$TOKEN" ]; then
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Health-Token: $TOKEN" "$URL" || echo "000")
+            else
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
+            fi
+            echo "Healthcheck attempt $((i+1)): HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "HEALTHCHECK OK"
+              exit 0
+            fi
+            i=$((i+1))
+            sleep $SLEEP
+          done
+          echo "HEALTHCHECK FAILED after $MAX attempts (status $STATUS)"
+          exit 1

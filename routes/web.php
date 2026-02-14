@@ -6,6 +6,7 @@ use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\Web\Certification\CertificationController;
 use App\Http\Controllers\Web\CertifiedCenter\CertifiedCenterController;
 use App\Http\Controllers\Web\StaticPage\StaticPageController;
+use App\Http\Controllers\HealthCheckController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,3 +33,5 @@ Route::prefix('trainers')->group(function () {
 });
 
 Route::get('/trainer-evaluation', [TrainerController::class, 'evaluation'])->name('trainer-evaluation');
+
+Route::get('/health', HealthCheckController::class);
