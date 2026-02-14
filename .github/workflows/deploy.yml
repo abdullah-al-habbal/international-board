@@ -3,6 +3,7 @@ name: Deploy to Hostinger (production)
 on:
   push:
     branches: [production]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP for local composer tasks
-        uses: shivammathur/setup-php@v4
+        uses: shivammathur/setup-php@v4.4.0
         with:
           php-version: "8.4"
           extensions: mbstring, pdo_mysql, openssl, tokenizer, xml
@@ -31,6 +32,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
       - name: Install frontend deps and build
         run: |
           npm ci
@@ -57,52 +59,68 @@ jobs:
           source: "release_*.tar.gz"
           target: "/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/incoming/"
 
-      - name: Remote deploy (extract, composer, migrate, symlink)
+      - name: Remote deploy (extract, composer, cache, symlink)
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          script_stop: true
           script: |
             set -e
             USER_HOME="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}"
             INCOMING="$USER_HOME/incoming"
             RELEASES="$USER_HOME/releases"
             mkdir -p "$INCOMING" "$RELEASES"
+
             # find latest uploaded tarball
             TAR=$(ls -1t $INCOMING/release_*.tar.gz | head -n1)
             if [ -z "$TAR" ]; then
               echo "No release tarball found in $INCOMING"
               exit 1
             fi
+
             TIMESTAMP=$(date +%s)
             NEW_RELEASE="$RELEASES/$TIMESTAMP"
             mkdir -p "$NEW_RELEASE"
+
+            # extract into new release
             tar -xzf "$TAR" -C "$NEW_RELEASE" --strip-components=1
             cd "$NEW_RELEASE"
-            # ensure correct PHP binary; try php8.4 then php
+
+            # choose PHP binary
             if command -v php8.4 >/dev/null 2>&1; then PHP_BIN=php8.4; else PHP_BIN=php; fi
-            # install composer deps on server (server has composer)
+
+            # install composer deps on server if composer exists
             if command -v composer >/dev/null 2>&1; then
               composer install --no-dev --optimize-autoloader --no-interaction
             else
               echo "Composer not found on server; ensure vendor is uploaded from CI or install composer."
             fi
-            # run migrations (force)
-            $PHP_BIN artisan migrate --force || echo "Migration failed or no migrations to run"
-            # storage link
+
+            # Skip migrations (DB already imported manually)
+            echo "Skipping migrations as DB was imported manually"
+
+            # storage link (safe to run)
             $PHP_BIN artisan storage:link || true
+
             # caches
+            $PHP_BIN artisan config:clear || true
+            $PHP_BIN artisan route:clear || true
+            $PHP_BIN artisan view:clear || true
             $PHP_BIN artisan config:cache || true
             $PHP_BIN artisan route:cache || true
             $PHP_BIN artisan view:cache || true
+
             # permissions (adjust if needed)
-            chown -R $USER:www-data storage bootstrap/cache || true
+            chown -R $USER:$USER storage bootstrap/cache || true
             chmod -R ug+rwx storage bootstrap/cache || true
-            # switch public_html to new release public
+
+            # switch public_html to new release public (atomic via symlink)
             ln -nfs "$NEW_RELEASE/public" "$USER_HOME/domains/internationalboard.uk/public_html"
+
             # cleanup old releases (keep last 5)
             ls -1dt $RELEASES/* | tail -n +6 | xargs -r rm -rf || true
-            echo "Deployment finished: $NEW_RELEASE"
 
+            echo "Deployment finished: $NEW_RELEASE"
