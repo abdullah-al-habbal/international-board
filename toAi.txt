@@ -1,0 +1,629 @@
+don't ignore the ci cd, so, "on push" must the code in the server chagned
+note, I need to "upload"  the local db (with data) into the server db
+and we ignore the migration, I need to only check that the app is coneected to db,
+because I will upload a sql file
+
+I have:
+[u685718414@us-bos-web1957 production]$ cd ..
+[u685718414@us-bos-web1957 public_html]$ dir
+index.php  production
+[u685718414@us-bos-web1957 public_html]$ cat index.php
+<?php
+require __DIR__ . '/production/public/indcd production718414@us-bos-web1957 public_html]$ cd production
+[u685718414@us-bos-web1957 production]$ php artisan tinker
+Psy Shell v0.12.10 (PHP 8.3.30 — cli) by Justin Hileman
+> DB::connection()->getPdo();
+= PDO {#6330
+    inTransaction: false,
+    attributes: {
+      CASE: NATURAL,
+      ERRMODE: EXCEPTION,
+      AUTOCOMMIT: 1,
+      PERSISTENT: false,
+      DRIVER_NAME: "mysql",
+      SERVER_INFO: "Uptime: 472272  Threads: 113  Questions: 3314291060  Slow queries: 995523  Opens: 6398233  Open tables: 51200  Queries per second avg: 7017.758",
+      ORACLE_NULLS: NATURAL,
+      CLIENT_VERSION: "mysqlnd 8.3.30",
+      SERVER_VERSION: "11.8.3-MariaDB-log",
+      STATEMENT_CLASS: [
+        "PDOStatement",
+      ],
+      EMULATE_PREPARES: 0,
+      CONNECTION_STATUS: "127.0.0.1 via TCP/IP",
+      STRINGIFY_FETCHES: false,
+      DEFAULT_FETCH_MODE: BOTH,
+    },
+  }
+note: I have made this change:
+the .env in the server is:
+APP_NAME="InternationalBoard"
+APP_ENV=production
+APP_KEY=base64:zLpYLONBfG3DH7hkzo5+di/w/qSKGh43uWWcqVPqeuY=
+APP_DEBUG=false
+APP_URL=https://internationalboard.uk
+APP_LOCALE=ar
+APP_FALLBACK_LOCALE=ar
+APP_FAKER_LOCALE=en_US
+APP_MAINTENANCE_DRIVER=file
+# APP_MAINTENANCE_STORE=database
+PHP_CLI_SERVER_WORKERS=4
+BCRYPT_ROUNDS=12
+LOG_CHANNEL=daily
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=error
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=u685718414_board_db
+DB_USERNAME=u685718414_board_user
+DB_PASSWORD=tamwyc-rinzi2-bepFoh
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=internationalboard.uk
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+# CACHE_PREFIX=
+MEMCACHED_HOST=127.0.0.1
+REDIS_CLIENT=phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.hostinger.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@internationalboard.uk
+MAIL_PASSWORD=your-mail-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-email@internationalboard.uk
+MAIL_FROM_NAME="InternationalBoard"
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+VITE_APP_NAME="${APP_NAME}"
+what I missing?
+ignore the (backup, or the fallback), using the ssh is better,
+so, re-answer me:
+I have:
+[u685718414@us-bos-web1957 production]$ cd ..
+[u685718414@us-bos-web1957 public_html]$ dir
+index.php  production
+[u685718414@us-bos-web1957 public_html]$ cat index.php
+<?php
+require __DIR__ . '/production/public/index.php';[u685718414@us-bos-web1957 public_html]$
+ok, ,start with me from the zero,
+with the files, configs, .envs, step by step to get all things done.
+I have the real .env is:
+APP_NAME="Board"
+APP_ENV=local
+APP_KEY=base64:EdlD0uTj4PJ/S+DgsZHYGaA0wY0bG1tl7yKXxSLlsjk=
+APP_DEBUG=true
+APP_URL=http://localhost
+APP_LOCALE=ar
+APP_FALLBACK_LOCALE=ar
+APP_FAKER_LOCALE=en_US
+APP_MAINTENANCE_DRIVER=file
+# APP_MAINTENANCE_STORE=database
+PHP_CLI_SERVER_WORKERS=4
+BCRYPT_ROUNDS=12
+LOG_CHANNEL=daily
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=board_app_db
+DB_USERNAME=root
+DB_PASSWORD=
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+# CACHE_PREFIX=
+MEMCACHED_HOST=127.0.0.1
+REDIS_CLIENT=phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+MAIL_MAILER=log
+MAIL_SCHEME=null
+MAIL_HOST=127.0.0.1
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+VITE_APP_NAME="${APP_NAME}"
+# "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+and the (.gitignore)
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+Homestead.json
+Homestead.yaml
+Thumbs.db
+/bootstrap/cache/*.php
+/bootstrap/cache/*.json
+and note, in the (https://hpanel.hostinger.com/websites/internationalboard.uk/advanced/ssh-access?redirectLocation=side_menu) is SSH status
+ACTIVE
+and check the local (C:\Users\LOQ\.ssh\config) is:
+# c:\Users\LOQ\.ssh\config
+# GitHub - dbnkalhbalb@gmail.com
+Host github-dbnkalhbalbgmail
+    HostName github.com
+    User git
+    IdentityFile C:/Users/LOQ/.ssh/keys/github_dbnkalhbalbgmail
+    # GitLab - dbnkalhbalb@outlook.sa
+Host gitlab-dbnkalhbalboutlook
+    HostName gitlab.com
+    User git
+    IdentityFile C:/Users/LOQ/.ssh/keys/gitlab_dbnkalhbalboutlook
+    # GitLab - abd.habbal@movo.delivery
+Host gitlab-movo-delivery
+    HostName git.movo.delivery
+    User git
+    IdentityFile C:/Users/LOQ/.ssh/keys/gitlab_movo_delivery
+    # cPanel Server - savyfvgu@192.64.117.145
+Host cpanel-server
+    HostName 192.64.117.145
+    Port 21098
+    User savyfvgu
+    IdentityFile C:/Users/LOQ/.ssh/keys/goodacts-key.pem
+    # Hostinger - internationalboard.uk (Production Laravel)
+Host hostinger-internationalboard
+    HostName 82.25.83.69
+    Port 65002
+    User u685718414
+    IdentityFile C:/Users/LOQ/.ssh/keys/hostinger_internationalboard
+    # GitLab GoodActs Cleanup (Pipeline Storage)
+Host gitlab-goodacts-cleanup
+    HostName gitlab.com
+    User git
+    IdentityFile C:/Users/LOQ/.ssh/keys/gitlab_goodacts_cleanup
+    so, I can access the:
+PS C:\Users\LOQ\.ssh> ssh hostinger-internationalboard
+   HHHH               HHHH
+   HHHHHHHH           HHHHHHHH
+   HHHHHHHH           HHHHHHHH
+   HHHHHHHH           HHHHHHHH
+   HHHHHHHHHHHHHHHHHHHH  HHHHH
+   HHHHHHHHHHHHHHHHHHHHHHHHH
+     HHHHHHHHHHHHHHHHHHHHHHHHH
+   HHHH  HHHHHHHHHHHHHHHHHHHHH
+   HHHHHHHH           HHHHHHHH
+   HHHHHHHH           HHHHHHHH
+   HHHHHHHH           HHHHHHHH
+       HHHH               HHHH
+       Welcome back! The time now is 19:08 UTC
+Server load: 9.14, 10.67, 11.14
+Link to hPanel:
+https://hpanel.hostinger.com/
+[u685718414@us-bos-web1957 ~]$ ls
+domains
+[u685718414@us-bos-web1957 ~]$ cd domains/
+[u685718414@us-bos-web1957 domains]$ ls
+internationalboard.uk
+[u685718414@us-bos-web1957 domains]$ cd internationalboard.uk/
+[u685718414@us-bos-web1957 internationalboard.uk]$ ls
+DO_NOT_UPLOAD_HERE  public_html
+[u685718414@us-bos-web1957 internationalboard.uk]$ cd public_html/
+[u685718414@us-bos-web1957 public_html]$ ls
+index.php  production
+[u685718414@us-bos-web1957 public_html]$ cd production/
+[u685718414@us-bos-web1957 production]$ ls
+app      board_app_db_backup_20251013_101430.sql  composer.json  config    lang          package-lock.json  phpunit.xml  resources  storage  vendor
+artisan  bootstrap                                composer.lock  database  package.json  phpstan.neon       public       routes     tests    vite.config.js
+[u685718414@us-bos-web1957 production]$ php -v
+PHP 8.3.30 (cli) (built: Jan 15 2026 00:00:00) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.30, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.30, Copyright (c), by Zend Technologies
+[u685718414@us-bos-web1957 production]$ composer -v
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version 2.8.11 2025-08-21 11:29:39
+Usage:
+  command [options] [arguments]
+  Options:
+  -h, --help                     Display help for the given command. When no command is given display help for the list command
+  -q, --quiet                    Do not output any message
+  -V, --version                  Display this application version
+      --ansi|--no-ansi           Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction           Do not ask any interactive question
+      --profile                  Display timing and memory usage information
+      --no-plugins               Whether to disable plugins.
+      --no-scripts               Skips the execution of all scripts defined in composer.json file.
+  -d, --working-dir=WORKING-DIR  If specified, use the given directory as working directory.
+      --no-cache                 Prevent use of the cache
+  -v|vv|vvv, --verbose           Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+  Available commands:
+  about                Shows a short information about Composer
+  archive              Creates an archive of this composer package
+  audit                Checks for security vulnerability advisories for installed packages
+  browse               [home] Opens the package's repository URL or homepage in your browser
+  bump                 Increases the lower limit of your composer.json requirements to the currently installed versions
+  check                Runs the check script as defined in composer.json
+  check-all            Runs the check-all script as defined in composer.json
+  check-local          Runs the check-local script as defined in composer.json
+  check-platform-reqs  Check that platform requirements are satisfied
+  clear-cache          [clearcache|cc] Clears composer's internal package cache
+  completion           Dump the shell completion script
+  config               Sets config options
+  create-project       Creates new project from a package into given directory
+  depends              [why] Shows which packages cause the given package to be installed
+  dev                  Runs the dev script as defined in composer.json
+  diagnose             Diagnoses the system to identify common errors
+  dump-autoload        [dumpautoload] Dumps the autoloader
+  exec                 Executes a vendored binary/script
+  fix                  Runs the fix script as defined in composer.json
+  fund                 Discover how to help fund the maintenance of your dependencies
+  global               Allows running commands in the global composer dir ($COMPOSER_HOME)
+  help                 Display help for a command
+  init                 Creates a basic composer.json file in current directory
+  install              [i] Installs the project dependencies from the composer.lock file if present, or falls back on the composer.json
+  licenses             Shows information about licenses of dependencies
+  list                 List commands
+  outdated             Shows a list of installed packages that have updates available, including their latest version
+  prohibits            [why-not] Shows which packages prevent the given package from being installed
+  reinstall            Uninstalls and reinstalls the given package names
+  remove               [rm|uninstall] Removes a package from the require or require-dev
+  require              [r] Adds required packages to your composer.json and installs them
+  run-script           [run] Runs the scripts defined in composer.json
+  search               Searches for packages
+  self-update          [selfupdate] Updates composer.phar to the latest version
+  show                 [info] Shows information about packages
+  status               Shows a list of locally modified packages
+  suggests             Shows package suggestions
+  test                 Runs the test script as defined in composer.json
+  update               [u|upgrade] Updates your dependencies to the latest version according to composer.json, and updates the composer.lock file
+  validate             Validates a composer.json and composer.lock
+[u685718414@us-bos-web1957 production]$ node -v
+-bash: node: command not found
+[u685718414@us-bos-web1957 production]$ php artisan key:generate
+APPLICATION IN PRODUCTION.
+ ┌ Are you sure you want to run this command? ──────────────────┐
+ │ Yes                                                          │
+ └──────────────────────────────────────────────────────────────┘
+    INFO  Application key set successfully.
+   [u685718414@us-bos-web1957 production]$ php artisan migrate:status
+   ERROR  Migration table not found.
+   [u685718414@us-bos-web1957 production]$
+and I have (D:\work\board\.github)
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - production
+      jobs:
+  deploy:
+    name: Deploy to Hostinger (Production Only)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+              - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            echo "🔗 Connecting to Hostinger..."
+            DEPLOY_PATH="/home/u685718414/domains/internationalboard.uk/public_html/production"
+            BRANCH="production"
+                        echo "📂 Deploy path: $DEPLOY_PATH"
+            echo "🌿 Branch: $BRANCH"
+                        cd "$DEPLOY_PATH" || { echo "❌ ERROR: Cannot cd into $DEPLOY_PATH"; exit 1; }
+                        echo "🔄 Pulling latest code..."
+            git fetch origin || { echo "❌ ERROR: git fetch failed"; exit 1; }
+            git checkout $BRANCH || { echo "❌ ERROR: git checkout failed"; exit 1; }
+            git reset --hard origin/$BRANCH || { echo "❌ ERROR: git reset failed"; exit 1; }
+                        echo "📦 Installing optimized dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction || { echo "❌ ERROR: composer install failed"; exit 1; }
+                        echo "🧹 Clearing old caches..."
+            php artisan config:clear || echo "⚠️ Warning: config:clear failed"
+            php artisan route:clear || echo "⚠️ Warning: route:clear failed"
+            php artisan view:clear || echo "⚠️ Warning: view:clear failed"
+                        echo "🧽 Running Pint auto-fix..."
+            ./vendor/bin/pint || echo "⚠️ Warning: Pint failed"
+                        echo "⚡ Rebuilding caches..."
+            php artisan config:cache || echo "⚠️ Warning: config:cache failed"
+            php artisan route:cache || echo "⚠️ Warning: route:cache failed"
+            php artisan view:cache || echo "⚠️ Warning: view:cache failed"
+            php artisan optimize || echo "⚠️ Warning: optimize failed"
+                        echo "✅ Deployment complete!"
+            and I have:
+[u685718414@us-bos-web1957 production]$ ls -a
+.   app      board_app_db_backup_20251013_101430.sql  composer.json  config    .editorconfig  .env.example  .git            .github     .husky  package.json       phpstan.neon  public     routes   tests   vite.config.js
+..  artisan  bootstrap                                composer.lock  database  .env           .env.txt      .gitattributes  .gitignore  lang    package-lock.json  phpunit.xml   resources  storage  vendor
+[u685718414@us-bos-web1957 production]$ cat .env
+APP_NAME="InternationalBoard"
+APP_ENV=production
+APP_KEY=base64:zLpYLONBfG3DH7hkzo5+di/w/qSKGh43uWWcqVPqeuY=
+APP_DEBUG=false
+APP_URL=https://internationalboard.uk
+APP_LOCALE=ar
+APP_FALLBACK_LOCALE=ar
+APP_FAKER_LOCALE=en_US
+APP_MAINTENANCE_DRIVER=file
+# APP_MAINTENANCE_STORE=database
+PHP_CLI_SERVER_WORKERS=4
+BCRYPT_ROUNDS=12
+LOG_CHANNEL=daily
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=error
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=u685718414_board_db
+DB_USERNAME=u685718414_board_user
+DB_PASSWORD=tamwyc-rinzi2-bepFoh
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=internationalboard.uk
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+# CACHE_PREFIX=
+MEMCACHED_HOST=127.0.0.1
+REDIS_CLIENT=phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.hostinger.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@internationalboard.uk
+MAIL_PASSWORD=your-mail-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-email@internationalboard.uk
+MAIL_FROM_NAME="InternationalBoard"
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+VITE_APP_NAME="${APP_NAME}"
+[u685718414@us-bos-web1957 production]$
+the suggestions are:
+### Overview and plan
+You want a complete, step‑by‑step CI/CD deployment from zero for your **Laravel 12** app (PHP 8.4, Filament v4, MySQL) to Hostinger using GitHub (or GitLab) so pushes to `production` automatically deploy. I’ll walk you through **preparation**, **repo and config**, **Hostinger setup**, **database import**, **CI workflow** (SSH preferred, SFTP fallback), **testing**, and **rollback**. I’ll include exact commands, file examples, and the GitHub Actions YAML you can copy. Hostinger supports automated deployments via SSH or SFTP and many community guides and examples follow the same pattern.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)  [rathik.dev](https://www.rathik.dev/blog/github-actions-deployment-for-hostinger)
+---
+### 1. Preconditions and decisions you must make now
+- **Choose deployment method**: **SSH** (recommended) or **SFTP/FTP** (fallback). SSH lets CI run `composer` and `artisan` on the server; SFTP requires building artifacts in CI and uploading them.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+- **Decide release strategy**: *atomic releases with symlink* (safer, easy rollback) or *direct overwrite* (simpler). I recommend atomic releases.
+- **Back up**: export your local DB now and keep a copy before any automated deploy. Hostinger has phpMyAdmin and backups.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+---
+### 2. Prepare your repository (local)
+#### Files and .gitignore
+Create or verify `.gitignore` includes:
+```
+/vendor
+/node_modules
+/.env
+/public/storage
+/storage/*.key
+/.idea
+/.vscode
+```
+#### Add a production .env template
+Create `.env.example` with placeholders (do **not** commit real secrets):
+```
+APP_NAME=InternationalBoard
+APP_ENV=production
+APP_KEY=base64:GENERATE_LOCALLY
+APP_DEBUG=false
+APP_URL=https://internationalboard.uk
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=u685718414_board_db
+DB_USERNAME=u685718414_board_user
+DB_PASSWORD=your_db_password_here
+QUEUE_CONNECTION=database
+FILESYSTEM_DRIVER=public
+```
+Generate `APP_KEY` locally with:
+```bash
+php artisan key:generate --show
+```
+Copy the output into your local `.env` for testing only; **never** push `.env` to Git.
+#### Composer and node
+- Ensure `composer.json` and `package.json` are correct and `scripts` include a production build (e.g., `build`).
+- Commit all code and push to GitHub `production` branch (you already have `production`).
+---
+### 3. Hostinger account preparation
+#### Enable SSH and get server details
+- In hPanel go to **Websites → Dashboard → SSH Access** and enable SSH for your account. Note the SSH hostname, username, and port. Add your public key to Hostinger’s SSH keys. This is required for the SSH-based CI approach.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+#### Confirm paths and user
+- **File upload path**: `public_html` (Hostinger shows this). Your Laravel `public` directory must be served from `public_html`. On shared hosting you will use a release directory and symlink `public_html` to the release `public` folder. Hostinger user home is typically `/home/u685718414/`. Confirm with SSH once enabled.
+#### Database
+- Create the MySQL database and user in hPanel (you already have `u685718414_board_db` and `u685718414_board_user`). Use phpMyAdmin to import the initial dump (see step 5).
+---
+### 4. Generate SSH keys and add secrets
+#### Generate key pair locally
+```bash
+ssh-keygen -t ed25519 -C "deploy@internationalboard" -f ~/.ssh/hostinger_deploy
+# public: ~/.ssh/hostinger_deploy.pub
+# private: ~/.ssh/hostinger_deploy
+```
+- Add the **public** key to Hostinger SSH keys (hPanel).
+- Add the **private** key to GitHub Secrets as `HOSTINGER_SSH_KEY`. Also add:
+  - `HOSTINGER_HOST` = server IP or hostname (e.g., `82.25.83.69` or `server1957.hostinger.com`)
+  - `HOSTINGER_USER` = SSH username (e.g., `u685718414`)
+  - `HOSTINGER_PORT` = `22` (or custom)
+  - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` (production DB values)
+  - `COMPOSER_AUTH` if you use private composer repos
+  If you prefer GitLab CI, add the same variables to GitLab CI variables.
+---
+### 5. Import initial database
+Export your local DB:
+```bash
+mysqldump -u local_user -p local_db > board_dump.sql
+```
+Import via Hostinger phpMyAdmin:
+- Open phpMyAdmin from hPanel and import `board_dump.sql` into `u685718414_board_db`. Confirm tables and data exist. This is the initial data; future schema changes should be via migrations. Hostinger phpMyAdmin is available in the Databases section.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+---
+### 6. CI/CD workflow — recommended GitHub Actions (SSH)
+**Key points**: build vendor and assets in CI or on server, upload release tarball, extract on server, run `composer install` and `artisan migrate`, update symlink to `public_html/public`, set permissions.
+Create `.github/workflows/deploy.yml`:
+```yaml
+name: Deploy to Hostinger
+on:
+  push:
+    branches: [ production ]
+    jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+              - name: Setup PHP
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo_mysql, openssl, tokenizer, xml
+                - name: Install composer dependencies
+        run: composer install --no-dev --prefer-dist --optimize-autoloader
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+                - name: Build frontend assets
+        run: |
+          npm ci
+          npm run build
+        working-directory: ./ # adjust if assets in subfolder
+              - name: Create release archive
+        run: |
+          TIMESTAMP=$(date +%s)
+          mkdir -p release
+          rsync -av --exclude='.git' --exclude='node_modules' --exclude='vendor' --exclude='storage' . release/
+          tar -czf release_$TIMESTAMP.tar.gz -C release .
+                - name: Upload release to server
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          source: "release_*.tar.gz"
+          target: "/home/${{ secrets.HOSTINGER_USER }}/releases/"
+                - name: Remote deploy commands
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          script: |
+            set -e
+            TIMESTAMP=$(date +%s)
+            RELEASE_DIR="/home/${{ secrets.HOSTINGER_USER }}/releases/$TIMESTAMP"
+            mkdir -p "$RELEASE_DIR"
+            tar -xzf /home/${{ secrets.HOSTINGER_USER }}/releases/release_$TIMESTAMP.tar.gz -C "$RELEASE_DIR"
+            cd "$RELEASE_DIR"
+            php8.4 /usr/local/bin/composer install --no-dev --optimize-autoloader
+            php8.4 artisan migrate --force
+            php8.4 artisan storage:link || true
+            php8.4 artisan config:cache
+            php8.4 artisan route:cache
+            chown -R $USER:www-data storage bootstrap/cache || true
+            ln -nfs "$RELEASE_DIR/public" /home/${{ secrets.HOSTINGER_USER }}/public_html
+            # keep last 5 releases
+            ls -1dt /home/${{ secrets.HOSTINGER_USER }}/releases/* | tail -n +6 | xargs -r rm -rf
+```
+**Adjustments you must make**
+- Confirm PHP CLI binary path on Hostinger (it may be `php`, `php8.4`, or `php-cli`). Test manually via SSH.
+- Confirm composer path on server; if not present, CI runs `composer install` before upload and you upload `vendor` instead.
+- Adjust `working-directory` for frontend build if assets are in a subfolder.
+**Why this works**
+- CI builds assets and vendor locally, packages code, uploads to server, runs server-side commands, and atomically switches `public_html` symlink to the new release. This minimizes downtime and allows rollback by switching symlink. Community examples and Hostinger guides use the same pattern.   [rathik.dev](https://www.rathik.dev/blog/github-actions-deployment-for-hostinger)  [Github](https://github.com/thecodeholic/laravel-hostinger-deploy)
+---
+### 7. SFTP/FTP fallback workflow
+If SSH is not available:
+- Use `SamKirkland/FTP-Deploy-Action` or `appleboy/scp-action` in SFTP mode to upload the **built** project (including `vendor` and `public` assets) to `public_html`.
+- You cannot run `artisan migrate` remotely; run migrations manually via SSH or phpMyAdmin SQL if needed. SFTP is less secure and less flexible.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+---
+### 8. Post-deploy checks and testing
+- Visit `https://internationalboard.uk` and check main pages.
+- Check logs: `storage/logs/laravel.log` via SSH or Hostinger file manager.
+- Verify scheduled tasks and queue workers. If you use queues, ensure `supervisor` or a cron is configured on Hostinger (shared hosting may not support long-running workers; use database queue and run `php artisan queue:work` via cron or use a managed queue).
+---
+### 9. Rollback procedure
+- SSH into server and list releases:
+```bash
+ls -1dt /home/u685718414/releases/*
+```
+- Point `public_html` back to previous release:
+```bash
+ln -nfs /home/u685718414/releases/previous_timestamp/public /home/u685718414/public_html
+```
+- If a migration was destructive, restore DB from backup via phpMyAdmin.
+---
+### 10. Checklist before first automated deploy
+1. **Backup DB** locally and in Hostinger backups.
+2. **Enable SSH** and add public key to Hostinger.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+3. **Add GitHub Secrets**: `HOSTINGER_SSH_KEY`, `HOSTINGER_HOST`, `HOSTINGER_USER`, `HOSTINGER_PORT`, `DB_*`, `COMPOSER_AUTH`.
+4. **Test SSH manually**: `ssh -i ~/.ssh/hostinger_deploy u685718414@82.25.83.69` and run `php -v` and `composer -V`.
+5. **Import DB** via phpMyAdmin.
+6. **Push code** to `production` branch to trigger workflow.
+7. **Monitor** logs and site.
+---
+### Common pitfalls and how to avoid them
+- **No SSH or limited CLI tools**: build `vendor` and assets in CI and upload them.   [glimpse.sh](https://glimpse.sh/blog/hostinger-github-actions-automated-laravel-deployment)
+- **File permissions**: ensure `storage` and `bootstrap/cache` are writable after deploy. Use `chown`/`chmod` in remote script.
+- **Large uploads time out**: split uploads or use tarball approach as shown.
+- **Migrations causing downtime**: run non-destructive migrations first; keep backups.
+---
+### If you want I will do the next steps for you
+Tell me which of the following you want me to produce next (I’ll generate the exact files and commands you can copy):
+- **A.** Finalized `deploy.yml` tuned to your repo layout (tell me where `public`, `artisan`, and frontend folder are).
+- **B.** Exact `.env.production` values template and GitHub Secrets list ready to paste.
+- **C.** A short SSH test script and commands to run on Hostinger to verify PHP and composer.
+- **D.** SFTP-only workflow if you cannot enable SSH.
+Pick one or more and I’ll generate the exact files and commands.

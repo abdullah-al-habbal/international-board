@@ -1,0 +1,107 @@
+name: Deploy to Hostinger (production)
+
+on:
+  push:
+    branches: [production]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP for local composer tasks
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: "8.4"
+          extensions: mbstring, pdo_mysql, openssl, tokenizer, xml
+
+      - name: Install composer dependencies (CI only, for tooling)
+        run: composer install --no-dev --prefer-dist --optimize-autoloader
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+
+      - name: Setup Node and build frontend assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install frontend deps and build
+        run: |
+          npm ci
+          npm run build
+        working-directory: ./
+
+      - name: Prepare release archive
+        run: |
+          TIMESTAMP=$(date +%s)
+          mkdir -p release_$TIMESTAMP
+          rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='storage' --exclude='vendor' --exclude='.github' ./ release_$TIMESTAMP/
+          # include built assets (adjust if your build output is different)
+          cp -r public/build release_$TIMESTAMP/public/build || true
+          tar -czf release_$TIMESTAMP.tar.gz release_$TIMESTAMP
+        shell: bash
+
+      - name: Upload release tarball to Hostinger
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          source: "release_*.tar.gz"
+          target: "/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/incoming/"
+
+      - name: Remote deploy (extract, composer, migrate, symlink)
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          script: |
+            set -e
+            USER_HOME="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}"
+            INCOMING="$USER_HOME/incoming"
+            RELEASES="$USER_HOME/releases"
+            mkdir -p "$INCOMING" "$RELEASES"
+            # find latest uploaded tarball
+            TAR=$(ls -1t $INCOMING/release_*.tar.gz | head -n1)
+            if [ -z "$TAR" ]; then
+              echo "No release tarball found in $INCOMING"
+              exit 1
+            fi
+            TIMESTAMP=$(date +%s)
+            NEW_RELEASE="$RELEASES/$TIMESTAMP"
+            mkdir -p "$NEW_RELEASE"
+            tar -xzf "$TAR" -C "$NEW_RELEASE" --strip-components=1
+            cd "$NEW_RELEASE"
+            # ensure correct PHP binary; try php8.4 then php
+            if command -v php8.4 >/dev/null 2>&1; then PHP_BIN=php8.4; else PHP_BIN=php; fi
+            # install composer deps on server (server has composer)
+            if command -v composer >/dev/null 2>&1; then
+              composer install --no-dev --optimize-autoloader --no-interaction
+            else
+              echo "Composer not found on server; ensure vendor is uploaded from CI or install composer."
+            fi
+            # run migrations (force)
+            $PHP_BIN artisan migrate --force || echo "Migration failed or no migrations to run"
+            # storage link
+            $PHP_BIN artisan storage:link || true
+            # caches
+            $PHP_BIN artisan config:cache || true
+            $PHP_BIN artisan route:cache || true
+            $PHP_BIN artisan view:cache || true
+            # permissions (adjust if needed)
+            chown -R $USER:www-data storage bootstrap/cache || true
+            chmod -R ug+rwx storage bootstrap/cache || true
+            # switch public_html to new release public
+            ln -nfs "$NEW_RELEASE/public" "$USER_HOME/domains/internationalboard.uk/public_html"
+            # cleanup old releases (keep last 5)
+            ls -1dt $RELEASES/* | tail -n +6 | xargs -r rm -rf || true
+            echo "Deployment finished: $NEW_RELEASE"
