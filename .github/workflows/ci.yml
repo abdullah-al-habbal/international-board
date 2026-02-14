@@ -1,0 +1,85 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Hostinger (Production Only)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🚀 Deploy via SSH (run remote commands)
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            echo "🔗 Connecting to Hostinger..."
+            DEPLOY_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
+            echo "📂 Deploy path: $DEPLOY_PATH"
+
+            # ensure deploy path exists
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              echo "❗ Deploy path does not exist. Creating..."
+              mkdir -p "$DEPLOY_PATH"
+            fi
+
+            cd "$DEPLOY_PATH" || { echo "❌ ERROR: Cannot cd into $DEPLOY_PATH"; exit 1; }
+
+            echo "🔄 Pulling latest code..."
+            git fetch origin --prune || { echo "❌ ERROR: git fetch failed"; exit 1; }
+            git checkout production || { echo "❌ ERROR: git checkout failed"; exit 1; }
+            git reset --hard origin/production || { echo "❌ ERROR: git reset failed"; exit 1; }
+
+            echo "📦 Installing optimized dependencies..."
+            if command -v composer >/dev/null 2>&1; then
+              composer install --no-dev --optimize-autoloader --no-interaction || { echo "❌ ERROR: composer install failed"; exit 1; }
+            else
+              echo "⚠️ Composer not found on server; ensure vendor is present or install composer."
+            fi
+
+            echo "🔐 Generating APP_KEY (if needed)..."
+            php artisan key:generate --force || echo "⚠️ key:generate failed (check .env permissions)"
+
+            echo "🧹 Clearing old caches..."
+            php artisan config:clear || echo "⚠️ Warning: config:clear failed"
+            php artisan route:clear || echo "⚠️ Warning: route:clear failed"
+            php artisan view:clear || echo "⚠️ Warning: view:clear failed"
+
+            echo "⏭️ Skipping migrations (DB imported manually)."
+
+            echo "🧽 Running Pint auto-fix (if available)..."
+            if [ -x "./vendor/bin/pint" ]; then
+              ./vendor/bin/pint || echo "⚠️ Warning: Pint failed"
+            fi
+
+            echo "⚡ Rebuilding caches..."
+            php artisan config:cache || echo "⚠️ Warning: config:cache failed"
+            php artisan route:cache || echo "⚠️ Warning: route:cache failed"
+            php artisan view:cache || echo "⚠️ Warning: view:cache failed"
+            php artisan optimize || echo "⚠️ Warning: optimize failed"
+
+            echo "🔎 Testing DB connection..."
+            php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK';}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage();}"
+
+            echo "🔧 Fixing permissions for storage and cache..."
+            chown -R $USER:$USER storage bootstrap/cache || true
+            chmod -R 775 storage bootstrap/cache || true
+
+            echo "✅ Deployment script finished."
