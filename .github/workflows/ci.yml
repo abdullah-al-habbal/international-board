@@ -55,7 +55,11 @@ jobs:
             fi
 
             echo "🔐 Generating APP_KEY (if needed)..."
-            php artisan key:generate --force || echo "⚠️ key:generate failed (check .env permissions)"
+            if [ -z "$(php -r "echo env('APP_KEY');")" ]; then
+              php artisan key:generate --force || echo "⚠️ key:generate failed (check .env permissions)"
+            else
+              echo "APP_KEY already set; skipping key:generate"
+            fi
 
             echo "🧹 Clearing old caches..."
             php artisan config:clear || echo "⚠️ Warning: config:clear failed"
@@ -76,10 +80,13 @@ jobs:
             php artisan optimize || echo "⚠️ Warning: optimize failed"
 
             echo "🔎 Testing DB connection..."
-            php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK';}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage();}"
+            php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK'; exit(0);}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage(); exit(2);}" 
 
             echo "🔧 Fixing permissions for storage and cache..."
-            chown -R $USER:$USER storage bootstrap/cache || true
+            # robust chown: use current user and its primary group (fallback to user)
+            WEB_USER=$(whoami)
+            WEB_GROUP=$(id -gn "$WEB_USER" 2>/dev/null || echo "$WEB_USER")
+            chown -R "$WEB_USER":"$WEB_GROUP" storage bootstrap/cache || true
             chmod -R 775 storage bootstrap/cache || true
 
             echo "✅ Deployment script finished."
