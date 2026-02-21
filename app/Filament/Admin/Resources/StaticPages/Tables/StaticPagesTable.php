@@ -19,7 +19,8 @@ class StaticPagesTable
             ->columns([
                 TextColumn::make('slug')
                     ->searchable(),
-                ImageColumn::make('image'),
+                ImageColumn::make('image')
+                    ->getStateUsing(fn($record) => $record->image ?: null),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

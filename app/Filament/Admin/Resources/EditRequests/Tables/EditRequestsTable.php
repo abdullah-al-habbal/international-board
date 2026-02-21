@@ -22,10 +22,12 @@ class EditRequestsTable
             ->columns([
                 TextColumn::make('editable_type')
                     ->label(__('app.editable_type'))
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->editable_type ?: __('app.no_value')),
                 TextColumn::make('editable_id')
                     ->label(__('app.editable_id'))
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->editable_id ?: __('app.no_value')),
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()

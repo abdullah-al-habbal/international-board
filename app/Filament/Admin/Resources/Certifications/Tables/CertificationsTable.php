@@ -5,18 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
 use App\Models\Certification;
-use Filament\Actions\Action;
-use Filament\Actions\BulkAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\{Action, BulkAction, BulkActionGroup, DeleteBulkAction, EditAction, ViewAction};
+use Filament\Tables\Columns\{IconColumn, TextColumn};
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\{DatePicker, Select};
 
 class CertificationsTable
 {
@@ -190,9 +185,9 @@ class CertificationsTable
 
                 Filter::make('accreditation_date')
                     ->form([
-                        \Filament\Forms\Components\DatePicker::make('from')
+                        DatePicker::make('from')
                             ->label(__('app.from_date')),
-                        \Filament\Forms\Components\DatePicker::make('until')
+                        DatePicker::make('until')
                             ->label(__('app.until_date')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -235,7 +230,7 @@ class CertificationsTable
                         ->icon('heroicon-o-building-office')
                         ->color('info')
                         ->form([
-                            \Filament\Forms\Components\Select::make('certified_center_id')
+                            Select::make('certified_center_id')
                                 ->label(__('app.certified_center'))
                                 ->relationship('certifiedCenter', 'name')
                                 ->required()
@@ -252,7 +247,7 @@ class CertificationsTable
                         ->icon('heroicon-o-document')
                         ->color('info')
                         ->form([
-                            \Filament\Forms\Components\Select::make('document_type_id')
+                            Select::make('document_type_id')
                                 ->label(__('app.document_type'))
                                 ->relationship('documentType', 'name')
                                 ->getOptionLabelFromRecordUsing(function ($record) {
@@ -278,7 +273,7 @@ class CertificationsTable
                         ->icon('heroicon-o-document-check')
                         ->color('warning')
                         ->form([
-                            \Filament\Forms\Components\Select::make('paper_received')
+                            Select::make('paper_received')
                                 ->label(__('app.paper_received_status'))
                                 ->options([
                                     'YES' => __('app.yes'),

@@ -18,7 +18,8 @@ class ApplicationSettingsTable
                 TextColumn::make('key')
                     ->searchable(),
                 TextColumn::make('value')
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->value ?: __('app.no_value')),
                 TextColumn::make('type')
                     ->badge()
                     ->searchable(),

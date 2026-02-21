@@ -21,9 +21,14 @@ class AccreditationRequestResource extends Resource
 {
     protected static ?string $model = AccreditationRequest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedRectangleStack;
+    }
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.content');
+    }
 
     protected static ?int $navigationSort = 6;
 

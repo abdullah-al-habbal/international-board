@@ -24,7 +24,7 @@ class CountriesTable
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
-                    ->description(fn ($record) => $record->nationality ?? '-'),
+                    ->description(fn($record) => $record->nationality ?: __('app.no_value')),
 
                 TextColumn::make('code')
                     ->label(__('ISO 3'))

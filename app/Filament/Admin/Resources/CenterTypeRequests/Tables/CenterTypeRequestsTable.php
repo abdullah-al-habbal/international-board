@@ -30,7 +30,8 @@ class CenterTypeRequestsTable
                     ->badge(),
                 TextColumn::make('requested_name')
                     ->label(__('app.requested_name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->requested_name ?: __('app.no_value')),
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()
