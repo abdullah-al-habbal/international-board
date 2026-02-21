@@ -16,6 +16,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DocumentTypeResource extends Resource
 {
@@ -25,19 +26,33 @@ class DocumentTypeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'key';
 
+    protected static string | UnitEnum | null $navigationGroup = 'filament.navigation.groups.settings';
+
+    protected static ?int $navigationSort = 35;
+
     public static function getNavigationLabel(): string
     {
-        return __('Document Types');
+        return __('filament.resources.document_types.navigation_label');
     }
 
     public static function getModelLabel(): string
     {
-        return __('Document Type');
+        return __('filament.resources.document_types.model_label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Document Types');
+        return __('filament.resources.document_types.plural_model_label');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 50 ? 'warning' : 'primary';
     }
 
     public static function form(Schema $schema): Schema

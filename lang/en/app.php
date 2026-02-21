@@ -340,4 +340,11 @@ return [
 
     'certificate_type_migration_complete' => 'Certificate type migration completed successfully',
     'all_records_preserved' => 'All records have been preserved',
+
+    'no_nationality' => 'No nationality specified',
+    'no_accreditation_date' => 'No accreditation date',
+    'no_value' => 'Not specified',
+    'filter_select_placeholder' => 'Select an option',
+    'table_empty_title' => 'No records found',
+    'table_empty_description' => 'There are no records to display right now.',
 ];

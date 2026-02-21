@@ -57,4 +57,26 @@ final class CertifiedCenterRepository
             ->where('accreditation_number', $accreditationNumber)
             ->exists();
     }
+
+    public function getExpiredAccreditationCount(): int
+    {
+        return $this->model->accreditationExpired()->count();
+    }
+
+    public function getAccreditationActiveCount(): int
+    {
+        return $this->model->accreditationActive()->count();
+    }
+
+    public function getInactiveOrExpiredCount(): int
+    {
+        return $this->model->newQuery()
+            ->where(function ($query) {
+                $query->inactive()
+                    ->orWhere(function ($q) {
+                        $q->accreditationExpired();
+                    });
+            })
+            ->count();
+    }
 }

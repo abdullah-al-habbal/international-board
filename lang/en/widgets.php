@@ -24,6 +24,14 @@ return [
             'label' => 'Admin Users',
             'description' => 'System administrators',
         ],
+        'trainers' => [
+            'label' => 'Trainers',
+            'description' => 'Registered trainers in system',
+        ],
+        'expired_centers' => [
+            'label' => 'Expired Licenses',
+            'description' => 'Centers with expired accreditation',
+        ],
         'monthly_certifications' => [
             'label' => 'Certifications This Month',
             'description' => 'Issued this month',
@@ -41,12 +49,21 @@ return [
         'accreditation_requests' => [
             'heading' => 'Accreditation Requests',
             'label' => 'Accreditation Requests',
+            'empty' => [
+                'no_requests' => 'No requests — all done',
+                'description' => 'There are currently no accreditation requests to display.',
+            ],
         ],
         'monthly_certifications' => [
             'heading' => 'Monthly Certifications',
             'label' => 'Certifications Issued',
+            'empty' => [
+                'no_data' => 'No certification data for this period',
+                'description' => 'There are no certifications recorded for the selected period.',
+            ],
         ],
     ],
+
     'status' => [
         'active' => 'Active',
         'expired' => 'Expired',
@@ -54,5 +71,14 @@ return [
         'accreditation_expired' => 'Accreditation expired',
         'expires_in_days' => 'Expires in :days days',
         'valid_until' => 'Valid until :date',
+        'inactive' => 'Inactive',
+        'pending' => 'Pending',
+        'suspended' => 'Suspended',
+    ],
+    'export' => [
+        'title' => 'Export :label?',
+        'body' => 'Download the :label data as an Excel file.',
+        'download' => 'Download Excel',
+        'cancel' => 'Cancel',
     ],
 ];

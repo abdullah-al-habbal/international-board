@@ -13,7 +13,6 @@ class DocumentTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get distinct document types from existing certifications
         $distinctTypes = Certification::query()
             ->select('document_type')
             ->distinct()
@@ -29,13 +28,12 @@ class DocumentTypesSeeder extends Seeder
                 [
                     'name' => [
                         'en' => $type,
-                        'ar' => null, // Admin can fill Arabic translations later
+                        'ar' => null,
                     ],
                 ]
             );
         }
 
-        // Also seed from the enum values for completeness
         $enumTypes = [
             'training_of_trainers' => 'Training of Trainers (TOT)',
             'accreditation_center' => 'Accreditation Center',

@@ -14,6 +14,9 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class CenterTypeRequestResource extends Resource
 {
@@ -21,7 +24,21 @@ class CenterTypeRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentDuplicate;
 
+    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+
+    protected static ?int $navigationSort = 7;
+
     protected static ?string $recordTitleAttribute = 'requested_name';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 0 ? 'warning' : 'primary';
+    }
 
     public static function getNavigationLabel(): string
     {
@@ -36,6 +53,11 @@ class CenterTypeRequestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.center_type_requests');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('certified_center_id', Auth::id());
     }
 
     public static function form(Schema $schema): Schema

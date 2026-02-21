@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Center\Widgets\AccreditationStatusBanner;
+use App\Http\Middleware\EnsureAccreditationValid;
 use App\Providers\Traits\ResolvesFilamentColor;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -43,7 +45,9 @@ final class CenterPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Center/Pages'), for: $config['pages_path'])
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Center/Widgets'), for: $config['widgets_path'])
-            ->widgets([])
+            ->widgets([
+                AccreditationStatusBanner::class,
+            ])
             ->middleware($this->getMiddleware())
             ->authMiddleware($this->getAuthMiddleware());
     }
@@ -60,6 +64,7 @@ final class CenterPanelProvider extends PanelProvider
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
+            EnsureAccreditationValid::class,
         ];
     }
 

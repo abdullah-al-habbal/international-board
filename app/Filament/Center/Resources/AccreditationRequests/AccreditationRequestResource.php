@@ -11,10 +11,13 @@ use App\Filament\Center\Resources\AccreditationRequests\Schemas\AccreditationReq
 use App\Filament\Center\Resources\AccreditationRequests\Tables\AccreditationRequestsTable;
 use App\Models\AccreditationRequest;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class AccreditationRequestResource extends Resource
 {
@@ -22,7 +25,21 @@ class AccreditationRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static UnitEnum | string | null $navigationGroup = __('filament.navigation.groups.content');
+
+    protected static ?int $navigationSort = 6;
+
     protected static ?string $recordTitleAttribute = 'id';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getEloquentQuery()->count() > 0 ? 'warning' : 'primary';
+    }
 
     public static function getNavigationLabel(): string
     {
@@ -37,6 +54,11 @@ class AccreditationRequestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.accreditation_requests');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('certified_center_id', Auth::id());
     }
 
     public static function form(Schema $schema): Schema

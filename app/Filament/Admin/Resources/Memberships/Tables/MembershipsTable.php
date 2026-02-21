@@ -36,7 +36,7 @@ class MembershipsTable
                     ->label(__('Description'))
                     ->searchable()
                     ->limit(50)
-                    ->placeholder('—')
+                    ->getStateUsing(fn($record) => $record->description ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('sort_order')

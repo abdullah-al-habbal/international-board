@@ -10,21 +10,63 @@ use App\Filament\Center\Resources\Certifications\Schemas\CertificationForm;
 use App\Filament\Center\Resources\Certifications\Schemas\CertificationInfolist;
 use App\Filament\Center\Resources\Certifications\Tables\CertificationsTable;
 use App\Models\Certification;
+use App\Models\CertifiedCenter;
+use UnitEnum;
 use BackedEnum;
+use App\Services\Accreditation\AccreditationGateService;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class CertificationResource extends Resource
 {
+    public static function canCreate(): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
     protected static ?string $model = Certification::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
+    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+
+    protected static ?int $navigationSort = 8;
 
     protected static ?string $recordTitleAttribute = 'accredited_serial_number';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'primary';
+    }
 
     public static function getNavigationLabel(): string
     {
@@ -41,14 +83,11 @@ class CertificationResource extends Resource
         return __('app.certifications');
     }
 
-    /**
-     * Scope all queries to the authenticated center (center panel).
-     */
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
 
-        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof \App\Models\CertifiedCenter) {
+        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof CertifiedCenter) {
             $query->where('certified_center_id', Auth::guard('web')->id());
         }
 

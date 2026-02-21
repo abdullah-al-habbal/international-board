@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
+use App\Enums\AccreditationStatus;
 use App\Events\AccreditationStarted;
 use App\Models\AccreditationRequest;
 use App\Models\CertifiedCenter;
@@ -46,7 +47,7 @@ final class AccreditationRequestObserver
 
     private function shouldAssignCenterId(AccreditationRequest $accreditationRequest): bool
     {
-        return ! $accreditationRequest->certified_center_id && $this->isWebGuardAuthenticated();
+        return !$accreditationRequest->certified_center_id && $this->isWebGuardAuthenticated();
     }
 
     private function isWebGuardAuthenticated(): bool
@@ -75,8 +76,28 @@ final class AccreditationRequestObserver
 
     private function updateReviewDetails(AccreditationRequest $accreditationRequest): void
     {
+        $newStatus = $accreditationRequest->status;
+
+        if (!$newStatus->isReviewed()) {
+            return;
+        }
+
+        $reviewer = Auth::guard('web')->user();
+
+        if (!$reviewer instanceof User) {
+            abort(403, 'Only admin users can review accreditation requests.');
+        }
+
         $accreditationRequest->reviewed_at = now();
-        $accreditationRequest->reviewed_by = Auth::id();
+        $accreditationRequest->reviewed_by = $reviewer->id;
+
+        if ($newStatus === AccreditationStatus::Approved) {
+            $accreditationRequest->certifiedCenter->update([
+                'accreditation_period_start' => $accreditationRequest->requested_start_date,
+                'accreditation_period_end' => $accreditationRequest->requested_end_date,
+                'is_active' => true,
+            ]);
+        }
     }
 
     private function notifyStatusChangeIfNeeded(AccreditationRequest $accreditationRequest): void

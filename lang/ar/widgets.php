@@ -1,5 +1,5 @@
 <?php
-
+// filePath: lang/ar/widgets.php
 declare(strict_types=1);
 
 return [
@@ -24,6 +24,14 @@ return [
             'label' => 'المستخدمون الإداريون',
             'description' => 'مديرو النظام',
         ],
+        'trainers' => [
+            'label' => 'المدربون',
+            'description' => 'المدربون المسجلون في النظام',
+        ],
+        'expired_centers' => [
+            'label' => 'انتهت تراخيص المراكز',
+            'description' => 'المراكز التي انتهت صلاحية اعتمادها',
+        ],
         'monthly_certifications' => [
             'label' => 'شهادات هذا الشهر',
             'description' => 'المصدرة هذا الشهر',
@@ -41,12 +49,21 @@ return [
         'accreditation_requests' => [
             'heading' => 'طلبات الاعتماد',
             'label' => 'طلبات الاعتماد',
+            'empty' => [
+                'no_requests' => 'لا توجد طلبات — كل شيء مكتمل',
+                'description' => 'لا توجد طلبات اعتماد لعرضها حالياً.',
+            ],
         ],
         'monthly_certifications' => [
             'heading' => 'الشهادات الشهرية',
             'label' => 'الشهادات المصدرة',
+            'empty' => [
+                'no_data' => 'لا توجد بيانات شهادات لهذه الفترة',
+                'description' => 'لا توجد شهادات مسجلة للفترة المحددة.',
+            ],
         ],
     ],
+
     'status' => [
         'active' => 'نشط',
         'expired' => 'منتهي الصلاحية',
@@ -54,5 +71,14 @@ return [
         'accreditation_expired' => 'انتهت صلاحية الاعتماد',
         'expires_in_days' => 'ينتهي خلال :days أيام',
         'valid_until' => 'صالح حتى :date',
+        'inactive' => 'غير نشط',
+        'pending' => 'قيد الانتظار',
+        'suspended' => 'موقوف',
+    ],
+    'export' => [
+        'title' => 'تصدير :label ؟',
+        'body' => 'تحميل بيانات :label كملف Excel.',
+        'download' => 'تحميل Excel',
+        'cancel' => 'إلغاء',
     ],
 ];

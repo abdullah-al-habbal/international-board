@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\CertifiedCenter;
 
+use App\Enums\CenterStatus;
 use App\Repositories\CertifiedCenter\CertifiedCenterRepository;
 
 final class CertifiedCenterService
@@ -35,8 +36,23 @@ final class CertifiedCenterService
         return $this->repo->getInactiveCount();
     }
 
-    public function getCountByStatus(string $status): int
+    public function getCountByStatus(CenterStatus $status): int
     {
         return $this->repo->getCountByStatus($status);
+    }
+
+    public function getExpiredAccreditationCount(): int
+    {
+        return $this->repo->getExpiredAccreditationCount();
+    }
+
+    public function getAccreditationActiveCount(): int
+    {
+        return $this->repo->getAccreditationActiveCount();
+    }
+
+    public function getInactiveOrExpiredCount(): int
+    {
+        return $this->repo->getInactiveOrExpiredCount();
     }
 }

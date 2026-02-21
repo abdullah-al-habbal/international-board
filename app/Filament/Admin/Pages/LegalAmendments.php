@@ -21,7 +21,7 @@ class LegalAmendments extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.settings');
+        return __('filament.navigation.groups.settings');
     }
 
     protected function getHeaderActions(): array

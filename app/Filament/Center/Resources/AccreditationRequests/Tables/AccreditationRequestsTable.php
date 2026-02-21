@@ -33,9 +33,11 @@ class AccreditationRequestsTable
                     ->badge(),
                 TextColumn::make('reviewed_by')
                     ->numeric()
+                    ->getStateUsing(fn($record) => $record->reviewed_by ?: __('app.no_value'))
                     ->sortable(),
                 TextColumn::make('reviewed_at')
                     ->dateTime()
+                    ->getStateUsing(fn($record) => $record->reviewed_at ?: __('app.no_value'))
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -46,9 +48,7 @@ class AccreditationRequestsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

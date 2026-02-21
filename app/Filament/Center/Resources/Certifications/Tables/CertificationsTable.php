@@ -79,7 +79,13 @@ class CertificationsTable
                     ->label(__('app.accreditation_date'))
                     ->date('M d, Y')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->getStateUsing(function ($record) {
+                        if (empty($record->accreditation_date)) {
+                            return __('app.no_accreditation_date');
+                        }
+                        return $record->accreditation_date;
+                    }),
 
                 IconColumn::make('paper_received')
                     ->label(__('app.paper_received'))
@@ -165,8 +171,7 @@ class CertificationsTable
                     ->label(__('app.certificate_pdf'))
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->action(function ($record) {
-                    }),
+                    ->action(function ($record) {}),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

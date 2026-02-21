@@ -23,7 +23,13 @@ class CertifiedCentersTable
                     ->searchable(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->getStateUsing(function ($record) {
+                        if (empty($record->email_verified_at)) {
+                            return __('app.no_value');
+                        }
+                        return $record->email_verified_at;
+                    }),
                 TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('manager_name')
@@ -47,9 +53,7 @@ class CertifiedCentersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

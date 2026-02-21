@@ -7,14 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Log::info('Creating default certificate document types...');
 
-        // Create default document types for the old certificate_type enum values
         $documentTypes = [
             [
                 'key' => 'certificate_basic',
@@ -65,7 +61,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        // Remove the document types we created
         DB::table('document_types')
             ->whereIn('key', [
                 'certificate_basic',

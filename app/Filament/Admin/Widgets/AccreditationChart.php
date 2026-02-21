@@ -31,6 +31,16 @@ final class AccreditationChart extends ChartWidget
         $requestService = app(AccreditationRequestService::class);
         $data = $requestService->getStatusCounts();
 
+        $total = array_sum(array_values($data ?: []));
+        if ($total === 0) {
+            $this->heading = __('widgets.charts.accreditation_requests.heading') . ' — ' . __('widgets.charts.accreditation_requests.empty.no_requests');
+
+            return [
+                'datasets' => [],
+                'labels' => [],
+            ];
+        }
+
         return [
             'datasets' => [
                 [
@@ -51,7 +61,7 @@ final class AccreditationChart extends ChartWidget
     private function mapColors(array $statuses): array
     {
         return array_map(
-            fn (string $status) => AccreditationStatus::tryFrom($status)?->rgb() ?? ChartColors::Default->value,
+            fn(string $status) => AccreditationStatus::tryFrom($status)?->rgb() ?? ChartColors::Default->value,
             $statuses
         );
     }
@@ -59,7 +69,7 @@ final class AccreditationChart extends ChartWidget
     private function mapLabels(array $statuses): array
     {
         return array_map(
-            fn (string $status) => AccreditationStatus::tryFrom($status)?->label() ?? $status,
+            fn(string $status) => AccreditationStatus::tryFrom($status)?->label() ?? $status,
             $statuses
         );
     }

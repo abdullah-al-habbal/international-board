@@ -8,10 +8,7 @@ use App\Http\Controllers\Web\CertifiedCenter\CertifiedCenterController;
 use App\Http\Controllers\Web\StaticPage\StaticPageController;
 use App\Http\Controllers\HealthCheckController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => view('welcome'));
 
 Route::prefix('pages')->group(function () {
     Route::get('/{slug}', [StaticPageController::class, 'show'])->name('pages.show');
@@ -35,3 +32,5 @@ Route::prefix('trainers')->group(function () {
 Route::get('/trainer-evaluation', [TrainerController::class, 'evaluation'])->name('trainer-evaluation');
 
 Route::get('/health', HealthCheckController::class);
+
+require __DIR__ . '/admin.php';

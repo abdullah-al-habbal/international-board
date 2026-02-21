@@ -339,4 +339,12 @@ return [
     'certificate_pdf' => 'إنشاء شهادة PDF',
 
     'certificate_type_migration_complete' => 'تم ترحيل أنواع الشهادات بنجاح',
+    'all_records_preserved' => 'تم الحفاظ على جميع السجلات',
+
+    'no_nationality' => 'لم يتم تحديد الجنسية',
+    'no_accreditation_date' => 'لا توجد تاريخ اعتماد',
+    'no_value' => 'غير محدد',
+    'filter_select_placeholder' => 'اختر خيارًا',
+    'table_empty_title' => 'لا توجد سجلات',
+    'table_empty_description' => 'لا توجد سجلات لعرضها حالياً.',
 ];

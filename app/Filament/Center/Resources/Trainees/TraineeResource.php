@@ -11,8 +11,10 @@ use App\Filament\Center\Resources\Trainees\Pages\ViewTrainee;
 use App\Filament\Center\Resources\Trainees\Schemas\TraineeForm;
 use App\Filament\Center\Resources\Trainees\Schemas\TraineeInfolist;
 use App\Filament\Center\Resources\Trainees\Tables\TraineesTable;
+use App\Models\CertifiedCenter;
 use App\Models\Trainee;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -25,9 +27,21 @@ class TraineeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
+    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.users');
+
     protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'primary';
+    }
 
     public static function getNavigationLabel(): string
     {
@@ -44,14 +58,11 @@ class TraineeResource extends Resource
         return __('app.trainees');
     }
 
-    /**
-     * Scope to trainees who have certifications with current center
-     */
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
 
-        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof \App\Models\CertifiedCenter) {
+        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof CertifiedCenter) {
             $centerId = Auth::guard('web')->id();
 
             $query->whereHas('certifications', function (Builder $q) use ($centerId) {

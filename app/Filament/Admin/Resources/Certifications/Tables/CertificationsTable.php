@@ -24,7 +24,6 @@ class CertificationsTable
     {
         return $table
             ->columns([
-                // Certified Center with NULL handling
                 TextColumn::make('certifiedCenter.name')
                     ->label(__('app.center'))
                     ->searchable()
@@ -46,12 +45,10 @@ class CertificationsTable
                     ->searchable()
                     ->badge()
                     ->color('info')
-                    ->toggleable(),
+                    ->toggleable()
+                    ->getStateUsing(fn($record) => $record->nationality ?: __('app.no_nationality')),
 
-                // REMOVED: certificate_type column
-                // Now using documentType.name exclusively
 
-                // Document Type with NULL handling
                 TextColumn::make('documentType.name')
                     ->label(__('app.document_type'))
                     ->searchable()
@@ -94,7 +91,6 @@ class CertificationsTable
                     ->sortable()
                     ->toggleable(),
 
-                // Trainer with NULL handling
                 TextColumn::make('trainer.name')
                     ->label(__('app.trainer'))
                     ->searchable()
@@ -104,7 +100,6 @@ class CertificationsTable
                     ->color(fn($record) => $record->trainer_id ? 'warning' : 'gray')
                     ->getStateUsing(fn($record) => $record->trainer?->name ?? __('app.unassigned')),
 
-                // Country with NULL handling
                 TextColumn::make('country.name')
                     ->label(__('app.country'))
                     ->searchable(['countries.name'])
@@ -118,7 +113,13 @@ class CertificationsTable
                     ->label(__('app.accreditation_date'))
                     ->date('M d, Y')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->getStateUsing(function ($record) {
+                        if (empty($record->accreditation_date)) {
+                            return __('app.no_accreditation_date');
+                        }
+                        return $record->accreditation_date;
+                    }),
 
                 IconColumn::make('paper_received')
                     ->label(__('app.paper_received'))
@@ -147,8 +148,6 @@ class CertificationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // REMOVED: certificate_type filter
-                // Now using document_type_id filter
 
                 SelectFilter::make('document_type_id')
                     ->label(__('app.document_type'))
@@ -177,7 +176,9 @@ class CertificationsTable
                             ->distinct()
                             ->pluck('nationality', 'nationality')
                             ->toArray();
-                    }),
+                    })
+                    ->placeholder(__('app.filter_select_placeholder'))
+                    ->searchable(),
 
                 SelectFilter::make('paper_received')
                     ->label(__('app.paper_received'))
@@ -223,10 +224,7 @@ class CertificationsTable
                     ->label(__('app.certificate_pdf'))
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->action(function ($record) {
-                        // PDF generation logic here
-                        // return response()->streamDownload(...)
-                    }),
+                    ->action(function ($record) {}),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

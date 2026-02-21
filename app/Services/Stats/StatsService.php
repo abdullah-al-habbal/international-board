@@ -8,6 +8,7 @@ use App\Services\AccreditationRequest\AccreditationRequestService;
 use App\Services\Certification\CertificationService;
 use App\Services\CertifiedCenter\CertifiedCenterService;
 use App\Services\User\UserService;
+use App\Services\Trainer\TrainerService;
 
 final class StatsService
 {
@@ -15,7 +16,8 @@ final class StatsService
         private readonly CertifiedCenterService $centerService,
         private readonly AccreditationRequestService $requestService,
         private readonly CertificationService $certificationService,
-        private readonly UserService $userService
+        private readonly UserService $userService,
+        private readonly TrainerService $trainerService,
     ) {}
 
     public function getDashboardStats(): array
@@ -25,6 +27,7 @@ final class StatsService
             'requests' => $this->getRequestStats(),
             'certifications' => $this->getCertificationStats(),
             'users' => $this->getUserStats(),
+            'trainers' => $this->getTrainerStats(),
         ];
     }
 
@@ -34,6 +37,7 @@ final class StatsService
             'total' => $this->centerService->getTotalCount(),
             'active' => $this->centerService->getActiveCount(),
             'inactive' => $this->centerService->getInactiveCount(),
+            'expired' => $this->centerService->getExpiredAccreditationCount(),
         ];
     }
 
@@ -60,6 +64,14 @@ final class StatsService
         return [
             'total' => $this->userService->getTotalCount(),
             'admins' => $this->userService->getAdminCount(),
+        ];
+    }
+
+    public function getTrainerStats(): array
+    {
+        return [
+            'total' => $this->trainerService->getTotalCount(),
+            'active' => $this->trainerService->getActiveCount(),
         ];
     }
 }
