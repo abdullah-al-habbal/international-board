@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class CenterTypeRequestResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model =  CenterTypeRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {

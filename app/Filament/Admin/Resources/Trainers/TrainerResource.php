@@ -19,7 +19,7 @@ use Filament\Tables\Table;
 
 class TrainerResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = Trainer::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {

@@ -18,7 +18,7 @@ use Filament\Tables\Table;
 
 class StaticPageResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = StaticPage::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {

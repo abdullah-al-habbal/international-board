@@ -10,7 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListCountries extends ListRecords
 {
-    protected static string $resource =  null;
+    protected static string $resource = CountryResource::class;
 
     protected function getHeaderActions(): array
     {

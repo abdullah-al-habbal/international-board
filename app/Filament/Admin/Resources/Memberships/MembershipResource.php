@@ -19,7 +19,7 @@ use Filament\Tables\Table;
 
 class MembershipResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = Membership::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {

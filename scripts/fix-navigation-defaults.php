@@ -3,16 +3,16 @@
 // scripts/fix-navigation-defaults.php
 declare(strict_types=1);
 
-$root = realpath(__DIR__.'/..');
-$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root.'/app'));
+$root = realpath(__DIR__ . '/..');
+$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/app'));
 $filesPatched = [];
 
 foreach ($iterator as $file) {
-    if (! $file->isFile()) {
+    if (!$file->isFile()) {
         continue;
     }
     $path = $file->getPathname();
-    if (! str_ends_with($path, '.php')) {
+    if (!str_ends_with($path, '.php')) {
         continue;
     }
 
@@ -35,22 +35,22 @@ foreach ($iterator as $file) {
     if ($patched !== $original) {
         if (preg_match('/class\s+([A-Za-z0-9_]+)\s+extends\s+[A-Za-z0-9_\\\\]+/m', $patched, $classMatches)) {
             if (preg_match('/navigationIcon\s*=\s*([A-Za-z0-9_\\\\:]+)::([A-Za-z0-9_]+)/m', $original, $m)) {
-                $icon = $m[1].'::'.$m[2];
+                $icon = $m[1] . '::' . $m[2];
             } else {
                 $icon = 'null';
             }
 
             if (
                 preg_match('/protected\s+static\s+[^\n=]*navigationIcon/m', $original) &&
-                ! preg_match('/public\s+static\s+function\s+getNavigationIcon\s*\(/m', $patched)
+                !preg_match('/public\s+static\s+function\s+getNavigationIcon\s*\(/m', $patched)
             ) {
                 $stub = "\n    public static function getNavigationIcon(): string|\\BackedEnum|null\n    {\n        return {$icon};\n    }\n";
-                $patched = preg_replace('/}\s*$/', $stub."}\n", $patched);
+                $patched = preg_replace('/}\s*$/', $stub . "}\n", $patched);
             }
 
             if (
                 preg_match('/protected\s+static\s+[^\n=]*navigationGroup/m', $original) &&
-                ! preg_match('/public\s+static\s+function\s+getNavigationGroup\s*\(/m', $patched)
+                !preg_match('/public\s+static\s+function\s+getNavigationGroup\s*\(/m', $patched)
             ) {
                 if (preg_match('/navigationGroup\s*=\s*__\(\s*[\'\"]([^\'\"]+)[\'\"]\s*\)/m', $original, $m2)) {
                     $groupKey = var_export($m2[1], true);
@@ -58,11 +58,10 @@ foreach ($iterator as $file) {
                 } else {
                     $stub = "\n    public static function getNavigationGroup(): ?string\n    {\n        return null;\n    }\n";
                 }
-                $patched = preg_replace('/}\s*$/', $stub."}\n", $patched);
+                $patched = preg_replace('/}\s*$/', $stub . "}\n", $patched);
             }
         }
 
-        file_put_contents($path.'.bak', $original);
         file_put_contents($path, $patched);
         $filesPatched[] = $path;
     }
@@ -75,5 +74,5 @@ if (count($filesPatched) === 0) {
     foreach ($filesPatched as $f) {
         echo " - $f\n";
     }
-    echo "Backups created with .bak extension. Review changes before committing.\n";
+    echo "Files patched successfully.\n";
 }

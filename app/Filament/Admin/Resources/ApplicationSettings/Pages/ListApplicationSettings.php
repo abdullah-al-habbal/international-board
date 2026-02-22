@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListApplicationSettings extends ListRecords
 {
-    protected static string $resource =  null;
+    protected static string $resource =  ApplicationSettingResource::class;
 
     protected function getHeaderActions(): array
     {

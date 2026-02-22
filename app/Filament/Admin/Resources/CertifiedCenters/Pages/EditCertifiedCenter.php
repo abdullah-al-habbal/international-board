@@ -9,7 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditCertifiedCenter extends EditRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = CertifiedCenterResource::class;
 
     protected function getHeaderActions(): array
     {

@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class EditRequestResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = EditRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {

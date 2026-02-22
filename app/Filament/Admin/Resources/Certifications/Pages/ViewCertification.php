@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewCertification extends ViewRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = CertificationResource::class;
 
     protected function getHeaderActions(): array
     {

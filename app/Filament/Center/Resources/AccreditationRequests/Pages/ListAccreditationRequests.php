@@ -11,7 +11,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListAccreditationRequests extends ListRecords
 {
-    protected static string $resource =  null;
+    protected static string $resource = AccreditationRequestResource::class;
 
     protected function getHeaderActions(): array
     {

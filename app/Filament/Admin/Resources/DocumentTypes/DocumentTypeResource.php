@@ -19,7 +19,7 @@ use Filament\Tables\Table;
 
 class DocumentTypeResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = DocumentType::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {

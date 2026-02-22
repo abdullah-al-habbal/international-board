@@ -58,7 +58,7 @@ class CertificationResource extends Resource
         return __('filament.navigation.groups.content');
     }
 
-    protected static ?string $model =  null;
+    protected static ?string $model = Certification::class;
 
     protected static ?int $navigationSort = 8;
 

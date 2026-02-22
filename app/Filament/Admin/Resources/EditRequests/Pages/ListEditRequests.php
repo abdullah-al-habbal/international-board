@@ -7,5 +7,6 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListEditRequests extends ListRecords
 {
-    protected static string $resource =  null;
+    protected static string $resource = EditRequestResource::class;
+}
 }

@@ -7,5 +7,5 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewCenterTypeRequest extends ViewRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = CenterTypeRequestResource::class;
 }

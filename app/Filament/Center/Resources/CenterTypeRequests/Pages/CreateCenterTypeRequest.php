@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CreateCenterTypeRequest extends CreateRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = CenterTypeRequestResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

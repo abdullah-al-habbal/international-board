@@ -9,11 +9,10 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewAccreditationRequest extends ViewRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = AccreditationRequestResource::class;
 
     protected function getHeaderActions(): array
     {
-        return [
-        ];
+        return [];
     }
 }

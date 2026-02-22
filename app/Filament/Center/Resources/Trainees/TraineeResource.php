@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TraineeResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = Trainee::class;
 
     public static function canCreate(): bool
     {

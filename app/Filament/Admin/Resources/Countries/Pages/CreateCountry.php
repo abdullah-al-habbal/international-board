@@ -9,7 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateCountry extends CreateRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = CountryResource::class;
 
     protected function getRedirectUrl(): string
     {

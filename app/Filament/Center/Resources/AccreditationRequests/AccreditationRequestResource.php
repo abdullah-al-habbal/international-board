@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccreditationRequestResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = AccreditationRequest::class;
 
     protected static ?int $navigationSort = 6;
 

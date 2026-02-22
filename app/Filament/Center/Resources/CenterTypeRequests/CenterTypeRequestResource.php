@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CenterTypeRequestResource extends Resource
 {
-    protected static ?string $model =  null;
+    protected static ?string $model = CenterTypeRequest::class;
 
     public static function canCreate(): bool
     {

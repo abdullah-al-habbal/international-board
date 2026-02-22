@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListCertifiedCenters extends ListRecords
 {
-    protected static string $resource =  null;
+    protected static string $resource = CertifiedCenterResource::class;
 
     protected function getHeaderActions(): array
     {

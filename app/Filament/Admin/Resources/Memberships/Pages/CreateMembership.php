@@ -9,7 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateMembership extends CreateRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = MembershipResource::class;
 
     protected function getRedirectUrl(): string
     {

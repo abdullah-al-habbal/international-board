@@ -10,7 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 
 final class ListCertifications extends ListRecords
 {
-    protected static string $resource =  null;
+    protected static string $resource = CertificationResource::class;
 
     protected function getHeaderActions(): array
     {

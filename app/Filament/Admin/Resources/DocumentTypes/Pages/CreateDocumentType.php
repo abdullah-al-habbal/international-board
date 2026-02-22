@@ -9,7 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateDocumentType extends CreateRecord
 {
-    protected static string $resource =  null;
+    protected static string $resource = DocumentTypeResource::class;
 
     protected function getRedirectUrl(): string
     {
