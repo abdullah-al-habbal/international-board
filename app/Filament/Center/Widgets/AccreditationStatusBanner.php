@@ -9,7 +9,7 @@ use Filament\Widgets\Widget;
 
 class AccreditationStatusBanner extends Widget
 {
-    protected static string $view = 'filament.center.widgets.accreditation-status-banner';
+    protected string $view = 'filament.center.widgets.accreditation-status-banner';
 
     protected static bool $isLazy = false;
 
