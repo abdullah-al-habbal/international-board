@@ -7,8 +7,8 @@ namespace App\Services\Stats;
 use App\Services\AccreditationRequest\AccreditationRequestService;
 use App\Services\Certification\CertificationService;
 use App\Services\CertifiedCenter\CertifiedCenterService;
-use App\Services\User\UserService;
 use App\Services\Trainer\TrainerService;
+use App\Services\User\UserService;
 
 final class StatsService
 {

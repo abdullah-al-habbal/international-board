@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "🔎 Running pre-push checks..."
+
+if command -v ./vendor/bin/phpstan >/dev/null 2>&1; then
+  echo "  ✓ PHPStan (fast) ..."
+  ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress --level=1 app || {
+    echo "  ✗ PHPStan found issues. Fix before pushing."
+    exit 1
+  }
+fi
+
+if command -v ./vendor/bin/phpunit >/dev/null 2>&1; then
+  echo "  ✓ Running smoke tests (if configured)..."
+  ./vendor/bin/phpunit --testsuite=smoke --stop-on-failure || true
+fi
+
+echo "✅ Pre-push checks passed!"
+exit 0

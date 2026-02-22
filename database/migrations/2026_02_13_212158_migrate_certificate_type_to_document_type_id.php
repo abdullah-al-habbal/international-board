@@ -6,7 +6,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Log::info('Starting certificate_type to document_type_id migration...');
@@ -17,13 +18,12 @@ return new class extends Migration {
             $professionalId = DB::table('document_types')->where('key', 'certificate_professional')->value('id');
             $specialistId = DB::table('document_types')->where('key', 'certificate_specialist')->value('id');
 
-            if (!$basicId || !$advancedId || !$professionalId || !$specialistId) {
+            if (! $basicId || ! $advancedId || ! $professionalId || ! $specialistId) {
                 throw new Exception('Default certificate document types not found. Run the previous migration first.');
             }
 
             $totalBefore = DB::table('certifications')->count();
             Log::info("Total certifications before migration: {$totalBefore}");
-
 
             $updated = 0;
 

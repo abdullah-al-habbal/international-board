@@ -10,7 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditTrainer extends EditRecord
 {
-    protected static string $resource = TrainerResource::class;
+    protected static string $resource =  null;
 
     protected function getHeaderActions(): array
     {

@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\AccreditationRequests\Schemas;
 
 use App\Enums\AccreditationStatus;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class AccreditationRequestForm
@@ -36,9 +37,11 @@ class AccreditationRequestForm
                 Textarea::make('admin_notes')
                     ->label(__('app.admin_notes'))
                     ->columnSpanFull(),
-                TextInput::make('reviewed_by')
+                Select::make('reviewed_by')
                     ->label(__('app.reviewed_by'))
-                    ->numeric(),
+                    ->relationship('reviewer', 'name')
+                    ->searchable()
+                    ->placeholder(__('app.no_value')),
                 DateTimePicker::make('reviewed_at')
                     ->label(__('app.reviewed_at')),
             ]);

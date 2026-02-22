@@ -168,7 +168,6 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
 
-
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',

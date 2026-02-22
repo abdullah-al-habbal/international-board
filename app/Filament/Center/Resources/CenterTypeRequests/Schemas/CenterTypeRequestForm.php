@@ -27,10 +27,11 @@ class CenterTypeRequestForm
                         if (empty($name)) {
                             $name = $record->getTranslation('name', 'en');
                         }
+
                         return $name ?: $record->key;
                     })
-                    ->visible(fn($get) => $get('type') === 'course')
-                    ->required(fn($get) => $get('type') === 'course')
+                    ->visible(fn ($get) => $get('type') === 'course')
+                    ->required(fn ($get) => $get('type') === 'course')
                     ->searchable()
                     ->preload(),
                 TextInput::make('requested_name')

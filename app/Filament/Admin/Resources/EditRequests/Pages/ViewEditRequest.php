@@ -7,5 +7,5 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewEditRequest extends ViewRecord
 {
-    protected static string $resource = EditRequestResource::class;
+    protected static string $resource =  null;
 }

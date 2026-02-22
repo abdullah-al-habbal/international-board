@@ -7,5 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateApplicationSetting extends CreateRecord
 {
-    protected static string $resource = ApplicationSettingResource::class;
+    protected static string $resource =  null;
 }

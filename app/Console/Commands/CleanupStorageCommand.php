@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Carbon\Carbon;
 
 class CleanupStorageCommand extends Command
 {
     protected $signature = 'cleanup:storage';
+
     protected $description = 'Delete log files older than 7 days and remove any t.txt files in storage';
 
     protected Filesystem $files;
@@ -37,7 +38,7 @@ class CleanupStorageCommand extends Command
                         $deleted++;
                     }
                 } catch (\Throwable $e) {
-                    $this->error('Error checking/deleting: ' . $file->getPathname() . ' — ' . $e->getMessage());
+                    $this->error('Error checking/deleting: '.$file->getPathname().' — '.$e->getMessage());
                 }
             }
         } else {
@@ -53,7 +54,7 @@ class CleanupStorageCommand extends Command
                         $this->files->delete($f->getPathname());
                         $deleted++;
                     } catch (\Throwable $e) {
-                        $this->error('Error deleting t.txt: ' . $f->getPathname() . ' — ' . $e->getMessage());
+                        $this->error('Error deleting t.txt: '.$f->getPathname().' — '.$e->getMessage());
                     }
                 }
             }

@@ -9,7 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateTrainer extends CreateRecord
 {
-    protected static string $resource = TrainerResource::class;
+    protected static string $resource =  null;
 
     protected function getRedirectUrl(): string
     {

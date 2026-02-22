@@ -1,4 +1,5 @@
 <?php
+
 // filePath: lang/ar/widgets.php
 declare(strict_types=1);
 

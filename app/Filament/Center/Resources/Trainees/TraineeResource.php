@@ -11,25 +11,55 @@ use App\Filament\Center\Resources\Trainees\Pages\ViewTrainee;
 use App\Filament\Center\Resources\Trainees\Schemas\TraineeForm;
 use App\Filament\Center\Resources\Trainees\Schemas\TraineeInfolist;
 use App\Filament\Center\Resources\Trainees\Tables\TraineesTable;
-use App\Models\CertifiedCenter;
 use App\Models\Trainee;
+use App\Services\Accreditation\AccreditationGateService;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class TraineeResource extends Resource
 {
-    protected static ?string $model = Trainee::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
+    public static function canCreate(): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.users');
+    public static function canEdit(Model $record): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
 
-    protected static ?int $navigationSort = 3;
+    public static function canDelete(Model $record): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedUsers;
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.content');
+    }
+
+    protected static ?int $navigationSort = 9;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -56,21 +86,6 @@ class TraineeResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.trainees');
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
-
-        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof CertifiedCenter) {
-            $centerId = Auth::guard('web')->id();
-
-            $query->whereHas('certifications', function (Builder $q) use ($centerId) {
-                $q->where('certified_center_id', $centerId);
-            });
-        }
-
-        return $query;
     }
 
     public static function form(Schema $schema): Schema

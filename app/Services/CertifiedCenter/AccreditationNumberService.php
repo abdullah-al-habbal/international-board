@@ -23,11 +23,11 @@ final class AccreditationNumberService
             ? ((int) substr($lastNumber, strlen($prefix)) + 1)
             : 1;
 
-        $accreditationNumber = $prefix . str_pad((string) $number, 5, '0', STR_PAD_LEFT);
+        $accreditationNumber = $prefix.str_pad((string) $number, 5, '0', STR_PAD_LEFT);
 
         while ($this->repository->accreditationNumberExists($accreditationNumber)) {
             $number++;
-            $accreditationNumber = $prefix . str_pad((string) $number, 5, '0', STR_PAD_LEFT);
+            $accreditationNumber = $prefix.str_pad((string) $number, 5, '0', STR_PAD_LEFT);
         }
 
         return $accreditationNumber;

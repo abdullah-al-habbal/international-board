@@ -1,16 +1,18 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Exports\Stats;
 
 use App\Enums\AccreditationStatus;
 use App\Exports\Contracts\StatExportable;
 use App\Models\AccreditationRequest;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-final class PendingRequestsExport implements StatExportable, FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+final class PendingRequestsExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
 {
     public function query()
     {
@@ -43,6 +45,6 @@ final class PendingRequestsExport implements StatExportable, FromQuery, WithHead
 
     public function filename(): string
     {
-        return 'pending_requests_' . now()->format('Ymd_His') . '.xlsx';
+        return 'pending_requests_'.now()->format('Ymd_His').'.xlsx';
     }
 }

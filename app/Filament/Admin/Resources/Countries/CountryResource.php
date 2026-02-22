@@ -16,15 +16,20 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class CountryResource extends Resource
 {
-    protected static ?string $model = Country::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-globe-alt';
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return 'heroicon-o-globe-alt';
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = 'filament.navigation.groups.settings';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.settings');
+    }
 
     protected static ?int $navigationSort = 40;
 

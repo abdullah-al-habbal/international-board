@@ -16,17 +16,22 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class DocumentTypeResource extends Resource
 {
-    protected static ?string $model = DocumentType::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return 'heroicon-o-document-text';
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.settings');
+    }
 
     protected static ?string $recordTitleAttribute = 'key';
-
-    protected static string | UnitEnum | null $navigationGroup = 'filament.navigation.groups.settings';
 
     protected static ?int $navigationSort = 35;
 

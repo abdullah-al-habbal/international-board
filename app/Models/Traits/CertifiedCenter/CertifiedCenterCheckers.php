@@ -18,7 +18,7 @@ trait CertifiedCenterCheckers
 
     public function isAccreditationActive(): bool
     {
-        if (!$this->accreditation_period_start || !$this->accreditation_period_end) {
+        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
             return false;
         }
 
@@ -35,6 +35,17 @@ trait CertifiedCenterCheckers
             ->exists();
     }
 
+    public function hasActiveAccreditationRequest(): bool
+    {
+        $now = Carbon::now();
+
+        return $this->accreditationRequests()
+            ->where('status', AccreditationStatus::Approved)
+            ->where('requested_start_date', '<=', $now)
+            ->where('requested_end_date', '>=', $now)
+            ->exists();
+    }
+
     public function canPerformActions(): bool
     {
         return $this->is_active
@@ -44,15 +55,15 @@ trait CertifiedCenterCheckers
 
     public function accreditationBlockReason(): ?string
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return __('accreditation.blocked.center_inactive');
         }
 
-        if (!$this->hasApprovedAccreditationRequest()) {
+        if (! $this->hasApprovedAccreditationRequest()) {
             return __('accreditation.blocked.no_approved_request');
         }
 
-        if (!$this->isAccreditationActive()) {
+        if (! $this->isAccreditationActive()) {
             return __('accreditation.blocked.period_expired');
         }
 

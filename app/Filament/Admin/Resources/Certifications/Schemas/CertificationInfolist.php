@@ -18,13 +18,12 @@ class CertificationInfolist
                     ->placeholder(__('app.not_assigned'))
                     ->default(__('app.not_assigned'))
                     ->badge()
-                    ->color(fn($record) => $record->certified_center_id ? 'primary' : 'gray'),
-
+                    ->color(fn ($record) => $record->certified_center_id ? 'primary' : 'gray'),
 
                 TextEntry::make('documentType.name')
                     ->label(__('app.document_type'))
                     ->getStateUsing(function ($record) {
-                        if (!$record->documentType) {
+                        if (! $record->documentType) {
                             return __('app.no_document_type');
                         }
 
@@ -36,7 +35,7 @@ class CertificationInfolist
                         return $name ?: $record->documentType->key;
                     })
                     ->badge()
-                    ->color(fn($record) => $record->document_type_id ? 'info' : 'gray'),
+                    ->color(fn ($record) => $record->document_type_id ? 'info' : 'gray'),
 
                 TextEntry::make('trainee.name')
                     ->label(__('app.trainee_name'))
@@ -63,20 +62,20 @@ class CertificationInfolist
                     ->placeholder(__('app.not_assigned'))
                     ->default(__('app.not_assigned'))
                     ->badge()
-                    ->color(fn($record) => $record->trainer_id ? 'warning' : 'gray'),
+                    ->color(fn ($record) => $record->trainer_id ? 'warning' : 'gray'),
 
                 TextEntry::make('country.name')
                     ->label(__('app.country'))
                     ->placeholder(__('app.not_assigned'))
                     ->default(__('app.not_assigned'))
                     ->badge()
-                    ->color(fn($record) => $record->country_id ? 'info' : 'gray'),
+                    ->color(fn ($record) => $record->country_id ? 'info' : 'gray'),
 
                 TextEntry::make('paper_received')
                     ->label(__('app.paper_received'))
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state ? __('app.yes') : __('app.no'))
-                    ->color(fn($state) => $state ? 'success' : 'danger'),
+                    ->formatStateUsing(fn ($state) => $state ? __('app.yes') : __('app.no'))
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
                 TextEntry::make('notes')
                     ->label(__('app.notes'))

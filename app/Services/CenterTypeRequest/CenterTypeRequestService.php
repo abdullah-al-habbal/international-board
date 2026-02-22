@@ -6,8 +6,8 @@ namespace App\Services\CenterTypeRequest;
 
 use App\Enums\CenterTypeRequestStatus;
 use App\Enums\CenterTypeRequestType;
-use App\Models\DocumentType;
 use App\Models\CenterTypeRequest;
+use App\Models\DocumentType;
 use App\Repositories\CenterTypeRequest\CenterTypeRequestRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,8 +16,7 @@ final class CenterTypeRequestService
 {
     public function __construct(
         private readonly CenterTypeRequestRepository $repository
-    ) {
-    }
+    ) {}
 
     public function create(array $data): CenterTypeRequest
     {

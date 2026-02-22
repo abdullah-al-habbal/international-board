@@ -1,19 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\AccreditationRequests\Pages;
 
+use App\Enums\AccreditationStatus;
 use App\Filament\Admin\Resources\AccreditationRequests\AccreditationRequestResource;
-use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewAccreditationRequest extends ViewRecord
 {
-    protected static string $resource = AccreditationRequestResource::class;
+    protected static string $resource =  null;
 
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            Action::make('approve')
+                ->label(__('app.approve'))
+                ->color('success')
+                ->icon('heroicon-o-check-circle')
+                ->requiresConfirmation()
+                ->action(fn () => $this->record->update(['status' => AccreditationStatus::Approved]))
+                ->after(function () {
+                    if (method_exists($this, 'refreshFormData')) {
+                        $this->refreshFormData(['status']);
+                    }
+                })
+                ->visible(fn () => $this->record->status === AccreditationStatus::Pending || $this->record->status === AccreditationStatus::UnderReview),
+            Action::make('reject')
+                ->label(__('app.reject'))
+                ->color('danger')
+                ->icon('heroicon-o-x-circle')
+                ->requiresConfirmation()
+                ->action(fn () => $this->record->update(['status' => AccreditationStatus::Rejected]))
+                ->after(function () {
+                    if (method_exists($this, 'refreshFormData')) {
+                        $this->refreshFormData(['status']);
+                    }
+                })
+                ->visible(fn () => $this->record->status === AccreditationStatus::Pending || $this->record->status === AccreditationStatus::UnderReview),
+            Action::make('under_review')
+                ->label(__('app.under_review'))
+                ->color('warning')
+                ->icon('heroicon-o-eye')
+                ->action(fn () => $this->record->update(['status' => AccreditationStatus::UnderReview]))
+                ->after(function () {
+                    if (method_exists($this, 'refreshFormData')) {
+                        $this->refreshFormData(['status']);
+                    }
+                })
+                ->visible(fn () => $this->record->status === AccreditationStatus::Pending),
         ];
     }
 }

@@ -16,15 +16,20 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class TraineeResource extends Resource
 {
-    protected static ?string $model = Trainee::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return 'heroicon-o-users';
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.users');
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.users');
+    }
 
     protected static ?int $navigationSort = 3;
 

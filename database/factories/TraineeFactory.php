@@ -37,7 +37,7 @@ class TraineeFactory extends Factory
      */
     public function complete(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'date_of_birth' => $this->faker->dateTimeBetween('-45 years', '-25 years'),
@@ -53,7 +53,7 @@ class TraineeFactory extends Factory
      */
     public function minimal(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email' => null,
             'phone' => null,
             'date_of_birth' => null,
@@ -71,7 +71,7 @@ class TraineeFactory extends Factory
      */
     public function male(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'gender' => 'male',
         ]);
     }
@@ -81,7 +81,7 @@ class TraineeFactory extends Factory
      */
     public function female(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'gender' => 'female',
         ]);
     }

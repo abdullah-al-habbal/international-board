@@ -1,14 +1,21 @@
 <?php
+
 return [
     'blocked' => [
-        'center_inactive' => 'Your center account is currently inactive. Please contact the administration.',
-        'no_approved_request' => 'You must submit an accreditation request and wait for admin approval before performing any actions.',
-        'period_expired' => 'Your accreditation period has expired. Please submit a renewal request.',
+        'title' => 'Account Restricted',
+        'center_inactive' => 'Your center account is currently inactive. Please contact administration.',
+        'no_approved_request' => 'You do not have an approved accreditation request on file.',
+        'period_expired' => 'Your current accreditation period has expired.',
     ],
+
     'banner' => [
-        'title' => 'Action Restricted',
+        'title' => 'Accreditation Status',
+        'active' => 'Your accreditation is active. You have full access to the system.',
+        'blocked' => 'Your accreditation is inactive or expired. Access is restricted.',
+        'action' => 'Manage Requests',
     ],
-    'notification' => [
-        'title' => 'Accreditation Required',
+
+    'create_disabled' => [
+        'has_active' => 'You already have an active or approved accreditation request.',
     ],
 ];

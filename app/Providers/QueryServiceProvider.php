@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,6 +32,7 @@ final class QueryServiceProvider extends ServiceProvider
                     $query->orWhere($column, 'LIKE', "%{$search}%");
                 }
             });
+
             return $this;
         });
     }

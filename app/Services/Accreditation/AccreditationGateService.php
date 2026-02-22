@@ -1,5 +1,8 @@
 <?php
+
+// filePath: app/Services/Accreditation/AccreditationGateService.php
 declare(strict_types=1);
+
 namespace App\Services\Accreditation;
 
 use App\Models\CertifiedCenter;
@@ -16,7 +19,7 @@ final class AccreditationGateService
         /** @var CertifiedCenter|null $center */
         $center = auth('certified_center')->user();
 
-        if (!$center instanceof CertifiedCenter) {
+        if (! $center instanceof CertifiedCenter) {
             return false;
         }
 

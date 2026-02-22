@@ -1,4 +1,5 @@
 <?php
+
 // file: app/Enums/CenterStatus.php
 declare(strict_types=1);
 

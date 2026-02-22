@@ -6,13 +6,13 @@ namespace App\Exports\Stats;
 
 use App\Exports\Contracts\StatExportable;
 use App\Models\Certification;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-final class CertificationsExport implements StatExportable, FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+final class CertificationsExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
 {
     public function query(): Builder
     {
@@ -42,6 +42,6 @@ final class CertificationsExport implements StatExportable, FromQuery, WithHeadi
 
     public function filename(): string
     {
-        return 'certifications_' . now()->format('Ymd_His') . '.xlsx';
+        return 'certifications_'.now()->format('Ymd_His').'.xlsx';
     }
 }

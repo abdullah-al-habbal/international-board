@@ -15,15 +15,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class ApplicationSettingResource extends Resource
 {
-    protected static ?string $model = ApplicationSetting::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedCog6Tooth;
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = 'filament.navigation.groups.settings';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.settings');
+    }
 
     protected static ?int $navigationSort = 30;
 

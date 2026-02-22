@@ -11,6 +11,6 @@ enum CenterTypeRequestType: string
 
     public function label(): string
     {
-        return __('enums.center_type_request_type.' . $this->value);
+        return __('enums.center_type_request_type.'.$this->value);
     }
 }

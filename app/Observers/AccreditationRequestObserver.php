@@ -5,112 +5,69 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Enums\AccreditationStatus;
-use App\Events\AccreditationStarted;
+use App\Enums\CenterStatus;
 use App\Models\AccreditationRequest;
-use App\Models\CertifiedCenter;
-use App\Notifications\AccreditationStatusChanged;
 use Illuminate\Support\Facades\Auth;
 
-final class AccreditationRequestObserver
+class AccreditationRequestObserver
 {
-    private const WEB_GUARD = 'web';
-
-    public function creating(AccreditationRequest $accreditationRequest): void
+    public function updating(AccreditationRequest $request): void
     {
-        $this->assignCenterIdIfNeeded($accreditationRequest);
-    }
+        if (
+            $request->isDirty('status')
+            && AccreditationStatus::from($request->status instanceof AccreditationStatus
+                ? $request->status->value
+                : $request->status)->isReviewed()
+        ) {
+            if (empty($request->reviewed_by)) {
+                $request->reviewed_by = Auth::id();
+            }
 
-    public function created(AccreditationRequest $accreditationRequest): void
-    {
-        $this->dispatchAccreditationStartedEvent($accreditationRequest);
-    }
-
-    public function updating(AccreditationRequest $accreditationRequest): void
-    {
-        $this->setReviewDetailsIfStatusChanged($accreditationRequest);
-    }
-
-    public function updated(AccreditationRequest $accreditationRequest): void
-    {
-        $this->notifyStatusChangeIfNeeded($accreditationRequest);
-    }
-
-    private function assignCenterIdIfNeeded(AccreditationRequest $accreditationRequest): void
-    {
-        if ($this->shouldAssignCenterId($accreditationRequest)) {
-            $center = $this->getAuthenticatedCenter();
-            if ($center !== null) {
-                $accreditationRequest->certified_center_id = $center->id;
+            if (empty($request->reviewed_at)) {
+                $request->reviewed_at = now();
             }
         }
     }
 
-    private function shouldAssignCenterId(AccreditationRequest $accreditationRequest): bool
+    public function updated(AccreditationRequest $request): void
     {
-        return !$accreditationRequest->certified_center_id && $this->isWebGuardAuthenticated();
-    }
-
-    private function isWebGuardAuthenticated(): bool
-    {
-        return auth()->guard(self::WEB_GUARD)->check();
-    }
-
-    private function getAuthenticatedCenter(): ?CertifiedCenter
-    {
-        $user = auth()->guard(self::WEB_GUARD)->user();
-
-        return $user instanceof CertifiedCenter ? $user : null;
-    }
-
-    private function dispatchAccreditationStartedEvent(AccreditationRequest $accreditationRequest): void
-    {
-        AccreditationStarted::dispatch($accreditationRequest);
-    }
-
-    private function setReviewDetailsIfStatusChanged(AccreditationRequest $accreditationRequest): void
-    {
-        if ($accreditationRequest->isDirty('status')) {
-            $this->updateReviewDetails($accreditationRequest);
-        }
-    }
-
-    private function updateReviewDetails(AccreditationRequest $accreditationRequest): void
-    {
-        $newStatus = $accreditationRequest->status;
-
-        if (!$newStatus->isReviewed()) {
+        if (! $request->wasChanged('status')) {
             return;
         }
 
-        $reviewer = Auth::guard('web')->user();
+        $center = $request->certifiedCenter;
 
-        if (!$reviewer instanceof User) {
-            abort(403, 'Only admin users can review accreditation requests.');
+        if (! $center) {
+            return;
         }
 
-        $accreditationRequest->reviewed_at = now();
-        $accreditationRequest->reviewed_by = $reviewer->id;
+        $status = $request->status instanceof AccreditationStatus
+            ? $request->status
+            : AccreditationStatus::from($request->status);
 
-        if ($newStatus === AccreditationStatus::Approved) {
-            $accreditationRequest->certifiedCenter->update([
-                'accreditation_period_start' => $accreditationRequest->requested_start_date,
-                'accreditation_period_end' => $accreditationRequest->requested_end_date,
+        if ($status === AccreditationStatus::Approved) {
+            $center->update([
+                'accreditation_period_start' => $request->requested_start_date,
+                'accreditation_period_end' => $request->requested_end_date,
+                'status' => CenterStatus::Active,
                 'is_active' => true,
             ]);
-        }
-    }
 
-    private function notifyStatusChangeIfNeeded(AccreditationRequest $accreditationRequest): void
-    {
-        if ($accreditationRequest->wasChanged('status')) {
-            $this->sendStatusChangeNotification($accreditationRequest);
+            return;
         }
-    }
 
-    private function sendStatusChangeNotification(AccreditationRequest $accreditationRequest): void
-    {
-        $accreditationRequest->certifiedCenter?->notify(
-            new AccreditationStatusChanged($accreditationRequest)
-        );
+        if ($status === AccreditationStatus::Rejected) {
+            $hasOtherActive = $center->accreditationRequests()
+                ->where('id', '!=', $request->id)
+                ->where('status', AccreditationStatus::Approved)
+                ->exists();
+
+            if (! $hasOtherActive) {
+                $center->update([
+                    'status' => CenterStatus::Suspended,
+                    'is_active' => false,
+                ]);
+            }
+        }
     }
 }

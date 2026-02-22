@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Models\CertifiedCenter;
@@ -14,7 +16,7 @@ final class EnsureAccreditationValid
         /** @var CertifiedCenter|null $center */
         $center = auth('certified_center')->user();
 
-        if (!$center instanceof CertifiedCenter) {
+        if (! $center instanceof CertifiedCenter) {
             return $next($request);
         }
 
@@ -22,12 +24,13 @@ final class EnsureAccreditationValid
             return $next($request);
         }
 
-        if (!$center->canPerformActions()) {
+        if (! $center->canPerformActions()) {
             if ($request->isMethod('GET')) {
                 session()->flash(
                     'accreditation_warning',
                     $center->accreditationBlockReason()
                 );
+
                 return $next($request);
             }
 

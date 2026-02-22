@@ -31,7 +31,7 @@ class CenterTypeRequestInfolist
                 TextEntry::make('rejection_message')
                     ->label(__('app.rejection_message'))
                     ->columnSpanFull()
-                    ->visible(fn($record) => $record->status === CenterTypeRequestStatus::Rejected),
+                    ->visible(fn ($record) => $record->status === CenterTypeRequestStatus::Rejected),
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime(),

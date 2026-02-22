@@ -22,7 +22,7 @@ final class ArchitectureServiceProvider extends ServiceProvider
         Model::retrieved(function ($model) {
             foreach (['table', 'primaryKey'] as $prop) {
                 if (! property_exists($model, $prop)) {
-                    throw new \LogicException(get_class($model) . " must define \$$prop");
+                    throw new \LogicException(get_class($model)." must define \$$prop");
                 }
             }
         });

@@ -17,6 +17,7 @@ final class MacroServiceProvider extends ServiceProvider
             foreach ($this as $item) {
                 $callback($item);
             }
+
             return $this;
         });
     }

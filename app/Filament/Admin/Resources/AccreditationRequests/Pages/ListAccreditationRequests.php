@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListAccreditationRequests extends ListRecords
 {
-    protected static string $resource = AccreditationRequestResource::class;
+    protected static string $resource =  null;
 
     protected function getHeaderActions(): array
     {

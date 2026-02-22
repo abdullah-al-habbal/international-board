@@ -23,15 +23,15 @@ class EditRequestsTable
                 TextColumn::make('editable_type')
                     ->label(__('app.editable_type'))
                     ->searchable()
-                    ->getStateUsing(fn($record) => $record->editable_type ?: __('app.no_value')),
+                    ->getStateUsing(fn ($record) => $record->editable_type ?: __('app.no_value')),
                 TextColumn::make('editable_id')
                     ->label(__('app.editable_id'))
                     ->searchable()
-                    ->getStateUsing(fn($record) => $record->editable_id ?: __('app.no_value')),
+                    ->getStateUsing(fn ($record) => $record->editable_id ?: __('app.no_value')),
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()
-                    ->color(fn(EditRequestStatus $state): string => $state->color()),
+                    ->color(fn (EditRequestStatus $state): string => $state->color()),
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()

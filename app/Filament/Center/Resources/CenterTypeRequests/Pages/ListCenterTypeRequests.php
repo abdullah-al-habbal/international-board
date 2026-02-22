@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListCenterTypeRequests extends ListRecords
 {
-    protected static string $resource = CenterTypeRequestResource::class;
+    protected static string $resource =  null;
 
     protected function getHeaderActions(): array
     {

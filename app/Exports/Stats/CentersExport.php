@@ -8,11 +8,11 @@ use App\Exports\Contracts\StatExportable;
 use App\Models\CertifiedCenter;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-final class CentersExport implements StatExportable, FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+final class CentersExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
 {
     public function query(): Builder
     {
@@ -41,6 +41,6 @@ final class CentersExport implements StatExportable, FromQuery, WithHeadings, Wi
 
     public function filename(): string
     {
-        return 'centers_' . now()->format('Ymd_His') . '.xlsx';
+        return 'centers_'.now()->format('Ymd_His').'.xlsx';
     }
 }

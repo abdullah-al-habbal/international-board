@@ -28,6 +28,7 @@ class CertifiedCentersTable
                         if (empty($record->email_verified_at)) {
                             return __('app.no_value');
                         }
+
                         return $record->email_verified_at;
                     }),
                 TextColumn::make('phone')

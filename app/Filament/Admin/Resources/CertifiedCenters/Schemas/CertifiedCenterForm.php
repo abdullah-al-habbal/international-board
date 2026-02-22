@@ -49,7 +49,7 @@ class CertifiedCenterForm
                     ->label(__('app.accreditation_number'))
                     ->disabled()
                     ->dehydrated(false)
-                    ->visible(fn($record) => $record !== null),
+                    ->visible(fn ($record) => $record !== null),
                 Select::make('allowedDocumentTypes')
                     ->label(__('app.allowed_document_types'))
                     ->relationship('allowedDocumentTypes', 'name')
@@ -58,6 +58,7 @@ class CertifiedCenterForm
                         if (empty($name)) {
                             $name = $record->getTranslation('name', 'en');
                         }
+
                         return $name ?: $record->key;
                     })
                     ->multiple()

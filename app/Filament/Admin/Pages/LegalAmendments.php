@@ -8,7 +8,7 @@ use Filament\Support\Icons\Heroicon;
 
 class LegalAmendments extends Page
 {
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|BackedEnum|null $navigationIcon = null;
 
     protected string $view = 'filament.admin.pages.legal-amendments';
 
@@ -27,5 +27,10 @@ class LegalAmendments extends Page
     protected function getHeaderActions(): array
     {
         return [];
+    }
+
+    public static function getNavigationIcon(): string|\BackedEnum|null
+    {
+        return Heroicon::OutlinedDocumentText;
     }
 }

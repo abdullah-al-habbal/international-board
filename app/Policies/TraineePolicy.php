@@ -8,7 +8,6 @@ use App\Models\CertifiedCenter;
 use App\Models\Trainee;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Database\Eloquent\Builder;
 
 class TraineePolicy
 {

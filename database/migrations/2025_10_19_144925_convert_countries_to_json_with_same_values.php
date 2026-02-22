@@ -54,7 +54,6 @@ return new class extends Migration
         });
     }
 
-
     public function down(): void
     {
         // Get all existing data

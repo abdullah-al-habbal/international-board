@@ -1,37 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Filament\Center\Widgets;
 
 use App\Models\CertifiedCenter;
-use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
 
-final class AccreditationStatusBanner extends Widget
+class AccreditationStatusBanner extends Widget
 {
-    protected string $view = 'filament.center.widgets.accreditation-banner';
+    protected static string $view = 'filament.center.widgets.accreditation-status-banner';
+
     protected static bool $isLazy = false;
 
-    protected static ?int $sort = -10;
+    protected int|string|array $columnSpan = 'full';
 
-    public ?string $blockReason = null;
-    public bool $isBlocked = false;
-
-    public function mount(): void
+    public function getCenter(): CertifiedCenter
     {
-        /** @var CertifiedCenter|null $center */
+        /** @var CertifiedCenter $center */
         $center = auth('certified_center')->user();
 
-        if ($center && !$center->canPerformActions()) {
-            $this->isBlocked = true;
-            $this->blockReason = $center->accreditationBlockReason();
-
-            Notification::make()
-                ->title(__('accreditation.notification.title'))
-                ->body($this->blockReason)
-                ->warning()
-                ->persistent()
-                ->send();
-        }
+        return $center;
     }
 }

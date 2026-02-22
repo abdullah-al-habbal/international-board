@@ -13,15 +13,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class CenterTypeRequestResource extends Resource
 {
-    protected static ?string $model = CenterTypeRequest::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentDuplicate;
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedDocumentDuplicate;
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.content');
+    }
 
     protected static ?int $navigationSort = 7;
 

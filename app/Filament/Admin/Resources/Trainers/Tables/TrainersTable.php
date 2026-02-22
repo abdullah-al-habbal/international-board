@@ -45,14 +45,14 @@ class TrainersTable
                     ->label(__('Phone'))
                     ->searchable()
                     ->icon('heroicon-o-phone')
-                    ->getStateUsing(fn($record) => $record->phone ?: __('app.no_value'))
+                    ->getStateUsing(fn ($record) => $record->phone ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('country.name')
                     ->label(__('Country'))
                     ->searchable()
                     ->sortable()
-                    ->getStateUsing(fn($record) => $record->country->name ?? __('app.no_value'))
+                    ->getStateUsing(fn ($record) => $record->country->name ?? __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('specializations')
@@ -60,7 +60,7 @@ class TrainersTable
                     ->badge()
                     ->separator(',')
                     ->limit(2)
-                    ->getStateUsing(fn($record) => !empty($record->specializations) ? $record->specializations : __('app.no_value'))
+                    ->getStateUsing(fn ($record) => ! empty($record->specializations) ? $record->specializations : __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('certifications_count')

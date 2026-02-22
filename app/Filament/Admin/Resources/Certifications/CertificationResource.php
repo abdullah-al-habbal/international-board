@@ -15,15 +15,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class CertificationResource extends Resource
 {
-    protected static ?string $model = Certification::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedAcademicCap;
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.content');
+    }
 
     protected static ?int $navigationSort = 8;
 

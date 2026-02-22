@@ -11,9 +11,8 @@ use App\Filament\Center\Resources\Certifications\Schemas\CertificationInfolist;
 use App\Filament\Center\Resources\Certifications\Tables\CertificationsTable;
 use App\Models\Certification;
 use App\Models\CertifiedCenter;
-use UnitEnum;
-use BackedEnum;
 use App\Services\Accreditation\AccreditationGateService;
+use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -48,11 +47,18 @@ class CertificationResource extends Resource
     {
         return true;
     }
-    protected static ?string $model = Certification::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedAcademicCap;
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.content');
+    }
+
+    protected static ?string $model =  null;
 
     protected static ?int $navigationSort = 8;
 

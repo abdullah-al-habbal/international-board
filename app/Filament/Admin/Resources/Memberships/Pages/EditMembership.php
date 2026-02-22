@@ -10,7 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditMembership extends EditRecord
 {
-    protected static string $resource = MembershipResource::class;
+    protected static string $resource =  null;
 
     protected function getHeaderActions(): array
     {

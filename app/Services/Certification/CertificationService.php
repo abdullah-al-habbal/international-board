@@ -8,9 +8,7 @@ use App\Repositories\Certification\CertificationRepository;
 
 final class CertificationService
 {
-    public function __construct(private readonly CertificationRepository $repo)
-    {
-    }
+    public function __construct(private readonly CertificationRepository $repo) {}
 
     public function getByCode(string $code)
     {

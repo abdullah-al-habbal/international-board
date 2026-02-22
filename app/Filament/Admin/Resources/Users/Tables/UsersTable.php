@@ -32,13 +32,13 @@ class UsersTable
                     ->sortable()
                     ->icon('heroicon-o-envelope')
                     ->copyable()
-                    ->getStateUsing(fn($record) => $record->email ?: __('app.no_value'))
+                    ->getStateUsing(fn ($record) => $record->email ?: __('app.no_value'))
                     ->copyMessage(__('Email copied!')),
 
                 TextColumn::make('type')
                     ->label(__('User Type'))
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'admin' => 'danger',
                         'client' => 'info',
                         default => 'gray',

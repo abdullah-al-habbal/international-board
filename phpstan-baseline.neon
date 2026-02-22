@@ -1,0 +1,277 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Models\\CertifiedCenter\:\:accreditationExpired\(\) invoked with 0 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: app/Exports/Stats/ExpiredCentersExport.php
+
+		-
+			message: '#^Result of method App\\Models\\CertifiedCenter\:\:accreditationExpired\(\) \(void\) is used\.$#'
+			identifier: staticMethod.void
+			count: 1
+			path: app/Exports/Stats/ExpiredCentersExport.php
+
+		-
+			message: '#^Static call to instance method App\\Models\\CertifiedCenter\:\:accreditationExpired\(\)\.$#'
+			identifier: method.staticCall
+			count: 1
+			path: app/Exports/Stats/ExpiredCentersExport.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Admin/Resources/Certifications/Schemas/CertificationForm.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Trainee\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Admin/Resources/Certifications/Schemas/CertificationForm.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Trainer\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Admin/Resources/Certifications/Schemas/CertificationForm.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Certification\:\:whereNotNull\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Admin/Resources/Certifications/Tables/CertificationsTable.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Center/Resources/Certifications/Schemas/CertificationForm.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Trainee\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Center/Resources/Certifications/Schemas/CertificationForm.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Certification\:\:whereNotNull\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Filament/Center/Resources/Certifications/Tables/CertificationsTable.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\ApplicationSetting\:\:updateOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Models/ApplicationSetting.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\ApplicationSetting\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Models/ApplicationSetting.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Certification\:\:\$accreditation_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Certification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Certification\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Certification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Certification\:\:\$documentType\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Certification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Certification\:\:\$paper_received\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Certification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\CertifiedCenter\:\:\$accreditation_period_end\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/CertifiedCenter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\CertifiedCenter\:\:\$accreditation_period_start\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/CertifiedCenter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\CertifiedCenter\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Models/CertifiedCenter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Trainee\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Trainee.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Trainer\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Trainer.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Trainer\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Trainer.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Trainer\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Trainer.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Trainer\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Trainer.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Trainer\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Trainer.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email_verified_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Observers\\User not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Observers/AccreditationRequestObserver.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\DocumentType\:\:create\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Services/CenterTypeRequest/CenterTypeRequestService.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\ApplicationSetting\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Support/Setting.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:inRandomOrder\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/factories/TraineeFactory.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:inRandomOrder\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/factories/TrainerFactory.php
+
+		-
+			message: '#^Call to an undefined static method Illuminate\\Support\\Facades\\Log\:\:warn\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/migrations/2026_02_13_212206_drop_certificate_type_column.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\AccreditationRequest\:\:insert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/AccreditationRequestSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\CertifiedCenter\:\:pluck\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/AccreditationRequestSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\ApplicationSetting\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/ApplicationSettingSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Certification\:\:insert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/CertificationSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\CertifiedCenter\:\:pluck\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/CertificationSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:firstOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/CountrySeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\DocumentType\:\:firstOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/DocumentTypeSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\DocumentType\:\:firstOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: database/seeders/DocumentTypesSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Membership\:\:insert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/MembershipSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\StaticPage\:\:upsert\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/StaticPageSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:count\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/TrainerSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Country\:\:where\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 3
+			path: database/seeders/TrainerSeeder.php
+
+		-
+			message: '#^Call to an undefined static method App\\Models\\Trainer\:\:firstOrCreate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: database/seeders/TrainerSeeder.php

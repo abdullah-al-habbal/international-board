@@ -1,44 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Center\Resources\AccreditationRequests;
 
 use App\Filament\Center\Resources\AccreditationRequests\Pages\CreateAccreditationRequest;
-use App\Filament\Center\Resources\AccreditationRequests\Pages\EditAccreditationRequest;
 use App\Filament\Center\Resources\AccreditationRequests\Pages\ListAccreditationRequests;
 use App\Filament\Center\Resources\AccreditationRequests\Pages\ViewAccreditationRequest;
 use App\Filament\Center\Resources\AccreditationRequests\Schemas\AccreditationRequestForm;
 use App\Filament\Center\Resources\AccreditationRequests\Schemas\AccreditationRequestInfolist;
 use App\Filament\Center\Resources\AccreditationRequests\Tables\AccreditationRequestsTable;
 use App\Models\AccreditationRequest;
+use App\Models\CertifiedCenter;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class AccreditationRequestResource extends Resource
 {
-    protected static ?string $model = AccreditationRequest::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-    protected static UnitEnum | string | null $navigationGroup = __('filament.navigation.groups.content');
+    protected static ?string $model =  null;
 
     protected static ?int $navigationSort = 6;
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function getNavigationBadge(): ?string
+    public static function getNavigationIcon(): string|BackedEnum|null
     {
-        return (string) static::getEloquentQuery()->count();
+        return Heroicon::OutlinedRectangleStack;
     }
 
-    public static function getNavigationBadgeColor(): ?string
+    public static function getNavigationGroup(): ?string
     {
-        return static::getEloquentQuery()->count() > 0 ? 'warning' : 'primary';
+        return __('filament.navigation.groups.content');
     }
 
     public static function getNavigationLabel(): string
@@ -56,9 +53,52 @@ class AccreditationRequestResource extends Resource
         return __('app.accreditation_requests');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getEloquentQuery()->count() > 0 ? 'warning' : 'primary';
+    }
+
+    public static function canCreate(): bool
+    {
+        /** @var CertifiedCenter|null $center */
+        $center = auth('certified_center')->user();
+
+        if (! $center instanceof CertifiedCenter) {
+            return false;
+        }
+
+        return ! $center->hasActiveAccreditationRequest();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('certified_center_id', Auth::id());
+        return parent::getEloquentQuery()
+            ->where('certified_center_id', auth('certified_center')->id());
     }
 
     public static function form(Schema $schema): Schema
@@ -87,7 +127,6 @@ class AccreditationRequestResource extends Resource
             'index' => ListAccreditationRequests::route('/'),
             'create' => CreateAccreditationRequest::route('/create'),
             'view' => ViewAccreditationRequest::route('/{record}'),
-            'edit' => EditAccreditationRequest::route('/{record}/edit'),
         ];
     }
 }

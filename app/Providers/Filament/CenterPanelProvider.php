@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Center\Widgets\AccreditationStatusBanner;
-use App\Http\Middleware\EnsureAccreditationValid;
+use App\Http\Middleware\EnsureCenterIsAccredited;
 use App\Providers\Traits\ResolvesFilamentColor;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -64,7 +64,7 @@ final class CenterPanelProvider extends PanelProvider
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
-            EnsureAccreditationValid::class,
+            EnsureCenterIsAccredited::class,
         ];
     }
 

@@ -8,11 +8,11 @@ use App\Exports\Contracts\StatExportable;
 use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-final class TrainersExport implements StatExportable, FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+final class TrainersExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
 {
     public function query(): Builder
     {
@@ -45,6 +45,6 @@ final class TrainersExport implements StatExportable, FromQuery, WithHeadings, W
 
     public function filename(): string
     {
-        return 'trainers_' . now()->format('Ymd_His') . '.xlsx';
+        return 'trainers_'.now()->format('Ymd_His').'.xlsx';
     }
 }

@@ -7,72 +7,61 @@ namespace App\Policies;
 use App\Models\AccreditationRequest;
 use App\Models\CertifiedCenter;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class AccreditationRequestPolicy
+class AccreditationRequestPolicy
 {
-    use HandlesAuthorization;
-
-    private const PENDING_STATUS = 'pending';
-
-    public function viewAny(User|CertifiedCenter $user): bool
+    public function viewAny(User $user): bool
     {
         return true;
     }
 
-    public function view(User|CertifiedCenter $user, AccreditationRequest $accreditationRequest): bool
+    public function view(User $user, AccreditationRequest $request): bool
     {
-        return $this->isAdminUser($user) || $this->isOwnerCenter($user, $accreditationRequest);
+        return true;
     }
 
-    public function create(User|CertifiedCenter $user): bool
+    public function create(User $user): bool
     {
-        return $this->isActiveCenterUser($user);
+        return true;
     }
 
-    public function update(User|CertifiedCenter $user, AccreditationRequest $accreditationRequest): bool
+    public function update(User $user, AccreditationRequest $request): bool
     {
-        return $this->isAdminUser($user) || $this->canOwnerModify($user, $accreditationRequest);
+        return true;
     }
 
-    public function delete(User|CertifiedCenter $user, AccreditationRequest $accreditationRequest): bool
+    public function delete(User $user, AccreditationRequest $request): bool
     {
-        return $this->isAdminUser($user) || $this->canOwnerModify($user, $accreditationRequest);
+        return true;
     }
 
-    private function isAdminUser(User|CertifiedCenter $user): bool
+    public function deleteAny(User $user): bool
     {
-        return $user instanceof User && $user->isAdmin();
+        return true;
     }
 
-    private function isCenterUser(User|CertifiedCenter $user): bool
+    public function viewAnyCertifiedCenter(CertifiedCenter $center): bool
     {
-        return $user instanceof CertifiedCenter;
+        return true;
     }
 
-    private function isActiveCenterUser(User|CertifiedCenter $user): bool
+    public function viewCertifiedCenter(CertifiedCenter $center, AccreditationRequest $request): bool
     {
-        return $this->isCenterUser($user) && $user->canPerformActions();
+        return $request->certified_center_id === $center->id;
     }
 
-    private function isOwnerCenter(User|CertifiedCenter $user, AccreditationRequest $accreditationRequest): bool
+    public function createCertifiedCenter(CertifiedCenter $center): bool
     {
-        return $this->isCenterUser($user) && $this->isRequestOwner($user, $accreditationRequest);
+        return ! $center->hasActiveAccreditationRequest();
     }
 
-    private function isRequestOwner(CertifiedCenter $center, AccreditationRequest $accreditationRequest): bool
+    public function updateCertifiedCenter(CertifiedCenter $center, AccreditationRequest $request): bool
     {
-        return $accreditationRequest->certified_center_id === $center->id;
+        return false;
     }
 
-    private function canOwnerModify(User|CertifiedCenter $user, AccreditationRequest $accreditationRequest): bool
+    public function deleteCertifiedCenter(CertifiedCenter $center, AccreditationRequest $request): bool
     {
-        return $this->isOwnerCenter($user, $accreditationRequest)
-            && $this->isRequestPending($accreditationRequest);
-    }
-
-    private function isRequestPending(AccreditationRequest $accreditationRequest): bool
-    {
-        return $accreditationRequest->status->value === self::PENDING_STATUS;
+        return false;
     }
 }

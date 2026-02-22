@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Widgets;
 
 use App\Services\Stats\StatsService;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Notifications\Notification;
-use Filament\Actions\Action;
 
 final class StatsOverview extends BaseWidget
 {
@@ -31,7 +31,7 @@ final class StatsOverview extends BaseWidget
 
     public function triggerExport(string $type): void
     {
-        $label = __('widgets.stats.' . $type . '.label');
+        $label = __('widgets.stats.'.$type.'.label');
         $url = route('admin.exports.download', ['type' => $type]);
 
         Notification::make()

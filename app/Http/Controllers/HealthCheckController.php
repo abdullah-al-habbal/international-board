@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 
 class HealthCheckController extends Controller
 {
@@ -23,6 +23,7 @@ class HealthCheckController extends Controller
         } catch (\Throwable $e) {
             $db = false;
         }
+
         return response()->json([
             'status' => 'ok',
             'db' => $db,

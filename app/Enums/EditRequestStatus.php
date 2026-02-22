@@ -21,6 +21,6 @@ enum EditRequestStatus: string
 
     public function label(): string
     {
-        return __('enums.edit_request_status.' . $this->value);
+        return __('enums.edit_request_status.'.$this->value);
     }
 }

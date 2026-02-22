@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LocaleMiddleware
 {
     private const SESSION_KEY = 'locale';
+
     private const DEFAULT_AVAILABLE_LOCALES = ['en', 'ar'];
 
     public function handle(Request $request, Closure $next): Response
@@ -21,17 +22,19 @@ class LocaleMiddleware
 
         if ($locale !== null) {
             $this->setLocale($locale);
+
             return $next($request);
         }
 
         $this->setLocale($this->getDefaultLocale());
+
         return $next($request);
     }
 
     private function getRequestedLocale(): ?string
     {
         $locale = (string) Session::get(self::SESSION_KEY);
-        if (!$locale) {
+        if (! $locale) {
             return null;
         }
 
@@ -51,12 +54,14 @@ class LocaleMiddleware
     private function getAvailableLocales(): array
     {
         $locales = config('app.available_locales', self::DEFAULT_AVAILABLE_LOCALES);
+
         return is_array($locales) ? $locales : self::DEFAULT_AVAILABLE_LOCALES;
     }
 
     private function getDefaultLocale(): string
     {
         $default = config('app.locale', self::DEFAULT_AVAILABLE_LOCALES[0]);
+
         return in_array($default, $this->getAvailableLocales(), true)
             ? $default
             : self::DEFAULT_AVAILABLE_LOCALES[0];

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Admin\Resources\CenterTypeRequests\Schemas;
 
-use App\Enums\CenterTypeRequestType;
 use App\Enums\CenterTypeRequestStatus;
+use App\Enums\CenterTypeRequestType;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -32,10 +32,11 @@ class CenterTypeRequestForm
                         if (empty($name)) {
                             $name = $record->getTranslation('name', 'en');
                         }
+
                         return $name ?: $record->key;
                     })
-                    ->visible(fn($get) => $get('type') === 'course')
-                    ->required(fn($get) => $get('type') === 'course')
+                    ->visible(fn ($get) => $get('type') === 'course')
+                    ->required(fn ($get) => $get('type') === 'course')
                     ->searchable()
                     ->preload(),
                 TextInput::make('requested_name')
@@ -54,7 +55,7 @@ class CenterTypeRequestForm
                     ->label(__('app.rejection_message'))
                     ->rows(3)
                     ->columnSpanFull()
-                    ->visible(fn($record) => $record && $record->status === CenterTypeRequestStatus::Rejected),
+                    ->visible(fn ($record) => $record && $record->status === CenterTypeRequestStatus::Rejected),
             ]);
     }
 }

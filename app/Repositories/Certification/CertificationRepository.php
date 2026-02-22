@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class CertificationRepository
 {
-    public function __construct(private readonly Certification $model)
-    {
-    }
+    public function __construct(private readonly Certification $model) {}
 
     public function findByDocumentCode(string $code): ?Certification
     {
@@ -106,7 +104,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 
@@ -122,7 +120,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 }

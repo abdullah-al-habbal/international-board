@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 use App\Providers\AppServiceProvider;
+use App\Providers\ArchitectureServiceProvider;
+use App\Providers\EloquentServiceProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CenterPanelProvider;
-use App\Providers\ObserverServiceProvider;
-use App\Providers\RepositoryServiceProvider;
-use App\Providers\ServiceRegistrationProvider;
-use App\Providers\EloquentServiceProvider;
-use App\Providers\QueryServiceProvider;
-use App\Providers\SecurityServiceProvider;
-use App\Providers\ValidationServiceProvider;
-use App\Providers\ArchitectureServiceProvider;
-use App\Providers\PerformanceServiceProvider;
 use App\Providers\MacroServiceProvider;
+use App\Providers\ObserverServiceProvider;
+use App\Providers\PerformanceServiceProvider;
+use App\Providers\QueryServiceProvider;
+use App\Providers\RepositoryServiceProvider;
+use App\Providers\SecurityServiceProvider;
+use App\Providers\ServiceRegistrationProvider;
+use App\Providers\ValidationServiceProvider;
 
 return [
     AppServiceProvider::class,

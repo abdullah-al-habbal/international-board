@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Center\Resources\CenterTypeRequests;
 
 use App\Filament\Center\Resources\CenterTypeRequests\Pages\CreateCenterTypeRequest;
@@ -9,26 +11,56 @@ use App\Filament\Center\Resources\CenterTypeRequests\Schemas\CenterTypeRequestFo
 use App\Filament\Center\Resources\CenterTypeRequests\Schemas\CenterTypeRequestInfolist;
 use App\Filament\Center\Resources\CenterTypeRequests\Tables\CenterTypeRequestsTable;
 use App\Models\CenterTypeRequest;
+use App\Services\Accreditation\AccreditationGateService;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use UnitEnum;
+use Illuminate\Database\Eloquent\Model;
 
 class CenterTypeRequestResource extends Resource
 {
-    protected static ?string $model = CenterTypeRequest::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentDuplicate;
+    public static function canCreate(): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = __('filament.navigation.groups.content');
+    public static function canEdit(Model $record): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
 
-    protected static ?int $navigationSort = 7;
+    public static function canDelete(Model $record): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
 
-    protected static ?string $recordTitleAttribute = 'requested_name';
+    public static function canDeleteAny(): bool
+    {
+        return app(AccreditationGateService::class)->currentCenterCanPerformActions();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedBuildingOffice;
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.content');
+    }
+
+    protected static ?int $navigationSort = 10;
+
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function getNavigationBadge(): ?string
     {
@@ -37,7 +69,7 @@ class CenterTypeRequestResource extends Resource
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return static::getModel()::count() > 0 ? 'warning' : 'primary';
+        return 'primary';
     }
 
     public static function getNavigationLabel(): string
@@ -53,11 +85,6 @@ class CenterTypeRequestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.center_type_requests');
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->where('certified_center_id', Auth::id());
     }
 
     public static function form(Schema $schema): Schema

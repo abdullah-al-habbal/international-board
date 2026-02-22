@@ -16,15 +16,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class CertifiedCenterResource extends Resource
 {
-    protected static ?string $model = CertifiedCenter::class;
+    protected static ?string $model =  null;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+    public static function getNavigationIcon(): string|BackedEnum|null
+    {
+        return Heroicon::OutlinedBuildingOffice2;
+    }
 
-    protected static string | UnitEnum | null $navigationGroup = 'filament.navigation.groups.centers';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.centers');
+    }
 
     protected static ?int $navigationSort = 5;
 
@@ -38,6 +43,7 @@ class CertifiedCenterResource extends Resource
     public static function getNavigationBadgeColor(): ?string
     {
         $expired = app(CertifiedCenterService::class)->getExpiredAccreditationCount();
+
         return $expired > 0 ? 'danger' : 'primary';
     }
 

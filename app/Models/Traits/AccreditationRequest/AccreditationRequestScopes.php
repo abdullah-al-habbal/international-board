@@ -5,68 +5,41 @@ declare(strict_types=1);
 namespace App\Models\Traits\AccreditationRequest;
 
 use App\Enums\AccreditationStatus;
-use Illuminate\Database\Eloquent\Attributes\Scope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 trait AccreditationRequestScopes
 {
-    #[Scope]
-    protected function ofStatus(Builder $query, AccreditationStatus|string $status): void
+    public function scopeActive(Builder $query): Builder
     {
-        $query->where('status', $status instanceof AccreditationStatus ? $status->value : $status);
+        return $query
+            ->where('status', AccreditationStatus::Approved)
+            ->where('requested_start_date', '<=', Carbon::now())
+            ->where('requested_end_date', '>=', Carbon::now());
     }
 
-    #[Scope]
-    protected function pending(Builder $query): void
+    public function scopePending(Builder $query): Builder
     {
-        $query->where('status', AccreditationStatus::Pending->value);
+        return $query->where('status', AccreditationStatus::Pending);
     }
 
-    #[Scope]
-    protected function approved(Builder $query): void
+    public function scopeUnderReview(Builder $query): Builder
     {
-        $query->where('status', AccreditationStatus::Approved->value);
+        return $query->where('status', AccreditationStatus::UnderReview);
     }
 
-    #[Scope]
-    protected function rejected(Builder $query): void
+    public function scopeApproved(Builder $query): Builder
     {
-        $query->where('status', AccreditationStatus::Rejected->value);
+        return $query->where('status', AccreditationStatus::Approved);
     }
 
-    #[Scope]
-    protected function underReview(Builder $query): void
+    public function scopeRejected(Builder $query): Builder
     {
-        $query->where('status', AccreditationStatus::UnderReview->value);
+        return $query->where('status', AccreditationStatus::Rejected);
     }
 
-    #[Scope]
-    protected function forCenter(Builder $query, int $centerId): void
+    public function scopeForCenter(Builder $query, int $centerId): Builder
     {
-        $query->where('certified_center_id', $centerId);
-    }
-
-    #[Scope]
-    protected function reviewedBy(Builder $query, int $reviewerId): void
-    {
-        $query->where('reviewed_by', $reviewerId);
-    }
-
-    #[Scope]
-    protected function requestedBetween(Builder $query, string $startDate, string $endDate): void
-    {
-        $query->whereBetween('requested_start_date', [$startDate, $endDate]);
-    }
-
-    #[Scope]
-    protected function recentlyCreated(Builder $query): void
-    {
-        $query->orderBy('created_at', 'desc');
-    }
-
-    #[Scope]
-    protected function recentlyReviewed(Builder $query): void
-    {
-        $query->orderBy('reviewed_at', 'desc');
+        return $query->where('certified_center_id', $centerId);
     }
 }

@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Trainer extends Model
 {
-    use HasFactory;
     use HasEditRequests;
+    use HasFactory;
     use TrainerCheckers, TrainerHelpers, TrainerRelations, TrainerScopes;
 
     protected $fillable = [

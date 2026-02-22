@@ -1,4 +1,5 @@
 <?php
+
 // filePath: app/Http/Controllers/Admin/StatExportController.php
 declare(strict_types=1);
 

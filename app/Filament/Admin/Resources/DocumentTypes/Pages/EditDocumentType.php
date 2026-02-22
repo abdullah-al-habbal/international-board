@@ -11,7 +11,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditDocumentType extends EditRecord
 {
-    protected static string $resource = DocumentTypeResource::class;
+    protected static string $resource =  null;
 
     protected function getHeaderActions(): array
     {

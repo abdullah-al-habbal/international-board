@@ -13,7 +13,6 @@ return new class extends Migration
         });
     }
 
-
     public function down(): void
     {
         Schema::table('certifications', function (Blueprint $table) {

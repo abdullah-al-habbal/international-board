@@ -7,5 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateAccreditationRequest extends CreateRecord
 {
-    protected static string $resource = AccreditationRequestResource::class;
+    protected static string $resource =  null;
 }

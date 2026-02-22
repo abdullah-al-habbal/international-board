@@ -9,7 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateTrainee extends CreateRecord
 {
-    protected static string $resource = TraineeResource::class;
+    protected static string $resource =  null;
 
     protected function getRedirectUrl(): string
     {

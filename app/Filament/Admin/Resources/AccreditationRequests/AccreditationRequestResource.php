@@ -15,16 +15,16 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class AccreditationRequestResource extends Resource
 {
-    protected static ?string $model = AccreditationRequest::class;
+    protected static ?string $model =  null;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
         return Heroicon::OutlinedRectangleStack;
     }
+
     public static function getNavigationGroup(): ?string
     {
         return __('filament.navigation.groups.content');

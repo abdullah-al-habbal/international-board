@@ -31,11 +31,11 @@ class CenterTypeRequestsTable
                 TextColumn::make('requested_name')
                     ->label(__('app.requested_name'))
                     ->searchable()
-                    ->getStateUsing(fn($record) => $record->requested_name ?: __('app.no_value')),
+                    ->getStateUsing(fn ($record) => $record->requested_name ?: __('app.no_value')),
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()
-                    ->color(fn(CenterTypeRequestStatus $state): string => $state->color()),
+                    ->color(fn (CenterTypeRequestStatus $state): string => $state->color()),
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()
@@ -56,7 +56,7 @@ class CenterTypeRequestsTable
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
-                    ->visible(fn($record) => $record->status === CenterTypeRequestStatus::Pending)
+                    ->visible(fn ($record) => $record->status === CenterTypeRequestStatus::Pending)
                     ->action(function ($record) {
                         app(CenterTypeRequestService::class)->approve($record);
 
@@ -69,7 +69,7 @@ class CenterTypeRequestsTable
                     ->label(__('app.reject'))
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn($record) => $record->status === CenterTypeRequestStatus::Pending)
+                    ->visible(fn ($record) => $record->status === CenterTypeRequestStatus::Pending)
                     ->form([
                         Textarea::make('rejection_message')
                             ->label(__('app.rejection_message'))

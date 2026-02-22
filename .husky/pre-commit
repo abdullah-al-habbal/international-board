@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.php$' || true)
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+echo "🔍 Running pre-commit checks on staged PHP files..."
+
+echo "  ✓ Checking PHP syntax..."
+while IFS= read -r file; do
+  if ! php -l "$file" >/dev/null 2>&1; then
+    echo "  ✗ PHP syntax error in $file"
+    exit 1
+  fi
+done <<< "$STAGED"
+
+echo "  ✓ Scanning for debug statements and TODOs..."
+BAD=$(git grep -n --cached -E "(\bdd\(|\bdump\(|\bvar_dump\(|\bprint_r\(|console\.log\(|TODO:|FIXME:)" -- $STAGED || true)
+if [ -n "$BAD" ]; then
+  echo "  ✗ Found debug/TODO patterns in staged files:"
+  echo "$BAD" | sed 's/^/    /'
+  exit 1
+fi
+
+if command -v ./vendor/bin/pint >/dev/null 2>&1; then
+  echo "  ✓ Running Pint auto-fix..."
+  ./vendor/bin/pint || {
+    echo "  ✗ Pint auto-fix failed. Run ./vendor/bin/pint locally."
+    exit 1
+  }
+fi
+
+if [ -f "scripts/fix-navigation-defaults.php" ]; then
+  echo "  ✓ Fixing navigation defaults..."
+  php scripts/fix-navigation-defaults.php || {
+    echo "  ✗ Navigation defaults fixer failed."
+    exit 1
+  }
+fi
+
+echo "  ✓ Staging auto-fixed files..."
+git add -A
+
+if command -v ./vendor/bin/phpstan >/dev/null 2>&1; then
+  echo "  ✓ Running PHPStan (level 1)..."
+  ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress --level=1 app database routes tests || {
+    echo ""
+    echo "  ✗ PHPStan found issues. Fix them or add to baseline."
+    exit 1
+  }
+fi
+
+echo "✅ Pre-commit checks passed!"
+exit 0

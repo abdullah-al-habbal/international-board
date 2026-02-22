@@ -28,8 +28,8 @@ class CenterTypeRequestsTable
                 TextColumn::make('rejection_message')
                     ->label(__('app.rejection_message'))
                     ->limit(50)
-                    ->getStateUsing(fn($record) => $record->rejection_message ?: __('app.no_value'))
-                    ->tooltip(fn($record) => $record->rejection_message),
+                    ->getStateUsing(fn ($record) => $record->rejection_message ?: __('app.no_value'))
+                    ->tooltip(fn ($record) => $record->rejection_message),
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()

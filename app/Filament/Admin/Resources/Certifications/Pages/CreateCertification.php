@@ -7,5 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateCertification extends CreateRecord
 {
-    protected static string $resource = CertificationResource::class;
+    protected static string $resource =  null;
 }

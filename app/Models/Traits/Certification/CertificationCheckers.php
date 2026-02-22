@@ -47,10 +47,10 @@ trait CertificationCheckers
 
     public function hasValidData(): bool
     {
-        return !empty($this->trainee_id) &&
-            !empty($this->accredited_serial_number) &&
-            !empty($this->document_type_id) &&
-            !empty($this->accreditation_date);
+        return ! empty($this->trainee_id) &&
+            ! empty($this->accredited_serial_number) &&
+            ! empty($this->document_type_id) &&
+            ! empty($this->accreditation_date);
     }
 
     public function isRecent(): bool
@@ -81,8 +81,8 @@ trait CertificationCheckers
         $nationality = strtolower(trim($this->nationality));
         $standardNationalities = ['libyan', 'egyptian', 'syrian', 'yemeni', 'mauritanian'];
 
-        return !in_array($nationality, $standardNationalities) &&
-            !in_array($nationality, ['libya', 'egypt', 'syria', 'yemen', 'mauritania']);
+        return ! in_array($nationality, $standardNationalities) &&
+            ! in_array($nationality, ['libya', 'egypt', 'syria', 'yemen', 'mauritania']);
     }
 
     private function hasInconsistentPaperStatus(): bool
@@ -93,6 +93,6 @@ trait CertificationCheckers
 
         $status = strtoupper(trim($this->paper_received));
 
-        return !in_array($status, ['YES', 'NO', 'TRUE', 'FALSE', '1', '0']);
+        return ! in_array($status, ['YES', 'NO', 'TRUE', 'FALSE', '1', '0']);
     }
 }

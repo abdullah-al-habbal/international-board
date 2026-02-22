@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\HealthCheckController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\Web\Certification\CertificationController;
 use App\Http\Controllers\Web\CertifiedCenter\CertifiedCenterController;
 use App\Http\Controllers\Web\StaticPage\StaticPageController;
-use App\Http\Controllers\HealthCheckController;
 use Illuminate\Support\Facades\Route;
-Route::get('/', fn() => view('welcome'));
+
+Route::get('/', fn () => view('welcome'));
 
 Route::prefix('pages')->group(function () {
     Route::get('/{slug}', [StaticPageController::class, 'show'])->name('pages.show');
@@ -33,4 +34,4 @@ Route::get('/trainer-evaluation', [TrainerController::class, 'evaluation'])->nam
 
 Route::get('/health', HealthCheckController::class);
 
-require __DIR__ . '/admin.php';
+require __DIR__.'/admin.php';

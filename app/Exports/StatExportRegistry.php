@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Exports;
 
 use App\Exports\Contracts\StatExportable;
-use App\Exports\Stats\CentersExport;
 use App\Exports\Stats\ActiveCentersExport;
-use App\Exports\Stats\ExpiredCentersExport;
-use App\Exports\Stats\CertificationsExport;
-use App\Exports\Stats\PendingRequestsExport;
 use App\Exports\Stats\AdminUsersExport;
-use App\Exports\Stats\TrainersExport;
+use App\Exports\Stats\CentersExport;
+use App\Exports\Stats\CertificationsExport;
+use App\Exports\Stats\ExpiredCentersExport;
 use App\Exports\Stats\MonthlyCertificationsExport;
+use App\Exports\Stats\PendingRequestsExport;
+use App\Exports\Stats\TrainersExport;
 use InvalidArgumentException;
 
 final class StatExportRegistry
@@ -31,7 +31,7 @@ final class StatExportRegistry
 
     public function resolve(string $type): StatExportable
     {
-        if (!isset(self::MAP[$type])) {
+        if (! isset(self::MAP[$type])) {
             throw new InvalidArgumentException("Unknown export type: {$type}");
         }
 

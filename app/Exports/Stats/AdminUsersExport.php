@@ -9,11 +9,11 @@ use App\Exports\Contracts\StatExportable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-final class AdminUsersExport implements StatExportable, FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+final class AdminUsersExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
 {
     public function query(): Builder
     {
@@ -42,6 +42,6 @@ final class AdminUsersExport implements StatExportable, FromQuery, WithHeadings,
 
     public function filename(): string
     {
-        return 'admin_users_' . now()->format('Ymd_His') . '.xlsx';
+        return 'admin_users_'.now()->format('Ymd_His').'.xlsx';
     }
 }

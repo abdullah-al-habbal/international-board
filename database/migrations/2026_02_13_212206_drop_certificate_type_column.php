@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Log::warning('⚠ This migration will permanently drop the certificate_type column');
@@ -22,12 +23,12 @@ return new class extends Migration {
 
         if ($unmigrated > 0) {
             throw new Exception(
-                "Cannot drop certificate_type column: {$unmigrated} records still have certificate_type " .
+                "Cannot drop certificate_type column: {$unmigrated} records still have certificate_type ".
                 'but no document_type_id. Run data migration first.'
             );
         }
 
-        if (!Schema::hasColumn('certifications', 'document_type_id')) {
+        if (! Schema::hasColumn('certifications', 'document_type_id')) {
             throw new Exception('document_type_id column does not exist. Cannot proceed with migration.');
         }
 
@@ -38,7 +39,7 @@ return new class extends Migration {
         });
 
         $totalRecords = DB::table('certifications')->count();
-        Log::info("✓ certificate_type column dropped successfully");
+        Log::info('✓ certificate_type column dropped successfully');
         Log::info("  Total certifications preserved: {$totalRecords}");
     }
 

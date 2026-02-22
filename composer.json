@@ -76,6 +76,21 @@
         "fix": [
             "./vendor/bin/pint"
         ],
+        "ci-check:quick": [
+            "@php -v",
+            "composer validate --no-check-publish",
+            "php -l app",
+            "./vendor/bin/pint --test",
+            "./vendor/bin/phpstan analyse app --memory-limit=1G --no-progress --level=1"
+        ],
+        "ci-check:full": [
+            "composer install --no-interaction --prefer-dist",
+            "@php artisan config:clear",
+            "@php artisan package:discover --ansi",
+            "./vendor/bin/pint --test",
+            "./vendor/bin/phpstan analyse app --memory-limit=1G --no-progress",
+            "@php artisan test --stop-on-failure"
+        ],
         "check-local": [
             "composer install --no-interaction --prefer-dist",
             "./vendor/bin/pint",

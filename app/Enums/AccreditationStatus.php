@@ -1,4 +1,5 @@
 <?php
+
 // filePath: app/Enums/AccreditationStatus.php
 declare(strict_types=1);
 
@@ -33,7 +34,7 @@ enum AccreditationStatus: string
 
     public function label(): string
     {
-        return __('enums.accreditation_status.' . $this->value);
+        return __('enums.accreditation_status.'.$this->value);
     }
 
     public function isReviewed(): bool
