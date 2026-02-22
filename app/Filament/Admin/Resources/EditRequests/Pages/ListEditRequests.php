@@ -9,4 +9,3 @@ class ListEditRequests extends ListRecords
 {
     protected static string $resource = EditRequestResource::class;
 }
-}

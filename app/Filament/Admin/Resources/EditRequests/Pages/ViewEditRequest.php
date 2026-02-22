@@ -9,4 +9,3 @@ class ViewEditRequest extends ViewRecord
 {
     protected static string $resource = EditRequestResource::class;
 }
-}

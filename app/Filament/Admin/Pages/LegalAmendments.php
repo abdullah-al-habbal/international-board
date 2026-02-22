@@ -29,7 +29,7 @@ class LegalAmendments extends Page
         return [];
     }
 
-    public static function getNavigationIcon(): string|\BackedEnum|null
+    public static function getNavigationIcon(): string|BackedEnum|null
     {
         return Heroicon::OutlinedDocumentText;
     }
