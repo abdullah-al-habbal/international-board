@@ -18,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class TraineeResource extends Resource
@@ -86,6 +87,18 @@ class TraineeResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.trainees');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $centerId = auth('certified_center')->id();
+
+        return parent::getEloquentQuery()
+            ->whereHas(
+                'certifications',
+                fn($q) =>
+                $q->where('certified_center_id', $centerId)
+            );
     }
 
     public static function form(Schema $schema): Schema

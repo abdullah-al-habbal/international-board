@@ -1,5 +1,5 @@
 <?php
-
+// app\Filament\Admin\Resources\ApplicationSettings\Tables\ApplicationSettingsTable.php
 namespace App\Filament\Admin\Resources\ApplicationSettings\Tables;
 
 use Filament\Actions\BulkActionGroup;
@@ -16,19 +16,43 @@ class ApplicationSettingsTable
         return $table
             ->columns([
                 TextColumn::make('key')
-                    ->searchable(),
-                TextColumn::make('value')
+                    ->label('Key')
                     ->searchable()
-                    ->getStateUsing(fn ($record) => $record->value ?: __('app.no_value')),
+                    ->copyable(),
+
+                TextColumn::make('value')
+                    ->label('Value')
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        $value = $record->getTypedValue();
+
+                        if (is_bool($value)) {
+                            return $value ? 'Yes' : 'No';
+                        }
+
+                        if (is_array($value)) {
+                            return json_encode($value);
+                        }
+
+                        return $value ?: 'No value';
+                    })
+                    ->limit(50),
+
                 TextColumn::make('type')
+                    ->label('Type')
                     ->badge()
+                    ->formatStateUsing(fn($state) => ucfirst($state))
                     ->searchable(),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Created At')
+                    ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Updated At')
+                    ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

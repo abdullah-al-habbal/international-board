@@ -13,7 +13,8 @@ final class CenterStatsService
     public function __construct(
         private readonly CertificationService $certificationService,
         private readonly AccreditationRequestService $requestService
-    ) {}
+    ) {
+    }
 
     public function getCenterDashboardStats(CertifiedCenter $center): array
     {
@@ -38,7 +39,7 @@ final class CenterStatsService
 
     private function getStatusDescription(CertifiedCenter $center): string
     {
-        if (! $center->accreditation_period_end) {
+        if (!$center->accreditation_period_end) {
             return 'No accreditation period set';
         }
 
@@ -47,13 +48,13 @@ final class CenterStatsService
         return match (true) {
             $daysLeft < 0 => 'Accreditation expired',
             $daysLeft <= 30 => "Expires in {$daysLeft} days",
-            default => 'Valid until '.$center->accreditation_period_end->format('M d, Y'),
+            default => 'Valid until ' . $center->accreditation_period_end->format('M d, Y'),
         };
     }
 
     private function getStatusColor(CertifiedCenter $center): string
     {
-        if (! $center->isAccreditationActive()) {
+        if (!$center->isAccreditationActive()) {
             return 'danger';
         }
 
@@ -67,7 +68,7 @@ final class CenterStatsService
 
     private function getDaysUntilExpiry(CertifiedCenter $center): int
     {
-        if (! $center->accreditation_period_end) {
+        if (!$center->accreditation_period_end) {
             return 0;
         }
 

@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/Web/Certification/CertificationController.php
 
 declare(strict_types=1);
 
@@ -10,7 +11,9 @@ use Illuminate\View\View;
 
 final class CertificationController extends Controller
 {
-    public function __construct(private readonly CertificationService $service) {}
+    public function __construct(
+        private readonly CertificationService $service
+    ) {}
 
     public function checkout(): View
     {
@@ -20,7 +23,8 @@ final class CertificationController extends Controller
     public function show(string $code): View
     {
         $certification = $this->service->getByCode($code);
-        abort_if(! $certification, 404);
+
+        abort_if(!$certification, 404);
 
         return view('web.certification.show', compact('certification'));
     }

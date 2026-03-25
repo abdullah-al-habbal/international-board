@@ -14,42 +14,63 @@ class CertifiedCentersTable
 {
     public static function configure(Table $table): Table
     {
+        // Unified empty-state formatter
+        $empty = fn($state) => blank($state) ? __('app.no_value') : $state;
+
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->getStateUsing($empty)
                     ->searchable(),
+
                 TextColumn::make('email')
                     ->label('Email address')
+                    ->getStateUsing($empty)
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->getStateUsing(function ($record) {
-                        if (empty($record->email_verified_at)) {
-                            return __('app.no_value');
-                        }
 
-                        return $record->email_verified_at;
-                    }),
+                TextColumn::make('email_verified_at')
+                    ->getStateUsing($empty)
+                    ->formatStateUsing($empty)
+                    ->dateTime()
+                    ->sortable(),
+
                 TextColumn::make('phone')
+                    ->getStateUsing($empty)
                     ->searchable(),
+
                 TextColumn::make('manager_name')
+                    ->getStateUsing($empty)
                     ->searchable(),
+
                 TextColumn::make('accreditation_period_start')
+                    ->getStateUsing($empty)
+                    ->formatStateUsing($empty)
                     ->dateTime()
                     ->sortable(),
+
                 TextColumn::make('accreditation_period_end')
+                    ->getStateUsing($empty)
+                    ->formatStateUsing($empty)
                     ->dateTime()
                     ->sortable(),
+
                 TextColumn::make('accreditation_number')
+                    ->getStateUsing($empty)
                     ->searchable(),
+
                 IconColumn::make('is_active')
                     ->boolean(),
+
                 TextColumn::make('created_at')
+                    ->getStateUsing($empty)
+                    ->formatStateUsing($empty)
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
+                    ->getStateUsing($empty)
+                    ->formatStateUsing($empty)
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

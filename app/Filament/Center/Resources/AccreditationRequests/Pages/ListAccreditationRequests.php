@@ -17,7 +17,7 @@ class ListAccreditationRequests extends ListRecords
     {
         return [
             CreateAction::make()
-                ->disabled(! AccreditationRequestResource::canCreate())
+                ->disabled(!AccreditationRequestResource::canCreate())
                 ->tooltip($this->getCreateDisabledTooltip()),
         ];
     }

@@ -1,16 +1,18 @@
 <?php
+// app/Services/Certification/CertificationService.php
 
 declare(strict_types=1);
 
 namespace App\Services\Certification;
 
 use App\Repositories\Certification\CertificationRepository;
+use App\Models\Certification;
 
 final class CertificationService
 {
     public function __construct(private readonly CertificationRepository $repo) {}
 
-    public function getByCode(string $code)
+    public function getByCode(string $code): ?Certification
     {
         return $this->repo->findByDocumentCode($code);
     }

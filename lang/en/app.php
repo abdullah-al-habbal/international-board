@@ -347,4 +347,24 @@ return [
     'filter_select_placeholder' => 'Select an option',
     'table_empty_title' => 'No records found',
     'table_empty_description' => 'There are no records to display right now.',
+
+    'document_type_requests' => 'Document Type Requests',
+    'document_type_request' => 'Document Type Request',
+    'requested_document_types' => 'Requested Document Types',
+    'requested_count' => 'Requested Count',
+    'requested_at' => 'Requested At',
+    'assigned_at' => 'Assigned At',
+    'assigned_centers' => 'Assigned Centers',
+
+    'certified_center_document_types' => 'Center Document Types',
+    'certified_center_document_type' => 'Center Document Type',
+    'document_type_key' => 'Document Type Key',
+    'document_type_name' => 'Document Type Name',
+    'usage_count' => 'Usage Count',
+    'centers_count' => 'Centers Count',
+
+
+    'id' => 'ID',
+    'request_details' => 'Request Details',
+    'admin_review' => 'Admin Review',
 ];

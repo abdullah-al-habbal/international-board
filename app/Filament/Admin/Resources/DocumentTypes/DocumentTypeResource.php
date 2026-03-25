@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\DocumentTypes\Pages\CreateDocumentType;
 use App\Filament\Admin\Resources\DocumentTypes\Pages\EditDocumentType;
 use App\Filament\Admin\Resources\DocumentTypes\Pages\ListDocumentTypes;
 use App\Filament\Admin\Resources\DocumentTypes\Pages\ViewDocumentType;
+use App\Filament\Admin\Resources\DocumentTypes\RelationManagers\ApprovedCentersRelationManager;
 use App\Filament\Admin\Resources\DocumentTypes\Schemas\DocumentTypeForm;
 use App\Filament\Admin\Resources\DocumentTypes\Schemas\DocumentTypeInfolist;
 use App\Filament\Admin\Resources\DocumentTypes\Tables\DocumentTypesTable;
@@ -37,17 +38,17 @@ class DocumentTypeResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('filament.resources.document_types.navigation_label');
+        return __('app.document_types');
     }
 
     public static function getModelLabel(): string
     {
-        return __('filament.resources.document_types.model_label');
+        return __('app.document_type');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('filament.resources.document_types.plural_model_label');
+        return __('app.document_types');
     }
 
     public static function getNavigationBadge(): ?string
@@ -77,7 +78,9 @@ class DocumentTypeResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ApprovedCentersRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -93,8 +93,10 @@ class CertificationResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (Auth::guard('web')->check() && Auth::guard('web')->user() instanceof CertifiedCenter) {
-            $query->where('certified_center_id', Auth::guard('web')->id());
+        $center = Auth::guard('certified_center')->user();
+
+        if ($center instanceof CertifiedCenter) {
+            $query->where('certified_center_id', $center->id);
         }
 
         return $query->with([

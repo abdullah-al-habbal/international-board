@@ -31,13 +31,13 @@ class AccreditationRequestObserver
 
     public function updated(AccreditationRequest $request): void
     {
-        if (! $request->wasChanged('status')) {
+        if (!$request->wasChanged('status')) {
             return;
         }
 
         $center = $request->certifiedCenter;
 
-        if (! $center) {
+        if (!$center) {
             return;
         }
 
@@ -46,12 +46,11 @@ class AccreditationRequestObserver
             : AccreditationStatus::from($request->status);
 
         if ($status === AccreditationStatus::Approved) {
-            $center->update([
-                'accreditation_period_start' => $request->requested_start_date,
-                'accreditation_period_end' => $request->requested_end_date,
-                'status' => CenterStatus::Active,
-                'is_active' => true,
-            ]);
+            $center->accreditation_period_start = $request->requested_start_date;
+            $center->accreditation_period_end = $request->requested_end_date;
+            $center->status = CenterStatus::Active;
+            $center->is_active = true;
+            $center->save();
 
             return;
         }
@@ -62,7 +61,7 @@ class AccreditationRequestObserver
                 ->where('status', AccreditationStatus::Approved)
                 ->exists();
 
-            if (! $hasOtherActive) {
+            if (!$hasOtherActive) {
                 $center->update([
                     'status' => CenterStatus::Suspended,
                     'is_active' => false,

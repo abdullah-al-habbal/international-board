@@ -23,15 +23,20 @@ class DocumentTypesTable
                     ->sortable()
                     ->badge()
                     ->color('primary')
-                    ->weight('medium'),
+                    ->weight('medium')
+                    ->extraAttributes(['class' => 'text-lg font-semibold']),
 
                 TextColumn::make('name.en')
                     ->label(__('Name (English)'))
+                    ->placeholder('(no english)')
+                    ->formatStateUsing(fn($state) => $state ?: '(no english)')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('name.ar')
                     ->label(__('Name (Arabic)'))
+                    ->placeholder('(no arabic)')
+                    ->formatStateUsing(fn($state) => $state ?: '(no arabic)')
                     ->searchable()
                     ->sortable(),
 

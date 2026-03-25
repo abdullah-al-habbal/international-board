@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\CertifiedCenters\Pages\CreateCertifiedCenter;
 use App\Filament\Admin\Resources\CertifiedCenters\Pages\EditCertifiedCenter;
 use App\Filament\Admin\Resources\CertifiedCenters\Pages\ListCertifiedCenters;
 use App\Filament\Admin\Resources\CertifiedCenters\Pages\ViewCertifiedCenter;
+use App\Filament\Admin\Resources\CertifiedCenters\RelationManagers\ApprovedDocumentTypesRelationManager;
+use App\Filament\Admin\Resources\CertifiedCenters\RelationManagers\DocumentTypeRequestsRelationManager;
 use App\Filament\Admin\Resources\CertifiedCenters\Schemas\CertifiedCenterForm;
 use App\Filament\Admin\Resources\CertifiedCenters\Schemas\CertifiedCenterInfolist;
 use App\Filament\Admin\Resources\CertifiedCenters\Tables\CertifiedCentersTable;
@@ -79,7 +81,10 @@ class CertifiedCenterResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ApprovedDocumentTypesRelationManager::class,
+            DocumentTypeRequestsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

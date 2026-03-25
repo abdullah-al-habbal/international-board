@@ -347,4 +347,23 @@ return [
     'filter_select_placeholder' => 'اختر خيارًا',
     'table_empty_title' => 'لا توجد سجلات',
     'table_empty_description' => 'لا توجد سجلات لعرضها حالياً.',
+
+    'document_type_requests' => 'طلبات أنواع الوثائق',
+    'document_type_request' => 'طلب نوع وثيقة',
+    'requested_document_types' => 'أنواع الوثائق المطلوبة',
+    'requested_count' => 'عدد الطلبات',
+    'requested_at' => 'تاريخ الطلب',
+    'assigned_at' => 'تاريخ التخصيص',
+    'assigned_centers' => 'المراكز المخصصة',
+
+    'certified_center_document_types' => 'أنواع وثائق المراكز',
+    'certified_center_document_type' => 'نوع وثيقة المركز',
+    'document_type_key' => 'مفتاح نوع الوثيقة',
+    'document_type_name' => 'اسم نوع الوثيقة',
+    'usage_count' => 'عدد الاستخدامات',
+    'centers_count' => 'عدد المراكز',
+
+    'id' => 'المعرف',
+    'request_details' => 'تفاصيل الطلب',
+    'admin_review' => 'مراجعة المشرف',
 ];

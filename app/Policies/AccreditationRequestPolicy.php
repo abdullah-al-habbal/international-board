@@ -10,36 +10,37 @@ use App\Models\User;
 
 class AccreditationRequestPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(User|CertifiedCenter $user): bool
     {
         return true;
     }
 
-    public function view(User $user, AccreditationRequest $request): bool
+    public function view(User|CertifiedCenter $user, AccreditationRequest $request): bool
     {
         return true;
     }
 
-    public function create(User $user): bool
+    public function create(User|CertifiedCenter $user): bool
     {
         return true;
     }
 
-    public function update(User $user, AccreditationRequest $request): bool
+    public function update(User|CertifiedCenter $user, AccreditationRequest $request): bool
     {
         return true;
     }
 
-    public function delete(User $user, AccreditationRequest $request): bool
+    public function delete(User|CertifiedCenter $user, AccreditationRequest $request): bool
     {
         return true;
     }
 
-    public function deleteAny(User $user): bool
+    public function deleteAny(User|CertifiedCenter $user): bool
     {
         return true;
     }
 
+    // Center-specific rules
     public function viewAnyCertifiedCenter(CertifiedCenter $center): bool
     {
         return true;

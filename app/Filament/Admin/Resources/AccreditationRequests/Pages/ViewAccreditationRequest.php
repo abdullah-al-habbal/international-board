@@ -5,52 +5,106 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\AccreditationRequests\Pages;
 
 use App\Enums\AccreditationStatus;
+use App\Enums\CenterStatus;
 use App\Filament\Admin\Resources\AccreditationRequests\AccreditationRequestResource;
+use App\Models\AccreditationRequest;
 use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewAccreditationRequest extends ViewRecord
 {
-    protected static string $resource =  AccreditationRequestResource::class;
+    protected static string $resource = AccreditationRequestResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
+            EditAction::make(),
+
             Action::make('approve')
                 ->label(__('app.approve'))
-                ->color('success')
                 ->icon('heroicon-o-check-circle')
+                ->color('success')
                 ->requiresConfirmation()
-                ->action(fn() => $this->record->update(['status' => AccreditationStatus::Approved]))
-                ->after(function () {
-                    if (method_exists($this, 'refreshFormData')) {
-                        $this->refreshFormData(['status']);
-                    }
-                })
-                ->visible(fn() => $this->record->status === AccreditationStatus::Pending || $this->record->status === AccreditationStatus::UnderReview),
+                ->visible(fn() => $this->record->status !== AccreditationStatus::Approved)
+                ->action(function (): void {
+                    $this->approve($this->record);
+                    $this->refreshFormData(['status', 'reviewed_by', 'reviewed_at']);
+                }),
+
             Action::make('reject')
                 ->label(__('app.reject'))
-                ->color('danger')
                 ->icon('heroicon-o-x-circle')
+                ->color('danger')
                 ->requiresConfirmation()
-                ->action(fn() => $this->record->update(['status' => AccreditationStatus::Rejected]))
-                ->after(function () {
-                    if (method_exists($this, 'refreshFormData')) {
-                        $this->refreshFormData(['status']);
-                    }
-                })
-                ->visible(fn() => $this->record->status === AccreditationStatus::Pending || $this->record->status === AccreditationStatus::UnderReview),
+                ->visible(fn() => $this->record->status !== AccreditationStatus::Rejected)
+                ->action(function (): void {
+                    $this->reject($this->record);
+                    $this->refreshFormData(['status', 'reviewed_by', 'reviewed_at']);
+                }),
+
             Action::make('under_review')
                 ->label(__('app.under_review'))
-                ->color('warning')
                 ->icon('heroicon-o-eye')
-                ->action(fn() => $this->record->update(['status' => AccreditationStatus::UnderReview]))
-                ->after(function () {
-                    if (method_exists($this, 'refreshFormData')) {
-                        $this->refreshFormData(['status']);
-                    }
-                })
-                ->visible(fn() => $this->record->status === AccreditationStatus::Pending),
+                ->color('info')
+                ->requiresConfirmation()
+                ->visible(fn() => $this->record->status !== AccreditationStatus::UnderReview)
+                ->action(function (): void {
+                    $this->record->update([
+                        'status' => AccreditationStatus::UnderReview,
+                        'reviewed_by' => auth()->id(),
+                        'reviewed_at' => now(),
+                    ]);
+                    $this->refreshFormData(['status', 'reviewed_by', 'reviewed_at']);
+                }),
         ];
+    }
+
+
+    private function approve(AccreditationRequest $request): void
+    {
+        $request->update([
+            'status' => AccreditationStatus::Approved,
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        $center = $request->certifiedCenter;
+
+        if ($center) {
+            $center->update([
+                'accreditation_period_start' => $request->requested_start_date,
+                'accreditation_period_end' => $request->requested_end_date,
+                'status' => CenterStatus::Active,
+                'is_active' => true,
+            ]);
+        }
+    }
+
+    private function reject(AccreditationRequest $request): void
+    {
+        $request->update([
+            'status' => AccreditationStatus::Rejected,
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        $center = $request->certifiedCenter;
+
+        if (!$center) {
+            return;
+        }
+
+        $hasOtherActive = $center->accreditationRequests()
+            ->where('id', '!=', $request->id)
+            ->where('status', AccreditationStatus::Approved)
+            ->exists();
+
+        if (!$hasOtherActive) {
+            $center->update([
+                'status' => CenterStatus::Suspended,
+                'is_active' => false,
+            ]);
+        }
     }
 }

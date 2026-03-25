@@ -1,4 +1,5 @@
 <?php
+// app/Repositories/Certification/CertificationRepository.php
 
 declare(strict_types=1);
 
@@ -13,12 +14,27 @@ final class CertificationRepository
 
     public function findByDocumentCode(string $code): ?Certification
     {
-        return $this->model->byDocumentCode($code)->first();
+        return $this->model->with([
+            'certifiedCenter:id,name',
+            'trainee:id,name',
+            'country:id,name',
+            'trainer:id,name',
+            'documentType:id,name',
+        ])
+            ->byDocumentCode($code)
+            ->first();
     }
 
     public function latest(int $limit = 10): Collection
     {
-        return $this->model->recentlyCreated()->take($limit)->get();
+        return $this->model->with([
+            'certifiedCenter:id,name',
+            'trainee:id,name',
+            'documentType:id,name',
+        ])
+            ->recentlyCreated()
+            ->take($limit)
+            ->get();
     }
 
     public function getTotalCount(): int
@@ -104,7 +120,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 
@@ -120,7 +136,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 }

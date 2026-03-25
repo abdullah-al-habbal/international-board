@@ -8,12 +8,12 @@ use App\Models\ApplicationSetting;
 
 class Setting
 {
-    public static function get(string $key): ?string
+    public static function get(string $key, mixed $default = null): mixed
     {
         return cache()->remember(
             "setting_{$key}",
             3600,
-            fn () => ApplicationSetting::where('key', $key)->value('value')
+            fn() => ApplicationSetting::get($key, $default)
         );
     }
 }

@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
-use App\Models\Traits\AccreditationRequest\AccreditationRequestRelations;
-use App\Models\Traits\AccreditationRequest\AccreditationRequestScopes;
-use App\Observers\AccreditationRequestObserver;
 use App\Policies\AccreditationRequestPolicy;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[UsePolicy(AccreditationRequestPolicy::class)]
-#[ObservedBy([AccreditationRequestObserver::class])]
 class AccreditationRequest extends Model
 {
-    use AccreditationRequestRelations, AccreditationRequestScopes;
     use HasFactory;
 
     protected $fillable = [
@@ -40,5 +37,47 @@ class AccreditationRequest extends Model
             'reviewed_at' => 'datetime',
             'status' => AccreditationStatus::class,
         ];
+    }
+    public function certifiedCenter(): BelongsTo
+    {
+        return $this->belongsTo(CertifiedCenter::class);
+    }
+
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query
+            ->where('status', AccreditationStatus::Approved)
+            ->where('requested_start_date', '<=', Carbon::now())
+            ->where('requested_end_date', '>=', Carbon::now());
+    }
+
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->where('status', AccreditationStatus::Pending);
+    }
+
+    public function scopeUnderReview(Builder $query): Builder
+    {
+        return $query->where('status', AccreditationStatus::UnderReview);
+    }
+
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->where('status', AccreditationStatus::Approved);
+    }
+
+    public function scopeRejected(Builder $query): Builder
+    {
+        return $query->where('status', AccreditationStatus::Rejected);
+    }
+
+    public function scopeForCenter(Builder $query, int $centerId): Builder
+    {
+        return $query->where('certified_center_id', $centerId);
     }
 }

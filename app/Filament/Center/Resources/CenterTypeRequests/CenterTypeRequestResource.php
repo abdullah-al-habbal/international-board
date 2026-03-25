@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class CenterTypeRequestResource extends Resource
@@ -85,6 +86,12 @@ class CenterTypeRequestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.center_type_requests');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('certified_center_id', auth('certified_center')->id());
     }
 
     public static function form(Schema $schema): Schema
