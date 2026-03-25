@@ -20,6 +20,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug network reachability
+        run: |
+          apt-get update -y
+          apt-get install -y netcat-openbsd
+          echo "Testing TCP to host: ${{ secrets.HOSTINGER_SERVER_IP }}:$${{ secrets.HOSTINGER_SSH_PORT }}"
+          nc -vz "${{ secrets.HOSTINGER_SERVER_IP }}" "${{ secrets.HOSTINGER_SSH_PORT }}" || true
+          curl -sS --max-time 5 "http://${{ secrets.HOSTINGER_SERVER_IP }}" || true
+
       - name: 🚀 Deploy via SSH (run remote commands)
         uses: appleboy/ssh-action@v0.1.8
         with:
