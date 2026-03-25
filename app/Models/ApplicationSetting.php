@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\SettingType;
-use App\Models\Traits\ApplicationSetting\ApplicationSettingHelpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ApplicationSetting extends Model
 {
-    use ApplicationSettingHelpers;
     use HasFactory;
 
     protected $fillable = [

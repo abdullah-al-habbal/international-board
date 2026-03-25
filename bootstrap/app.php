@@ -1,15 +1,19 @@
 <?php
-
 // filePath: bootstrap/app.php
 declare(strict_types=1);
 
+use App\Console\Commands\CleanupStorageCommand;
 use App\Http\Middleware\LocaleMiddleware;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Cookie\Middleware\{
+    AddQueuedCookiesToResponse,
+    EncryptCookies
+};
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\{
+    HandlePrecognitiveRequests,
+    VerifyCsrfToken
+};
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Schedule;
@@ -17,8 +21,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -44,6 +48,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (): void {})
     ->withCommands([])
     ->withSchedule(function (): void {
-        Schedule::command('cleanup:storage')->dailyAt('03:00');
+        Schedule::command(CleanupStorageCommand::class)->dailyAt('03:00');
     })
     ->create();

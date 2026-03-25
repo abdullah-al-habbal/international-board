@@ -7,7 +7,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Traits\Certification\CertificationScopes;
 use App\Policies\CertificationPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[UsePolicy(CertificationPolicy::class)]
 class Certification extends Model
 {
-    use CertificationScopes;
     use HasFactory;
 
     protected $fillable = [
