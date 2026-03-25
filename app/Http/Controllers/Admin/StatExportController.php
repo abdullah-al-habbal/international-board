@@ -12,7 +12,10 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 final class StatExportController
 {
-    public function __construct(private readonly StatExportRegistry $registry) {}
+    public function __construct(
+        private readonly StatExportRegistry $registry
+    ) {
+    }
 
     public function download(Request $request, string $type): BinaryFileResponse
     {

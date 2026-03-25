@@ -13,7 +13,8 @@ final class CertificationController extends Controller
 {
     public function __construct(
         private readonly CertificationService $service
-    ) {}
+    ) {
+    }
 
     public function checkout(): View
     {

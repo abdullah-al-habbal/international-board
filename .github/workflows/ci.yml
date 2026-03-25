@@ -20,13 +20,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug network reachability
+      - name: 🔍 Debug network reachability
         run: |
-          apt-get update -y
-          apt-get install -y netcat-openbsd
-          echo "Testing TCP to host: ${{ secrets.HOSTINGER_SERVER_IP }}:$${{ secrets.HOSTINGER_SSH_PORT }}"
-          nc -vz "${{ secrets.HOSTINGER_SERVER_IP }}" "${{ secrets.HOSTINGER_SSH_PORT }}" || true
-          curl -sS --max-time 5 "http://${{ secrets.HOSTINGER_SERVER_IP }}" || true
+          echo "=== Network Debug Information ==="
+          echo "Testing TCP connectivity to ${{ secrets.HOSTINGER_SERVER_IP }} on port ${{ secrets.HOSTINGER_SSH_PORT }}"
+          timeout 5 bash -c "echo >/dev/tcp/${{ secrets.HOSTINGER_SERVER_IP }}/${{ secrets.HOSTINGER_SSH_PORT }}" 2>/dev/null && echo "✅ Port ${{ secrets.HOSTINGER_SSH_PORT }} is REACHABLE" || echo "❌ Port ${{ secrets.HOSTINGER_SSH_PORT }} is NOT reachable"
+
+          echo ""
+          echo "Testing ping connectivity..."
+          ping -c 3 -W 5 ${{ secrets.HOSTINGER_SERVER_IP }} || echo "⚠️ Ping failed (may be blocked)"
+
+          echo ""
+          echo "Testing HTTP connectivity..."
+          curl -sS --max-time 5 "http://${{ secrets.HOSTINGER_SERVER_IP }}" || echo "⚠️ HTTP connection failed"
+
+          echo ""
+          echo "Current GitHub Actions Runner IP (may help for whitelisting):"
+          curl -sS https://api.ipify.org || echo "Unable to get IP"
+          echo ""
 
       - name: 🚀 Deploy via SSH (run remote commands)
         uses: appleboy/ssh-action@v0.1.8
@@ -35,14 +46,21 @@ jobs:
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          add_known_hosts: true
+          timeout: 60s
+          command_timeout: 30m
           script_stop: true
           script: |
             set -e
-            echo "🔗 Connecting to Hostinger..."
+
+            echo "========================================="
+            echo "🚀 Starting deployment to Hostinger"
+            echo "========================================="
+
             DEPLOY_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
             echo "📂 Deploy path: $DEPLOY_PATH"
 
-            # ensure deploy path exists
+            # Ensure deploy path exists
             if [ ! -d "$DEPLOY_PATH" ]; then
               echo "❗ Deploy path does not exist. Creating..."
               mkdir -p "$DEPLOY_PATH"
@@ -73,6 +91,7 @@ jobs:
             php artisan config:clear || echo "⚠️ Warning: config:clear failed"
             php artisan route:clear || echo "⚠️ Warning: route:clear failed"
             php artisan view:clear || echo "⚠️ Warning: view:clear failed"
+            php artisan cache:clear || echo "⚠️ Warning: cache:clear failed"
 
             echo "⏭️ Skipping migrations (DB imported manually)."
 
@@ -91,20 +110,25 @@ jobs:
             php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK'; exit(0);}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage(); exit(2);}"
 
             echo "🔧 Fixing permissions for storage and cache..."
-            # robust chown: use current user and its primary group (fallback to user)
+            # Use current user for permissions (Hostinger typically uses the account username)
             WEB_USER=$(whoami)
             WEB_GROUP=$(id -gn "$WEB_USER" 2>/dev/null || echo "$WEB_USER")
+            echo "Setting permissions for user: $WEB_USER, group: $WEB_GROUP"
             chown -R "$WEB_USER":"$WEB_GROUP" storage bootstrap/cache || true
             chmod -R 775 storage bootstrap/cache || true
 
-            echo "✅ Deployment script finished."
+            echo "✅ Deployment script finished successfully!"
+            echo "========================================="
 
-      - name: Healthcheck (wait + retry)
+      - name: 🔄 Wait for application to settle
+        run: sleep 10
+
+      - name: 🏥 Healthcheck (wait + retry)
         run: |
-          URL="https://internationalboard.uk/health"
+          URL="https://internationalboard.uk/web/health"
           TOKEN="${{ secrets.HEALTH_TOKEN }}"
           MAX=6
-          SLEEP=5
+          SLEEP=10
           i=0
           while [ $i -lt $MAX ]; do
             if [ -n "$TOKEN" ]; then
@@ -113,12 +137,26 @@ jobs:
               STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
             fi
             echo "Healthcheck attempt $((i+1)): HTTP $STATUS"
-            if [ "$STATUS" = "200" ]; then
-              echo "HEALTHCHECK OK"
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
+              echo "✅ HEALTHCHECK OK"
               exit 0
             fi
             i=$((i+1))
             sleep $SLEEP
           done
-          echo "HEALTHCHECK FAILED after $MAX attempts (status $STATUS)"
+          echo "❌ HEALTHCHECK FAILED after $MAX attempts (status $STATUS)"
           exit 1
+
+      - name: 📝 Notify on success (optional)
+        if: success()
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "📅 Time: $(date)"
+          echo "🌐 URL: https://internationalboard.uk"
+
+      - name: 🚨 Notify on failure (optional)
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "📅 Time: $(date)"
+          echo "Please check the logs above for details."
