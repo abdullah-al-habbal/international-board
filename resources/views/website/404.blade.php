@@ -39,15 +39,15 @@
 		</div>
 	</div>
 </section>
-<script src="plugins/jquery/jquery.min.js"></script>
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<script src="plugins/parallax/jquery.parallax-1.1.3.js"></script>
-<script src="plugins/lightbox2/js/lightbox.min.js"></script>
-<script src="plugins/slick/slick.min.js"></script>
-<script src="plugins/filterizr/jquery.filterizr.min.js"></script>
-<script src="plugins/smooth-scroll/smooth-scroll.min.js"></script>
+<script src="{{ asset('assets/website/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/bootstrap/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/parallax/jquery.parallax-1.1.3.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/lightbox2/js/lightbox.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/slick/slick.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/filterizr/jquery.filterizr.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/smooth-scroll/smooth-scroll.min.js') }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU"></script>
-<script src="plugins/google-map/gmap.js"></script>
-<script src="js/script.js"></script>
+<script src="{{ asset('assets/website/plugins/google-map/gmap.js') }}"></script>
+<script src="{{ asset('assets/website/js/script.js') }}"></script>
 </body>
 </html>

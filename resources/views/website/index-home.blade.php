@@ -32,8 +32,8 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light px-0">
       <a class="navbar-brand logo" href="index.html">
-        <img loading="lazy" class="logo-default" src="images/logo.png" alt="logo" />
-        <img loading="lazy" class="logo-white" src="images/logo-white.png" alt="logo" />
+        <img loading="lazy" class="logo-default" src="{{ asset('assets/website/images/logo.png') }}" alt="logo" />
+        <img loading="lazy" class="logo-white" src="{{ asset('assets/website/images/logo-white.png') }}" alt="logo" />
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
         aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,7 +136,7 @@
     </div>
     <div class="row">
       <div class="col-md-4 text-center d-none d-md-block">
-        <img loading="lazy" src="images/about/member.jpg" class="img-fluid inline-block" alt="">
+        <img loading="lazy" src="{{ asset('assets/website/images/about/member.jpg') }}" class="img-fluid inline-block" alt="">
       </div>
       <div class="col-md-8">
         <div class="row text-center">
@@ -191,7 +191,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-6 mb-4 mb-md-0">
-				<img loading="lazy" src="images/about/about-2.png" class="img-fluid" alt="">
+				<img loading="lazy" src="{{ asset('assets/website/images/about/about-2.png') }}" class="img-fluid" alt="">
 			</div>
 			<div class="col-md-6">
 				<ul class="checklist">
@@ -282,7 +282,7 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum nulla, soluta dolorum. Eos earum, magni asperiores, unde corporis labore, enim, voluptatum officiis voluptates alias natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, officia. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod, quia?</p>
 							</div>
 							<div class="client-thumb">
-								<img loading="lazy" src="images/client-logo/clients-1.jpg" class="img-fluid" alt="">
+								<img loading="lazy" src="{{ asset('assets/website/images/client-logo/clients-1.jpg') }}" class="img-fluid" alt="">
 							</div>
 							<div class="client-meta">
 								<h3>William Martin</h3>
@@ -295,7 +295,7 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum nulla, soluta dolorum. Eos earum, magni asperiores, unde corporis labore, enim, voluptatum officiis voluptates alias natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, officia. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod, quia?</p>
 							</div>
 							<div class="client-thumb">
-								<img loading="lazy" src="images/client-logo/clients-2.jpg" class="img-fluid" alt="">
+								<img loading="lazy" src="{{ asset('assets/website/images/client-logo/clients-2.jpg') }}" class="img-fluid" alt="">
 							</div>
 							<div class="client-meta">
 								<h3>Emma Harrison</h3>
@@ -308,7 +308,7 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum nulla, soluta dolorum. Eos earum, magni asperiores, unde corporis labore, enim, voluptatum officiis voluptates alias natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, officia. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod, quia?</p>
 							</div>
 							<div class="client-thumb">
-								<img loading="lazy" src="images/client-logo/clients-3.jpg" class="img-fluid" alt="">
+								<img loading="lazy" src="{{ asset('assets/website/images/client-logo/clients-3.jpg') }}" class="img-fluid" alt="">
 							</div>
 							<div class="client-meta">
 								<h3>Alexander Lucas</h3>
@@ -335,7 +335,7 @@
 			<article class="col-lg-4 col-md-6">
 				<div class="post-item">
 					<div class="media-wrapper">
-						<img loading="lazy" src="images/blog/post-1.jpg" alt="amazing caves coverimage" class="img-fluid">
+						<img loading="lazy" src="{{ asset('assets/website/images/blog/post-1.jpg') }}" alt="amazing caves coverimage" class="img-fluid">
 					</div>
 					<div class="content">
 						<h3><a href="single-post.html">Reasons to Smile</a></h3>
@@ -348,7 +348,7 @@
 <article class="col-lg-4 col-md-6">
 				<div class="post-item">
 					<div class="media-wrapper">
-						<img loading="lazy" src="images/blog/post-2.jpg" alt="amazing caves coverimage" class="img-fluid">
+						<img loading="lazy" src="{{ asset('assets/website/images/blog/post-2.jpg') }}" alt="amazing caves coverimage" class="img-fluid">
 					</div>
 					<div class="content">
 						<h3><a href="single-post.html">A Few Moments</a></h3>
@@ -361,7 +361,7 @@
 			<article class="col-lg-4 col-md-6">
 				<div class="post-item">
 					<div class="media-wrapper">
-						<img loading="lazy" src="images/blog/post-3.jpg" alt="amazing caves coverimage" class="img-fluid">
+						<img loading="lazy" src="{{ asset('assets/website/images/blog/post-3.jpg') }}" alt="amazing caves coverimage" class="img-fluid">
 					</div>
 					<div class="content">
 						<h3><a href="single-post.html">Hints for Life</a></h3>
@@ -422,15 +422,15 @@
     <h5>&copy; Copyright 2020. All rights reserved.</h5>
     <h6>Design and Developed by <a href="https://themefisher.com/">Themefisher</a></h6>
   </div>
-</footer><script src="plugins/jquery/jquery.min.js"></script>
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<script src="plugins/parallax/jquery.parallax-1.1.3.js"></script>
-<script src="plugins/lightbox2/js/lightbox.min.js"></script>
-<script src="plugins/slick/slick.min.js"></script>
-<script src="plugins/filterizr/jquery.filterizr.min.js"></script>
-<script src="plugins/smooth-scroll/smooth-scroll.min.js"></script>
+</footer><script src="{{ asset('assets/website/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/bootstrap/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/parallax/jquery.parallax-1.1.3.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/lightbox2/js/lightbox.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/slick/slick.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/filterizr/jquery.filterizr.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/smooth-scroll/smooth-scroll.min.js') }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU"></script>
-<script src="plugins/google-map/gmap.js"></script>
-<script src="js/script.js"></script>
+<script src="{{ asset('assets/website/plugins/google-map/gmap.js') }}"></script>
+<script src="{{ asset('assets/website/js/script.js') }}"></script>
 </body>
 </html>

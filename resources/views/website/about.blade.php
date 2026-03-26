@@ -31,8 +31,8 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light px-0">
       <a class="navbar-brand logo" href="index.html">
-        <img loading="lazy" class="logo-default" src="images/logo.png" alt="logo" />
-        <img loading="lazy" class="logo-white" src="images/logo-white.png" alt="logo" />
+        <img loading="lazy" class="logo-default" src="{{ asset('assets/website/images/logo.png') }}" alt="logo" />
+        <img loading="lazy" class="logo-white" src="{{ asset('assets/website/images/logo-white.png') }}" alt="logo" />
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
         aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,7 +125,7 @@
 				</p>
 			</div>
 			<div class="col-lg-6 mt-4 mt-lg-0">
-				<img loading="lazy" class="img-fluid" src="images/company/company-image.jpg" alt="">
+				<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/company/company-image.jpg') }}" alt="">
 			</div>
 		</div>
 	</div>
@@ -139,7 +139,7 @@
 					assumenda vel, quia earum voluptatem blanditiis vero accusantium saepe aliquid nulla nemo accusamus, culpa
 					inventore! Culpa nemo aspernatur tenetur, at quam aliquid reprehenderit obcaecati dicta illum mollitia,
 					perferendis hic, beatae voluptates? Ex labore, obcaecati harum nam.</p>
-				<img loading="lazy" src="images/company/company-image-2.jpg" alt="" class="img-fluid mt-30">
+				<img loading="lazy" src="{{ asset('assets/website/images/company/company-image-2.jpg') }}" alt="" class="img-fluid mt-30">
 			</div>
 			<div class="col-md-6 mt-5 mt-md-0">
 				<h3>Our Vision</h3>
@@ -147,7 +147,7 @@
 					assumenda vel, quia earum voluptatem blanditiis vero accusantium saepe aliquid nulla nemo accusamus, culpa
 					inventore! Culpa nemo aspernatur tenetur, at quam aliquid reprehenderit obcaecati dicta illum mollitia,
 					perferendis hic, beatae voluptates? Ex labore, obcaecati harum nam.</p>
-				<img loading="lazy" src="images/company/company-image-3.jpg" alt="" class="img-fluid mt-30">
+				<img loading="lazy" src="{{ asset('assets/website/images/company/company-image-3.jpg') }}" alt="" class="img-fluid mt-30">
 			</div>
 		</div>
 	</div>
@@ -194,18 +194,18 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="company-gallery">
-					<img loading="lazy" src="images/company/gallery-1.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-2.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-3.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-4.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-5.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-5.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-1.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-2.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-3.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-4.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-5.jpg" alt="">
-					<img loading="lazy" src="images/company/gallery-5.jpg" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-1.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-2.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-3.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-4.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-5.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-5.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-1.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-2.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-3.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-4.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-5.jpg') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/company/gallery-5.jpg') }}" alt="">
 				</div>
 			</div>
 		</div>
@@ -227,7 +227,7 @@
 			<div class="col-lg-4 col-md-6">
 				<div class="team-member text-center">
 					<div class="member-photo">
-						<img loading="lazy" class="img-fluid" src="images/team/member-1.jpg" alt="Meghna">
+						<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/team/member-1.jpg') }}" alt="Meghna">
 						<div class="mask">
 							<ul class="clearfix">
 								<li><a href="https://themefisher.com/"><i class="tf-ion-social-facebook"></i></a></li>
@@ -247,7 +247,7 @@
 			<div class="col-lg-4 col-md-6">
 				<div class="team-member text-center">
 					<div class="member-photo">
-						<img loading="lazy" class="img-fluid" src="images/team/member-2.jpg" alt="Meghna">
+						<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/team/member-2.jpg') }}" alt="Meghna">
 						<div class="mask">
 							<ul class="clearfix">
 								<li><a href="https://themefisher.com/"><i class="tf-ion-social-facebook"></i></a></li>
@@ -267,7 +267,7 @@
 			<div class="col-lg-4 col-md-6">
 				<div class="team-member text-center">
 					<div class="member-photo">
-						<img loading="lazy" class="img-fluid" src="images/team/member-3.jpg" alt="Meghna">
+						<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/team/member-3.jpg') }}" alt="Meghna">
 						<div class="mask">
 							<ul class="clearfix">
 								<li><a href="https://themefisher.com/"><i class="tf-ion-social-facebook"></i></a></li>
@@ -387,15 +387,15 @@
     <h5>&copy; Copyright 2020. All rights reserved.</h5>
     <h6>Design and Developed by <a href="https://themefisher.com/">Themefisher</a></h6>
   </div>
-<script src="plugins/jquery/jquery.min.js"></script>
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<script src="plugins/parallax/jquery.parallax-1.1.3.js"></script>
-<script src="plugins/lightbox2/js/lightbox.min.js"></script>
-<script src="plugins/slick/slick.min.js"></script>
-<script src="plugins/filterizr/jquery.filterizr.min.js"></script>
-<script src="plugins/smooth-scroll/smooth-scroll.min.js"></script>
+<script src="{{ asset('assets/website/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/bootstrap/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/parallax/jquery.parallax-1.1.3.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/lightbox2/js/lightbox.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/slick/slick.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/filterizr/jquery.filterizr.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/smooth-scroll/smooth-scroll.min.js') }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU"></script>
-<script src="plugins/google-map/gmap.js"></script>
-<script src="js/script.js"></script>
+<script src="{{ asset('assets/website/plugins/google-map/gmap.js') }}"></script>
+<script src="{{ asset('assets/website/js/script.js') }}"></script>
 </body>
 </html>

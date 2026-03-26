@@ -31,8 +31,8 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light px-0">
       <a class="navbar-brand logo" href="index.html">
-        <img loading="lazy" class="logo-default" src="images/logo.png" alt="logo" />
-        <img loading="lazy" class="logo-white" src="images/logo-white.png" alt="logo" />
+        <img loading="lazy" class="logo-default" src="{{ asset('assets/website/images/logo.png') }}" alt="logo" />
+        <img loading="lazy" class="logo-white" src="{{ asset('assets/website/images/logo-white.png') }}" alt="logo" />
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
         aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,7 +125,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-6 mb-4 mb-md-0">
-				<img loading="lazy" src="images/about/about-2.png" class="img-fluid" alt="">
+				<img loading="lazy" src="{{ asset('assets/website/images/about/about-2.png') }}" class="img-fluid" alt="">
 			</div>
 			<div class="col-md-6">
 				<ul class="checklist">
@@ -260,15 +260,15 @@
   </div>
 </footer>
 
-<script src="plugins/jquery/jquery.min.js"></script>
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<script src="plugins/parallax/jquery.parallax-1.1.3.js"></script>
-<script src="plugins/lightbox2/js/lightbox.min.js"></script>
-<script src="plugins/slick/slick.min.js"></script>
-<script src="plugins/filterizr/jquery.filterizr.min.js"></script>
-<script src="plugins/smooth-scroll/smooth-scroll.min.js"></script>
+<script src="{{ asset('assets/website/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/bootstrap/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/parallax/jquery.parallax-1.1.3.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/lightbox2/js/lightbox.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/slick/slick.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/filterizr/jquery.filterizr.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/smooth-scroll/smooth-scroll.min.js') }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU"></script>
-<script src="plugins/google-map/gmap.js"></script>
-<script src="js/script.js"></script>
+<script src="{{ asset('assets/website/plugins/google-map/gmap.js') }}"></script>
+<script src="{{ asset('assets/website/js/script.js') }}"></script>
 </body>
 </html>

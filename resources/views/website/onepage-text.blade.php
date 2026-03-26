@@ -31,8 +31,8 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light px-0">
       <a class="navbar-brand logo" href="index.html">
-        <img loading="lazy" class="logo-default" src="images/logo.png" alt="logo" />
-        <img loading="lazy" class="logo-white" src="images/logo-white.png" alt="logo" />
+        <img loading="lazy" class="logo-default" src="{{ asset('assets/website/images/logo.png') }}" alt="logo" />
+        <img loading="lazy" class="logo-white" src="{{ asset('assets/website/images/logo-white.png') }}" alt="logo" />
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
         aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,7 +133,7 @@
 		</div>
 		<div class="row">
 			<div class="col-lg-6 mb-5 mb-lg-0">
-				<img loading="lazy" src="images/about-us.jpg" class="img-fluid" alt="">
+				<img loading="lazy" src="{{ asset('assets/website/images/about-us.jpg') }}" class="img-fluid" alt="">
 			</div>
 			<div class="col-lg-6">
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a tempor eros. Pellentesque elementum nulla
@@ -315,16 +315,16 @@
 		<div class="row">
 			<div class="col-md-12 mt-4">
 				<div id="clients-slider" class="clients-logo-slider">
-					<img loading="lazy" src="images/client-logo/logo1.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-2.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-3.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-4.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-5.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo1.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-2.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-3.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-4.png" alt="">
-					<img loading="lazy" src="images/client-logo/logo-5.png" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo1.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-2.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-3.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-4.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-5.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo1.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-2.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-3.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-4.png') }}" alt="">
+					<img loading="lazy" src="{{ asset('assets/website/images/client-logo/logo-5.png') }}" alt="">
 				</div>
 			</div>
 		</div>
@@ -407,7 +407,7 @@
 						<div class="filtr-container">
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, design">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-1.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-1.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-1.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -418,7 +418,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, design, ios">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-2.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-2.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-2.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -429,7 +429,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, photography, development">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-3.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-3.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-3.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -440,7 +440,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, photography, ios">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-4.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-4.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-4.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -451,7 +451,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, design">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-5.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-5.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-5.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -462,7 +462,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, design, development">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-6.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-6.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-6.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -473,7 +473,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, photography">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-7.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-7.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-7.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -484,7 +484,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 col-xs-6 filtr-item " data-category="mix, design, development">
 								<div class="portfolio-block">
-									<img class="img-fluid" src="images/portfolio/portfolio-1.jpg" alt="">
+									<img class="img-fluid" src="{{ asset('assets/website/images/portfolio/portfolio-1.jpg') }}" alt="">
 									<div class="caption">
 										<a class="search-icon" href="{{ asset('assets/website/images/portfolio/portfolio-1.jpg') }}" data-lightbox="image-1">
 											<i class="tf-ion-ios-search-strong"></i>
@@ -516,7 +516,7 @@
 			<div class="col-lg-4 col-md-6">
 				<div class="team-member text-center">
 					<div class="member-photo">
-						<img loading="lazy" class="img-fluid" src="images/team/member-1.jpg" alt="Meghna">
+						<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/team/member-1.jpg') }}" alt="Meghna">
 						<div class="mask">
 							<ul class="clearfix">
 								<li><a href="https://themefisher.com/"><i class="tf-ion-social-facebook"></i></a></li>
@@ -536,7 +536,7 @@
 			<div class="col-lg-4 col-md-6">
 				<div class="team-member text-center">
 					<div class="member-photo">
-						<img loading="lazy" class="img-fluid" src="images/team/member-2.jpg" alt="Meghna">
+						<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/team/member-2.jpg') }}" alt="Meghna">
 						<div class="mask">
 							<ul class="clearfix">
 								<li><a href="https://themefisher.com/"><i class="tf-ion-social-facebook"></i></a></li>
@@ -556,7 +556,7 @@
 			<div class="col-lg-4 col-md-6">
 				<div class="team-member text-center">
 					<div class="member-photo">
-						<img loading="lazy" class="img-fluid" src="images/team/member-3.jpg" alt="Meghna">
+						<img loading="lazy" class="img-fluid" src="{{ asset('assets/website/images/team/member-3.jpg') }}" alt="Meghna">
 						<div class="mask">
 							<ul class="clearfix">
 								<li><a href="https://themefisher.com/"><i class="tf-ion-social-facebook"></i></a></li>
@@ -657,7 +657,7 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum nulla, soluta dolorum. Eos earum, magni asperiores, unde corporis labore, enim, voluptatum officiis voluptates alias natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, officia. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod, quia?</p>
 							</div>
 							<div class="client-thumb">
-								<img loading="lazy" src="images/client-logo/clients-1.jpg" class="img-fluid" alt="">
+								<img loading="lazy" src="{{ asset('assets/website/images/client-logo/clients-1.jpg') }}" class="img-fluid" alt="">
 							</div>
 							<div class="client-meta">
 								<h3>William Martin</h3>
@@ -670,7 +670,7 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum nulla, soluta dolorum. Eos earum, magni asperiores, unde corporis labore, enim, voluptatum officiis voluptates alias natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, officia. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod, quia?</p>
 							</div>
 							<div class="client-thumb">
-								<img loading="lazy" src="images/client-logo/clients-2.jpg" class="img-fluid" alt="">
+								<img loading="lazy" src="{{ asset('assets/website/images/client-logo/clients-2.jpg') }}" class="img-fluid" alt="">
 							</div>
 							<div class="client-meta">
 								<h3>Emma Harrison</h3>
@@ -683,7 +683,7 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum nulla, soluta dolorum. Eos earum, magni asperiores, unde corporis labore, enim, voluptatum officiis voluptates alias natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, officia. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod, quia?</p>
 							</div>
 							<div class="client-thumb">
-								<img loading="lazy" src="images/client-logo/clients-3.jpg" class="img-fluid" alt="">
+								<img loading="lazy" src="{{ asset('assets/website/images/client-logo/clients-3.jpg') }}" class="img-fluid" alt="">
 							</div>
 							<div class="client-meta">
 								<h3>Alexander Lucas</h3>
@@ -710,7 +710,7 @@
 			<article class="col-lg-4 col-md-6">
 				<div class="post-item">
 					<div class="media-wrapper">
-						<img loading="lazy" src="images/blog/post-1.jpg" alt="amazing caves coverimage" class="img-fluid">
+						<img loading="lazy" src="{{ asset('assets/website/images/blog/post-1.jpg') }}" alt="amazing caves coverimage" class="img-fluid">
 					</div>
 					<div class="content">
 						<h3><a href="single-post.html">Reasons to Smile</a></h3>
@@ -723,7 +723,7 @@
 <article class="col-lg-4 col-md-6">
 				<div class="post-item">
 					<div class="media-wrapper">
-						<img loading="lazy" src="images/blog/post-2.jpg" alt="amazing caves coverimage" class="img-fluid">
+						<img loading="lazy" src="{{ asset('assets/website/images/blog/post-2.jpg') }}" alt="amazing caves coverimage" class="img-fluid">
 					</div>
 					<div class="content">
 						<h3><a href="single-post.html">A Few Moments</a></h3>
@@ -736,7 +736,7 @@
 			<article class="col-lg-4 col-md-6">
 				<div class="post-item">
 					<div class="media-wrapper">
-						<img loading="lazy" src="images/blog/post-3.jpg" alt="amazing caves coverimage" class="img-fluid">
+						<img loading="lazy" src="{{ asset('assets/website/images/blog/post-3.jpg') }}" alt="amazing caves coverimage" class="img-fluid">
 					</div>
 					<div class="content">
 						<h3><a href="single-post.html">Hints for Life</a></h3>
@@ -869,15 +869,15 @@
   </div>
 </footer>
 
-<script src="plugins/jquery/jquery.min.js"></script>
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<script src="plugins/parallax/jquery.parallax-1.1.3.js"></script>
-<script src="plugins/lightbox2/js/lightbox.min.js"></script>
-<script src="plugins/slick/slick.min.js"></script>
-<script src="plugins/filterizr/jquery.filterizr.min.js"></script>
-<script src="plugins/smooth-scroll/smooth-scroll.min.js"></script>
+<script src="{{ asset('assets/website/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/bootstrap/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/parallax/jquery.parallax-1.1.3.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/lightbox2/js/lightbox.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/slick/slick.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/filterizr/jquery.filterizr.min.js') }}"></script>
+<script src="{{ asset('assets/website/plugins/smooth-scroll/smooth-scroll.min.js') }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU"></script>
-<script src="plugins/google-map/gmap.js"></script>
-<script src="js/script.js"></script>
+<script src="{{ asset('assets/website/plugins/google-map/gmap.js') }}"></script>
+<script src="{{ asset('assets/website/js/script.js') }}"></script>
 </body>
 </html>
