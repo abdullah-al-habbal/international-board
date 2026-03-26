@@ -18,7 +18,7 @@ final class CertificationController extends Controller
 
     public function checkout(): View
     {
-        return view('');
+        return view('web.certifications.search');
     }
 
     public function show(string $code): View
@@ -27,6 +27,6 @@ final class CertificationController extends Controller
 
         abort_if(!$certification, 404);
 
-        return view('', compact('certification'));
+        return view('web.certifications.show', compact('certification'));
     }
 }

@@ -18,6 +18,6 @@ final class StaticPageController
         $page = $this->service->getBySlug($slug);
         abort_if(!$page, 404);
 
-        return view('', compact('page'));
+        return view('web.pages.show', compact('page'));
     }
 }

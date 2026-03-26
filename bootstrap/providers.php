@@ -15,6 +15,7 @@ use App\Providers\RepositoryServiceProvider;
 use App\Providers\SecurityServiceProvider;
 use App\Providers\ServiceRegistrationProvider;
 use App\Providers\ValidationServiceProvider;
+use App\Providers\ViewServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -34,4 +35,5 @@ return [
 
     AdminPanelProvider::class,
     CenterPanelProvider::class,
+    ViewServiceProvider::class,
 ];

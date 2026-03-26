@@ -46,14 +46,13 @@ class StaticPage extends Model
     #[Scope]
     protected function localizedSlug(Builder $query, string $slug): void
     {
-        $query->where('slug->' . app()->getLocale(), $slug);
+        $query->where('slug', $slug);
     }
 
     #[Scope]
-    protected function bySlug(Builder $query, string $slug, ?string $locale = null): void
+    protected function bySlug(Builder $query, string $slug): void
     {
-        $locale ??= app()->getLocale();
-        $query->where("slug->{$locale}", $slug);
+        $query->where('slug', $slug);
     }
 
     #[Scope]
