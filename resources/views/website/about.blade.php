@@ -8,13 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="author" content="Themefisher">
   <meta name="generator" content="Themefisher Bingo HTML Template v1.0">
-  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
-  <link rel="stylesheet" href="plugins/themefisher-font/style.css">
-  <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
-  <link rel="stylesheet" href="plugins/lightbox2/css/lightbox.min.css">
-  <link rel="stylesheet" href="plugins/animate/animate.css">
-  <link rel="stylesheet" href="plugins/slick/slick.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/website/images/favicon.png') }}" />
+  <link rel="stylesheet" href="{{ asset('assets/website/plugins/themefisher-font/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/website/plugins/bootstrap/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/website/plugins/lightbox2/css/lightbox.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/website/plugins/animate/animate.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/website/plugins/slick/slick.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/website/css/style.css') }}">
 </head>
 <body id="body">
   <div id="preloader">
