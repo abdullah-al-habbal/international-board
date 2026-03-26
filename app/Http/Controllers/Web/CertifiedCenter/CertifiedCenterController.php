@@ -16,7 +16,7 @@ final class CertifiedCenterController extends Controller
     {
         $centers = $this->service->getAll();
 
-        return view('web.center.index', compact('centers'));
+        return view('', compact('centers'));
     }
 
     public function show(int $id): View
@@ -24,6 +24,6 @@ final class CertifiedCenterController extends Controller
         $center = $this->service->getById($id);
         abort_if(! $center, 404);
 
-        return view('web.center.show', compact('center'));
+        return view('', compact('center'));
     }
 }

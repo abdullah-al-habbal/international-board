@@ -33,7 +33,7 @@ class TrainerController extends Controller
 
         $trainers = $query->with('country')->paginate(12);
 
-        return view('trainers.index', compact('trainers'));
+        return view('', compact('trainers'));
     }
 
     public function show(Trainer $trainer): View
@@ -44,13 +44,13 @@ class TrainerController extends Controller
 
         $trainer->load('country', 'certifications');
 
-        return view('trainers.show', compact('trainer'));
+        return view('', compact('trainer'));
     }
 
     public function evaluation(): View
     {
         $evaluationText = ApplicationSetting::get('trainer_evaluation_text', __('app.trainer_evaluation_default_text'));
 
-        return view('trainer-evaluation', ['evaluationText' => $evaluationText]);
+        return view('', ['evaluationText' => $evaluationText]);
     }
 }

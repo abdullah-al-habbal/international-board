@@ -1,5 +1,5 @@
 <?php
-
+// filePath: routes\web.php
 declare(strict_types=1);
 
 use App\Http\Controllers\HealthCheckController;
@@ -13,7 +13,7 @@ Route::redirect('/', '/web')->name('home');
 
 Route::prefix('web')->name('web.')->group(function () {
 
-    Route::get('/', fn() => view('welcome'))->name('home');
+    Route::get('/', fn() => view('home_page'))->name('home');
 
     Route::prefix('pages')->group(function () {
         Route::get('/{slug}', [StaticPageController::class, 'show'])
