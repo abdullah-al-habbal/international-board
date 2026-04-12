@@ -1,5 +1,4 @@
 <?php
-// app/Models/CertifiedCenterDocumentType.php
 
 declare(strict_types=1);
 
@@ -18,7 +17,15 @@ class CertifiedCenterDocumentType extends Model
     protected $fillable = [
         'certified_center_id',
         'document_type_id',
+        'is_published',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_published' => 'boolean',
+        ];
+    }
 
     public function certifiedCenter(): BelongsTo
     {

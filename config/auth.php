@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\CertifiedCenter;
+use App\Models\Trainer;
 use App\Models\User;
 
 return [
@@ -20,6 +21,10 @@ return [
             'driver' => 'session',
             'provider' => 'certified_centers',
         ],
+        'trainer' => [
+            'driver' => 'session',
+            'provider' => 'trainers',
+        ],
     ],
 
     'providers' => [
@@ -30,6 +35,10 @@ return [
         'certified_centers' => [
             'driver' => 'eloquent',
             'model' => CertifiedCenter::class,
+        ],
+        'trainers' => [
+            'driver' => 'eloquent',
+            'model' => Trainer::class,
         ],
     ],
 
@@ -42,6 +51,12 @@ return [
         ],
         'certified_centers' => [
             'provider' => 'certified_centers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'trainers' => [
+            'provider' => 'trainers',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

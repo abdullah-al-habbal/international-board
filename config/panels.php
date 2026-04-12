@@ -23,4 +23,15 @@ return [
         'pages_path' => 'App\\Filament\\Center\\Pages',
         'widgets_path' => 'App\\Filament\\Center\\Widgets',
     ],
+    'trainer' => [
+        'id' => 'trainer',
+        'path' => '/trainer',
+        'color' => 'emerald',
+        'label' => 'Trainer Panel',
+        'guard' => 'trainer',
+        'password_broker' => 'trainers',
+        'resources_path' => 'App\\Filament\\Trainer\\Resources',
+        'pages_path' => 'App\\Filament\\Trainer\\Pages',
+        'widgets_path' => 'App\\Filament\\Trainer\\Widgets',
+    ],
 ];

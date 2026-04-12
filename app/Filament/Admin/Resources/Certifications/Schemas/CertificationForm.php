@@ -35,9 +35,6 @@ class CertificationForm
                                     ->placeholder(__('app.select_center'))
                                     ->helperText(__('app.center_optional')),
 
-                                // REMOVED: certificate_type field
-                                // Now using document_type_id exclusively
-
                                 Select::make('document_type_id')
                                     ->label(__('app.document_type'))
                                     ->relationship('documentType', 'name')
@@ -156,11 +153,6 @@ class CertificationForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('accredited_serial_number')
-                                    ->label(__('app.accredited_serial_number'))
-                                    ->required()
-                                    ->maxLength(255),
-
                                 TextInput::make('document_code')
                                     ->label(__('app.document_code'))
                                     ->maxLength(255),

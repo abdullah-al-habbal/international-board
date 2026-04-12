@@ -36,26 +36,26 @@ class ApplicationSettingForm
                     ->required(),
 
                 TextInput::make('value')
-                    ->label('Value')
+                    ->label(__('app.value'))
                     ->visible(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Url->value]))
-                    ->required(),
+                    ->required(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Url->value])),
 
                 TextInput::make('value')
-                    ->label('Value')
+                    ->label(__('app.value'))
                     ->numeric()
                     ->visible(fn($get) => $get('type') === SettingType::Number->value)
-                    ->required(),
+                    ->required(fn($get) => $get('type') === SettingType::Number->value),
 
                 Toggle::make('value')
-                    ->label('Value')
+                    ->label(__('app.value'))
                     ->visible(fn($get) => $get('type') === SettingType::Boolean->value)
-                    ->required(),
+                    ->required(fn($get) => $get('type') === SettingType::Boolean->value),
 
                 Textarea::make('value')
-                    ->label('Value')
+                    ->label(__('app.value'))
                     ->visible(fn($get) => $get('type') === SettingType::Json->value)
                     ->rules(['json'])
-                    ->required(),
+                    ->required(fn($get) => $get('type') === SettingType::Json->value),
             ]);
     }
 }

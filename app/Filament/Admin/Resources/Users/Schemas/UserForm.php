@@ -33,16 +33,17 @@ class UserForm
             TextInput::make('password')
                 ->label(__('app.password'))
                 ->password()
-                ->required()
                 ->minLength(8)
                 ->confirmed()
+                ->dehydrated(fn ($state) => filled($state))
+                ->required(fn (string $context) => $context === 'create')
                 ->columnSpan(1),
 
             TextInput::make('password_confirmation')
                 ->label(__('app.confirm_password'))
                 ->password()
-                ->required()
                 ->minLength(8)
+                ->dehydrated(false)
                 ->columnSpan(1),
 
             Select::make('type')
@@ -52,7 +53,7 @@ class UserForm
                 ->required()
                 ->columnSpan(1),
 
-            Toggle::make('email_verified')
+            Toggle::make('email_verified_at')
                 ->label(__('app.email_verified'))
                 ->default(false)
                 ->columnSpan(1),

@@ -9,7 +9,6 @@ use App\Enums\AccreditationStatus;
 use App\Enums\PanelId;
 use Carbon\Carbon;
 use Filament\Panel;
-use App\Models\Traits\HasEditRequests;
 use App\Enums\CenterStatus;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,7 +30,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[UsePolicy(CertifiedCenterPolicy::class)]
 class CertifiedCenter extends Authenticatable implements FilamentUser
 {
-    use HasEditRequests;
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -116,61 +114,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     }
 
     #[Scope]
-    protected function statusActive(Builder $query): void
-    {
-        $query->where('status', CenterStatus::Active->value);
-    }
-
-    #[Scope]
-    protected function statusInactive(Builder $query): void
-    {
-        $query->where('status', CenterStatus::Inactive->value);
-    }
-
-    #[Scope]
-    protected function statusPending(Builder $query): void
-    {
-        $query->where('status', CenterStatus::Pending->value);
-    }
-
-    #[Scope]
-    protected function statusSuspended(Builder $query): void
-    {
-        $query->where('status', CenterStatus::Suspended->value);
-    }
-
-    #[Scope]
-    protected function byEmail(Builder $query, string $email): void
-    {
-        $query->where('email', $email);
-    }
-
-    #[Scope]
-    protected function byName(Builder $query, string $name): void
-    {
-        $query->where('name', 'like', "%{$name}%");
-    }
-
-    #[Scope]
-    protected function byManagerName(Builder $query, string $managerName): void
-    {
-        $query->where('manager_name', 'like', "%{$managerName}%");
-    }
-
-    #[Scope]
-    protected function byAccreditationNumber(Builder $query, string $accreditationNumber): void
-    {
-        $query->where('accreditation_number', $accreditationNumber);
-    }
-
-    #[Scope]
-    protected function accreditationExpiring(Builder $query, int $days = 30): void
-    {
-        $query->where('accreditation_period_end', '<=', now()->addDays($days))
-            ->where('accreditation_period_end', '>=', now());
-    }
-
-    #[Scope]
     protected function accreditationExpired(Builder $query): void
     {
         $query->where('accreditation_period_end', '<', now());
@@ -181,18 +124,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     {
         $query->where('accreditation_period_start', '<=', now())
             ->where('accreditation_period_end', '>=', now());
-    }
-
-    #[Scope]
-    protected function orderByName(Builder $query, string $direction = 'asc'): void
-    {
-        $query->orderBy('name', $direction);
-    }
-
-    #[Scope]
-    protected function orderByAccreditationEnd(Builder $query, string $direction = 'asc'): void
-    {
-        $query->orderBy('accreditation_period_end', $direction);
     }
 
     public function canAccessPanel(Panel $panel): bool

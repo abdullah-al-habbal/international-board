@@ -112,10 +112,6 @@ class CertificationForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('accredited_serial_number')
-                                    ->label(__('app.accredited_serial_number'))
-                                    ->required()
-                                    ->maxLength(255),
 
                                 TextInput::make('document_code')
                                     ->label(__('app.document_code'))

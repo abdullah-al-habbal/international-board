@@ -38,6 +38,7 @@ class AccreditationRequest extends Model
             'status' => AccreditationStatus::class,
         ];
     }
+
     public function certifiedCenter(): BelongsTo
     {
         return $this->belongsTo(CertifiedCenter::class);
@@ -46,14 +47,6 @@ class AccreditationRequest extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
-    }
-
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query
-            ->where('status', AccreditationStatus::Approved)
-            ->where('requested_start_date', '<=', Carbon::now())
-            ->where('requested_end_date', '>=', Carbon::now());
     }
 
     public function scopePending(Builder $query): Builder

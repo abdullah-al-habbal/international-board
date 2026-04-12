@@ -1,10 +1,10 @@
 <?php
-// app/Models/CenterDocumentTypeRequest.php
 
 declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DocumentTypeRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,7 +26,7 @@ class CenterDocumentTypeRequest extends Model
     {
         return [
             'requested_document_types' => 'array',
-            'status' => 'string',
+            'status' => DocumentTypeRequestStatus::class,
         ];
     }
 

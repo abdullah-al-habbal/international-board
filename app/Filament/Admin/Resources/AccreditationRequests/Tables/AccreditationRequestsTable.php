@@ -87,7 +87,6 @@ class AccreditationRequestsTable
                             'reviewed_at' => now(),
                         ]);
 
-                        // Explicit sync — no observer dependency.
                         $center = $record->certifiedCenter;
                         if ($center) {
                             $center->update([

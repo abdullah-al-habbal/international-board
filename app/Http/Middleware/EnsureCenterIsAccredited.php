@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Models\CertifiedCenter;
+use App\Services\Accreditation\AccreditationGateService;
 use Closure;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
@@ -13,12 +14,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureCenterIsAccredited
 {
+    public function __construct(
+        private readonly AccreditationGateService $gateService
+    ) {
+    }
+
     public function handle(Request $request, Closure $next): Response
     {
         /** @var CertifiedCenter|null $center */
         $center = Auth::guard('certified_center')->user();
 
-        if (! $center) {
+        if (!$center) {
+            return $next($request);
+        }
+
+        if ($this->gateService->currentCenterCanPerformActions()) {
             return $next($request);
         }
 
@@ -26,14 +36,10 @@ class EnsureCenterIsAccredited
             return $next($request);
         }
 
-        if ($center->canPerformActions()) {
-            return $next($request);
-        }
-
         Notification::make()
             ->warning()
             ->title(__('accreditation.blocked.title'))
-            ->body($center->accreditationBlockReason())
+            ->body($this->gateService->currentCenterAccreditationBlockReason())
             ->persistent()
             ->send();
 

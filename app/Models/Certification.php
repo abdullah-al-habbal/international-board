@@ -90,12 +90,6 @@ class Certification extends Model
     }
 
     #[Scope]
-    protected function ofDocumentType(Builder $query, int $documentTypeId): void
-    {
-        $query->where('document_type_id', $documentTypeId);
-    }
-
-    #[Scope]
     protected function byDocumentCode(Builder $query, string $code): void
     {
         $query->where('document_code', $code);
@@ -131,199 +125,14 @@ class Certification extends Model
     }
 
     #[Scope]
-    protected function createdThisYear(Builder $query): void
-    {
-        $query->whereYear('created_at', now()->year);
-    }
-
-    #[Scope]
     protected function betweenDates(Builder $query, \DateTime $start, \DateTime $end): void
     {
         $query->whereBetween('created_at', [$start, $end]);
     }
 
     #[Scope]
-    protected function accreditedBetween(Builder $query, \DateTime $start, \DateTime $end): void
-    {
-        $query->whereBetween('accreditation_date', [$start, $end]);
-    }
-
-    #[Scope]
     protected function recentlyCreated(Builder $query): void
     {
         $query->orderBy('created_at', 'desc');
-    }
-
-    #[Scope]
-    protected function orderByAccreditation(Builder $query, string $direction = 'desc'): void
-    {
-        $query->orderBy('accreditation_date', $direction);
-    }
-
-    public function hasPaperReceived(): bool
-    {
-        if (is_string($this->paper_received)) {
-            return in_array(strtoupper($this->paper_received), ['YES', 'YAS', '1', 'TRUE']);
-        }
-
-        return (bool) $this->paper_received;
-    }
-
-    public function isTrainingCertificate(): bool
-    {
-        $key = strtolower($this->documentType?->key ?? '');
-
-        return str_contains($key, 'training') ||
-            str_contains($key, 'tot');
-    }
-
-    public function isAccreditationCenterCertificate(): bool
-    {
-        $key = strtolower($this->documentType?->key ?? '');
-
-        return str_contains($key, 'accreditation_center');
-    }
-
-    public function isExperienceCertificate(): bool
-    {
-        $key = strtolower($this->documentType?->key ?? '');
-
-        return str_contains($key, 'experience');
-    }
-
-    public function isConsultantCertificate(): bool
-    {
-        $key = strtolower($this->documentType?->key ?? '');
-
-        return str_contains($key, 'adviser') ||
-            str_contains($key, 'consultant');
-    }
-
-    public function hasValidData(): bool
-    {
-        return ! empty($this->trainee_id) &&
-            ! empty($this->accredited_serial_number) &&
-            ! empty($this->document_type_id) &&
-            ! empty($this->accreditation_date);
-    }
-
-    public function isRecent(): bool
-    {
-        return $this->created_at && $this->created_at->isAfter(now()->subDays(30));
-    }
-
-    public function isAccreditedInYear(int $year): bool
-    {
-        return $this->accreditation_date &&
-            $this->accreditation_date->year === $year;
-    }
-
-    public function needsDataCleanup(): bool
-    {
-        return empty($this->document_type_id) ||
-            empty($this->certified_center_id) ||
-            $this->hasInconsistentNationality() ||
-            $this->hasInconsistentPaperStatus();
-    }
-
-    private function hasInconsistentNationality(): bool
-    {
-        if (empty($this->nationality)) {
-            return true;
-        }
-
-        $nationality = strtolower(trim($this->nationality));
-        $standardNationalities = ['libyan', 'egyptian', 'syrian', 'yemeni', 'mauritanian'];
-
-        return ! in_array($nationality, $standardNationalities) &&
-            ! in_array($nationality, ['libya', 'egypt', 'syria', 'yemen', 'mauritania']);
-    }
-
-    private function hasInconsistentPaperStatus(): bool
-    {
-        if (empty($this->paper_received)) {
-            return false;
-        }
-
-        $status = strtoupper(trim($this->paper_received));
-
-        return ! in_array($status, ['YES', 'NO', 'TRUE', 'FALSE', '1', '0']);
-    }
-
-    public function getDocumentTypeName(): ?string
-    {
-        return $this->documentType?->name;
-    }
-
-    public function isComplete(): bool
-    {
-        return ! empty($this->trainee_id) &&
-            ! empty($this->accredited_serial_number) &&
-            ! empty($this->accreditation_date) &&
-            ! empty($this->document_type_id);
-    }
-
-    public function hasValidDate(): bool
-    {
-        if (empty($this->accreditation_date)) {
-            return false;
-        }
-
-        return $this->accreditation_date >= '1900-01-01' &&
-            $this->accreditation_date <= now();
-    }
-
-    public function getDataQualityScore(): int
-    {
-        $score = 0;
-        $maxScore = 10;
-
-        if (! empty($this->trainee_id)) {
-            $score += 1;
-        }
-        if (! empty($this->accredited_serial_number)) {
-            $score += 1;
-        }
-        if (! empty($this->document_type_id)) {
-            $score += 1;
-        }
-        if (! empty($this->accreditation_date)) {
-            $score += 1;
-        }
-        if ($this->hasValidDate()) {
-            $score += 1;
-        }
-
-        if (! empty($this->country_id)) {
-            $score += 1;
-        }
-        if (! empty($this->trainer_id)) {
-            $score += 1;
-        }
-        if (! empty($this->certified_center_id)) {
-            $score += 1;
-        }
-
-        if (! empty($this->paper_received)) {
-            $score += 1;
-        }
-        if (! empty($this->notes)) {
-            $score += 1;
-        }
-
-        return (int) round(($score / $maxScore) * 100);
-    }
-
-    public function getDataQualityStatus(): string
-    {
-        $score = $this->getDataQualityScore();
-
-        return match (true) {
-            $score >= 90 => 'excellent',
-            $score >= 75 => 'good',
-            $score >= 60 => 'fair',
-            $score >= 40 => 'poor',
-            default => 'critical'
-        };
     }
 }

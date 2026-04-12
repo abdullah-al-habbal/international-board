@@ -4,18 +4,26 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Traits\HasEditRequests;
+use App\Models\Country;
+use App\Models\TrainerDocumentTypeRequest;
+use App\Models\Certification;
+use App\Models\TrainerDocumentType;
+use App\Models\TrainerFinancialRequest;
+use App\Models\TrainerAccreditationRequest;
+use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Trainer extends Model
+class Trainer extends Authenticatable implements FilamentUser
 {
-    use HasEditRequests;
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -27,6 +35,16 @@ class Trainer extends Model
         'country_id',
         'specializations',
         'is_active',
+        'unique_trainer_code',
+        'accreditation_number',
+        'membership_start_date',
+        'membership_end_date',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     protected function casts(): array
@@ -35,6 +53,9 @@ class Trainer extends Model
             'address' => 'array',
             'specializations' => 'array',
             'is_active' => 'boolean',
+            'membership_start_date' => 'date',
+            'membership_end_date' => 'date',
+            'password' => 'hashed',
         ];
     }
 
@@ -48,405 +69,54 @@ class Trainer extends Model
         return $this->hasMany(Certification::class);
     }
 
-    public function recentCertifications(): HasMany
+    public function financialRequests(): HasMany
     {
-        return $this->hasMany(Certification::class)
-            ->orderBy('accreditation_date', 'desc')
-            ->limit(10);
+        return $this->hasMany(TrainerFinancialRequest::class);
     }
 
-    public function certificationsThisYear(): HasMany
+    public function documentTypes(): HasMany
     {
-        return $this->hasMany(Certification::class)
-            ->whereYear('accreditation_date', now()->year);
+        return $this->hasMany(TrainerDocumentType::class);
     }
 
-    public function certificationsByYear(int $year): HasMany
+    public function documentTypeRequests(): HasMany
     {
-        return $this->hasMany(Certification::class)
-            ->whereYear('accreditation_date', $year);
+        return $this->hasMany(TrainerDocumentTypeRequest::class);
     }
 
-    public function certificationsByDocumentType(string $documentType): HasMany
+    public function accreditationRequests(): HasMany
     {
-        return $this->hasMany(Certification::class)
-            ->whereHas('documentType', function ($query) use ($documentType) {
-                $query->where('name', 'like', "%{$documentType}%");
-            });
+        return $this->hasMany(TrainerAccreditationRequest::class);
     }
 
-    #[Scope]
-    protected function active(Builder $query): void
+    public function isAccredited(): bool
     {
-        $query->where('is_active', true);
-    }
-
-    #[Scope]
-    protected function inactive(Builder $query): void
-    {
-        $query->where('is_active', false);
-    }
-
-    #[Scope]
-    protected function byName(Builder $query, string $name): void
-    {
-        $query->where('name', 'like', "%{$name}%");
-    }
-
-    #[Scope]
-    protected function byEmail(Builder $query, string $email): void
-    {
-        $query->where('email', 'like', "%{$email}%");
-    }
-
-    #[Scope]
-    protected function byCountry(Builder $query, int $countryId): void
-    {
-        $query->where('country_id', $countryId);
-    }
-
-    #[Scope]
-    protected function byCountryName(Builder $query, string $countryName): void
-    {
-        $query->whereHas('country', function (Builder $query) use ($countryName) {
-            $query->where('name', 'like', "%{$countryName}%");
-        });
-    }
-
-    #[Scope]
-    protected function withSpecialization(Builder $query, string $specialization): void
-    {
-        $query->whereJsonContains('specializations', $specialization);
-    }
-
-    #[Scope]
-    protected function withAnySpecialization(Builder $query, array $specializations): void
-    {
-        $query->where(function (Builder $query) use ($specializations) {
-            foreach ($specializations as $specialization) {
-                $query->orWhereJsonContains('specializations', $specialization);
-            }
-        });
-    }
-
-    #[Scope]
-    protected function withAllSpecializations(Builder $query, array $specializations): void
-    {
-        foreach ($specializations as $specialization) {
-            $query->whereJsonContains('specializations', $specialization);
-        }
-    }
-
-    #[Scope]
-    protected function withContactInfo(Builder $query): void
-    {
-        $query->where(function (Builder $query) {
-            $query->whereNotNull('email')
-                ->orWhereNotNull('phone');
-        });
-    }
-
-    #[Scope]
-    protected function withoutContactInfo(Builder $query): void
-    {
-        $query->where(function (Builder $query) {
-            $query->whereNull('email')
-                ->whereNull('phone');
-        });
-    }
-
-    #[Scope]
-    protected function withCertifications(Builder $query): void
-    {
-        $query->whereHas('certifications');
-    }
-
-    #[Scope]
-    protected function withoutCertifications(Builder $query): void
-    {
-        $query->whereDoesntHave('certifications');
-    }
-
-    #[Scope]
-    protected function withRecentCertifications(Builder $query, int $days = 30): void
-    {
-        $query->whereHas('certifications', function (Builder $query) use ($days) {
-            $query->where('accreditation_date', '>=', now()->subDays($days));
-        });
-    }
-
-    #[Scope]
-    protected function withCertificationsInYear(Builder $query, int $year): void
-    {
-        $query->whereHas('certifications', function (Builder $query) use ($year) {
-            $query->whereYear('accreditation_date', $year);
-        });
-    }
-
-    #[Scope]
-    protected function orderByName(Builder $query, string $direction = 'asc'): void
-    {
-        $query->orderBy('name', $direction);
-    }
-
-    #[Scope]
-    protected function orderByCertificationsCount(Builder $query, string $direction = 'desc'): void
-    {
-        $query->withCount('certifications')
-            ->orderBy('certifications_count', $direction);
-    }
-
-    #[Scope]
-    protected function orderByRecentActivity(Builder $query, string $direction = 'desc'): void
-    {
-        $query->withMax('certifications', 'accreditation_date')
-            ->orderBy('certifications_max_accreditation_date', $direction);
-    }
-
-    #[Scope]
-    protected function recentlyCreated(Builder $query, int $days = 30): void
-    {
-        $query->where('created_at', '>=', now()->subDays($days));
-    }
-
-    #[Scope]
-    protected function recentlyUpdated(Builder $query, int $days = 30): void
-    {
-        $query->where('updated_at', '>=', now()->subDays($days));
-    }
-
-    public function hasValidEmail(): bool
-    {
-        return ! empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
-    }
-
-    public function hasValidPhone(): bool
-    {
-        if (empty($this->phone)) {
+        if (!$this->is_active) {
             return false;
         }
 
-        $phone = preg_replace('/[^0-9+]/', '', $this->phone);
-
-        return strlen($phone) >= 7 && strlen($phone) <= 15;
-    }
-
-    public function hasCompleteProfile(): bool
-    {
-        return ! empty($this->name) &&
-            ! empty($this->email) &&
-            ! empty($this->phone) &&
-            ! empty($this->country_id);
-    }
-
-    public function hasSpecializations(): bool
-    {
-        $specializations = $this->getSpecializationsList();
-
-        return ! empty($specializations);
-    }
-
-    public function hasAddress(): bool
-    {
-        return ! empty($this->address);
-    }
-
-    public function hasBio(): bool
-    {
-        return ! empty($this->bio);
-    }
-
-    public function hasAvatar(): bool
-    {
-        return ! empty($this->avatar);
-    }
-
-    public function isRecentlyActive(): bool
-    {
-        if (! $this->updated_at) {
+        if (!$this->membership_start_date || !$this->membership_end_date) {
             return false;
         }
-
-        return $this->updated_at->isAfter(now()->subDays(30));
+        // fix: Argument '1' passed to between() is expected to be of type DateTimeInterface|string, date|null givenPHP(PHP0406)
+        return Carbon::now()->between($this->membership_start_date, $this->membership_end_date);
     }
 
-    public function hasRecentCertifications(): bool
+
+    public function accreditationBlockReason(): ?string
     {
-        return $this->certifications()
-            ->where('accreditation_date', '>=', now()->subDays(30))
-            ->exists();
-    }
-
-    public function hasCertificationsThisYear(): bool
-    {
-        return $this->certifications()
-            ->whereYear('accreditation_date', now()->year)
-            ->exists();
-    }
-
-    public function isHighVolumeTrainer(): bool
-    {
-        $thisYearCount = $this->certifications()
-            ->whereYear('accreditation_date', now()->year)
-            ->count();
-
-        return $thisYearCount >= 10;
-    }
-
-    public function needsProfileUpdate(): bool
-    {
-        return empty($this->bio) ||
-            empty($this->avatar) ||
-            empty($this->specializations) ||
-            ! $this->hasValidEmail() ||
-            ! $this->hasValidPhone();
-    }
-
-    public function canBeDeactivated(): bool
-    {
-        $hasRecentCertifications = $this->certifications()
-            ->where('accreditation_date', '>=', now()->subDays(90))
-            ->exists();
-
-        return ! $hasRecentCertifications;
-    }
-
-    public function hasIncompleteData(): bool
-    {
-        return empty($this->name) ||
-            empty($this->email) ||
-            empty($this->phone) ||
-            empty($this->country_id) ||
-            empty($this->specializations);
-    }
-
-    public function getFullName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDisplayName(): string
-    {
-        return $this->name;
-    }
-
-    public function hasContactInfo(): bool
-    {
-        return ! empty($this->email) || ! empty($this->phone);
-    }
-
-    public function getContactInfo(): array
-    {
-        return [
-            'email' => $this->email,
-            'phone' => $this->phone,
-        ];
-    }
-
-    public function getAddressString(): ?string
-    {
-        if (empty($this->address)) {
-            return null;
+        if (!$this->is_active) {
+            return __('accreditation.blocked.trainer_inactive');
         }
 
-        $address = is_array($this->address) ? $this->address : json_decode($this->address, true);
-
-        if (! is_array($address)) {
-            return null;
+        if (!$this->isAccredited()) {
+            return __('accreditation.blocked.membership_expired');
         }
 
-        return implode(', ', array_filter([
-            $address['street'] ?? null,
-            $address['city'] ?? null,
-            $address['state'] ?? null,
-            $address['country'] ?? null,
-            $address['postal_code'] ?? null,
-        ]));
+        return null;
     }
-
-    public function getSpecializationsList(): array
+    public function canAccessPanel(Panel $panel): bool
     {
-        if (empty($this->specializations)) {
-            return [];
-        }
-
-        return is_array($this->specializations) ? $this->specializations : json_decode($this->specializations, true) ?? [];
-    }
-
-    public function hasSpecialization(string $specialization): bool
-    {
-        $specializations = $this->getSpecializationsList();
-
-        return in_array($specialization, $specializations);
-    }
-
-    public function addSpecialization(string $specialization): void
-    {
-        $specializations = $this->getSpecializationsList();
-
-        if (! in_array($specialization, $specializations)) {
-            $specializations[] = $specialization;
-            $this->update(['specializations' => $specializations]);
-        }
-    }
-
-    public function removeSpecialization(string $specialization): void
-    {
-        $specializations = $this->getSpecializationsList();
-        $specializations = array_filter($specializations, fn($spec) => $spec !== $specialization);
-        $this->update(['specializations' => array_values($specializations)]);
-    }
-
-    public function getCertificationsCount(): int
-    {
-        return $this->certifications()->count();
-    }
-
-    public function getRecentCertifications(int $limit = 5)
-    {
-        return $this->certifications()
-            ->orderBy('accreditation_date', 'desc')
-            ->limit($limit)
-            ->get();
-    }
-
-    public function getCertificationsByYear(int $year)
-    {
-        return $this->certifications()
-            ->whereYear('accreditation_date', $year)
-            ->get();
-    }
-
-    public function getCertificationsStats(): array
-    {
-        $total = $this->getCertificationsCount();
-        $thisYear = $this->certifications()
-            ->whereYear('accreditation_date', now()->year)
-            ->count();
-        $lastMonth = $this->certifications()
-            ->whereMonth('accreditation_date', now()->subMonth()->month)
-            ->whereYear('accreditation_date', now()->subMonth()->year)
-            ->count();
-
-        return [
-            'total' => $total,
-            'this_year' => $thisYear,
-            'last_month' => $lastMonth,
-        ];
-    }
-
-    public function isActive(): bool
-    {
-        return $this->is_active;
-    }
-
-    public function activate(): void
-    {
-        $this->update(['is_active' => true]);
-    }
-
-    public function deactivate(): void
-    {
-        $this->update(['is_active' => false]);
+        return $panel->getId() === 'trainer' && $this->is_active;
     }
 }

@@ -1,9 +1,10 @@
 <?php
-
+// app/Filament/Admin/Resources/Users/Tables/UsersTable.php
 declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Users\Tables;
 
+use App\Enums\UserType;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -38,11 +39,12 @@ class UsersTable
                 TextColumn::make('type')
                     ->label(__('User Type'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn ($state): string => match ($state instanceof UserType ? $state->value : $state) {
                         'admin' => 'danger',
                         'client' => 'info',
                         default => 'gray',
                     })
+                    ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—'))
                     ->sortable(),
 
                 IconColumn::make('email_verified_at')

@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Log::info('Creating default certificate document types...');
@@ -57,9 +56,6 @@ return new class extends Migration
         Log::info('Default certificate document types created successfully');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         DB::table('document_types')

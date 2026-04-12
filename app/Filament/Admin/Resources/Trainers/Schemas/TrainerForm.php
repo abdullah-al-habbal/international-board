@@ -46,8 +46,8 @@ class TrainerForm
                 ->nullable()
                 ->createOptionForm([
                     TextInput::make('name')->required()->maxLength(255),
-                    TextInput::make('code')->required()->maxLength(10),
-                    TextInput::make('code_2')->required()->maxLength(10),
+                    TextInput::make('code')->maxLength(10),
+                    TextInput::make('code_2')->maxLength(10),
                 ])
                 ->columnSpan(1),
 
