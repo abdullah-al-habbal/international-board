@@ -1,58 +1,23 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Services\CertifiedCenter;
 
-use App\Enums\CenterStatus;
+use App\Models\CertifiedCenter;
 use App\Repositories\CertifiedCenter\CertifiedCenterRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class CertifiedCenterService
 {
     public function __construct(private readonly CertifiedCenterRepository $repo) {}
 
-    public function getAll()
+    public function listActive(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        return $this->repo->all();
+        return $this->repo->paginateActive($filters, $perPage);
     }
 
-    public function getById(int $id)
+    public function findActive(int $id): ?CertifiedCenter
     {
-        return $this->repo->find($id);
-    }
-
-    public function getTotalCount(): int
-    {
-        return $this->repo->getTotalCount();
-    }
-
-    public function getActiveCount(): int
-    {
-        return $this->repo->getActiveCount();
-    }
-
-    public function getInactiveCount(): int
-    {
-        return $this->repo->getInactiveCount();
-    }
-
-    public function getCountByStatus(CenterStatus $status): int
-    {
-        return $this->repo->getCountByStatus($status);
-    }
-
-    public function getExpiredAccreditationCount(): int
-    {
-        return $this->repo->getExpiredAccreditationCount();
-    }
-
-    public function getAccreditationActiveCount(): int
-    {
-        return $this->repo->getAccreditationActiveCount();
-    }
-
-    public function getInactiveOrExpiredCount(): int
-    {
-        return $this->repo->getInactiveOrExpiredCount();
+        return $this->repo->findActiveById($id);
     }
 }

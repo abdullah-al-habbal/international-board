@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 return [
     'dashboard' => 'Dashboard',
     'navigation' => 'Navigation',
@@ -31,7 +29,6 @@ return [
     'pending' => 'Pending',
     'approved' => 'Approved',
     'rejected' => 'Rejected',
-
     'users' => 'Users',
     'user' => 'User',
     'certified_centers' => 'Certified Centers',
@@ -48,7 +45,6 @@ return [
     'static_page' => 'Static Page',
     'application_settings' => 'Application Settings',
     'application_setting' => 'Application Setting',
-
     'trainee' => 'Trainee',
     'trainees' => 'Trainees',
     'email' => 'Email',
@@ -61,23 +57,18 @@ return [
     'emergency_contact_name' => 'Emergency Contact Name',
     'emergency_contact_phone' => 'Emergency Contact Phone',
     'medical_info' => 'Medical Information',
-
     'document_type' => 'Document Type',
     'document_types' => 'Document Types',
-
     'country' => 'Country',
     'countries' => 'Countries',
     'nationality' => 'Nationality',
-
     'male' => 'Male',
     'female' => 'Female',
     'other' => 'Other',
-
     'paper_document_received' => 'Paper Document Received',
     'yes' => 'Yes',
     'no' => 'No',
     'will_be_auto_generated' => 'Will be auto-generated if left empty',
-
     'name' => 'Name',
     'password' => 'Password',
     'manager_name' => 'Manager Name',
@@ -97,33 +88,28 @@ return [
     'type' => 'Type',
     'value' => 'Value',
     'key' => 'Key',
-
     'trainee_name' => 'Trainee Name',
     'accredited_serial_number' => 'Accredited Serial Number',
     'document_code' => 'Document Code',
     'accreditation_date' => 'Accreditation Date',
     'trainer_name' => 'Trainer Name',
     'notes' => 'Notes',
-
     'requested_start_date' => 'Requested Start Date',
     'requested_end_date' => 'Requested End Date',
     'request_notes' => 'Request Notes',
     'admin_notes' => 'Admin Notes',
     'reviewed_by' => 'Reviewed By',
     'reviewed_at' => 'Reviewed At',
-
     'certification_details_section' => 'Main certification details',
     'document_details_section' => 'Document Details',
     'document_details_description' => 'Certificate and document information',
     'additional_information_section' => 'Additional Information',
     'additional_information_description' => 'Notes and additional details',
     'notes_placeholder' => 'Additional notes or comments...',
-
     'iso_code_3_helper' => 'ISO 3166-1 alpha-3 code',
     'iso_code_2_helper' => 'ISO 3166-1 alpha-2 code',
     'iso_code_3' => 'ISO Code (3 letters)',
     'iso_code_2' => 'ISO Code (2 letters)',
-
     'descriptive_image' => 'Descriptive Image',
     'avatar' => 'Avatar',
     'biography' => 'Biography',
@@ -132,12 +118,10 @@ return [
     'confirm_password' => 'Confirm Password',
     'user_type' => 'User Type',
     'country_name' => 'Country Name',
-
     'name_english' => 'Name (English)',
     'name_arabic' => 'Name (Arabic)',
     'document_type_key_helper' => 'Unique identifier for this document type (e.g., training_certificate)',
     'training_certificate_example' => 'Training Certificate',
-
     'specialization_training' => 'Training',
     'specialization_consulting' => 'Consulting',
     'specialization_leadership' => 'Leadership',
@@ -150,7 +134,6 @@ return [
     'specialization_hr' => 'Human Resources',
     'specialization_quality_management' => 'Quality Management',
     'specialization_entrepreneurship' => 'Entrepreneurship',
-
     'edit_requests' => 'Edit Requests',
     'edit_request' => 'Edit Request',
     'editable_type' => 'Entity Type',
@@ -158,7 +141,6 @@ return [
     'rejection_reason' => 'Rejection Reason',
     'edit_request_approved' => 'Edit request approved successfully',
     'edit_request_rejected' => 'Edit request rejected',
-
     'center_type_requests' => 'Center Type Requests',
     'center_type_request' => 'Center Type Request',
     'request_type' => 'Request Type',
@@ -168,19 +150,15 @@ return [
     'center_type_request_approved' => 'Center type request approved successfully',
     'center_type_request_rejected' => 'Center type request rejected',
     'allowed_document_types' => 'Allowed Document Types',
-
     'legal_amendments' => 'Legal Amendments',
     'legal_amendments_content' => 'Legal amendments content will be displayed here.',
-
     'trainer_evaluation_mechanism' => 'Trainer Evaluation Mechanism',
     'trainer_evaluation_default_text' => 'Trainer evaluation criteria and process will be described here.',
-
     'all_countries' => 'All Countries',
     'view_details' => 'View Details',
     'no_trainers_found' => 'No trainers found',
     'back_to_trainers' => 'Back to Trainers',
     'view_trainers' => 'View Trainers',
-
     'created_successfully' => 'Created successfully',
     'updated_successfully' => 'Updated successfully',
     'deleted_successfully' => 'Deleted successfully',
@@ -188,13 +166,11 @@ return [
     'error_occurred' => 'An error occurred',
     'no_records_found' => 'No records found',
     'access_denied' => 'Access denied',
-
     'accreditation_started' => 'Accreditation period has started',
     'accreditation_ended' => 'Accreditation period has ended',
     'accreditation_approved' => 'Accreditation request approved',
     'accreditation_rejected' => 'Accreditation request rejected',
     'center_disabled' => 'Center has been disabled due to expired accreditation',
-
     'user_types' => [
         'admin' => 'Administrator',
         'client' => 'Client',
@@ -211,7 +187,6 @@ return [
         'rejected' => 'Rejected',
         'under_review' => 'Under Review',
     ],
-
     'import_page' => [
         'title' => 'Import Certifications',
         'instructions' => [
@@ -300,54 +275,43 @@ return [
             'assign_unassigned' => 'Assign Unassigned',
         ],
     ],
-
     'not_assigned' => 'Not Assigned',
     'unassigned' => 'Unassigned',
     'no_center' => 'No Center',
     'no_document_type' => 'No Document Type',
     'no_trainer' => 'No Trainer',
     'no_country' => 'No Country',
-
     'select_center' => 'Select a center',
     'select_document_type' => 'Select document type',
     'select_trainer' => 'Select trainer',
     'select_country' => 'Select country',
-
     'center_optional' => 'Optional - Can be assigned later',
     'trainer_optional' => 'Optional - Can be assigned later',
-
     'center' => 'Center',
     'serial_number' => 'Serial Number',
     'import_date' => 'Import Date',
     'last_updated' => 'Last Updated',
     'paper_received' => 'Paper Received',
-
     'serial_copied' => 'Serial number copied to clipboard',
     'accreditation_copied' => 'Accreditation number copied to clipboard',
     'copied' => 'Copied to clipboard',
-
     'missing_center' => 'Missing Center Assignment',
     'missing_document_type' => 'Missing Document Type',
     'from_date' => 'From Date',
     'until_date' => 'Until Date',
-
     'assign_center' => 'Assign Center',
     'assign_document_type' => 'Assign Document Type',
     'update_paper_status' => 'Update Paper Status',
     'paper_received_status' => 'Paper Received Status',
-
     'certificate_pdf' => 'Generate Certificate PDF',
-
     'certificate_type_migration_complete' => 'Certificate type migration completed successfully',
     'all_records_preserved' => 'All records have been preserved',
-
     'no_nationality' => 'No nationality specified',
     'no_accreditation_date' => 'No accreditation date',
     'no_value' => 'Not specified',
     'filter_select_placeholder' => 'Select an option',
     'table_empty_title' => 'No records found',
     'table_empty_description' => 'There are no records to display right now.',
-
     'document_type_requests' => 'Document Type Requests',
     'document_type_request' => 'Document Type Request',
     'requested_document_types' => 'Requested Document Types',
@@ -355,16 +319,23 @@ return [
     'requested_at' => 'Requested At',
     'assigned_at' => 'Assigned At',
     'assigned_centers' => 'Assigned Centers',
-
     'certified_center_document_types' => 'Center Document Types',
     'certified_center_document_type' => 'Center Document Type',
     'document_type_key' => 'Document Type Key',
     'document_type_name' => 'Document Type Name',
     'usage_count' => 'Usage Count',
     'centers_count' => 'Centers Count',
-
-
+    'email_verified_at' => 'Email Verified At',
+    'email_verification' => 'Email Verification',
+    'all_users' => 'All Users',
+    'verified_only' => 'Verified Only',
+    'unverified_only' => 'Unverified Only',
+    'email_copied' => 'Email copied!',
+    'placeholder_dash' => '—',
     'id' => 'ID',
     'request_details' => 'Request Details',
     'admin_review' => 'Admin Review',
+    'security_update_title' => 'Security update',
+    'security_update_body' => 'Please login again after updating credentials.',
+
 ];

@@ -1,57 +1,49 @@
 <?php
-// filePath: routes\web.php
 declare(strict_types=1);
 
 use App\Http\Controllers\HealthCheckController;
-use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\Web\Certification\CertificationController;
 use App\Http\Controllers\Web\CertifiedCenter\CertifiedCenterController;
+use App\Http\Controllers\Web\Home\HomeController;
 use App\Http\Controllers\Web\StaticPage\StaticPageController;
+use App\Http\Controllers\Web\Trainer\TrainerController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/web')->name('home');
 
-Route::prefix('web')->name('web.')->group(function () {
+Route::prefix('web')->name('web.')->group(function (): void {
 
-    Route::get('/', fn() => view('home_page'))->name('home');
+    Route::get('/', HomeController::class)->name('home');
 
-    Route::prefix('pages')->group(function () {
-        Route::get('/{slug}', [StaticPageController::class, 'show'])
-            ->name('pages.show');
-    });
+    Route::get('/pages/{slug}', [StaticPageController::class, 'show'])
+        ->name('pages.show');
 
-    Route::prefix('certifications')->group(function () {
+    Route::prefix('certifications')->name('certifications.')->group(function (): void {
         Route::get('/', [CertificationController::class, 'index'])
-            ->name('certifications.index');
-
-        Route::get('/search', [CertificationController::class, 'checkout'])
-            ->name('certifications.search');
-
+            ->name('index');
+        Route::get('/search', [CertificationController::class, 'search'])
+            ->name('search');
         Route::get('/{serial}', [CertificationController::class, 'show'])
-            ->name('certifications.show');
+            ->name('show');
     });
 
-    Route::prefix('centers')->group(function () {
+    Route::prefix('centers')->name('centers.')->group(function (): void {
         Route::get('/', [CertifiedCenterController::class, 'index'])
-            ->name('centers.index');
-
+            ->name('index');
         Route::get('/{id}', [CertifiedCenterController::class, 'show'])
-            ->name('centers.show');
+            ->name('show');
     });
 
-    Route::prefix('trainers')->group(function () {
+    Route::prefix('trainers')->name('trainers.')->group(function (): void {
         Route::get('/', [TrainerController::class, 'index'])
-            ->name('trainers.index');
-
+            ->name('index');
+        Route::get('/evaluation', [TrainerController::class, 'evaluation'])
+            ->name('evaluation');
         Route::get('/{trainer}', [TrainerController::class, 'show'])
-            ->name('trainers.show');
+            ->name('show');
     });
 
-    Route::get('/trainer-evaluation', [TrainerController::class, 'evaluation'])
-        ->name('trainers.evaluation');
-
-    Route::get('/health', HealthCheckController::class)
-        ->name('health');
+    Route::get('/health', HealthCheckController::class)->name('health');
 });
 
 require __DIR__ . '/admin.php';

@@ -1,52 +1,31 @@
+<!-- resources/views/components/sections/features_section.blade.php -->
 <section class="service-2 section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="title text-center">
-                    <h2>{{ __('web.pages.services.title') }}</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, earum. </p>
+                    <h2>{{ __('web.features.title') }}</h2>
+                    <p>{{ __('web.features.subtitle') }}</p>
                     <div class="border"></div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4 text-center d-none d-md-block">
-                <img loading="lazy" src="{{ asset('assets/website/images/about/member.jpg') }}" class="img-fluid inline-block" alt="">
+                <img loading="lazy" src="{{ asset('assets/website/images/about/member.jpg') }}"
+                    class="img-fluid inline-block" alt="">
             </div>
             <div class="col-md-8">
                 <div class="row text-center">
-                    <div class="col-md-6 col-sm-6">
-                        <div class="service-item">
-                            <i class="tf-ion-ios-alarm-outline"></i>
-                            <h4>Time Management</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae risus nec dui
-                                venenatis.</p>
+                    @foreach (__('web.features.items') as $feature)
+                        <div class="col-md-6 col-sm-6">
+                            <div class="service-item">
+                                <i class="{{ $feature['icon'] }}"></i>
+                                <h4>{{ $feature['title'] }}</h4>
+                                <p>{{ $feature['description'] }}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6">
-                        <div class="service-item">
-                            <i class="tf-ion-ios-briefcase-outline"></i>
-                            <h4>Marketing Ideas</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae risus nec dui
-                                venenatis.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6">
-                        <div class="service-item">
-                            <i class="tf-ion-ios-email-outline"></i>
-                            <h4>Mail Support</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae risus nec dui
-                                venenatis.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6">
-                        <div class="service-item">
-                            <i class="tf-ion-ios-locked-outline"></i>
-                            <h4>Secure System</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae risus nec dui
-                                venenatis.</p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>

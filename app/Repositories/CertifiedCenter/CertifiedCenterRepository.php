@@ -1,82 +1,47 @@
 <?php
-
+// app\Repositories\CertifiedCenter\CertifiedCenterRepository.php
 declare(strict_types=1);
 
 namespace App\Repositories\CertifiedCenter;
 
-use App\Enums\CenterStatus;
 use App\Models\CertifiedCenter;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class CertifiedCenterRepository
 {
-    public function __construct(private readonly CertifiedCenter $model) {}
-
-    public function all()
+    public function __construct(private readonly CertifiedCenter $model)
     {
-        return $this->model->ofStatus(CenterStatus::Active)->get();
     }
 
-    public function find(int $id): ?CertifiedCenter
+    public function paginateActive(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        return $this->model->find($id);
+        return $this->model
+            ->newQuery()
+            ->where('is_active', true)
+            ->when(
+                isset($filters['search']) && $filters['search'] !== '',
+                fn($q) => $q->where('name', 'like', "%{$filters['search']}%")
+            )
+            ->when(
+                isset($filters['country_id']) && $filters['country_id'] !== '',
+                fn($q) => $q->where('country_id', $filters['country_id'])
+            )
+            ->with(['country', 'approvedDocumentTypes.documentType'])
+            ->paginate($perPage);
     }
 
-    public function getTotalCount(): int
+    public function findActiveById(int $id): ?CertifiedCenter
     {
-        return $this->model->newQuery()->count();
+        return $this->model
+            ->newQuery()
+            ->where('id', $id)
+            ->where('is_active', true)
+            ->with(['country', 'approvedDocumentTypes.documentType', 'certifications'])
+            ->first();
     }
 
-    public function getActiveCount(): int
+    public function countActive(): int
     {
-        return $this->model->active()->count();
-    }
-
-    public function getInactiveCount(): int
-    {
-        return $this->model->inactive()->count();
-    }
-
-    public function getCountByStatus(CenterStatus $status): int
-    {
-        return $this->model->ofStatus($status)->count();
-    }
-
-    public function getLastAccreditationNumberForYear(int $year): ?string
-    {
-        $prefix = "CTR-{$year}-";
-
-        return $this->model->newQuery()
-            ->where('accreditation_number', 'like', $prefix.'%')
-            ->orderBy('accreditation_number', 'desc')
-            ->value('accreditation_number');
-    }
-
-    public function accreditationNumberExists(string $accreditationNumber): bool
-    {
-        return $this->model->newQuery()
-            ->where('accreditation_number', $accreditationNumber)
-            ->exists();
-    }
-
-    public function getExpiredAccreditationCount(): int
-    {
-        return $this->model->accreditationExpired()->count();
-    }
-
-    public function getAccreditationActiveCount(): int
-    {
-        return $this->model->accreditationActive()->count();
-    }
-
-    public function getInactiveOrExpiredCount(): int
-    {
-        return $this->model->newQuery()
-            ->where(function ($query) {
-                $query->inactive()
-                    ->orWhere(function ($q) {
-                        $q->accreditationExpired();
-                    });
-            })
-            ->count();
+        return $this->model->newQuery()->where('is_active', true)->count();
     }
 }

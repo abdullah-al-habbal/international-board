@@ -1,25 +1,17 @@
 @extends('layouts.master')
 
-@section('title', 'Trainer Evaluation')
+@section('title', __('web.pages.trainers.evaluation_title'))
 
 @section('content')
-    <section class="page-title bg-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="block">
-                        <h1>Trainer Evaluation</h1>
-                        <p>{{ __('web.default_title') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('components.partials.page_header', [
+        'title'    => __('web.pages.trainers.evaluation_title'),
+        'subtitle' => __('web.default_title'),
+    ])
 
     <section class="section">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
                     <div class="content">
                         {!! $evaluationText !!}
                     </div>

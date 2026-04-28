@@ -22,22 +22,22 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('app.name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
 
                 TextColumn::make('email')
-                    ->label(__('Email'))
+                    ->label(__('app.email'))
                     ->searchable()
                     ->sortable()
                     ->icon('heroicon-o-envelope')
                     ->copyable()
                     ->getStateUsing(fn ($record) => $record->email ?: __('app.no_value'))
-                    ->copyMessage(__('Email copied!')),
+                    ->copyMessage(__('app.email_copied')),
 
                 TextColumn::make('type')
-                    ->label(__('User Type'))
+                    ->label(__('app.user_type'))
                     ->badge()
                     ->color(fn ($state): string => match ($state instanceof UserType ? $state->value : $state) {
                         'admin' => 'danger',
@@ -47,23 +47,14 @@ class UsersTable
                     ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—'))
                     ->sortable(),
 
-                IconColumn::make('email_verified_at')
-                    ->label(__('Verified'))
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->sortable(),
-
                 TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->since()
                     ->sortable()
@@ -71,18 +62,13 @@ class UsersTable
             ])
             ->filters([
                 SelectFilter::make('type')
-                    ->label(__('User Type'))
+                    ->label(__('app.user_type'))
                     ->options([
-                        'admin' => __('Admin'),
-                        'client' => __('Client'),
+                        'admin' => __('app.user_types.admin'),
+                        'client' => __('app.user_types.client'),
                     ])
                     ->multiple(),
 
-                TernaryFilter::make('email_verified_at')
-                    ->label(__('Email Verification'))
-                    ->placeholder(__('All Users'))
-                    ->trueLabel(__('Verified Only'))
-                    ->falseLabel(__('Unverified Only')),
             ])
             ->recordActions([
                 ViewAction::make(),

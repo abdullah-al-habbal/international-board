@@ -29,7 +29,9 @@ final class CenterStatsOverview extends BaseWidget
 
     private function getCenter(): CertifiedCenter
     {
-        return Auth::guard('web')->user();
+        /** @var CertifiedCenter $center */
+        $center = Auth::guard('certified_center')->user();
+        return $center;
     }
 
     private function createTotalCertificationsStat(int $count): Stat

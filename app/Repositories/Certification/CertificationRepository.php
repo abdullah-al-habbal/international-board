@@ -25,6 +25,22 @@ final class CertificationRepository
             ->first();
     }
 
+    public function findBySerial(string $serial): ?Certification
+    {
+        return $this->model->with([
+            'certifiedCenter:id,name',
+            'trainee:id,name',
+            'country:id,name',
+            'trainer:id,name',
+            'documentType:id,name',
+        ])
+        ->where(function ($query) use ($serial): void {
+            $query->where('accredited_serial_number', $serial)
+                  ->orWhere('document_code', $serial);
+        })
+        ->first();
+    }
+
     public function latest(int $limit = 10): Collection
     {
         return $this->model->with([

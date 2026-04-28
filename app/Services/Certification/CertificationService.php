@@ -17,6 +17,11 @@ final class CertificationService
         return $this->repo->findByDocumentCode($code);
     }
 
+    public function getBySerial(string $serial): ?Certification
+    {
+        return $this->repo->findBySerial($serial);
+    }
+
     public function getLatest()
     {
         return $this->repo->latest();

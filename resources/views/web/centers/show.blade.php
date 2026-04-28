@@ -1,30 +1,22 @@
+<!-- resources\views\web\centers\show.blade.php -->
 @extends('layouts.master')
 
 @section('title', $center->name)
 
 @section('content')
-    <section class="page-title bg-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="block">
-                        <h1>{{ $center->name }}</h1>
-                        <p>{{ $center->address }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('components.partials.page_header', [
+        'title'    => $center->name,
+        'subtitle' => $center->country?->name,
+    ])
 
     <section class="section">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <img src="{{ $center->logo_url ?? asset('assets/website/images/about/member.jpg') }}" class="img-fluid" alt="{{ $center->name }}">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    @include('web.centers._logo')
                 </div>
                 <div class="col-md-8">
-                    <h3>About the Center</h3>
-                    <p>{{ $center->description }}</p>
+                    @include('web.centers._details')
                 </div>
             </div>
         </div>

@@ -15,21 +15,21 @@ class UserInfolist
     {
         return $schema->schema([
             TextEntry::make('name')
-                ->label(__('Name'))
+                ->label(__('app.name'))
                 ->weight('bold')
                 ->size('xl')
                 ->columnSpanFull()
                 ->formatStateUsing(fn ($state, $record) => $state ?: ($record->name ?? '—')),
 
             TextEntry::make('email')
-                ->label(__('Email'))
+                ->label(__('app.email'))
                 ->icon('heroicon-o-envelope')
                 ->copyable()
                 ->columnSpan(1)
                 ->formatStateUsing(fn ($state) => $state ?: '—'),
 
             TextEntry::make('type')
-                ->label(__('User Type'))
+                ->label(__('app.user_type'))
                 ->badge()
                 ->columnSpan(1)
                 ->color(fn ($state): string => match ($state instanceof UserType ? $state->value : $state) {
@@ -39,33 +39,21 @@ class UserInfolist
                 })
                 ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—')),
 
-            IconEntry::make('email_verified_at')
-                ->label(__('Email Verified'))
-                ->boolean()
-                ->columnSpan(1),
-
-            TextEntry::make('email_verified_at')
-                ->label(__('Email Verified At'))
-                ->dateTime()
-                ->placeholder('—')
-                ->icon('heroicon-o-check-circle')
-                ->columnSpan(1),
-
             TextEntry::make('created_at')
-                ->label(__('Created At'))
+                ->label(__('app.created_at'))
                 ->dateTime()
                 ->icon('heroicon-o-calendar')
                 ->columnSpan(1),
 
             TextEntry::make('updated_at')
-                ->label(__('Updated At'))
+                ->label(__('app.updated_at'))
                 ->dateTime()
                 ->since()
                 ->icon('heroicon-o-clock')
                 ->columnSpan(1),
 
             TextEntry::make('id')
-                ->label(__('ID'))
+                ->label(__('app.id'))
                 ->size('sm')
                 ->columnSpan(1)
                 ->formatStateUsing(fn ($state) => $state ?: '—'),

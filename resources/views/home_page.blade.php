@@ -9,5 +9,4 @@
     @include('components.sections.cta_section')
     @include('components.sections.statistics_section')
     @include('components.sections.testimonials_section')
-    @include('components.sections.blog_section')
 @endsection

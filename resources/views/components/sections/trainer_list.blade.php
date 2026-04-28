@@ -1,16 +1,23 @@
-<div class="row">
-    @foreach ($trainers as $trainer)
-        <div class="col-md-3 mb-4">
-            <div class="card h-100 text-center">
-                <img src="{{ $trainer->avatar_url ?? asset('assets/website/images/about/member.jpg') }}" class="card-img-top" alt="{{ $trainer->name }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $trainer->name }}</h5>
-                    <p class="card-text text-muted">{{ $trainer->country?->name }}</p>
-                    <a href="{{ route('web.trainers.show', $trainer->id) }}" class="btn btn-main btn-sm">
-                        {{ __('web.buttons.read_more') }}
-                    </a>
-                </div>
+<!-- resources\views\components\sections\trainer_list.blade.php -->
+@forelse ($trainers as $trainer)
+    <div class="col-md-4 col-sm-6 mb-4">
+        <div class="team-item text-center">
+            <div class="team-img">
+                <img loading="lazy" src="{{ $trainer->avatar_url ?? asset('assets/website/images/about/member.jpg') }}"
+                    class="img-fluid" alt="{{ $trainer->name }}">
+            </div>
+            <div class="team-info">
+                <h4>{{ $trainer->name }}</h4>
+                @if ($trainer->country)
+                    <span>{{ $trainer->country->name }}</span>
+                @endif
+
+                <a href="{{ route('web.trainers.show', $trainer->id) }}" class="btn btn-main btn-sm mt-2">
+                    {{ __('web.buttons.view_details') }}
+                </a>
             </div>
         </div>
-    @endforeach
-</div>
+    </div>
+@empty
+    @include('components.partials.empty_state')
+@endforelse

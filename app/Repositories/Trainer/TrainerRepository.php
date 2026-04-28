@@ -1,24 +1,52 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Repositories\Trainer;
 
 use App\Models\Trainer;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 final class TrainerRepository
 {
-    public function __construct(private readonly Trainer $trainer) {}
+    public function __construct(private readonly Trainer $model) {}
 
-    public function getTotalCount(): int
+    public function paginateActive(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        return $this->trainer->newQuery()->count();
+        return $this->model
+            ->newQuery()
+            ->where('is_active', true)
+            ->when(
+                isset($filters['search']) && $filters['search'] !== '',
+                fn ($q) => $q->where(function ($inner) use ($filters): void {
+                    $inner->where('name', 'like', "%{$filters['search']}%")
+                          ->orWhere('email', 'like', "%{$filters['search']}%");
+                })
+            )
+            ->when(
+                isset($filters['country_id']) && $filters['country_id'] !== '',
+                fn ($q) => $q->where('country_id', $filters['country_id'])
+            )
+            ->when(
+                isset($filters['specialization']) && $filters['specialization'] !== '',
+                fn ($q) => $q->whereJsonContains('specializations', $filters['specialization'])
+            )
+            ->with('country')
+            ->paginate($perPage);
     }
 
-    public function getActiveCount(): int
+    public function findActiveByKey(int $id): ?Trainer
     {
-        return $this->trainer->newQuery()
+        return $this->model
+            ->newQuery()
+            ->where('id', $id)
             ->where('is_active', true)
-            ->count();
+            ->with(['country', 'certifications.documentType'])
+            ->first();
+    }
+
+    public function countActive(): int
+    {
+        return $this->model->newQuery()->where('is_active', true)->count();
     }
 }

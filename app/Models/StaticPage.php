@@ -49,11 +49,6 @@ class StaticPage extends Model
         $query->where('slug', $slug);
     }
 
-    #[Scope]
-    protected function bySlug(Builder $query, string $slug): void
-    {
-        $query->where('slug', $slug);
-    }
 
     #[Scope]
     protected function orderByTitle(Builder $query, string $direction = 'asc'): void

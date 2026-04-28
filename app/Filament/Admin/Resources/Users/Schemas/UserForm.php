@@ -30,18 +30,22 @@ class UserForm
                 ->unique(ignoreRecord: true)
                 ->columnSpan(1),
 
+
             TextInput::make('password')
                 ->label(__('app.password'))
                 ->password()
+                ->placeholder(__('app.placeholder_dash'))
                 ->minLength(8)
                 ->confirmed()
                 ->dehydrated(fn ($state) => filled($state))
                 ->required(fn (string $context) => $context === 'create')
                 ->columnSpan(1),
 
+
             TextInput::make('password_confirmation')
                 ->label(__('app.confirm_password'))
                 ->password()
+                ->placeholder(__('app.placeholder_dash'))
                 ->minLength(8)
                 ->dehydrated(false)
                 ->columnSpan(1),
@@ -51,11 +55,6 @@ class UserForm
                 ->options(UserType::class)
                 ->default(UserType::Admin->value)
                 ->required()
-                ->columnSpan(1),
-
-            Toggle::make('email_verified_at')
-                ->label(__('app.email_verified'))
-                ->default(false)
                 ->columnSpan(1),
         ])->columns(2);
     }
