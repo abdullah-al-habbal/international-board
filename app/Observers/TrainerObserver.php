@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Models\Trainer;
+use Illuminate\Support\Facades\Cache;
 
 class TrainerObserver
 {
-    public function creating(Trainer $trainer): void
+    public function saved(Trainer $trainer): void
     {
-        if (empty($trainer->unique_trainer_code)) {
-            $trainer->unique_trainer_code = 'TRN-' . strtoupper(uniqid());
-        }
+        Cache::forget('home_stats_trainers');
+    }
+
+    public function deleted(Trainer $trainer): void
+    {
+        Cache::forget('home_stats_trainers');
     }
 }

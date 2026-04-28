@@ -1,3 +1,4 @@
+<!-- resources\views\components\sections\statistics_section.blade.php -->
 <section class="counter-wrapper section-sm">
     <div class="container">
         <div class="row justify-content-center">
@@ -13,8 +14,7 @@
                 <div class="counters-item">
                     <i class="tf-ion-ios-ribbon-outline"></i>
                     <div>
-                        <span class="counter"
-                              data-count="{{ $statistics['certifications'] ?? 0 }}">0</span>
+                        <span class="counter" data-count="{{ $statistics['certifications'] ?? 0 }}">0</span>
                     </div>
                     <h3>{{ __('web.statistics.certifications') }}</h3>
                 </div>
@@ -23,8 +23,7 @@
                 <div class="counters-item">
                     <i class="tf-ion-ios-people-outline"></i>
                     <div>
-                        <span class="counter"
-                              data-count="{{ $statistics['trainers'] ?? 0 }}">0</span>
+                        <span class="counter" data-count="{{ $statistics['trainers'] ?? 0 }}">0</span>
                     </div>
                     <h3>{{ __('web.statistics.trainers') }}</h3>
                 </div>
@@ -33,8 +32,7 @@
                 <div class="counters-item kill-border">
                     <i class="tf-ion-ios-location-outline"></i>
                     <div>
-                        <span class="counter"
-                              data-count="{{ $statistics['centers'] ?? 0 }}">0</span>
+                        <span class="counter" data-count="{{ $statistics['centers'] ?? 0 }}">0</span>
                     </div>
                     <h3>{{ __('web.statistics.centers') }}</h3>
                 </div>

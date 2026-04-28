@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class Trainer extends Authenticatable implements FilamentUser
 {
@@ -116,5 +117,13 @@ class Trainer extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $panel->getId() === 'trainer' && $this->is_active;
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if ($this->attributes['avatar'] ?? null) {
+            return Storage::url($this->attributes['avatar']);
+        }
+        return null;
     }
 }

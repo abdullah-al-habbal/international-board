@@ -1,25 +1,18 @@
 <?php
-
+// app/Providers/ViewServiceProvider.php
+declare(strict_types=1);
 namespace App\Providers;
 
-use App\Models\StaticPage;
-use App\Repositories\StaticPage\StaticPageRepository;
+use App\Services\StaticPage\StaticPageService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
-class ViewServiceProvider extends ServiceProvider
+final class ViewServiceProvider extends ServiceProvider
 {
-    public function register(): void
+    public function boot(StaticPageService $staticPageService): void
     {
-    }
-    
-    public function boot(): void
-    {
-        View::composer('*', function ($view) {
-            if (class_exists(StaticPage::class)) {
-                $repository = app(StaticPageRepository::class);
-                $view->with('staticPages', $repository->getAllActive());
-            }
-        });
+        View::share('navigationPages', $staticPageService->getActivePages());
+        View::share('currentLocale', app()->getLocale());
+        View::share('availableLocales', config('app.locales', ['en', 'ar']));
     }
 }

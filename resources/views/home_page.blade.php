@@ -1,3 +1,4 @@
+<!-- resources\views\home_page.blade.php -->
 @extends('layouts.master')
 
 @section('title', __('web.pages.home.title'))

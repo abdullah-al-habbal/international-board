@@ -1,3 +1,4 @@
+<!-- resources\views\web\certifications\show.blade.php -->
 @extends('layouts.master')
 
 @section('title', __('web.pages.certifications.title'))

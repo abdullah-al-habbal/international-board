@@ -1,3 +1,4 @@
+<!-- resources\views\web\trainers\evaluation.blade.php -->
 @extends('layouts.master')
 
 @section('title', __('web.pages.trainers.evaluation_title'))

@@ -1,4 +1,5 @@
 <?php
+// 
 declare(strict_types=1);
 
 use App\Http\Controllers\HealthCheckController;
@@ -14,6 +15,8 @@ Route::redirect('/', '/web')->name('home');
 Route::prefix('web')->name('web.')->group(function (): void {
 
     Route::get('/', HomeController::class)->name('home');
+
+    Route::get('/locale/{locale}', \App\Http\Controllers\Web\Locale\LocaleController::class)->name('locale');
 
     Route::get('/pages/{slug}', [StaticPageController::class, 'show'])
         ->name('pages.show');
@@ -40,6 +43,13 @@ Route::prefix('web')->name('web.')->group(function (): void {
         Route::get('/evaluation', [TrainerController::class, 'evaluation'])
             ->name('evaluation');
         Route::get('/{trainer}', [TrainerController::class, 'show'])
+            ->name('show');
+    });
+
+    Route::prefix('blog')->name('blog.')->group(function (): void {
+        Route::get('/', [\App\Http\Controllers\Web\Blog\BlogController::class, 'index'])
+            ->name('index');
+        Route::get('/{slug}', [\App\Http\Controllers\Web\Blog\BlogController::class, 'show'])
             ->name('show');
     });
 

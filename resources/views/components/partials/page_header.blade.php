@@ -1,4 +1,4 @@
-{{-- Shared page title banner. Pass: $title (required), $subtitle (optional) --}}
+<!-- resources\views\components\partials\page_header.blade.php -->
 <section class="page-title bg-2">
     <div class="container">
         <div class="row">

@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -20,5 +21,11 @@ final class AppServiceProvider extends ServiceProvider
                 ->locales(['ar', 'en'])
                 ->visible(outsidePanels: false);
         });
+
+        Paginator::useBootstrapFive();
+
+        \App\Models\Certification::observe(\App\Observers\CertificationObserver::class);
+        \App\Models\Trainer::observe(\App\Observers\TrainerObserver::class);
+        \App\Models\CertifiedCenter::observe(\App\Observers\CertifiedCenterObserver::class);
     }
 }

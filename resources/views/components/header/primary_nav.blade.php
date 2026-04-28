@@ -19,7 +19,7 @@
                         </a>
                     </li>
 
-                    @foreach ($staticPages as $page)
+                    @foreach ($navigationPages as $page)
                         <li class="nav-item @if (request()->is('web/pages/' . $page->slug)) active @endif">
                             <a class="nav-link" href="{{ route('web.pages.show', $page->slug) }}">
                                 {{ $page->title }}
@@ -43,12 +43,11 @@
                         <a class="nav-link" href="#">{{ __('web.pages.contact.title') }}</a>
                     </li>
 
-                    {{-- Language Switcher Placeholder --}}
                     <li class="nav-item">
                         @if (app()->getLocale() === 'ar')
-                            <a class="nav-link" href="?lang=en">English</a>
+                            <a class="nav-link" href="{{ route('web.locale', 'en') }}">English</a>
                         @else
-                            <a class="nav-link" href="?lang=ar">العربية</a>
+                            <a class="nav-link" href="{{ route('web.locale', 'ar') }}">العربية</a>
                         @endif
                     </li>
                 </ul>

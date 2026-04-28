@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Models\CertifiedCenter;
+use Illuminate\Support\Facades\Cache;
 
 class CertifiedCenterObserver
 {
-    public function creating(CertifiedCenter $center): void
+    public function saved(CertifiedCenter $center): void
     {
-        if (empty($center->accreditation_number)) {
-            $center->accreditation_number = 'CTR-' . strtoupper(uniqid());
-        }
+        Cache::forget('home_stats_centers');
+    }
+
+    public function deleted(CertifiedCenter $center): void
+    {
+        Cache::forget('home_stats_centers');
     }
 }

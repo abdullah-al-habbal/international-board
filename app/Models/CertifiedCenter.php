@@ -182,4 +182,12 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
         return null;
     }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        if ($this->attributes['logo'] ?? null) {
+            return \Illuminate\Support\Facades\Storage::url($this->attributes['logo']);
+        }
+        return null;
+    }
 }

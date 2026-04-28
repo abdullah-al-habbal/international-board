@@ -1,3 +1,4 @@
+<!-- resources\views\components\sections\cta_section.blade.php -->
 <section class="call-to-action section">
     <div class="container">
         <div class="row justify-content-center">

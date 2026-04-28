@@ -24,7 +24,7 @@
                             <h3>Quick Links</h3>
                         </li>
                         <li><a href="{{ route('web.home') }}">{{ __('web.components.header.homepage') }}</a></li>
-                        @foreach ($staticPages as $page)
+                        @foreach ($navigationPages as $page)
                             <li><a href="{{ route('web.pages.show', $page->slug) }}">{{ $page->title }}</a></li>
                         @endforeach
                     </ul>
@@ -34,10 +34,10 @@
                         <li>
                             <h3>Connect with us Socially</h3>
                         </li>
-                        <li><a href="https://www.facebook.com/themefisher/">Facebook</a></li>
-                        <li><a href="https://www.twitter.com/themefisher/">Twitter</a></li>
-                        <li><a href="https://www.youtube.com/channel/UCx9qVW8VF0LmTi4OF2F8YdA">Youtube</a></li>
-                        <li><a href="https://www.github.com/themefisher/">Github</a></li>
+                        <li><a href="">Facebook</a></li>
+                        <li><a href="">Twitter</a></li>
+                        <li><a href="">Youtube</a></li>
+                        <li><a href="">Github</a></li>
                     </ul>
                 </div>
             </div>
@@ -45,6 +45,6 @@
     </div>
     <div class="footer-bottom">
         <h5>&copy; Copyright {{ date('Y') }}. All rights reserved.</h5>
-        <h6>Design and Developed by <a href="https://themefisher.com/">Themefisher</a></h6>
+        <h6>Design and Developed by Abdullah Alhabal</a></h6>
     </div>
 </footer>

@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Models\Certification;
+use Illuminate\Support\Facades\Cache;
 
 class CertificationObserver
 {
-    public function creating(Certification $certification): void
+    public function saved(Certification $certification): void
     {
-        if (empty($certification->accredited_serial_number)) {
-            $certification->accredited_serial_number = 'CERT-' . strtoupper(uniqid());
-        }
+        Cache::forget('home_stats_certifications');
+    }
+
+    public function deleted(Certification $certification): void
+    {
+        Cache::forget('home_stats_certifications');
     }
 }

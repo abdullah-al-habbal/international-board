@@ -1,4 +1,5 @@
 <?php
+// app\Http\Controllers\Web\Certification\CertificationController.php
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\Certification;
@@ -10,7 +11,9 @@ use Illuminate\View\View;
 
 final class CertificationController extends Controller
 {
-    public function __construct(private readonly CertificationService $service) {}
+    public function __construct(private readonly CertificationService $service)
+    {
+    }
 
     public function index(): View
     {
@@ -19,9 +22,9 @@ final class CertificationController extends Controller
 
     public function search(CertificationSearchRequest $request): View
     {
-        $serial        = $request->validated('serial');
+        $serial = $request->validated('serial');
         $certification = $serial ? $this->service->getBySerial($serial) : null;
-        $notFound      = $serial !== null && $serial !== '' && $certification === null;
+        $notFound = $serial !== null && $serial !== '' && $certification === null;
 
         return view('web.certifications.search', compact('certification', 'serial', 'notFound'));
     }

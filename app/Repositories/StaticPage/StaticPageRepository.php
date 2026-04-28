@@ -1,7 +1,6 @@
 <?php
-
+// app/Repositories/StaticPage/StaticPageRepository.php
 declare(strict_types=1);
-
 namespace App\Repositories\StaticPage;
 
 use App\Models\StaticPage;
@@ -9,35 +8,25 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class StaticPageRepository
 {
-    public function __construct(private readonly StaticPage $model) {}
+    public function __construct(private readonly StaticPage $model)
+    {
+    }
 
     public function findBySlug(string $slug): ?StaticPage
     {
-        return $this->model->localizedSlug($slug)->active()->first();
+        return $this->model
+            ->newQuery()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
     }
 
-    public function findBySlugInLocale(string $slug, string $locale): ?StaticPage
+    public function getActive(): Collection
     {
-        return $this->model->bySlug($slug, $locale)->active()->first();
-    }
-
-    public function getAllActive(): Collection
-    {
-        return $this->model->active()->orderByTitle()->get();
-    }
-
-    public function getTotalCount(): int
-    {
-        return $this->model->newQuery()->count();
-    }
-
-    public function getActiveCount(): int
-    {
-        return $this->model->active()->count();
-    }
-
-    public function getInactiveCount(): int
-    {
-        return $this->model->inactive()->count();
+        return $this->model
+            ->newQuery()
+            ->where('is_active', true)
+            ->orderBy('title')
+            ->get(['id', 'slug', 'title']);
     }
 }
