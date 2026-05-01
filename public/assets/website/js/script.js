@@ -1,3 +1,4 @@
+// public\assets\website\js\script.js
 (function ($) {
   'use strict';
   $(window).on('load', function () {

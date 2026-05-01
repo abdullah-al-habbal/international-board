@@ -1,3 +1,4 @@
+<!-- resources\views\components\footer\main_footer.blade.php -->
 <footer id="footer" class="bg-one">
     <div class="top-footer">
         <div class="container">
