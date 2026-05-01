@@ -10,10 +10,18 @@ use Illuminate\View\View;
 
 final class TrainerController extends Controller
 {
-    public function __construct(private readonly TrainerService $service) {}
+    public function __construct(
+        private readonly TrainerService $service,
+        private readonly \App\Services\Seo\SeoService $seoService
+    ) {}
 
     public function index(TrainerIndexRequest $request): View
     {
+        $this->seoService->setMeta(
+            __('web.pages.trainers.title'),
+            __('web.pages.trainers.subtitle')
+        );
+
         $trainers = $this->service->listActive(
             filters: $request->filters(),
             perPage: 12
@@ -25,16 +33,24 @@ final class TrainerController extends Controller
     public function show(int $trainer): View
     {
         $trainerModel = $this->service->findActive($trainer);
-
         abort_if($trainerModel === null, 404);
+
+        $this->seoService->setMeta(
+            $trainerModel->name,
+            $trainerModel->bio ?? __('web.pages.trainers.subtitle')
+        );
 
         return view('web.trainers.show', ['trainer' => $trainerModel]);
     }
 
     public function evaluation(): View
     {
-        $evaluationText = $this->service->getEvaluationText();
+        $this->seoService->setMeta(
+            __('web.pages.trainers.evaluation_title'),
+            __('web.default_title')
+        );
 
+        $evaluationText = $this->service->getEvaluationText();
         return view('web.trainers.evaluation', compact('evaluationText'));
     }
 }

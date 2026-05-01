@@ -1,18 +1,21 @@
 <!-- resources\views\components\sections\trainer_list.blade.php -->
 @forelse ($trainers as $trainer)
-    <div class="col-md-4 col-sm-6 mb-4">
-        <div class="team-item text-center">
-            <div class="team-img">
+    <div class="col-lg-4 col-md-6 col-sm-6 mb-5">
+        <div class="card h-100 text-center p-4">
+            <div class="mb-4">
                 <img loading="lazy" src="{{ $trainer->avatar_url ?? asset('assets/website/images/about/member.jpg') }}"
-                    class="img-fluid" alt="{{ $trainer->name }}">
+                    class="img-standard" alt="{{ $trainer->name }}">
             </div>
-            <div class="team-info">
-                <h4>{{ $trainer->name }}</h4>
+            <div class="card-body p-0">
+                <h4 class="card-title mb-2">{{ $trainer->name }}</h4>
                 @if ($trainer->country)
-                    <span>{{ $trainer->country->name }}</span>
+                    <p class="text-muted mb-3">
+                        <i class="tf-ion-ios-location-outline mr-1"></i>
+                        {{ $trainer->country->name }}
+                    </p>
                 @endif
 
-                <a href="{{ route('web.trainers.show', $trainer->id) }}" class="btn btn-main btn-sm mt-2">
+                <a href="{{ route('web.trainers.show', $trainer->id) }}" class="btn btn-main btn-sm">
                     {{ __('web.buttons.view_details') }}
                 </a>
             </div>

@@ -1,29 +1,31 @@
 @extends('layouts.master')
 
 @section('title', $post->title)
-@section('seo_meta')
-    {!! app(\App\Services\Web\SeoService::class)
-        ->setTitle($post->title)
-        ->setDescription((string) $post->excerpt ?? $post->content)
-        ->setImage($post->image ? Storage::url($post->image) : null)
-        ->render() !!}
-@endsection
 
 @section('content')
     @include('components.partials.page_header', [
         'title'    => $post->title,
-        'subtitle' => $post->published_at?->format('F d, Y'),
+        'subtitle' => $post->published_at?->format('M d, Y') ?? __('web.pages.blog.title'),
     ])
 
     <section class="section">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-10">
-                    @if($post->image)
-                    <img loading="lazy" src="{{ Storage::url($post->image) }}" class="img-fluid mb-4 rounded" alt="{{ $post->title }}">
+                    @if ($post->image_url)
+                        <div class="post-image mb-4">
+                            <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="img-fluid rounded">
+                        </div>
                     @endif
-                    <div class="content">
+                    
+                    <div class="post-content">
                         {!! $post->content !!}
+                    </div>
+
+                    <div class="mt-5">
+                        <a href="{{ route('web.blog.index') }}" class="btn btn-outline-secondary">
+                            {{ __('web.buttons.back') }}
+                        </a>
                     </div>
                 </div>
             </div>

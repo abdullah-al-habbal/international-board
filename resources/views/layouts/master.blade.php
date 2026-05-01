@@ -4,7 +4,18 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@yield('title', __('web.default_title'))</title>
+    <title>@yield('title', $seo['title'] ?? __('web.default_title'))</title>
+
+    @if(isset($seo))
+        <meta name="description" content="{{ $seo['description'] }}">
+        <meta property="og:title" content="{{ $seo['title'] }}">
+        <meta property="og:description" content="{{ $seo['description'] }}">
+        <meta property="og:image" content="{{ $seo['image'] }}">
+        <meta property="og:url" content="{{ $seo['url'] }}">
+        <meta property="og:type" content="website">
+        <meta name="twitter:card" content="summary_large_image">
+    @endif
+
     @yield('seo_meta')
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -17,6 +28,10 @@
     <link rel="stylesheet" href="{{ asset('assets/website/plugins/slick/slick.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/website/css/style.css') }}">
+
+    @if(app()->getLocale() === 'ar')
+        <link rel="stylesheet" href="{{ asset('assets/website/css/style-rtl.css') }}">
+    @endif
 
     @stack('css')
 </head>

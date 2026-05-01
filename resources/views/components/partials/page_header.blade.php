@@ -3,10 +3,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="block">
-                    <h1>{{ $title }}</h1>
+                <div class="block text-center mt-5">
+                    <h1 class="mb-3">{{ $title }}</h1>
                     @if (!empty($subtitle))
-                        <p>{{ $subtitle }}</p>
+                        <p class="lead">{{ $subtitle }}</p>
                     @endif
                 </div>
             </div>

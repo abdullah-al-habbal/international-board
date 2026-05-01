@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\ApplicationSettings;
 
-use App\Filament\Admin\Resources\ApplicationSettings\Pages\CreateApplicationSetting;
 use App\Filament\Admin\Resources\ApplicationSettings\Pages\EditApplicationSetting;
 use App\Filament\Admin\Resources\ApplicationSettings\Pages\ListApplicationSettings;
 use App\Filament\Admin\Resources\ApplicationSettings\Pages\ViewApplicationSetting;
@@ -15,10 +14,11 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ApplicationSettingResource extends Resource
 {
-    protected static ?string $model =  ApplicationSetting::class;
+    protected static ?string $model = ApplicationSetting::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -79,11 +79,20 @@ class ApplicationSettingResource extends Resource
         return [];
     }
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => ListApplicationSettings::route('/'),
-            'create' => CreateApplicationSetting::route('/create'),
             'view' => ViewApplicationSetting::route('/{record}'),
             'edit' => EditApplicationSetting::route('/{record}/edit'),
         ];

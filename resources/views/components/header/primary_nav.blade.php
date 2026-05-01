@@ -1,10 +1,11 @@
-<header class="navigation fixed-top">
+<!-- resources\views\components\header\primary_nav.blade.php -->
+<header class="navigation fixed-top @if (Route::currentRouteName() !== 'web.home') nav-internal @endif">
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light px-0">
             <a class="navbar-brand logo" href="{{ route('web.home') }}">
-                <img loading="lazy" class="logo-default" src="{{ asset('assets/website/images/logo.png') }}"
+                <img loading="lazy" class="logo-default" src="{{ asset($appSettings['site_logo_primary'] ?? 'assets/website/images/logo.png') }}"
                     alt="{{ __('web.site_logo') }}" />
-                <img loading="lazy" class="logo-white" src="{{ asset('assets/website/images/logo-white.png') }}"
+                <img loading="lazy" class="logo-white" src="{{ asset($appSettings['site_logo_white'] ?? 'assets/website/images/logo-white.png') }}"
                     alt="{{ __('web.site_logo') }}" />
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
@@ -15,32 +16,32 @@
                 <ul class="navbar-nav ml-auto text-center">
                     <li class="nav-item @if (Route::currentRouteName() == 'web.home') active @endif">
                         <a class="nav-link" href="{{ route('web.home') }}">
-                            {{ __('web.components.header.homepage') }}
+                            {{ __('web.pages.home.title') }}
                         </a>
                     </li>
 
                     @foreach ($navigationPages as $page)
-                        <li class="nav-item @if (request()->is('web/pages/' . $page->slug)) active @endif">
-                            <a class="nav-link" href="{{ route('web.pages.show', $page->slug) }}">
-                                {{ $page->title }}
+                        <li class="nav-item @if (request()->is('web/pages/' . $page['slug'])) active @endif">
+                            <a class="nav-link" href="{{ route('web.pages.show', $page['slug']) }}">
+                                {{ $page['title'] }}
                             </a>
                         </li>
                     @endforeach
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ __('web.pages.services.title') }}</a>
+                    <li class="nav-item @if (Route::currentRouteName() == 'web.certifications.index') active @endif">
+                        <a class="nav-link" href="{{ route('web.certifications.index') }}">
+                            {{ __('web.pages.certifications.title') }}
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ __('web.pages.portfolio.title') }}</a>
+                    <li class="nav-item @if (Route::currentRouteName() == 'web.centers.index') active @endif">
+                        <a class="nav-link" href="{{ route('web.centers.index') }}">
+                            {{ __('web.pages.centers.title') }}
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ __('web.pages.team.title') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ __('web.pages.pricing.title') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ __('web.pages.contact.title') }}</a>
+                    <li class="nav-item @if (Route::currentRouteName() == 'web.trainers.index') active @endif">
+                        <a class="nav-link" href="{{ route('web.trainers.index') }}">
+                            {{ __('web.pages.trainers.title') }}
+                        </a>
                     </li>
 
                     <li class="nav-item">

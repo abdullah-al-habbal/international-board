@@ -2177,4 +2177,57 @@ a:focus, a:hover {
     padding: 10px 15px;
   }
 }
+
+/* Internal Navigation */
+.nav-internal {
+  background: #fff !important;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.06);
+}
+.nav-internal .navbar-light .navbar-nav .nav-item .nav-link {
+  color: #000 !important;
+}
+.nav-internal .logo-white {
+  display: none !important;
+}
+.nav-internal .logo-default {
+  display: block !important;
+}
+
+/* Sticky Footer */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+main {
+  flex: 1;
+}
+
+/* Image Standardization */
+.img-standard {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #f8f9fa;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+.img-standard:hover {
+  transform: scale(1.05);
+  border-color: #28ABE3;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
 /*# sourceMappingURL=style.css.map */

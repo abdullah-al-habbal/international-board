@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\HealthCheckController;
+use App\Http\Controllers\Web\Blog\BlogController;
 use App\Http\Controllers\Web\Certification\CertificationController;
 use App\Http\Controllers\Web\CertifiedCenter\CertifiedCenterController;
 use App\Http\Controllers\Web\Home\HomeController;
@@ -16,7 +17,9 @@ Route::prefix('web')->name('web.')->group(function (): void {
 
     Route::get('/', HomeController::class)->name('home');
 
-    Route::get('/locale/{locale}', \App\Http\Controllers\Web\Locale\LocaleController::class)->name('locale');
+    // Locale switcher
+    Route::get('/lang/{locale}', \App\Http\Controllers\Web\Locale\LocaleController::class)
+        ->name('locale');
 
     Route::get('/pages/{slug}', [StaticPageController::class, 'show'])
         ->name('pages.show');
@@ -47,9 +50,9 @@ Route::prefix('web')->name('web.')->group(function (): void {
     });
 
     Route::prefix('blog')->name('blog.')->group(function (): void {
-        Route::get('/', [\App\Http\Controllers\Web\Blog\BlogController::class, 'index'])
+        Route::get('/', [BlogController::class, 'index'])
             ->name('index');
-        Route::get('/{slug}', [\App\Http\Controllers\Web\Blog\BlogController::class, 'show'])
+        Route::get('/{slug}', [BlogController::class, 'show'])
             ->name('show');
     });
 

@@ -52,6 +52,8 @@ class StaticPageSeeder extends Seeder
 
         $now = now();
         foreach ($pages as &$page) {
+            $page['title'] = json_encode($page['title']);
+            $page['content'] = json_encode($page['content']);
             $page['created_at'] = $now;
             $page['updated_at'] = $now;
         }

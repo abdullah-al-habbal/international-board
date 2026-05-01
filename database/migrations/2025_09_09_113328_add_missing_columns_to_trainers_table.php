@@ -9,15 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('trainers', function (Blueprint $table) {
-            // Add missing columns to match the Trainer model
             $table->string('email', 255)->nullable()->after('name');
             $table->string('phone', 255)->nullable()->after('email');
             $table->text('address')->nullable()->after('phone');
             $table->foreignId('country_id')->nullable()->after('address')->constrained('countries')->nullOnDelete();
             $table->json('specializations')->nullable()->after('country_id');
             $table->boolean('is_active')->default(true)->index()->after('avatar');
-
-            // Add index for email for searching
             $table->index('email');
         });
     }

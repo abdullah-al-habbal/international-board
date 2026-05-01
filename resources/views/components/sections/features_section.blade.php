@@ -13,17 +13,20 @@
         <div class="row">
             <div class="col-md-4 text-center d-none d-md-block">
                 <img loading="lazy" src="{{ asset('assets/website/images/about/member.jpg') }}"
-                    class="img-fluid inline-block" alt="">
+                    class="img-fluid inline-block" alt="{{ __('web.features.title') }}">
             </div>
             <div class="col-md-8">
                 <div class="row text-center">
                     @foreach (__('web.features.items') as $feature)
                         <div class="col-md-6 col-sm-6">
-                            <div class="service-item">
-                                <i class="{{ $feature['icon'] }}"></i>
-                                <h4>{{ $feature['title'] }}</h4>
-                                <p>{{ $feature['description'] }}</p>
-                            </div>
+                            <a href="{{ isset($feature['route']) ? route($feature['route']) : '#' }}"
+                                class="text-decoration-none text-reset">
+                                <div class="service-item">
+                                    <i class="{{ $feature['icon'] }}"></i>
+                                    <h4>{{ $feature['title'] }}</h4>
+                                    <p>{{ $feature['description'] }}</p>
+                                </div>
+                            </a>
                         </div>
                     @endforeach
                 </div>

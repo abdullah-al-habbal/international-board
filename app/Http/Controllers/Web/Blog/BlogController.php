@@ -9,10 +9,18 @@ use Illuminate\Contracts\View\View;
 
 final class BlogController extends Controller
 {
-    public function __construct(private readonly BlogPostService $service) {}
+    public function __construct(
+        private readonly BlogPostService $service,
+        private readonly \App\Services\Seo\SeoService $seoService
+    ) {}
 
     public function index(): View
     {
+        $this->seoService->setMeta(
+            __('web.pages.blog.title'),
+            __('web.pages.blog.subtitle')
+        );
+
         $posts = $this->service->getPublishedPaginated();
         return view('web.blog.index', compact('posts'));
     }
@@ -21,6 +29,12 @@ final class BlogController extends Controller
     {
         $post = $this->service->getBySlug($slug);
         abort_if(! $post, 404);
+
+        $this->seoService->setMeta(
+            $post->title,
+            $post->excerpt ?? strip_tags((string) $post->content)
+        );
+
         return view('web.blog.show', compact('post'));
     }
 }

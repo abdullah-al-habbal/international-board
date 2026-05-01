@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 return [
     'default_title' => 'هيئة الاعتماد الوطنية',
+    'site_logo' => 'شعار هيئة الاعتماد الوطنية',
 
     'pages' => [
         'home' => [
@@ -41,6 +42,10 @@ return [
             'subtitle'         => 'تصفح شبكتنا من المدربين المهنيين المعتمدين.',
             'evaluation_title' => 'تقييم المدرب',
         ],
+        'blog' => [
+            'title' => 'آخر الأخبار',
+            'subtitle' => 'ابقَ على اطلاع بأحدث الأخبار والإعلانات.',
+        ],
     ],
 
     'features' => [
@@ -51,21 +56,25 @@ return [
                 'icon'        => 'tf-ion-ios-ribbon-outline',
                 'title'       => 'إصدار الشهادات',
                 'description' => 'شهادات رسمية صادرة عن مراكز ومدربين معتمدين.',
+                'route' => 'web.certifications.index',
             ],
             [
                 'icon'        => 'tf-ion-ios-search',
                 'title'       => 'التحقق التسلسلي',
                 'description' => 'تحقق فورياً من صحة أي شهادة صادرة.',
+                'route' => 'web.certifications.index',
             ],
             [
                 'icon'        => 'tf-ion-ios-people-outline',
                 'title'       => 'مدربون معتمدون',
                 'description' => 'تصفح شبكتنا من المدربين المهنيين المعتمدين والتواصل معهم.',
+                'route' => 'web.trainers.index',
             ],
             [
                 'icon'        => 'tf-ion-ios-location-outline',
                 'title'       => 'مراكز معتمدة',
                 'description' => 'ابحث عن مراكز التدريب المعتمدة في منطقتك.',
+                'route' => 'web.centers.index',
             ],
         ],
     ],
@@ -115,5 +124,7 @@ return [
         'status'               => 'الحالة',
         'certifications_count' => 'الشهادات المُصدَرة',
         'nationality'          => 'الجنسية',
+        'no_trainer' => 'لا يوجد مدرب معين',
+        'not_assigned' => 'غير محدد',
     ],
 ];

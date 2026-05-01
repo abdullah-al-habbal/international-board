@@ -1,57 +1,130 @@
-<!-- resources\views\web\certifications\_result.blade.php -->
+{{-- resources/views/web/certifications/_result.blade.php --}}
 <section class="section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-9">
-                <div class="card border-success">
-                    <div class="card-header bg-success text-white">
-                        <i class="tf-ion-ios-checkmark-outline"></i>
-                        {{ __('web.pages.certifications.result_valid') }}
+                <div class="card border-success shadow-sm">
+                    <div class="card-header bg-success text-white d-flex align-items-center gap-2">
+                        <i class="tf-ion-ios-checkmark-outline fs-5"></i>
+                        <span>{{ __('web.pages.certifications.result_valid') }}</span>
                     </div>
                     <div class="card-body">
+
                         <h5 class="card-title mb-4">
-                            {{ __('web.labels.trainee') }}: {{ $certification->trainee?->name }}
+                            {{ __('web.labels.trainee') }}:
+                            <span class="badge bg-warning text-dark fs-5 p-2 px-3 border border-dark rounded-pill">
+                                <i class="tf-ion-ios-person-outline mr-1"></i>
+                                {{ $certification->trainee?->name ?? __('web.labels.not_assigned') }}
+                            </span>
                         </h5>
-                        <table class="table table-bordered">
+
+                        <table class="table table-bordered align-middle">
                             <tbody>
                                 <tr>
-                                    <th>{{ __('web.labels.document_type') }}</th>
-                                    <td>{{ $certification->documentType?->name }}</td>
+                                    <th class="w-35">{{ __('web.labels.document_type') }}</th>
+                                    <td>
+                                        @if($certification->documentType?->name)
+                                            <span class="badge bg-primary px-3 py-2">
+                                                <i class="tf-ion-ios-paper-outline mr-1"></i>
+                                                {{ $certification->documentType->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary px-3 py-2">{{ __('web.labels.not_assigned') }}</span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.serial_number') }}</th>
-                                    <td>{{ $certification->accredited_serial_number }}</td>
+                                    <td>
+                                        <code>{{ $certification->accredited_serial_number ?? '—' }}</code>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.document_code') }}</th>
-                                    <td>{{ $certification->document_code }}</td>
+                                    <td>{{ $certification->documentCode?->name ?? $certification->document_code ?? '—' }}</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.accreditation_number') }}</th>
-                                    <td>{{ $certification->accreditation_number }}</td>
+                                    <td>{{ $certification->accreditation_number ?? '—' }}</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.issue_date') }}</th>
-                                    <td>{{ $certification->accreditation_date?->format('Y-m-d') }}</td>
+                                    <td>
+                                        @if($certification->accreditation_date)
+                                            <span class="d-block fw-semibold">
+                                                {{ $certification->accreditation_date->format('Y-m-d') }}
+                                            </span>
+                                            <small class="text-muted">
+                                                {{ $certification->accreditation_date
+                                                    ->locale(app()->getLocale())
+                                                    ->diffForHumans() }}
+                                            </small>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.trainer') }}</th>
-                                    <td>{{ $certification->trainer?->name }}</td>
+                                    <td>
+                                        @if($certification->trainer?->name)
+                                            <span class="badge bg-info text-dark px-3 py-2">
+                                                <i class="tf-ion-ios-people-outline mr-1"></i>
+                                                {{ $certification->trainer->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary px-3 py-2">
+                                                {{ __('web.labels.no_trainer') }}
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.center') }}</th>
-                                    <td>{{ $certification->certifiedCenter?->name }}</td>
+                                    <td>
+                                        @if($certification->certifiedCenter?->name)
+                                            <span class="badge bg-dark px-3 py-2">
+                                                <i class="tf-ion-ios-location-outline mr-1"></i>
+                                                {{ $certification->certifiedCenter->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary opacity-75 px-3 py-2">
+                                                {{ __('web.labels.not_assigned') }}
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.country') }}</th>
-                                    <td>{{ $certification->country?->name }}</td>
+                                    <td>
+                                        @if($certification->country?->name)
+                                            <span class="badge bg-light text-dark border px-3 py-2">
+                                                {{ $certification->country->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary opacity-75 px-3 py-2">
+                                                {{ __('web.labels.not_assigned') }}
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.nationality') }}</th>
-                                    <td>{{ $certification->nationality }}</td>
+                                    <td>
+                                        @if($certification->nationality)
+                                            <span class="badge bg-dark">
+                                                {{ $certification->nationality }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary opacity-75">
+                                                {{ __('web.labels.not_assigned') }}
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>

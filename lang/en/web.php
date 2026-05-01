@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 return [
     'default_title' => 'National Certification Authority',
+    'site_logo' => 'National Certification Authority Logo',
 
     'pages' => [
         'home' => [
@@ -42,6 +43,10 @@ return [
             'subtitle' => 'Browse our network of accredited professional trainers.',
             'evaluation_title' => 'Trainer Evaluation',
         ],
+        'blog' => [
+            'title' => 'Latest News',
+            'subtitle' => 'Stay updated with our latest news and announcements.',
+        ],
     ],
 
     'features' => [
@@ -52,21 +57,25 @@ return [
                 'icon' => 'tf-ion-ios-ribbon-outline',
                 'title' => 'Certification Issuance',
                 'description' => 'Official certifications issued by accredited centers and trainers.',
+                'route' => 'web.certifications.index',
             ],
             [
                 'icon' => 'tf-ion-ios-search',
                 'title' => 'Serial Verification',
                 'description' => 'Instantly verify the authenticity of any issued certification.',
+                'route' => 'web.certifications.index',
             ],
             [
                 'icon' => 'tf-ion-ios-people-outline',
                 'title' => 'Certified Trainers',
                 'description' => 'Browse and connect with our network of accredited professional trainers.',
+                'route' => 'web.trainers.index',
             ],
             [
                 'icon' => 'tf-ion-ios-location-outline',
                 'title' => 'Accredited Centers',
                 'description' => 'Find accredited training centers in your region.',
+                'route' => 'web.centers.index',
             ],
         ],
     ],
@@ -116,5 +125,7 @@ return [
         'status' => 'Status',
         'certifications_count' => 'Certifications Issued',
         'nationality' => 'Nationality',
+        'no_trainer' => 'No trainer assigned',
+        'not_assigned' => 'N/A',
     ],
 ];

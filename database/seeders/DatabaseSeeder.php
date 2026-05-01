@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
 
             AccreditationRequestSeeder::class,
             CertificationSeeder::class,
+            BlogPostSeeder::class,
 
             MembershipSeeder::class,
             StaticPageSeeder::class,

@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Translatable\HasTranslations;
 
 class BlogPost extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasFactory;
 
     public $translatable = ['title', 'content', 'excerpt'];
 
@@ -20,5 +21,13 @@ class BlogPost extends Model
             'is_published' => 'boolean',
             'published_at' => 'datetime',
         ];
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->attributes['image'] ?? null) {
+            return \Illuminate\Support\Facades\Storage::url($this->attributes['image']);
+        }
+        return null;
     }
 }
