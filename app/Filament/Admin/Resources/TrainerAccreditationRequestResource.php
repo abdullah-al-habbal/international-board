@@ -42,6 +42,26 @@ class TrainerAccreditationRequestResource extends Resource
     {
         return __('app.trainer_accreditation_requests');
     }
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::where('status', \App\Enums\AccreditationStatus::Pending)->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getNavigationBadge() > 0 ? 'warning' : 'gray';
+    }
+
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->trainer?->name ?? 'Request #' . $record->id;
+    }
+
 
     protected static ?int $navigationSort = 20;
 

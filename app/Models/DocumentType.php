@@ -27,4 +27,9 @@ class DocumentType extends Model
     {
         return $this->hasMany(CertifiedCenterDocumentType::class);
     }
+
+    public function certifications(): HasMany
+    {
+        return $this->hasMany(Certification::class);
+    }
 }

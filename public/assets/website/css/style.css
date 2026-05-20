@@ -2218,6 +2218,20 @@ main {
   border-color: #28ABE3;
 }
 
+/* Square thumbnails for listing cards (trainers, centers, blog) */
+.img-square {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+.card .img-square-wrap {
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
 .card {
   border: none;
   border-radius: 15px;
@@ -2228,6 +2242,29 @@ main {
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+/* Soft glow border for listing and detail cards */
+.card-glow {
+  border: 1px solid rgba(40, 171, 227, 0.25);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(40, 171, 227, 0.08),
+    0 0 24px rgba(40, 171, 227, 0.12);
+}
+.card-glow:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(40, 171, 227, 0.15),
+    0 0 32px rgba(40, 171, 227, 0.18);
+}
+
+.page-title.bg-2 .block {
+  border: 1px solid rgba(40, 171, 227, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(40, 171, 227, 0.08);
+  padding: 1rem 1.5rem;
 }
 
 /*# sourceMappingURL=style.css.map */

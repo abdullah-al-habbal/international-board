@@ -11,7 +11,7 @@
             </button>
         </div>
         <div class="col-md-2 mt-2 mt-md-0">
-            @if (request()->hasAny(['search', 'country_id']))
+            @if (request()->filled('search'))
                 <a href="{{ route('web.centers.index') }}" class="btn btn-outline-secondary btn-block">
                     {{ __('web.buttons.clear') }}
                 </a>

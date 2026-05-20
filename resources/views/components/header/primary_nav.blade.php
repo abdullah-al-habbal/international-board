@@ -28,19 +28,24 @@
                         </li>
                     @endforeach
 
-                    <li class="nav-item @if (Route::currentRouteName() == 'web.certifications.index') active @endif">
+                    <li class="nav-item @if (request()->routeIs('web.certifications.*')) active @endif">
                         <a class="nav-link" href="{{ route('web.certifications.index') }}">
                             {{ __('web.pages.certifications.title') }}
                         </a>
                     </li>
-                    <li class="nav-item @if (Route::currentRouteName() == 'web.centers.index') active @endif">
+                    <li class="nav-item @if (request()->routeIs('web.centers.*')) active @endif">
                         <a class="nav-link" href="{{ route('web.centers.index') }}">
                             {{ __('web.pages.centers.title') }}
                         </a>
                     </li>
-                    <li class="nav-item @if (Route::currentRouteName() == 'web.trainers.index') active @endif">
+                    <li class="nav-item @if (request()->routeIs('web.trainers.*')) active @endif">
                         <a class="nav-link" href="{{ route('web.trainers.index') }}">
                             {{ __('web.pages.trainers.title') }}
+                        </a>
+                    </li>
+                    <li class="nav-item @if (request()->routeIs('web.blog.*')) active @endif">
+                        <a class="nav-link" href="{{ route('web.blog.index') }}">
+                            {{ __('web.pages.blog.title') }}
                         </a>
                     </li>
 

@@ -6,9 +6,9 @@ namespace App\Filament\Admin\Resources\TrainerAccreditationRequests\Tables;
 
 use App\Enums\AccreditationStatus;
 use App\Services\Accreditation\TrainerAccreditationApprovalService;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 

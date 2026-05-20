@@ -47,8 +47,18 @@ final class TrainerRepository
             ->first();
     }
 
+    public function countTotal(): int
+    {
+        return $this->model->newQuery()->count();
+    }
+
     public function countActive(): int
     {
         return $this->model->newQuery()->where('is_active', true)->count();
+    }
+
+    public function countInactive(): int
+    {
+        return $this->model->newQuery()->where('is_active', false)->count();
     }
 }

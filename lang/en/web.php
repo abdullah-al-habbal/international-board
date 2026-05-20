@@ -6,6 +6,10 @@ return [
     'default_title' => 'National Certification Authority',
     'site_logo' => 'National Certification Authority Logo',
 
+    'footer' => [
+        'description' => 'The National Certification Authority issues, verifies, and accredits professional certifications through a trusted network of training centers and certified trainers.',
+    ],
+
     'pages' => [
         'home' => [
             'title' => 'Home',

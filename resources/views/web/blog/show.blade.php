@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="mt-5">
-                        <a href="{{ route('web.blog.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('web.blog.index') }}" class="btn btn-main">
                             {{ __('web.buttons.back') }}
                         </a>
                     </div>

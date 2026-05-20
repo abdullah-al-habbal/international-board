@@ -45,6 +45,26 @@ class TrainerDocumentTypeRequestResource extends Resource
         return __('app.request_document_types');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::where('status', \App\Enums\DocumentTypeRequestStatus::Pending)->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getNavigationBadge() > 0 ? 'warning' : 'gray';
+    }
+
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->trainer?->name ?? 'Request #' . $record->id;
+    }
+
+
     protected static ?int $navigationSort = 11;
 
     public static function getEloquentQuery(): Builder

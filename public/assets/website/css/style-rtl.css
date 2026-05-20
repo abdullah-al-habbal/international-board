@@ -29,37 +29,95 @@ body {
     float: right !important;
 }
 
-/* Slick Slider RTL Fixes */
 .hero-slider, .testimonial-slider, .clients-logo-slider, .company-gallery {
     direction: ltr !important;
-}
 
-.hero-slider .slider-item .container,
+.hero-slider .slider-item,
 .testimonial-slider .testimonial-item,
 .clients-logo-slider .client-logo,
 .company-gallery .gallery-item {
     direction: rtl !important;
 }
 
-/* Navbar fixes */
+.slick-slider[dir="rtl"] .slick-slide {
+    float: right !important;
+}
+
+[data-animation-in] {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.animated {
+    opacity: 1 !important;
+}
+
+.hero-area {
+    background-position: center center;
+    background-size: cover;
+    height: 100vh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .navbar-nav.ml-auto {
     margin-left: 0 !important;
     margin-right: auto !important;
 }
 
-/* Page Header */
 .page-title.bg-2 {
     text-align: center;
 }
 
-/* Badges */
 .badge {
     margin-right: 0;
     margin-left: 0.5rem;
 }
 
-/* Spacing */
 .ms-1 {
     margin-right: 0.25rem !important;
     margin-left: 0 !important;
+}
+
+.hero-slider .prevArrow {
+    right: -100px !important;
+    left: auto !important;
+}
+.hero-slider .nextArrow {
+    left: -100px !important;
+    right: auto !important;
+}
+.hero-slider:hover .prevArrow {
+    right: 20px !important;
+    left: auto !important;
+}
+.hero-slider:hover .nextArrow {
+    left: 20px !important;
+    right: auto !important;
+}
+
+.slick-dots {
+    direction: ltr !important;
+}
+
+.card-glow {
+    border: 1px solid rgba(40, 171, 227, 0.25);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(40, 171, 227, 0.08),
+        0 0 24px rgba(40, 171, 227, 0.12);
+}
+.card-glow:hover {
+    box-shadow:
+        0 8px 28px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(40, 171, 227, 0.15),
+        0 0 32px rgba(40, 171, 227, 0.18);
+}
+.page-title.bg-2 .block {
+    border: 1px solid rgba(40, 171, 227, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(40, 171, 227, 0.08);
+    padding: 1rem 1.5rem;
 }

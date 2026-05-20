@@ -22,6 +22,7 @@ trait ResolvesFilamentColor
             'red' => Color::Red,
             'teal' => Color::Teal,
             'yellow' => Color::Yellow,
+            'emerald' => Color::Emerald,
             default => Color::Amber,
         };
     }

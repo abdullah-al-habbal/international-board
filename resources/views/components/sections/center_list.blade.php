@@ -1,10 +1,10 @@
 <!-- resources\views\components\sections\center_list.blade.php -->
 @forelse ($centers as $center)
     <div class="col-lg-4 col-md-6 col-sm-6 mb-5">
-        <div class="card h-100 text-center p-4">
-            <div class="mb-4">
+        <div class="card card-glow h-100 text-center p-4">
+            <div class="img-square-wrap mb-4">
                 <img loading="lazy" src="{{ $center->logo_url ?? asset('assets/website/images/about/member.jpg') }}"
-                    class="img-standard" alt="{{ $center->name }}">
+                    class="img-square" alt="{{ $center->name }}">
             </div>
             <div class="card-body p-0">
                 <h4 class="card-title mb-2">{{ $center->name }}</h4>

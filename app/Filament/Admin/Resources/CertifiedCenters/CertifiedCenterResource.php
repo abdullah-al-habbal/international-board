@@ -64,6 +64,16 @@ class CertifiedCenterResource extends Resource
         return __('app.certified_centers');
     }
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->name ?? 'Center #' . $record->id;
+    }
+
+
     public static function form(Schema $schema): Schema
     {
         return CertifiedCenterForm::configure($schema);

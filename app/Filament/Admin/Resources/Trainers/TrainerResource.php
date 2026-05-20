@@ -60,6 +60,16 @@ class TrainerResource extends Resource
         return __('app.trainers');
     }
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->name ?? 'Trainer #' . $record->id;
+    }
+
+
     public static function form(Schema $schema): Schema
     {
         return TrainerForm::configure($schema);

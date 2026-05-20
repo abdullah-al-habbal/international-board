@@ -13,12 +13,6 @@ final class ArchitectureServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Model::creating(function ($model) {
-            if (! str_ends_with(class_basename($model), 'Model')) {
-                throw new \LogicException("Model names must end with 'Model'.");
-            }
-        });
-
         Model::retrieved(function ($model) {
             foreach (['table', 'primaryKey'] as $prop) {
                 if (! property_exists($model, $prop)) {

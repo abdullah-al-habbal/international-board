@@ -43,6 +43,16 @@ class CertifiedCenterFinancialRequestResource extends Resource
         return __('app.center_financial_requests');
     }
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->certifiedCenter?->name ?? 'Request #' . $record->id;
+    }
+
+
     protected static ?int $navigationSort = 11;
 
     public static function form(Schema $schema): Schema

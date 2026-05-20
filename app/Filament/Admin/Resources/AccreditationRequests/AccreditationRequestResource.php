@@ -36,13 +36,23 @@ class AccreditationRequestResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::count();
+        return (string) static::getModel()::pending()->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
     {
-        return static::getModel()::count() > 0 ? 'warning' : 'primary';
+        return static::getModel()::pending()->count() > 0 ? 'warning' : 'gray';
     }
+
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->certifiedCenter?->name ?? 'Request #' . $record->id;
+    }
+
 
     public static function getNavigationLabel(): string
     {

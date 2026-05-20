@@ -28,7 +28,10 @@
     pauseOnHover: false,
     rtl: $('html').attr('dir') === 'rtl'
   });
-  $('.hero-slider').slickAnimation();
+
+  if (typeof $.fn.slickAnimation === 'function') {
+    $('.hero-slider').slickAnimation();
+  }
 
   setTimeout(function () {
     var containerEl = document.querySelector('.filtr-container');

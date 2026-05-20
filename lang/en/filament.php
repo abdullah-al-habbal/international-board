@@ -8,8 +8,11 @@ return [
             'users' => 'Users',
             'centers' => 'Centers',
             'reports' => 'Reports',
+            'financial_management' => 'Financial Management',
+            'accreditation_management' => 'Accreditation Management',
         ],
     ],
+
 
     'resources' => [
         'accreditation_requests' => 'Accreditation Requests',
@@ -25,5 +28,10 @@ return [
         'trainees' => 'Trainees',
         'trainers' => 'Trainers',
         'users' => 'Users',
+        'trainer_accreditation_requests' => 'Trainer Accreditation Requests',
+        'center_financial_requests' => 'Center Financial Requests',
+        'agent_persons' => 'Agent Persons',
+        'trainer_financial_requests' => 'Trainer Financial Requests',
+        'trainer_document_type_requests' => 'Trainer Document Type Requests',
     ],
 ];

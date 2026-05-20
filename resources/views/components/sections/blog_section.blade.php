@@ -11,20 +11,10 @@
             </div>
         </div>
         <div class="row">
-            @foreach ($blogPosts as $post)
-            <div class="col-lg-4 col-md-6 mb-4">
-                <article class="card h-100 border-0 shadow-sm">
-                    @if($post->image_url)
-                    <img loading="lazy" src="{{ $post->image_url }}" alt="{{ $post->title }}" class="card-img-top">
-                    @endif
-                    <div class="card-body">
-                        <h4 class="card-title"><a href="{{ route('web.blog.show', $post->slug) }}">{{ $post->title }}</a></h4>
-                        <p class="card-text">{{ Str::limit(strip_tags((string) ($post->excerpt ?? $post->content)), 100) }}</p>
-                        <a href="{{ route('web.blog.show', $post->slug) }}" class="btn btn-main btn-sm">{{ __('web.buttons.read_more') }}</a>
-                    </div>
-                </article>
-            </div>
-            @endforeach
+            @include('components.sections.blog_list', ['blogPosts' => $blogPosts])
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('web.blog.index') }}" class="btn btn-main">{{ __('web.buttons.read_more') }}</a>
         </div>
     </div>
 </section>

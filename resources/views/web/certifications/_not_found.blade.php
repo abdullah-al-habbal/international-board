@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card border-danger">
+                <div class="card card-glow border-danger">
                     <div class="card-header bg-danger text-white">
                         <i class="tf-ion-ios-close-outline"></i>
                         {{ __('web.pages.certifications.result_not_found') }}
@@ -12,7 +12,7 @@
                         <p class="card-text text-muted">
                             {{ __('web.pages.certifications.not_found_message', ['serial' => $serial]) }}
                         </p>
-                        <a href="{{ route('web.certifications.index') }}" class="btn btn-outline-secondary mt-2">
+                        <a href="{{ route('web.certifications.index') }}" class="btn btn-main mt-2">
                             {{ __('web.buttons.back') }}
                         </a>
                     </div>

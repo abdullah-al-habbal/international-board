@@ -1,5 +1,5 @@
 <?php
-// 
+//
 declare(strict_types=1);
 
 use App\Http\Controllers\HealthCheckController;
@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\Blog\BlogController;
 use App\Http\Controllers\Web\Certification\CertificationController;
 use App\Http\Controllers\Web\CertifiedCenter\CertifiedCenterController;
 use App\Http\Controllers\Web\Home\HomeController;
+use App\Http\Controllers\Web\Locale\LocaleController;
 use App\Http\Controllers\Web\StaticPage\StaticPageController;
 use App\Http\Controllers\Web\Trainer\TrainerController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,7 @@ Route::prefix('web')->name('web.')->group(function (): void {
     Route::get('/', HomeController::class)->name('home');
 
     // Locale switcher
-    Route::get('/lang/{locale}', \App\Http\Controllers\Web\Locale\LocaleController::class)
+    Route::get('/lang/{locale}', LocaleController::class)
         ->name('locale');
 
     Route::get('/pages/{slug}', [StaticPageController::class, 'show'])

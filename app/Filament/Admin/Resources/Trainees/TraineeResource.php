@@ -60,6 +60,16 @@ class TraineeResource extends Resource
         return __('app.trainees');
     }
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->name ?? 'Trainee #' . $record->id;
+    }
+
+
     public static function form(Schema $schema): Schema
     {
         return TraineeForm::configure($schema);

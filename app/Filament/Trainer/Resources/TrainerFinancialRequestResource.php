@@ -44,6 +44,16 @@ class TrainerFinancialRequestResource extends Resource
         return __('app.financial_history');
     }
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        if (!$record) {
+            return static::getModelLabel();
+        }
+
+        return $record->trainer?->name ?? 'Request #' . $record->id;
+    }
+
+
     protected static ?int $navigationSort = 10;
 
     public static function getEloquentQuery(): Builder

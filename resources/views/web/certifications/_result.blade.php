@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-9">
-                <div class="card border-success shadow-sm">
+                <div class="card card-glow border-success">
                     <div class="card-header bg-success text-white d-flex align-items-center gap-2">
                         <i class="tf-ion-ios-checkmark-outline fs-5"></i>
                         <span>{{ __('web.pages.certifications.result_valid') }}</span>
@@ -41,7 +41,7 @@
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.document_code') }}</th>
-                                    <td>{{ $certification->documentCode?->name ?? $certification->document_code ?? '—' }}</td>
+                                    <td>{{ $certification->document_code ?? '—' }}</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.accreditation_number') }}</th>

@@ -5,8 +5,7 @@
             <div class="row justify-content-around">
                 <div class="col-lg-4 col-md-6 mb-5 mb-lg-0">
                     <h3>{{ __('web.pages.home.title') }}</h3>
-                    <p>Integer posuere erat a ante venenati dapibus posuere velit aliquet. Fusce
-                        dapibus, tellus cursus commodo, tortor mauris sed posuere.</p>
+                    <p>{{ __('web.footer.description') }}</p>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
                     <ul>
@@ -16,6 +15,7 @@
                         <li><a href="{{ route('web.certifications.index') }}">{{ __('web.pages.certifications.title') }}</a></li>
                         <li><a href="{{ route('web.centers.index') }}">{{ __('web.pages.centers.title') }}</a></li>
                         <li><a href="{{ route('web.trainers.index') }}">{{ __('web.pages.trainers.title') }}</a></li>
+                        <li><a href="{{ route('web.blog.index') }}">{{ __('web.pages.blog.title') }}</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6 mb-5 mb-md-0">

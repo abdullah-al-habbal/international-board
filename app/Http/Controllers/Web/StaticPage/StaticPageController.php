@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\StaticPage;
 
+use App\Http\Controllers\Controller;
 use App\Services\Seo\SeoService;
 use App\Services\StaticPage\StaticPageService;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-final class StaticPageController
+final class StaticPageController extends Controller
 {
     public function __construct(
         private readonly StaticPageService $service,
@@ -18,11 +20,11 @@ final class StaticPageController
     public function show(string $slug): View
     {
         $page = $this->service->getBySlug($slug);
-        abort_if(!$page, 404);
+        abort_if($page === null, 404);
 
         $this->seoService->setMeta(
             $page->title,
-            $page->excerpt ?? strip_tags((string) $page->content)
+            Str::limit(strip_tags((string) $page->content), 160)
         );
 
         return view('web.pages.show', compact('page'));

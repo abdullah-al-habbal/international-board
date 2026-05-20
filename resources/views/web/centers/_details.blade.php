@@ -1,5 +1,5 @@
 <!-- resources\views\web\centers\_details.blade.php -->
-<div class="card p-4">
+<div class="card card-glow p-4">
     <div class="card-body p-0">
         <h3 class="mb-4">{{ $center->name }}</h3>
         
