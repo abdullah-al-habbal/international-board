@@ -111,6 +111,7 @@ return [
     ],
 
     'labels' => [
+        'all'                  => 'الكل',
         'search_placeholder'   => 'بحث...',
         'no_results'           => 'لا توجد نتائج.',
         'country'              => 'الدولة',

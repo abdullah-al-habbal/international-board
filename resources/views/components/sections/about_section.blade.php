@@ -21,11 +21,17 @@
                 @endif
             </div>
             <div class="col-md-6">
-                <ul class="checklist">
-                    @foreach (__('web.pages.about.checklist') as $item)
-                        <li>{{ $item }}</li>
-                    @endforeach
-                </ul>
+                @if ($aboutPage?->content)
+                    <div class="content text-muted">
+                        {!! Str::limit(strip_tags((string) $aboutPage->content), 500) !!}
+                    </div>
+                @else
+                    <ul class="checklist">
+                        @foreach (__('web.pages.about.checklist') as $item)
+                            <li>{{ $item }}</li>
+                        @endforeach
+                    </ul>
+                @endif
                 <a href="{{ route('web.pages.show', 'about-us') }}" class="btn btn-main mt-20">
                     {{ __('web.buttons.learn_more') }}
                 </a>

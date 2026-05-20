@@ -112,6 +112,7 @@ return [
     ],
 
     'labels' => [
+        'all' => 'All',
         'search_placeholder' => 'Search...',
         'no_results' => 'No results found.',
         'country' => 'Country',

@@ -28,7 +28,9 @@ final class CertifiedCenterController extends Controller
             perPage: 12
         );
 
-        return view('web.centers.index', compact('centers'));
+        $countries = $this->service->getFilterCountries();
+
+        return view('web.centers.index', compact('centers', 'countries'));
     }
 
     public function show(int $id): View

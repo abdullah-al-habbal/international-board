@@ -140,6 +140,10 @@ Listing pages (trainers, centers, blog) must follow the same pattern:
 
 Certifications public index is **verify-by-serial only** (no browse grid).
 
+**Home about block:** [`about_section`](resources/views/components/sections/about_section.blade.php) uses CMS `content` from slug `about-us` when present; otherwise lang checklist.
+
+**Centers index filters:** search + `country_id` select (countries with active centers via `CertifiedCenterService::getFilterCountries()`).
+
 ## Filament panels
 
 | Panel | Path | Guard | User model |

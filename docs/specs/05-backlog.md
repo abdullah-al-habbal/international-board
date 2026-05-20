@@ -31,13 +31,13 @@ Prioritized tasks from the project audit. Status updated after implementation pa
 - [x] `.card-glow` CSS on listing and detail cards
 - [x] Certification not-found back button → `btn-main`
 - [x] Centers filter clear button (search only)
-- [ ] Add PHPUnit feature tests for web listing pages
+- [ ] Add PHPUnit feature tests for web listing pages *(skipped per product request)*
 - [ ] Optional: public certification browse catalog (product decision)
 
 ## Future ideas
 
-- [ ] Home `about_section`: render DB `content` instead of lang-only checklist
-- [ ] Centers index: add country filter dropdown (if product needs it)
+- [x] Home `about_section`: render DB `content` with checklist fallback
+- [x] Centers index: country filter dropdown (`getFilterCountries()` + `_filters`)
 - [ ] CMS-editable footer via `ApplicationSetting`
 - [ ] Home page inline trainer/center carousels using existing list partials
 - [ ] Consolidate `img-standard` vs `img-square` documentation in theme README
