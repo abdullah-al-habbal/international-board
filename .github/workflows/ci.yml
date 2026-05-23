@@ -75,7 +75,7 @@ jobs:
 
             echo "📦 Installing optimized dependencies..."
             if command -v composer >/dev/null 2>&1; then
-              composer install --no-dev --optimize-autoloader --no-interaction || { echo "❌ ERROR: composer install failed"; exit 1; }
+              php -d disable_functions='' /usr/local/bin/composer2.phar install --no-dev --optimize-autoloader --no-interaction || { echo "❌ ERROR: composer install failed"; exit 1; }
             else
               echo "⚠️ Composer not found on server; ensure vendor is present or install composer."
             fi
