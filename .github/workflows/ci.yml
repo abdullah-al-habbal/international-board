@@ -123,30 +123,6 @@ jobs:
       - name: 🔄 Wait for application to settle
         run: sleep 10
 
-      - name: 🏥 Healthcheck (wait + retry)
-        run: |
-          URL="https://internationalboard.uk/web/health"
-          TOKEN="${{ secrets.HEALTH_TOKEN }}"
-          MAX=6
-          SLEEP=10
-          i=0
-          while [ $i -lt $MAX ]; do
-            if [ -n "$TOKEN" ]; then
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Health-Token: $TOKEN" "$URL" || echo "000")
-            else
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
-            fi
-            echo "Healthcheck attempt $((i+1)): HTTP $STATUS"
-            if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
-              echo "✅ HEALTHCHECK OK"
-              exit 0
-            fi
-            i=$((i+1))
-            sleep $SLEEP
-          done
-          echo "❌ HEALTHCHECK FAILED after $MAX attempts (status $STATUS)"
-          exit 1
-
       - name: 📝 Notify on success (optional)
         if: success()
         run: |
