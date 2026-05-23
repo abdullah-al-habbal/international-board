@@ -4,44 +4,40 @@ declare(strict_types=1);
 
 namespace App\Exports\Stats;
 
-use App\Enums\UserType;
-use App\Exports\Contracts\StatExportable;
+use App\Eloquent\Resolvers\User\UserAdminUsersExportResolver;
+use App\Exports\Contracts\CsvStatExportable;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use App\Services\Csv\CsvExportHandler;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class AdminUsersExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
+final class AdminUsersExport implements CsvStatExportable
 {
-    public function query(): Builder
-    {
-        return User::query()->where('type', UserType::Admin)->orderBy('created_at', 'desc');
-    }
+    public function __construct(
+        private readonly CsvExportHandler $csvExportHandler,
+        private readonly UserAdminUsersExportResolver $resolver,
+    ) {}
 
-    public function headings(): array
+    public function export(): StreamedResponse
     {
-        return ['ID', 'Name', 'Email', 'Created At'];
-    }
+        $headers = ['ID', 'Name', 'Email', 'Created At'];
 
-    public function map(mixed $row): array
-    {
-        return [
-            $row->id,
-            $row->name,
-            $row->email,
-            $row->created_at->format('Y-m-d'),
+        $formatter = fn (User $user): array => [
+            $user->id,
+            $user->name,
+            $user->email,
+            $user->created_at->format('Y-m-d'),
         ];
+
+        return $this->csvExportHandler->export(
+            $this->resolver->query(),
+            $headers,
+            $formatter,
+            'admin_users_' . now()->format('Ymd_His') . '.csv'
+        );
     }
 
     public function label(): string
     {
         return 'Admin Users';
-    }
-
-    public function filename(): string
-    {
-        return 'admin_users_'.now()->format('Ymd_His').'.xlsx';
     }
 }

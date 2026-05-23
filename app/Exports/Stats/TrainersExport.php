@@ -4,47 +4,46 @@ declare(strict_types=1);
 
 namespace App\Exports\Stats;
 
-use App\Exports\Contracts\StatExportable;
+use App\Eloquent\Resolvers\Trainer\TrainerTrainersExportResolver;
+use App\Exports\Contracts\CsvStatExportable;
 use App\Models\Trainer;
-use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use App\Services\Csv\CsvExportHandler;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class TrainersExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
+final class TrainersExport implements CsvStatExportable
 {
-    public function query(): Builder
-    {
-        return Trainer::query()->orderBy('created_at', 'desc');
-    }
+    public function __construct(
+        private readonly CsvExportHandler $csvExportHandler,
+        private readonly TrainerTrainersExportResolver $resolver,
+    ) {}
 
-    public function headings(): array
+    public function export(): StreamedResponse
     {
-        return ['ID', 'Name', 'Email', 'Phone', 'Country', 'Specializations', 'Active', 'Created At'];
-    }
+        $headers = ['ID', 'Name', 'Email', 'Phone', 'Country', 'Specializations', 'Active', 'Created At'];
 
-    public function map($row): array
-    {
-        return [
-            $row->id,
-            $row->name,
-            $row->email,
-            $row->phone,
-            $row->country?->name,
-            is_array($row->specializations) ? implode(', ', $row->specializations) : $row->specializations,
-            $row->is_active ? 'Yes' : 'No',
-            $row->created_at?->format('Y-m-d'),
+        $formatter = fn (Trainer $trainer): array => [
+            $trainer->id,
+            $trainer->name,
+            $trainer->email,
+            $trainer->phone,
+            $trainer->country?->name,
+            is_array($trainer->specializations)
+                ? implode(', ', $trainer->specializations)
+                : (string) $trainer->specializations,
+            $trainer->is_active ? 'Yes' : 'No',
+            $trainer->created_at?->format('Y-m-d'),
         ];
+
+        return $this->csvExportHandler->export(
+            $this->resolver->query(),
+            $headers,
+            $formatter,
+            'trainers_' . now()->format('Ymd_His') . '.csv'
+        );
     }
 
     public function label(): string
     {
         return 'Trainers';
-    }
-
-    public function filename(): string
-    {
-        return 'trainers_'.now()->format('Ymd_His').'.xlsx';
     }
 }

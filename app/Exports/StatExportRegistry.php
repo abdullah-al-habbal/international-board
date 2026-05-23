@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exports;
 
-use App\Exports\Contracts\StatExportable;
+use App\Exports\Contracts\CsvStatExportable;
 use App\Exports\Stats\ActiveCentersExport;
 use App\Exports\Stats\AdminUsersExport;
 use App\Exports\Stats\CentersExport;
@@ -17,19 +17,18 @@ use InvalidArgumentException;
 
 final class StatExportRegistry
 {
-    /** @var array<string, class-string<StatExportable>> */
     private const MAP = [
-        'total_centers' => CentersExport::class,
-        'active_centers' => ActiveCentersExport::class,
-        'expired_centers' => ExpiredCentersExport::class,
-        'total_certifications' => CertificationsExport::class,
-        'pending_requests' => PendingRequestsExport::class,
-        'admin_users' => AdminUsersExport::class,
-        'trainers' => TrainersExport::class,
+        'total_centers'          => CentersExport::class,
+        'active_centers'         => ActiveCentersExport::class,
+        'expired_centers'        => ExpiredCentersExport::class,
+        'total_certifications'   => CertificationsExport::class,
+        'pending_requests'       => PendingRequestsExport::class,
+        'admin_users'            => AdminUsersExport::class,
+        'trainers'               => TrainersExport::class,
         'monthly_certifications' => MonthlyCertificationsExport::class,
     ];
 
-    public function resolve(string $type): StatExportable
+    public function resolve(string $type): CsvStatExportable
     {
         if (! isset(self::MAP[$type])) {
             throw new InvalidArgumentException("Unknown export type: {$type}");

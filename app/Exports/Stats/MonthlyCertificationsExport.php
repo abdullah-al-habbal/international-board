@@ -4,46 +4,41 @@ declare(strict_types=1);
 
 namespace App\Exports\Stats;
 
-use App\Exports\Contracts\StatExportable;
+use App\Eloquent\Resolvers\Certification\CertificationMonthlyCertificationsExportResolver;
+use App\Exports\Contracts\CsvStatExportable;
 use App\Models\Certification;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use App\Services\Csv\CsvExportHandler;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class MonthlyCertificationsExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
+final class MonthlyCertificationsExport implements CsvStatExportable
 {
-    public function query()
-    {
-        return Certification::query()
-            ->with(['trainee', 'certifiedCenter'])
-            ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
-            ->orderBy('created_at', 'desc');
-    }
+    public function __construct(
+        private readonly CsvExportHandler $csvExportHandler,
+        private readonly CertificationMonthlyCertificationsExportResolver $resolver,
+    ) {}
 
-    public function headings(): array
+    public function export(): StreamedResponse
     {
-        return ['ID', 'Serial Number', 'Trainee', 'Center', 'Created At'];
-    }
+        $headers = ['ID', 'Serial Number', 'Trainee', 'Center', 'Created At'];
 
-    public function map(mixed $row): array
-    {
-        return [
-            $row->id,
-            $row->accredited_serial_number,
-            $row->trainee?->name,
-            $row->certifiedCenter?->name,
-            $row->created_at->format('Y-m-d'),
+        $formatter = fn (Certification $certification): array => [
+            $certification->id,
+            $certification->accredited_serial_number,
+            $certification->trainee?->name,
+            $certification->certifiedCenter?->name,
+            $certification->created_at->format('Y-m-d'),
         ];
+
+        return $this->csvExportHandler->export(
+            $this->resolver->query(),
+            $headers,
+            $formatter,
+            'monthly_certifications_' . now()->format('Ymd_His') . '.csv'
+        );
     }
 
     public function label(): string
     {
         return 'Monthly Certifications';
-    }
-
-    public function filename(): string
-    {
-        return 'monthly_certifications_'.now()->format('Ymd_His').'.xlsx';
     }
 }

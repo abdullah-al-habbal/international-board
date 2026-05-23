@@ -4,47 +4,41 @@ declare(strict_types=1);
 
 namespace App\Exports\Stats;
 
-use App\Enums\AccreditationStatus;
-use App\Exports\Contracts\StatExportable;
+use App\Eloquent\Resolvers\AccreditationRequest\AccreditationRequestPendingRequestsExportResolver;
+use App\Exports\Contracts\CsvStatExportable;
 use App\Models\AccreditationRequest;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use App\Services\Csv\CsvExportHandler;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class PendingRequestsExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
+final class PendingRequestsExport implements CsvStatExportable
 {
-    public function query()
-    {
-        return AccreditationRequest::query()
-            ->with('certifiedCenter')
-            ->where('status', AccreditationStatus::Pending)
-            ->orderBy('created_at', 'desc');
-    }
+    public function __construct(
+        private readonly CsvExportHandler $csvExportHandler,
+        private readonly AccreditationRequestPendingRequestsExportResolver $resolver,
+    ) {}
 
-    public function headings(): array
+    public function export(): StreamedResponse
     {
-        return ['ID', 'Center', 'Requested Start', 'Requested End', 'Created At'];
-    }
+        $headers = ['ID', 'Center', 'Requested Start', 'Requested End', 'Created At'];
 
-    public function map(mixed $row): array
-    {
-        return [
-            $row->id,
-            $row->certifiedCenter?->name,
-            $row->requested_start_date?->format('Y-m-d'),
-            $row->requested_end_date?->format('Y-m-d'),
-            $row->created_at->format('Y-m-d'),
+        $formatter = fn (AccreditationRequest $request): array => [
+            $request->id,
+            $request->certifiedCenter?->name,
+            $request->requested_start_date?->format('Y-m-d'),
+            $request->requested_end_date?->format('Y-m-d'),
+            $request->created_at->format('Y-m-d'),
         ];
+
+        return $this->csvExportHandler->export(
+            $this->resolver->query(),
+            $headers,
+            $formatter,
+            'pending_requests_' . now()->format('Ymd_His') . '.csv'
+        );
     }
 
     public function label(): string
     {
         return 'Pending Requests';
-    }
-
-    public function filename(): string
-    {
-        return 'pending_requests_'.now()->format('Ymd_His').'.xlsx';
     }
 }

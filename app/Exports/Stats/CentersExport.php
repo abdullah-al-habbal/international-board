@@ -4,43 +4,40 @@ declare(strict_types=1);
 
 namespace App\Exports\Stats;
 
-use App\Exports\Contracts\StatExportable;
+use App\Eloquent\Resolvers\CertifiedCenter\CertifiedCenterCentersExportResolver;
+use App\Exports\Contracts\CsvStatExportable;
 use App\Models\CertifiedCenter;
-use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use App\Services\Csv\CsvExportHandler;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class CentersExport implements FromQuery, ShouldAutoSize, StatExportable, WithHeadings, WithMapping
+final class CentersExport implements CsvStatExportable
 {
-    public function query(): Builder
-    {
-        return CertifiedCenter::query()->orderBy('created_at', 'desc');
-    }
+    public function __construct(
+        private readonly CsvExportHandler $csvExportHandler,
+        private readonly CertifiedCenterCentersExportResolver $resolver,
+    ) {}
 
-    public function headings(): array
+    public function export(): StreamedResponse
     {
-        return ['ID', 'Name', 'Status', 'Created At'];
-    }
+        $headers = ['ID', 'Name', 'Status', 'Created At'];
 
-    public function map($row): array
-    {
-        return [
-            $row->id,
-            $row->name,
-            $row->status?->label(),
-            $row->created_at?->format('Y-m-d'),
+        $formatter = fn (CertifiedCenter $center): array => [
+            $center->id,
+            $center->name,
+            $center->status?->label(),
+            $center->created_at?->format('Y-m-d'),
         ];
+
+        return $this->csvExportHandler->export(
+            $this->resolver->query(),
+            $headers,
+            $formatter,
+            'centers_' . now()->format('Ymd_His') . '.csv'
+        );
     }
 
     public function label(): string
     {
         return 'Centers';
-    }
-
-    public function filename(): string
-    {
-        return 'centers_'.now()->format('Ymd_His').'.xlsx';
     }
 }
