@@ -11,6 +11,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Admin\Resources\PaymentAgentPersons\RelationManagers\CenterFinancialRequestsRelationManager;
+use App\Filament\Admin\Resources\PaymentAgentPersons\RelationManagers\TrainerFinancialRequestsRelationManager;
 use App\Filament\Admin\Resources\PaymentAgentPersons\Schemas\PaymentAgentPersonForm;
 use App\Filament\Admin\Resources\PaymentAgentPersons\Tables\PaymentAgentPersonsTable;
 
@@ -67,7 +69,10 @@ class PaymentAgentPersonResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            CenterFinancialRequestsRelationManager::class,
+            TrainerFinancialRequestsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

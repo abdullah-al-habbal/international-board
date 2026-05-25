@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests;
 
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ListTrainerFinancialRequests;
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ViewTrainerFinancialRequest;
 use App\Models\TrainerFinancialRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -13,6 +14,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
 
 class TrainerFinancialRequestResource extends Resource
@@ -58,12 +60,17 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('trainer_id', auth()->id());
+        return parent::getEloquentQuery()->where('trainer_id', auth('trainer')->id());
     }
 
     public static function form(Schema $schema): Schema
     {
         return TrainerFinancialRequestForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return TrainerFinancialRequestInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -75,6 +82,7 @@ class TrainerFinancialRequestResource extends Resource
     {
         return [
             'index' => ListTrainerFinancialRequests::route('/'),
+            'view' => ViewTrainerFinancialRequest::route('/{record}'),
         ];
     }
 }

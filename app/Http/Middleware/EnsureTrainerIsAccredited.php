@@ -32,7 +32,8 @@ class EnsureTrainerIsAccredited
             return $next($request);
         }
 
-        if ($request->routeIs('filament.trainer.resources.trainer-accreditation-requests.*')) {
+        if ($request->routeIs('filament.trainer.resources.trainer-accreditation-requests.*') ||
+            $request->routeIs('filament.trainer.resources.trainer-financial-requests.*')) {
             return $next($request);
         }
 

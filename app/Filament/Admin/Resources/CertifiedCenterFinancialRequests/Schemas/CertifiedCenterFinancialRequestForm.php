@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rule;
 
 class CertifiedCenterFinancialRequestForm
 {
@@ -35,24 +36,47 @@ class CertifiedCenterFinancialRequestForm
                             ->pluck('name', 'id');
                     })
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->required()
+                    ->rule(function (callable $get) {
+                        $centerId = $get('certified_center_id');
+                        return function (string $attribute, mixed $value, \Closure $fail) use ($centerId) {
+                            if (!$centerId) {
+                                return;
+                            }
+                            $exists = CertifiedCenterPaymentAgentPerson::where('id', $value)
+                                ->where('certified_center_id', $centerId)
+                                ->exists();
+                            if (!$exists) {
+                                $fail(__('The selected agent person does not belong to the selected center.'));
+                            }
+                        };
+                    }),
                 TextInput::make('total_payment')
                     ->label(__('app.total_amount'))
                     ->numeric()
                     ->required()
+                    ->minValue(0.01)
                     ->live(onBlur: true),
                 TextInput::make('amount_paid')
                     ->label(__('app.paid_amount'))
                     ->numeric()
                     ->required()
+                    ->minValue(0)
+                    ->rule(function (callable $get) {
+                        return Rule::lte((string) ($get('total_payment') ?? 0));
+                    })
                     ->live(onBlur: true),
                 Textarea::make('reason')
                     ->label(__('app.notes'))
+                    ->nullable()
+                    ->maxLength(65535)
                     ->columnSpanFull(),
                 DatePicker::make('date')
                     ->label(__('app.date'))
                     ->required()
-                    ->default(now()),
+                    ->default(now())
+                    ->beforeOrEqual('today'),
             ]);
     }
 }

@@ -52,7 +52,6 @@ class CertifiedCenterFinancialRequestResource extends Resource
         return $record->certifiedCenter?->name ?? 'Request #' . $record->id;
     }
 
-
     protected static ?int $navigationSort = 11;
 
     public static function form(Schema $schema): Schema

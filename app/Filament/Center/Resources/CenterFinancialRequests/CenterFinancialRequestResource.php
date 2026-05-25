@@ -11,9 +11,11 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestForm;
-use App\Filament\Center\Resources\CenterFinancialRequests\Tables\CenterFinancialRequestsTable;
 use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ListCenterFinancialRequests;
+use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ViewCenterFinancialRequest;
+use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestForm;
+use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestInfolist;
+use App\Filament\Center\Resources\CenterFinancialRequests\Tables\CenterFinancialRequestsTable;
 
 class CenterFinancialRequestResource extends Resource
 {
@@ -26,7 +28,7 @@ class CenterFinancialRequestResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('filament.navigation.groups.content');
+        return __('app.financial_management');
     }
 
     public static function getNavigationLabel(): string
@@ -48,12 +50,17 @@ class CenterFinancialRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('certified_center_id', auth()->id());
+        return parent::getEloquentQuery()->where('certified_center_id', auth('certified_center')->id());
     }
 
     public static function form(Schema $schema): Schema
     {
         return CenterFinancialRequestForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return CenterFinancialRequestInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -65,6 +72,7 @@ class CenterFinancialRequestResource extends Resource
     {
         return [
             'index' => ListCenterFinancialRequests::route('/'),
+            'view' => ViewCenterFinancialRequest::route('/{record}'),
         ];
     }
 }

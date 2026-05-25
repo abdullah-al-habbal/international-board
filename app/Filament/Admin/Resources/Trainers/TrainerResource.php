@@ -10,6 +10,7 @@ use App\Filament\Admin\Resources\Trainers\Pages\ListTrainers;
 use App\Filament\Admin\Resources\Trainers\Pages\ViewTrainer;
 use App\Filament\Admin\Resources\Trainers\Schemas\TrainerForm;
 use App\Filament\Admin\Resources\Trainers\Schemas\TrainerInfolist;
+use App\Filament\Admin\Resources\Trainers\RelationManagers\FinancialRequestsRelationManager;
 use App\Filament\Admin\Resources\Trainers\Tables\TrainersTable;
 use App\Models\Trainer;
 use BackedEnum;
@@ -87,7 +88,9 @@ class TrainerResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            FinancialRequestsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

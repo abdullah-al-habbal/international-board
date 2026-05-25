@@ -36,7 +36,8 @@ class TrainerFinancialRequestForm
                     })
                     ->searchable()
                     ->preload()
-                    ->live(),
+                    ->live()
+                    ->required(),
                 TextInput::make('total_payment')
                     ->label(__('app.total_amount'))
                     ->numeric()
