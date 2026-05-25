@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests;
 
 use App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Pages;
 use App\Models\CertifiedCenterFinancialRequest;

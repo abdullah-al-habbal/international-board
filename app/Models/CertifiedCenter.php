@@ -23,6 +23,7 @@ use App\Models\CenterDocumentTypeRequest;
 use App\Models\CenterTypeRequest;
 use App\Models\Certification;
 use App\Models\CertifiedCenterDocumentType;
+use App\Models\CertifiedCenterFinancialRequest;
 use App\Models\Country;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -92,6 +93,11 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     public function approvedDocumentTypes(): HasMany
     {
         return $this->hasMany(CertifiedCenterDocumentType::class);
+    }
+
+    public function financialRequests(): HasMany
+    {
+        return $this->hasMany(CertifiedCenterFinancialRequest::class);
     }
 
 

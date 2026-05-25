@@ -41,16 +41,6 @@ class TrainerFinancialRequest extends Model
         return $this->total_payment - $this->amount_paid;
     }
 
-    public function getTotalPaymentAttribute($value): float
-    {
-        return (float) $value;
-    }
-
-    public function getAmountPaidAttribute($value): float
-    {
-        return (float) $value;
-    }
-
     public function trainer(): BelongsTo
     {
         return $this->belongsTo(Trainer::class);

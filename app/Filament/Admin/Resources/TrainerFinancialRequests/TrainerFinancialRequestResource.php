@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Trainer\Resources;
+namespace App\Filament\Admin\Resources\TrainerFinancialRequests;
 
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ListTrainerFinancialRequests;
+use App\Filament\Admin\Resources\TrainerFinancialRequests\Pages;
 use App\Models\TrainerFinancialRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
+use App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
+use App\Filament\Admin\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
 
 class TrainerFinancialRequestResource extends Resource
 {
@@ -31,17 +30,17 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.financial_history');
+        return __('app.trainer_financial_requests');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.financial_request');
+        return __('app.trainer_financial_request');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.financial_history');
+        return __('app.trainer_financial_requests');
     }
 
     public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
@@ -53,13 +52,7 @@ class TrainerFinancialRequestResource extends Resource
         return $record->trainer?->name ?? 'Request #' . $record->id;
     }
 
-
-    protected static ?int $navigationSort = 10;
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->where('trainer_id', auth()->id());
-    }
+    protected static ?int $navigationSort = 12;
 
     public static function form(Schema $schema): Schema
     {
@@ -74,7 +67,9 @@ class TrainerFinancialRequestResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListTrainerFinancialRequests::route('/'),
+            'index' => Pages\ListTrainerFinancialRequests::route('/'),
+            'create' => Pages\CreateTrainerFinancialRequest::route('/create'),
+            'edit' => Pages\EditTrainerFinancialRequest::route('/{record}/edit'),
         ];
     }
 }

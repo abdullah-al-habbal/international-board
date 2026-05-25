@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Admin\Resources\PaymentAgentPersons;
 
 use App\Filament\Admin\Resources\PaymentAgentPersons\Pages;
 use App\Models\CertifiedCenterPaymentAgentPerson;

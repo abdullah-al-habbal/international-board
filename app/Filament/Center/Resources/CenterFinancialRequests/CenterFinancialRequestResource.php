@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Center\Resources;
+namespace App\Filament\Center\Resources\CenterFinancialRequests;
 
 use App\Models\CertifiedCenterFinancialRequest;
 use BackedEnum;
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestForm;
 use App\Filament\Center\Resources\CenterFinancialRequests\Tables\CenterFinancialRequestsTable;
 use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ListCenterFinancialRequests;
+
 class CenterFinancialRequestResource extends Resource
 {
     protected static ?string $model = CertifiedCenterFinancialRequest::class;
