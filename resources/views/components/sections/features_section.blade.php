@@ -12,8 +12,6 @@
         </div>
         <div class="row">
             <div class="col-md-4 text-center d-none d-md-block">
-                <img loading="lazy" src="{{ asset('assets/website/images/about/member.jpg') }}"
-                    class="img-fluid inline-block" alt="{{ __('web.features.title') }}">
             </div>
             <div class="col-md-8">
                 <div class="row text-center">

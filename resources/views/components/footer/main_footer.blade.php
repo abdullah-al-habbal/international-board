@@ -31,24 +31,24 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <ul>
-                        <li>
-                            <h3>{{ __('filament.labels.social_links') ?? 'Social Links' }}</h3>
-                        </li>
-                        @if(!empty($appSettings['facebook_url']))
-                            <li><a href="{{ $appSettings['facebook_url'] }}" target="_blank">Facebook</a></li>
-                        @endif
-                        @if(!empty($appSettings['twitter_url']))
-                            <li><a href="{{ $appSettings['twitter_url'] }}" target="_blank">Twitter</a></li>
-                        @endif
-                        @if(!empty($appSettings['linkedin_url']))
-                            <li><a href="{{ $appSettings['linkedin_url'] }}" target="_blank">LinkedIn</a></li>
-                        @endif
+                        <li><h3>{{ __('filament.labels.social_links') }}</h3></li>
+                        @forelse($socialLinks as $link)
+                            @if(!empty($link['url']))
+                                <li>
+                                    <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer">
+                                        {{ $link['label'] ?? $link['platform'] ?? $loop->index + 1 }}
+                                    </a>
+                                </li>
+                            @endif
+                        @empty
+                            <li class="text-muted"><small>{{ __('web.labels.no_results') }}</small></li>
+                        @endforelse
                     </ul>
                 </div>
             </div>
         </div>
     </div>
     <div class="footer-bottom py-4 text-center border-top">
-        <p class="mb-0 text-muted">&copy; Copyright {{ date('Y') }}. {{ __('web.default_title') }}. All rights reserved.</p>
+        <p class="mb-0 text-muted">{{ __('web.footer.copyright', ['year' => date('Y'), 'title' => __('web.default_title')]) }}</p>
     </div>
 </footer>

@@ -11,6 +11,10 @@ return [
         ],
     ],
 
+    'labels' => [
+        'social_links' => 'روابط التواصل الاجتماعي',
+    ],
+
     'resources' => [
         'accreditation_requests' => 'طلبات الاعتماد',
         'application_settings' => 'إعدادات التطبيق',

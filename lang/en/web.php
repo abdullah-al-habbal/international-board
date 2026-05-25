@@ -1,15 +1,13 @@
 <?php
 // lang\en\web.php
 declare(strict_types=1);
-
 return [
     'default_title' => 'National Certification Authority',
     'site_logo' => 'National Certification Authority Logo',
-
     'footer' => [
         'description' => 'The National Certification Authority issues, verifies, and accredits professional certifications through a trusted network of training centers and certified trainers.',
+        'copyright' => 'Copyright :year :title. All rights reserved.',
     ],
-
     'pages' => [
         'home' => [
             'title' => 'Home',
@@ -52,7 +50,6 @@ return [
             'subtitle' => 'Stay updated with our latest news and announcements.',
         ],
     ],
-
     'features' => [
         'title' => 'Our Services',
         'subtitle' => 'Professional certification services you can trust.',
@@ -83,7 +80,6 @@ return [
             ],
         ],
     ],
-
     'statistics' => [
         'title' => 'Our Impact in Numbers',
         'subtitle' => 'Trusted by professionals and organizations worldwide.',
@@ -91,13 +87,11 @@ return [
         'trainers' => 'Certified Trainers',
         'centers' => 'Accredited Centers',
     ],
-
     'cta' => [
         'title' => 'Verify a Certification Today',
         'text' => 'Enter a serial number to instantly verify the authenticity and validity of any issued certification.',
         'button' => 'Verify Now',
     ],
-
     'buttons' => [
         'explore_us' => 'Explore Us',
         'learn_more' => 'Learn More',
@@ -110,7 +104,6 @@ return [
         'back' => 'Back',
         'clear' => 'Clear Filters',
     ],
-
     'labels' => [
         'all' => 'All',
         'search_placeholder' => 'Search...',

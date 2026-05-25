@@ -14,6 +14,10 @@ return [
     ],
 
 
+    'labels' => [
+        'social_links' => 'Social Links',
+    ],
+
     'resources' => [
         'accreditation_requests' => 'Accreditation Requests',
         'application_settings' => 'Application Settings',

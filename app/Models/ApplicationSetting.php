@@ -30,15 +30,17 @@ class ApplicationSetting extends Model
         ];
     }
 
-    public function getTypedValue(): mixed
+    public function getTypedValue(mixed $rawValue = null): mixed
     {
+        $value = $rawValue ?? $this->getRawOriginal('value');
+
         return match ($this->type) {
-            SettingType::Json => json_decode($this->value, true) ?? $this->value,
-            SettingType::Boolean => filter_var($this->value, FILTER_VALIDATE_BOOLEAN),
-            SettingType::Number => is_numeric($this->value) ? (float) $this->value : $this->value,
-            SettingType::Email => $this->value,
-            SettingType::Url => $this->value,
-            default => $this->value,
+            SettingType::Json => json_decode($value, true) ?? $value,
+            SettingType::Boolean => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+            SettingType::Number => is_numeric($value) ? (float) $value : $value,
+            SettingType::Email => $value,
+            SettingType::Url => $value,
+            default => $value,
         };
     }
 
@@ -50,13 +52,13 @@ class ApplicationSetting extends Model
             return $default;
         }
 
-        return $setting->getTypedValue();
+        return $setting->getTypedValue($setting->getRawOriginal('value'));
     }
 
     protected function value(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $this->getTypedValue(),
+            get: fn(mixed $value): mixed => $this->getTypedValue($value),
         );
     }
 

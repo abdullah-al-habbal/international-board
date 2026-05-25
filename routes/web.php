@@ -18,7 +18,6 @@ Route::prefix('web')->name('web.')->group(function (): void {
 
     Route::get('/', HomeController::class)->name('home');
 
-    // Locale switcher
     Route::get('/lang/{locale}', LocaleController::class)
         ->name('locale');
 

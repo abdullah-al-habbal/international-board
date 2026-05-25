@@ -1,11 +1,4 @@
-/**
- * WEBSITE: https://themefisher.com
- * TWITTER: https://twitter.com/themefisher
- * FACEBOOK: https://www.facebook.com/themefisher
- * GITHUB: https://github.com/themefisher/
- */
-
-/*=== MEDIA QUERY ===*/
+/* filePath: /home/lenovo/work/projects/international-board/public/assets/website/css/style.css */
 @import url("https://fonts.googleapis.com/css?family=Catamaran:400,500,600,700,700|Source+Sans+Pro:400,600");
 body {
   line-height: 1.4;
@@ -2244,7 +2237,6 @@ main {
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
 }
 
-/* Soft glow border for listing and detail cards */
 .card-glow {
   border: 1px solid rgba(40, 171, 227, 0.25);
   box-shadow:
@@ -2266,5 +2258,3 @@ main {
   box-shadow: 0 0 20px rgba(40, 171, 227, 0.08);
   padding: 1rem 1.5rem;
 }
-
-/*# sourceMappingURL=style.css.map */
