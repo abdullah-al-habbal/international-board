@@ -4,8 +4,10 @@ return [
     'blocked' => [
         'title' => 'Account Restricted',
         'center_inactive' => 'Your center account is currently inactive. Please contact administration.',
+        'trainer_inactive' => 'Your trainer account is currently inactive. Please contact administration.',
         'no_approved_request' => 'You do not have an approved accreditation request on file.',
         'period_expired' => 'Your current accreditation period has expired.',
+        'membership_expired' => 'Your membership period has expired.',
     ],
 
     'banner' => [

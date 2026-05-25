@@ -8,6 +8,8 @@ return [
             'users' => 'المستخدمون',
             'centers' => 'المراكز',
             'reports' => 'التقارير',
+            'financial_management' => 'الإدارة المالية',
+            'accreditation_management' => 'إدارة الاعتماد',
         ],
     ],
 
@@ -29,5 +31,10 @@ return [
         'trainees' => 'المتدربون',
         'trainers' => 'المدربون',
         'users' => 'المستخدمون',
+        'trainer_accreditation_requests' => 'طلبات اعتماد المدربين',
+        'center_financial_requests' => 'الطلبات المالية للمراكز',
+        'agent_persons' => 'أشخاص الوكلاء',
+        'trainer_financial_requests' => 'الطلبات المالية للمدربين',
+        'trainer_document_type_requests' => 'طلبات أنواع وثائق المدربين',
     ],
 ];
