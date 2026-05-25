@@ -3,53 +3,42 @@ body {
     direction: rtl;
     text-align: right;
 }
-
 .ml-auto, .mx-auto {
     margin-left: unset !important;
     margin-right: auto !important;
 }
-
 .mr-auto {
     margin-right: unset !important;
     margin-left: auto !important;
 }
-
 .text-right {
     text-align: left !important;
 }
-
 .text-left {
     text-align: right !important;
 }
-
 .float-right {
     float: left !important;
 }
-
 .float-left {
     float: right !important;
 }
-
 .hero-slider .slider-item,
 .testimonial-slider .testimonial-item,
 .clients-logo-slider .client-logo,
 .company-gallery .gallery-item {
     direction: rtl !important;
 }
-
 .slick-slider[dir="rtl"] .slick-slide {
     float: right !important;
 }
-
 [data-animation-in] {
     opacity: 1 !important;
     visibility: visible !important;
 }
-
 .animated {
     opacity: 1 !important;
 }
-
 .hero-area {
     background-position: center center;
     background-size: cover;
@@ -59,26 +48,21 @@ body {
     justify-content: center;
 }
 
-
 .navbar-nav.ml-auto {
     margin-left: 0 !important;
     margin-right: auto !important;
 }
-
 .page-title.bg-2 {
     text-align: center;
 }
-
 .badge {
     margin-right: 0;
     margin-left: 0.5rem;
 }
-
 .ms-1 {
     margin-right: 0.25rem !important;
     margin-left: 0 !important;
 }
-
 .hero-slider .prevArrow {
     right: -100px !important;
     left: auto !important;
@@ -95,11 +79,9 @@ body {
     left: 20px !important;
     right: auto !important;
 }
-
 .slick-dots {
     direction: ltr !important;
 }
-
 .card-glow {
     border: 1px solid rgba(40, 171, 227, 0.25);
     box-shadow:
