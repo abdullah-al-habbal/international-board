@@ -2026,3 +2026,27 @@ body.home-page main {
   box-shadow: 0 0 20px rgba(40, 171, 227, 0.08);
   padding: 1rem 1.5rem;
 }
+
+/* ============================================
+   NAVIGATION LINK COLORS - Override
+   Force brand blue on all nav links + gold glow on hover
+   ============================================ */
+.navigation .navbar-light .navbar-nav .nav-item .nav-link,
+.navigation.nav-internal .navbar-light .navbar-nav .nav-item .nav-link,
+.sticky-header .navbar-light .navbar-nav .nav-item .nav-link {
+    color: #28ABE3 !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.navigation .navbar-light .navbar-nav .nav-item .nav-link:hover,
+.navigation .navbar-light .navbar-nav .nav-item .nav-link:active,
+.navigation .navbar-light .navbar-nav .nav-item .nav-link:focus,
+.navigation.nav-internal .navbar-light .navbar-nav .nav-item .nav-link:hover,
+.navigation.nav-internal .navbar-light .navbar-nav .nav-item .nav-link:active,
+.navigation.nav-internal .navbar-light .navbar-nav .nav-item .nav-link:focus,
+.sticky-header .navbar-light .navbar-nav .nav-item .nav-link:hover,
+.sticky-header .navbar-light .navbar-nav .nav-item .nav-link:active,
+.sticky-header .navbar-light .navbar-nav .nav-item .nav-link:focus {
+    color: #28ABE3 !important;
+    text-shadow: 0 0 5px #FFD700, 0 0 8px #FFA500;
+}
