@@ -13,15 +13,17 @@ concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PHP_VERSION: "8.5"
+  APP_DOMAIN: internationalboard.uk
+
 jobs:
-  # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 1: Build artifact on the runner (no SSH needed)
-  # ─────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────
+  # Build release artifact
+  # ─────────────────────────────────────────────────────────────
   build:
     name: 🏗️ Build Artifact
     runs-on: ubuntu-latest
-    outputs:
-      artifact-name: release.tar.gz
 
     steps:
       - name: 📥 Checkout repository
@@ -29,75 +31,89 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🐘 Set up PHP 8.5
+      - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.5"
-          extensions: mbstring, openssl, pdo_mysql, fileinfo, sodium, curl
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          extensions: >
+            mbstring,
+            openssl,
+            pdo_mysql,
+            fileinfo,
+            sodium,
+            curl,
+            tokenizer,
+            xml,
+            ctype,
+            json,
+            bcmath
 
-      - name: 📋 Create CI environment file
+      - name: ♻️ Validate Composer files
+        run: composer validate --strict
+
+      - name: 📋 Prepare CI environment
         run: |
           cp .env.example .env
+          echo "APP_ENV=production" >> .env
+          echo "APP_DEBUG=false" >> .env
           echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
 
-      - name: 📦 Install Composer dependencies (production, no-dev)
+      - name: 📦 Install dependencies
         run: |
           composer install \
-            --no-interaction \
+            --no-dev \
             --prefer-dist \
-            --optimize-autoloader \
-            --no-dev
+            --no-interaction \
+            --optimize-autoloader
 
-      - name: 🎁 Prepare release artifact
+      - name: 🧪 Verify Laravel bootstrap
+        run: php artisan about
+
+      - name: 🗜️ Create release archive
         run: |
-          rm -rf artifact release.tar.gz || true
-          mkdir -p artifact
-          rsync -a \
+          rm -rf build release.tar.gz
+          mkdir -p build/release
+
+          rsync -a ./ build/release/ \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='.env' \
             --exclude='node_modules' \
             --exclude='tests' \
-            --exclude='storage/logs' \
-            --exclude='storage/framework' \
-            --exclude='storage/app' \
-            ./ artifact/
-          rsync -a vendor/ artifact/vendor/
-          tar -czf release.tar.gz -C artifact .
+            --exclude='storage/logs/*' \
+            --exclude='storage/framework/cache/*' \
+            --exclude='storage/framework/sessions/*' \
+            --exclude='storage/framework/views/*' \
+            --exclude='storage/app/*'
 
-      - name: ⬆️ Upload artifact to workflow
+          tar -czf release.tar.gz -C build/release .
+
+      - name: ⬆️ Upload release artifact
         uses: actions/upload-artifact@v4
         with:
           name: release
           path: release.tar.gz
+          retention-days: 1
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 2: Deploy — SCP upload then SSH exec (mirrors the_pilates_studio_sy)
-  # ─────────────────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────
+  # Deploy
+  # ─────────────────────────────────────────────────────────────
   deploy:
-    name: 🚀 Deploy to Hostinger (Production Only)
+    name: 🚀 Deploy to Hostinger
     needs: build
     runs-on: ubuntu-latest
+
     if: github.ref == 'refs/heads/production'
 
     steps:
-      - name: 🔍 Debug SSH connectivity
-        run: |
-          echo "=== Network Debug ==="
-          echo "Runner IP: $(curl -sS https://api.ipify.org)"
-          echo "Target: ${{ secrets.HOSTINGER_SERVER_IP }}:${{ secrets.HOSTINGER_SSH_PORT }}"
-          sudo apt-get install -y netcat-openbsd -q
-          nc -zv -w5 ${{ secrets.HOSTINGER_SERVER_IP }} ${{ secrets.HOSTINGER_SSH_PORT }} \
-            && echo "✅ Port reachable" \
-            || echo "❌ Port NOT reachable — whitelist runner IP in Hostinger firewall"
-
       - name: ⬇️ Download artifact
         uses: actions/download-artifact@v4
         with:
           name: release
           path: .
 
-      - name: 📤 SCP artifact to server
+      - name: 📤 Upload release to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -105,12 +121,11 @@ jobs:
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           source: release.tar.gz
-          target: /home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production
-          timeout: 30s
-          command_timeout: 10m
+          target: /tmp
+          overwrite: true
 
-      - name: 🔧 Remote deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3       # ← matches pilates; v0.1.8 lacks fingerprint options
+      - name: 🚀 Atomic deploy
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
@@ -120,97 +135,115 @@ jobs:
           command_timeout: 30m
           script_stop: true
           script: |
-            set -e
-            DEPLOY_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
-            PHP_BIN="$(command -v php8.5 || command -v php8.4 || command -v php8.3 || command -v php || echo /usr/bin/php)"
+            set -Eeuo pipefail
+
+            APP_DOMAIN="${{ env.APP_DOMAIN }}"
+            BASE_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/${APP_DOMAIN}/public_html"
+
+            RELEASES_PATH="${BASE_PATH}/releases"
+            SHARED_PATH="${BASE_PATH}/shared"
+            CURRENT_PATH="${BASE_PATH}/current"
+
+            RELEASE_ID="$(date +%Y%m%d%H%M%S)"
+            RELEASE_PATH="${RELEASES_PATH}/${RELEASE_ID}"
+
+            PHP_BIN="$(command -v php8.5 || command -v php || echo /usr/bin/php)"
 
             echo "========================================="
-            echo "🚀 Deploying to Hostinger"
-            echo "📂 Path: $DEPLOY_PATH"
+            echo "🚀 Starting atomic deployment"
+            echo "📦 Release: ${RELEASE_ID}"
             echo "🐘 PHP: $($PHP_BIN -r 'echo PHP_VERSION;')"
             echo "========================================="
 
-            mkdir -p "$DEPLOY_PATH"
-            cd "$DEPLOY_PATH"
+            # ─────────────────────────────────────────
+            # Create required directories
+            # ─────────────────────────────────────────
+            mkdir -p "${RELEASES_PATH}"
+            mkdir -p "${SHARED_PATH}/storage/app"
+            mkdir -p "${SHARED_PATH}/storage/logs"
+            mkdir -p "${SHARED_PATH}/storage/framework/cache"
+            mkdir -p "${SHARED_PATH}/storage/framework/sessions"
+            mkdir -p "${SHARED_PATH}/storage/framework/views"
 
-            # Guard: .env must exist before any artisan command
-            if [ ! -f .env ]; then
-              echo "❌ FATAL: .env missing at $DEPLOY_PATH"
-              echo "   Place the .env file on the server before deploying."
+            # ─────────────────────────────────────────
+            # Validate shared .env
+            # ─────────────────────────────────────────
+            if [ ! -f "${SHARED_PATH}/.env" ]; then
+              echo "❌ Missing shared .env file"
+              echo "Create:"
+              echo "${SHARED_PATH}/.env"
               exit 1
             fi
 
-            # Ensure storage scaffold
-            mkdir -p storage/logs
-            mkdir -p storage/framework/{cache,sessions,views}
-            mkdir -p storage/app/public
+            # ─────────────────────────────────────────
+            # Create release directory
+            # ─────────────────────────────────────────
+            mkdir -p "${RELEASE_PATH}"
 
-            # Backup user-uploaded files before extraction
-            if [ -d storage/app ]; then
-              mv storage/app "storage/app.bak.$(date +%s)"
-            fi
+            # ─────────────────────────────────────────
+            # Extract release
+            # ─────────────────────────────────────────
+            tar -xzf /tmp/release.tar.gz -C "${RELEASE_PATH}" \
+              || {
+                echo "❌ Failed extracting release"
+                exit 1
+              }
 
-            # Extract artifact (release.tar.gz was SCP'd to this directory)
-            tar -xzf release.tar.gz -C .
-            rm -f release.tar.gz
+            rm -f /tmp/release.tar.gz
 
-            # Restore uploads
-            for d in storage/app.bak.*; do
-              [ -d "$d" ] && rsync -a "$d"/ storage/app/ && rm -rf "$d" || true
-            done
+            cd "${RELEASE_PATH}"
 
+            # ─────────────────────────────────────────
+            # Link shared resources
+            # ─────────────────────────────────────────
+            rm -rf storage
+
+            ln -s "${SHARED_PATH}/storage" storage
+            ln -s "${SHARED_PATH}/.env" .env
+
+            # ─────────────────────────────────────────
             # Permissions
-            chmod -R 775 storage bootstrap/cache || true
+            # ─────────────────────────────────────────
+            chmod -R ug+rwx storage bootstrap/cache || true
 
+            # ─────────────────────────────────────────
+            # Verify Laravel boot
+            # ─────────────────────────────────────────
+            echo "🧪 Verifying Laravel bootstrap..."
+
+            $PHP_BIN artisan about || {
+              echo "❌ Laravel failed to boot"
+              exit 1
+            }
+
+            # ─────────────────────────────────────────
             # Clear stale caches
-            $PHP_BIN artisan config:clear   || echo "⚠️ config:clear failed"
-            $PHP_BIN artisan route:clear    || echo "⚠️ route:clear failed"
-            $PHP_BIN artisan view:clear     || echo "⚠️ view:clear failed"
-            $PHP_BIN artisan cache:clear    || echo "⚠️ cache:clear failed"
+            # ─────────────────────────────────────────
+            $PHP_BIN artisan optimize:clear
 
-            # Composer install (in case vendor is missing on fresh deploy)
-            if [ ! -d vendor ]; then
-              echo "⚠️ vendor/ missing — running composer install on server"
-              COMPOSER="$(command -v composer2.phar || command -v composer || echo /usr/local/bin/composer2.phar)"
-              php -d disable_functions='' "$COMPOSER" install \
-                --no-dev --optimize-autoloader --no-interaction \
-                || { echo "❌ composer install failed"; exit 1; }
-            fi
+            # ─────────────────────────────────────────
+            # Build production caches
+            # ─────────────────────────────────────────
+            $PHP_BIN artisan config:cache
+            $PHP_BIN artisan route:cache
+            $PHP_BIN artisan view:cache
+            $PHP_BIN artisan event:cache || true
 
-            # APP_KEY guard
-            KEY=$(grep -E '^APP_KEY=' .env | cut -d= -f2-)
-            if [ -z "$KEY" ] || [ "$KEY" = "base64:" ]; then
-              $PHP_BIN artisan key:generate --force || echo "⚠️ key:generate failed"
-            else
-              echo "🔑 APP_KEY already set; skipping key:generate"
-            fi
+            # ─────────────────────────────────────────
+            # Atomic symlink switch
+            # ─────────────────────────────────────────
+            ln -sfn "${RELEASE_PATH}" "${CURRENT_PATH}"
 
-            # Note: skipping migrations — DB managed manually
-            echo "⏭️ Skipping migrations (managed manually)."
+            # ─────────────────────────────────────────
+            # Cleanup old releases
+            # Keep latest 5
+            # ─────────────────────────────────────────
+            cd "${RELEASES_PATH}"
 
-            # Rebuild caches
-            $PHP_BIN artisan config:cache   || echo "⚠️ config:cache failed"
-            $PHP_BIN artisan route:cache    || echo "⚠️ route:cache failed"
-            $PHP_BIN artisan view:cache     || echo "⚠️ view:cache failed"
-            $PHP_BIN artisan optimize       || echo "⚠️ optimize failed"
+            ls -1dt */ | tail -n +6 | xargs -r rm -rf
 
-            # DB connectivity check
-            $PHP_BIN artisan db:show --no-interaction 2>&1 | grep -E '(database|status|driver)' \
-              || echo "⚠️ db:show unavailable (Laravel < 10)"
-
-            echo "✅ Deployment finished successfully!"
-            echo "🌐 https://internationalboard.uk"
             echo "========================================="
-
-      - name: ✅ Notify success
-        if: success()
-        run: |
-          echo "✅ Deployment completed: $(date)"
-          echo "🌐 https://internationalboard.uk"
-
-      - name: 🚨 Notify failure
-        if: failure()
-        run: |
-          echo "❌ Deployment failed: $(date)"
-          echo "Runner IP was: $(curl -sS https://api.ipify.org)"
-          echo "Whitelist the above IP in Hostinger hPanel → Security → Firewall"
+            echo "✅ Deployment completed"
+            echo "🌐 https://${APP_DOMAIN}"
+            echo "📂 Current: ${CURRENT_PATH}"
+            echo "========================================="
