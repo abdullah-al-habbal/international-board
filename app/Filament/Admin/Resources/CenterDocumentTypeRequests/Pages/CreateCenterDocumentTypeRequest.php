@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\CenterDocumentTypeRequests\Pages;
 
 use App\Filament\Admin\Resources\CenterDocumentTypeRequests\CenterDocumentTypeRequestResource;
-use App\Filament\Admin\Resources\CenterDocumentTypeRequests\Forms\CenterDocumentTypeRequestForm;
+use App\Filament\Admin\Resources\CenterDocumentTypeRequests\Schemas\CenterDocumentTypeRequestForm;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Schema;
 

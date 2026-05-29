@@ -37,5 +37,8 @@ return [
         'agent_persons' => 'Agent Persons',
         'trainer_financial_requests' => 'Trainer Financial Requests',
         'trainer_document_type_requests' => 'Trainer Document Type Requests',
+        'blog_posts' => 'Blog Posts',
+        'certified_center_document_types' => 'Center Document Types',
+        'center_document_type_requests' => 'Center Document Type Requests',
     ],
 ];

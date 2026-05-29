@@ -215,13 +215,13 @@ return [
     ],
     'accreditation_statuses' => [
         'pending' => 'Pending',
-    'approved' => 'Approved',
-    'approve' => 'Approve',
-    'rejected' => 'Rejected',
-    'reject' => 'Reject',
-    'remaining_amount' => 'Remaining Amount',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
         'under_review' => 'Under Review',
     ],
+    'approve' => 'Approve',
+    'reject' => 'Reject',
+    'remaining_amount' => 'Remaining Amount',
     'import_page' => [
         'title' => 'Import Certifications',
         'instructions' => [

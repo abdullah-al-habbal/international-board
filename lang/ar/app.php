@@ -195,23 +195,6 @@ return [
     'accreditation_rejected' => 'تم رفض طلب الاعتماد',
     'center_disabled' => 'تم إلغاء تفعيل المركز بسبب انتهاء صلاحية الاعتماد',
 
-    'user_types' => [
-        'admin' => 'مدير',
-        'client' => 'عميل',
-    ],
-    'center_statuses' => [
-        'active' => 'نشط',
-        'inactive' => 'غير نشط',
-        'pending' => 'قيد الانتظار',
-        'suspended' => 'معلق',
-    ],
-    'accreditation_statuses' => [
-        'pending' => 'قيد الانتظار',
-        'approved' => 'موافق عليه',
-        'rejected' => 'مرفوض',
-        'under_review' => 'تحت المراجعة',
-    ],
-
     'import_page' => [
         'title' => 'استيراد الشهادات',
         'instructions' => [

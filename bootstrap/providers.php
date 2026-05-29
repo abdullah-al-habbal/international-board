@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Providers\AppServiceProvider;
 use App\Providers\ArchitectureServiceProvider;
+use App\Providers\AuthServiceProvider;
 use App\Providers\EloquentServiceProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CenterPanelProvider;
@@ -20,6 +21,7 @@ use App\Providers\ViewServiceProvider;
 
 return [
     AppServiceProvider::class,
+    AuthServiceProvider::class,
     EloquentServiceProvider::class,
     QueryServiceProvider::class,
     SecurityServiceProvider::class,

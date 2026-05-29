@@ -8,7 +8,6 @@ use App\Services\AccreditationRequest\AccreditationRequestService;
 use App\Services\ApplicationSetting\ApplicationSettingService;
 use App\Services\Certification\CertificationService;
 use App\Services\CertifiedCenter\CertifiedCenterService;
-use App\Services\Membership\MembershipService;
 use App\Services\StaticPage\StaticPageService;
 use App\Services\Stats\CenterStatsService;
 use App\Services\Stats\StatsService;
@@ -38,7 +37,6 @@ final class ServiceRegistrationProvider extends ServiceProvider
         $this->app->singleton(ApplicationSettingService::class);
         $this->app->singleton(CertificationService::class);
         $this->app->singleton(CertifiedCenterService::class);
-        $this->app->singleton(MembershipService::class);
         $this->app->singleton(StaticPageService::class);
         $this->app->singleton(TrainerService::class);
         $this->app->singleton(UserService::class);

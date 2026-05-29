@@ -1,9 +1,8 @@
 <?php
-// filePath: app/Filament/Admin/Resources/CenterDocumentTypeRequests/Forms/CenterDocumentTypeRequestForm.php
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\CenterDocumentTypeRequests\Forms;
+namespace App\Filament\Admin\Resources\CenterDocumentTypeRequests\Schemas;
 
 use App\Models\DocumentType;
 use Filament\Forms\Components\Repeater;

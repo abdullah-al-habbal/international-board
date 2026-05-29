@@ -51,7 +51,7 @@ Registered in `bootstrap/providers.php`:
 **Registered singletons** (`ServiceRegistrationProvider`):
 
 - `AccreditationRequestService`, `ApplicationSettingService`, `CertificationService`
-- `CertifiedCenterService`, `MembershipService`, `StaticPageService`
+- `CertifiedCenterService`, `StaticPageService`
 - `TrainerService`, `UserService`
 - `StatsService`, `CenterStatsService`
 
@@ -117,7 +117,7 @@ Middleware:
 
 Model-attached: `Certification`, `AccreditationRequest`, `CertifiedCenter`, `CenterTypeRequest`.
 
-`AuthServiceProvider`: `Country`, `DocumentType`, `Membership`, `Trainee`, `Trainer`, `User`.
+`AuthServiceProvider`: `Country`, `DocumentType`, `Trainee`, `Trainer`, `User`.
 
 ## View composition
 

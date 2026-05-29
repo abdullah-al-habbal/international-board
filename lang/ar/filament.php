@@ -36,5 +36,8 @@ return [
         'agent_persons' => 'أشخاص الوكلاء',
         'trainer_financial_requests' => 'الطلبات المالية للمدربين',
         'trainer_document_type_requests' => 'طلبات أنواع وثائق المدربين',
+        'blog_posts' => 'المقالات',
+        'certified_center_document_types' => 'أنواع وثائق المراكز',
+        'center_document_type_requests' => 'طلبات أنواع وثائق المراكز',
     ],
 ];

@@ -40,6 +40,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         'address',
         'phone',
         'manager_name',
+        'logo',
         'accreditation_period_start',
         'accreditation_period_end',
         'accreditation_number',

@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\Certification;
-use App\Models\CertifiedCenter;
-use App\Models\Trainer;
-use App\Observers\CertificationObserver;
-use App\Observers\CertifiedCenterObserver;
-use App\Observers\TrainerObserver;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -29,9 +23,5 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         Paginator::useBootstrapFive();
-
-        Certification::observe(CertificationObserver::class);
-        Trainer::observe(TrainerObserver::class);
-        CertifiedCenter::observe(CertifiedCenterObserver::class);
     }
 }
