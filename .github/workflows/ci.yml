@@ -138,7 +138,7 @@ jobs:
             set -Eeuo pipefail
 
             APP_DOMAIN="${{ env.APP_DOMAIN }}"
-            BASE_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/${APP_DOMAIN}/public_html"
+            BASE_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/${APP_DOMAIN}/public_html/production"
 
             RELEASES_PATH="${BASE_PATH}/releases"
             SHARED_PATH="${BASE_PATH}/shared"
