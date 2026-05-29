@@ -29,10 +29,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🐘 Set up PHP 8.3
+      - name: 🐘 Set up PHP 8.5
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: "8.5"
           extensions: mbstring, openssl, pdo_mysql, fileinfo, sodium, curl
 
       - name: 📋 Create CI environment file
@@ -122,7 +122,7 @@ jobs:
           script: |
             set -e
             DEPLOY_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
-            PHP_BIN="$(command -v php8.3 || command -v php8.2 || command -v php || echo /usr/bin/php)"
+            PHP_BIN="$(command -v php8.5 || command -v php8.4 || command -v php8.3 || command -v php || echo /usr/bin/php)"
 
             echo "========================================="
             echo "🚀 Deploying to Hostinger"
