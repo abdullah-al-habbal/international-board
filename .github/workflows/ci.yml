@@ -97,7 +97,7 @@ jobs:
           retention-days: 1
 
   # ─────────────────────────────────────────────────────────────
-  # Deploy
+  # Deploy directly to production/ (no atomic, no releases, no shared)
   # ─────────────────────────────────────────────────────────────
   deploy:
     name: 🚀 Deploy to Hostinger
@@ -113,7 +113,7 @@ jobs:
           name: release
           path: .
 
-      - name: 📤 Upload release to server
+      - name: 📤 Upload artifact to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -124,7 +124,7 @@ jobs:
           target: /tmp
           overwrite: true
 
-      - name: 🚀 Atomic deploy
+      - name: 🚀 Direct deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -137,69 +137,50 @@ jobs:
           script: |
             set -Eeuo pipefail
 
-            APP_DOMAIN="${{ env.APP_DOMAIN }}"
-            BASE_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/${APP_DOMAIN}/public_html"
-
-            RELEASES_PATH="${BASE_PATH}/releases"
-            SHARED_PATH="${BASE_PATH}/shared"
-            CURRENT_PATH="${BASE_PATH}/current"
-
-            RELEASE_ID="$(date +%Y%m%d%H%M%S)"
-            RELEASE_PATH="${RELEASES_PATH}/${RELEASE_ID}"
-
+            TARGET="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
             PHP_BIN="$(command -v php8.5 || command -v php || echo /usr/bin/php)"
 
             echo "========================================="
-            echo "🚀 Starting atomic deployment"
-            echo "📦 Release: ${RELEASE_ID}"
+            echo "🚀 Deploying directly into: ${TARGET}"
             echo "🐘 PHP: $($PHP_BIN -r 'echo PHP_VERSION;')"
             echo "========================================="
 
-            # ─────────────────────────────────────────
-            # Create required directories
-            # ─────────────────────────────────────────
-            mkdir -p "${RELEASES_PATH}"
-            mkdir -p "${SHARED_PATH}/storage/app"
-            mkdir -p "${SHARED_PATH}/storage/logs"
-            mkdir -p "${SHARED_PATH}/storage/framework/cache"
-            mkdir -p "${SHARED_PATH}/storage/framework/sessions"
-            mkdir -p "${SHARED_PATH}/storage/framework/views"
+            mkdir -p "$TARGET"
+            cd "$TARGET"
 
             # ─────────────────────────────────────────
-            # Validate shared .env
+            # Clean old files (keep .env + storage)
             # ─────────────────────────────────────────
-            if [ ! -f "${SHARED_PATH}/.env" ]; then
-              echo "❌ Missing shared .env file"
-              echo "Create:"
-              echo "${SHARED_PATH}/.env"
-              exit 1
+            if [ -f artisan ]; then
+              echo "🧹 Cleaning old deployment..."
+              find . -maxdepth 1 \
+                ! -name ".env" \
+                ! -name "storage" \
+                ! -name "." \
+                ! -name ".." \
+                -exec rm -rf {} +
             fi
 
             # ─────────────────────────────────────────
-            # Create release directory
+            # Extract new release
             # ─────────────────────────────────────────
-            mkdir -p "${RELEASE_PATH}"
-
-            # ─────────────────────────────────────────
-            # Extract release
-            # ─────────────────────────────────────────
-            tar -xzf /tmp/release.tar.gz -C "${RELEASE_PATH}" \
-              || {
-                echo "❌ Failed extracting release"
-                exit 1
-              }
-
+            tar -xzf /tmp/release.tar.gz -C "$TARGET"
             rm -f /tmp/release.tar.gz
 
-            cd "${RELEASE_PATH}"
+            # ─────────────────────────────────────────
+            # Ensure runtime directories
+            # ─────────────────────────────────────────
+            mkdir -p storage/framework/{cache,sessions,views}
+            mkdir -p storage/logs
+            mkdir -p bootstrap/cache
 
             # ─────────────────────────────────────────
-            # Link shared resources
+            # Enforce .env exists
             # ─────────────────────────────────────────
-            rm -rf storage
-
-            ln -s "${SHARED_PATH}/storage" storage
-            ln -s "${SHARED_PATH}/.env" .env
+            if [ ! -f .env ]; then
+              echo "❌ Missing .env in ${TARGET}"
+              exit 1
+            fi
 
             # ─────────────────────────────────────────
             # Permissions
@@ -217,33 +198,15 @@ jobs:
             }
 
             # ─────────────────────────────────────────
-            # Clear stale caches
-            # ─────────────────────────────────────────
-            $PHP_BIN artisan optimize:clear
-
-            # ─────────────────────────────────────────
             # Build production caches
             # ─────────────────────────────────────────
+            $PHP_BIN artisan optimize:clear
             $PHP_BIN artisan config:cache
             $PHP_BIN artisan route:cache
             $PHP_BIN artisan view:cache
-            $PHP_BIN artisan event:cache || true
-
-            # ─────────────────────────────────────────
-            # Atomic symlink switch
-            # ─────────────────────────────────────────
-            ln -sfn "${RELEASE_PATH}" "${CURRENT_PATH}"
-
-            # ─────────────────────────────────────────
-            # Cleanup old releases
-            # Keep latest 5
-            # ─────────────────────────────────────────
-            cd "${RELEASES_PATH}"
-
-            ls -1dt */ | tail -n +6 | xargs -r rm -rf
 
             echo "========================================="
             echo "✅ Deployment completed"
-            echo "🌐 https://${APP_DOMAIN}"
-            echo "📂 Current: ${CURRENT_PATH}"
+            echo "🌐 https://internationalboard.uk"
+            echo "📂 Target: ${TARGET}"
             echo "========================================="
