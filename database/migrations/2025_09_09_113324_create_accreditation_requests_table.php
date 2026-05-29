@@ -12,20 +12,23 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('accreditation_requests')) {
+            return;
+        }
+
         Schema::create('accreditation_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('certified_center_id')->constrained()->onDelete('cascade');
-            $table->datetime('requested_start_date');
-            $table->datetime('requested_end_date');
+            $table->dateTime('requested_start_date');
+            $table->dateTime('requested_end_date');
             $table->text('request_notes')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('admin_notes')->nullable();
-            $table->foreignId('reviewed_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->datetime('reviewed_at')->nullable();
+            $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->dateTime('reviewed_at')->nullable();
             $table->timestamps();
         });
     }
-
     public function down(): void
     {
         Schema::dropIfExists('accreditation_requests');
