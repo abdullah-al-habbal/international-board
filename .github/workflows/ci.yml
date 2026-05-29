@@ -188,6 +188,13 @@ jobs:
             chmod -R ug+rwx storage bootstrap/cache || true
 
             # ─────────────────────────────────────────
+            # Run database migrations (critical - was missing)
+            # ─────────────────────────────────────────
+            echo "🧬 Running database migrations..."
+            $PHP_BIN artisan migrate --force
+            echo "✅ Migrations complete"
+
+            # ─────────────────────────────────────────
             # Verify Laravel boot
             # ─────────────────────────────────────────
             echo "🧪 Verifying Laravel bootstrap..."
