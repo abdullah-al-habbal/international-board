@@ -9,130 +9,208 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  deploy:
-    name: Deploy to Hostinger (Production Only)
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 1: Build artifact on the runner (no SSH needed)
+  # ─────────────────────────────────────────────────────────────────────────────
+  build:
+    name: 🏗️ Build Artifact
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/production'
+    outputs:
+      artifact-name: release.tar.gz
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 🔍 Debug network reachability
+      - name: 🐘 Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, openssl, pdo_mysql, fileinfo, sodium, curl
+
+      - name: 📋 Create CI environment file
         run: |
-          echo "=== Network Debug Information ==="
-          echo "Testing TCP connectivity to ${{ secrets.HOSTINGER_SERVER_IP }} on port ${{ secrets.HOSTINGER_SSH_PORT }}"
-          timeout 5 bash -c "echo >/dev/tcp/${{ secrets.HOSTINGER_SERVER_IP }}/${{ secrets.HOSTINGER_SSH_PORT }}" 2>/dev/null && echo "✅ Port ${{ secrets.HOSTINGER_SSH_PORT }} is REACHABLE" || echo "❌ Port ${{ secrets.HOSTINGER_SSH_PORT }} is NOT reachable"
+          cp .env.example .env
+          echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
 
-          echo ""
-          echo "Testing ping connectivity..."
-          ping -c 3 -W 5 ${{ secrets.HOSTINGER_SERVER_IP }} || echo "⚠️ Ping failed (may be blocked)"
+      - name: 📦 Install Composer dependencies (production, no-dev)
+        run: |
+          composer install \
+            --no-interaction \
+            --prefer-dist \
+            --optimize-autoloader \
+            --no-dev
 
-          echo ""
-          echo "Testing HTTP connectivity..."
-          curl -sS --max-time 5 "http://${{ secrets.HOSTINGER_SERVER_IP }}" || echo "⚠️ HTTP connection failed"
+      - name: 🎁 Prepare release artifact
+        run: |
+          rm -rf artifact release.tar.gz || true
+          mkdir -p artifact
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.env' \
+            --exclude='node_modules' \
+            --exclude='tests' \
+            --exclude='storage/logs' \
+            --exclude='storage/framework' \
+            --exclude='storage/app' \
+            ./ artifact/
+          rsync -a vendor/ artifact/vendor/
+          tar -czf release.tar.gz -C artifact .
 
-          echo ""
-          echo "Current GitHub Actions Runner IP (may help for whitelisting):"
-          curl -sS https://api.ipify.org || echo "Unable to get IP"
-          echo ""
+      - name: ⬆️ Upload artifact to workflow
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release.tar.gz
 
-      - name: 🚀 Deploy via SSH (run remote commands)
-        uses: appleboy/ssh-action@v0.1.8
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 2: Deploy — SCP upload then SSH exec (mirrors the_pilates_studio_sy)
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: 🚀 Deploy to Hostinger (Production Only)
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+
+    steps:
+      - name: 🔍 Debug SSH connectivity
+        run: |
+          echo "=== Network Debug ==="
+          echo "Runner IP: $(curl -sS https://api.ipify.org)"
+          echo "Target: ${{ secrets.HOSTINGER_SERVER_IP }}:${{ secrets.HOSTINGER_SSH_PORT }}"
+          sudo apt-get install -y netcat-openbsd -q
+          nc -zv -w5 ${{ secrets.HOSTINGER_SERVER_IP }} ${{ secrets.HOSTINGER_SSH_PORT }} \
+            && echo "✅ Port reachable" \
+            || echo "❌ Port NOT reachable — whitelist runner IP in Hostinger firewall"
+
+      - name: ⬇️ Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: .
+
+      - name: 📤 SCP artifact to server
+        uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-          add_known_hosts: true
+          source: release.tar.gz
+          target: /home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production
+          timeout: 30s
+          command_timeout: 10m
+
+      - name: 🔧 Remote deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3       # ← matches pilates; v0.1.8 lacks fingerprint options
+        with:
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           timeout: 60s
           command_timeout: 30m
           script_stop: true
           script: |
             set -e
-
-            echo "========================================="
-            echo "🚀 Starting deployment to Hostinger"
-            echo "========================================="
-
             DEPLOY_PATH="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
-            echo "📂 Deploy path: $DEPLOY_PATH"
+            PHP_BIN="$(command -v php8.3 || command -v php8.2 || command -v php || echo /usr/bin/php)"
 
-            # Ensure deploy path exists
-            if [ ! -d "$DEPLOY_PATH" ]; then
-              echo "❗ Deploy path does not exist. Creating..."
-              mkdir -p "$DEPLOY_PATH"
+            echo "========================================="
+            echo "🚀 Deploying to Hostinger"
+            echo "📂 Path: $DEPLOY_PATH"
+            echo "🐘 PHP: $($PHP_BIN -r 'echo PHP_VERSION;')"
+            echo "========================================="
+
+            mkdir -p "$DEPLOY_PATH"
+            cd "$DEPLOY_PATH"
+
+            # Guard: .env must exist before any artisan command
+            if [ ! -f .env ]; then
+              echo "❌ FATAL: .env missing at $DEPLOY_PATH"
+              echo "   Place the .env file on the server before deploying."
+              exit 1
             fi
 
-            cd "$DEPLOY_PATH" || { echo "❌ ERROR: Cannot cd into $DEPLOY_PATH"; exit 1; }
+            # Ensure storage scaffold
+            mkdir -p storage/logs
+            mkdir -p storage/framework/{cache,sessions,views}
+            mkdir -p storage/app/public
 
-            echo "🔄 Pulling latest code..."
-            git fetch origin --prune || { echo "❌ ERROR: git fetch failed"; exit 1; }
-            git checkout production || { echo "❌ ERROR: git checkout failed"; exit 1; }
-            git reset --hard origin/production || { echo "❌ ERROR: git reset failed"; exit 1; }
-
-            echo "📦 Installing optimized dependencies..."
-            if command -v composer >/dev/null 2>&1; then
-              php -d disable_functions='' /usr/local/bin/composer2.phar install --no-dev --optimize-autoloader --no-interaction || { echo "❌ ERROR: composer install failed"; exit 1; }
-            else
-              echo "⚠️ Composer not found on server; ensure vendor is present or install composer."
+            # Backup user-uploaded files before extraction
+            if [ -d storage/app ]; then
+              mv storage/app "storage/app.bak.$(date +%s)"
             fi
 
-            echo "🔐 Generating APP_KEY (if needed)..."
-            if [ -z "$(php -r "echo env('APP_KEY');")" ]; then
-              php artisan key:generate --force || echo "⚠️ key:generate failed (check .env permissions)"
-            else
-              echo "APP_KEY already set; skipping key:generate"
-            fi
+            # Extract artifact (release.tar.gz was SCP'd to this directory)
+            tar -xzf release.tar.gz -C .
+            rm -f release.tar.gz
 
-            echo "🧹 Clearing old caches..."
-            php artisan config:clear || echo "⚠️ Warning: config:clear failed"
-            php artisan route:clear || echo "⚠️ Warning: route:clear failed"
-            php artisan view:clear || echo "⚠️ Warning: view:clear failed"
-            php artisan cache:clear || echo "⚠️ Warning: cache:clear failed"
+            # Restore uploads
+            for d in storage/app.bak.*; do
+              [ -d "$d" ] && rsync -a "$d"/ storage/app/ && rm -rf "$d" || true
+            done
 
-            echo "⏭️ Skipping migrations (DB imported manually)."
-
-            echo "🧽 Running Pint auto-fix (if available)..."
-            if [ -x "./vendor/bin/pint" ]; then
-              ./vendor/bin/pint || echo "⚠️ Warning: Pint failed"
-            fi
-
-            echo "⚡ Rebuilding caches..."
-            php artisan config:cache || echo "⚠️ Warning: config:cache failed"
-            php artisan route:cache || echo "⚠️ Warning: route:cache failed"
-            php artisan view:cache || echo "⚠️ Warning: view:cache failed"
-            php artisan optimize || echo "⚠️ Warning: optimize failed"
-
-            echo "🔎 Testing DB connection..."
-            php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; \$kernel=\$app->make(Illuminate\\Contracts\\Console\\Kernel::class); \$kernel->bootstrap(); try{DB::connection()->getPdo(); echo 'DB_OK'; exit(0);}catch(Exception \$e){echo 'DB_FAIL: '.\$e->getMessage(); exit(2);}"
-
-            echo "🔧 Fixing permissions for storage and cache..."
-            # Use current user for permissions (Hostinger typically uses the account username)
-            WEB_USER=$(whoami)
-            WEB_GROUP=$(id -gn "$WEB_USER" 2>/dev/null || echo "$WEB_USER")
-            echo "Setting permissions for user: $WEB_USER, group: $WEB_GROUP"
-            chown -R "$WEB_USER":"$WEB_GROUP" storage bootstrap/cache || true
+            # Permissions
             chmod -R 775 storage bootstrap/cache || true
 
-            echo "✅ Deployment script finished successfully!"
+            # Clear stale caches
+            $PHP_BIN artisan config:clear   || echo "⚠️ config:clear failed"
+            $PHP_BIN artisan route:clear    || echo "⚠️ route:clear failed"
+            $PHP_BIN artisan view:clear     || echo "⚠️ view:clear failed"
+            $PHP_BIN artisan cache:clear    || echo "⚠️ cache:clear failed"
+
+            # Composer install (in case vendor is missing on fresh deploy)
+            if [ ! -d vendor ]; then
+              echo "⚠️ vendor/ missing — running composer install on server"
+              COMPOSER="$(command -v composer2.phar || command -v composer || echo /usr/local/bin/composer2.phar)"
+              php -d disable_functions='' "$COMPOSER" install \
+                --no-dev --optimize-autoloader --no-interaction \
+                || { echo "❌ composer install failed"; exit 1; }
+            fi
+
+            # APP_KEY guard
+            KEY=$(grep -E '^APP_KEY=' .env | cut -d= -f2-)
+            if [ -z "$KEY" ] || [ "$KEY" = "base64:" ]; then
+              $PHP_BIN artisan key:generate --force || echo "⚠️ key:generate failed"
+            else
+              echo "🔑 APP_KEY already set; skipping key:generate"
+            fi
+
+            # Note: skipping migrations — DB managed manually
+            echo "⏭️ Skipping migrations (managed manually)."
+
+            # Rebuild caches
+            $PHP_BIN artisan config:cache   || echo "⚠️ config:cache failed"
+            $PHP_BIN artisan route:cache    || echo "⚠️ route:cache failed"
+            $PHP_BIN artisan view:cache     || echo "⚠️ view:cache failed"
+            $PHP_BIN artisan optimize       || echo "⚠️ optimize failed"
+
+            # DB connectivity check
+            $PHP_BIN artisan db:show --no-interaction 2>&1 | grep -E '(database|status|driver)' \
+              || echo "⚠️ db:show unavailable (Laravel < 10)"
+
+            echo "✅ Deployment finished successfully!"
+            echo "🌐 https://internationalboard.uk"
             echo "========================================="
 
-      - name: 🔄 Wait for application to settle
-        run: sleep 10
-
-      - name: 📝 Notify on success (optional)
+      - name: ✅ Notify success
         if: success()
         run: |
-          echo "✅ Deployment completed successfully!"
-          echo "📅 Time: $(date)"
-          echo "🌐 URL: https://internationalboard.uk"
+          echo "✅ Deployment completed: $(date)"
+          echo "🌐 https://internationalboard.uk"
 
-      - name: 🚨 Notify on failure (optional)
+      - name: 🚨 Notify failure
         if: failure()
         run: |
-          echo "❌ Deployment failed!"
-          echo "📅 Time: $(date)"
-          echo "Please check the logs above for details."
+          echo "❌ Deployment failed: $(date)"
+          echo "Runner IP was: $(curl -sS https://api.ipify.org)"
+          echo "Whitelist the above IP in Hostinger hPanel → Security → Firewall"
