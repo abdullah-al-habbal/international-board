@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PHP_VERSION: "8.4"
+  PHP_VERSION: "8.5"
   APP_DOMAIN: internationalboard.uk
 
 jobs:
