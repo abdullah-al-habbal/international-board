@@ -1,4 +1,4 @@
-<!-- resources\views\layouts\master.blade.php -->
+<!-- filePath: resources\views\layouts\master.blade.php -->
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 

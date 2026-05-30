@@ -14,7 +14,7 @@ return new class extends Migration
             $table->text('address')->nullable()->after('phone');
             $table->foreignId('country_id')->nullable()->after('address')->constrained('countries')->nullOnDelete();
             $table->json('specializations')->nullable()->after('country_id');
-            $table->boolean('is_active')->default(true)->index()->after('avatar');
+            $table->boolean('is_active')->default(true)->index();
             $table->index('email');
         });
     }

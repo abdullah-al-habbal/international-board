@@ -7,7 +7,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\KeyValue;
 use Filament\Schemas\Schema;
 
 class ApplicationSettingForm
@@ -21,7 +20,9 @@ class ApplicationSettingForm
                     ->helperText('Use only English letters and underscores (e.g., site_title)')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->rules(['alpha_dash']),
+                    ->rules(['alpha_dash'])
+                    ->disabled(fn($operation) => $operation === 'edit')
+                    ->dehydrated(fn($state, $operation) => $operation === 'create'),
 
                 Select::make('type')
                     ->label('Type')
@@ -33,12 +34,13 @@ class ApplicationSettingForm
                     )
                     ->default(SettingType::Text->value)
                     ->live()
-                    ->required(),
+                    ->required()
+                    ->disabled(fn($operation) => $operation === 'edit'),
 
                 TextInput::make('value')
                     ->label(__('app.value'))
-                    ->visible(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Url->value]))
-                    ->required(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Url->value])),
+                    ->visible(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Phone->value, SettingType::Url->value]))
+                    ->required(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Phone->value, SettingType::Url->value])),
 
                 TextInput::make('value')
                     ->label(__('app.value'))
@@ -53,9 +55,9 @@ class ApplicationSettingForm
 
                 Textarea::make('value')
                     ->label(__('app.value'))
-                    ->visible(fn($get) => $get('type') === SettingType::Json->value)
-                    ->rules(['json'])
-                    ->required(fn($get) => $get('type') === SettingType::Json->value),
+                    ->visible(fn($get) => in_array($get('type'), [SettingType::Json->value, SettingType::Html->value]))
+                    ->rules(fn($get) => $get('type') === SettingType::Json->value ? ['json'] : [])
+                    ->required(fn($get) => in_array($get('type'), [SettingType::Json->value, SettingType::Html->value])),
             ]);
     }
 }

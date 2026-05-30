@@ -44,6 +44,11 @@ return [
             'title' => 'Certified Trainers',
             'subtitle' => 'Browse our network of accredited professional trainers.',
             'evaluation_title' => 'Trainer Evaluation',
+            'intro_text' => 'The International Board for Professional Training and Qualification is proud to have a team of multinational trainers and consultants with extensive experience in various administrative and professional fields and specializations, holding the highest international certifications.',
+        ],
+        'memberships' => [
+            'title' => 'Memberships & Benefits',
+            'subtitle' => 'Choose the membership that suits you',
         ],
         'blog' => [
             'title' => 'Latest News',
@@ -103,6 +108,16 @@ return [
         'view_details' => 'View Details',
         'back' => 'Back',
         'clear' => 'Clear Filters',
+        'apply_membership' => 'Click here to apply for membership',
+        'whatsapp_contact' => 'Click here to contact us via WhatsApp',
+    ],
+
+    'contact' => [
+        'name' => 'Name',
+        'email' => 'Email',
+        'message' => 'Message',
+        'send' => 'Send',
+        'success' => 'Your message has been sent successfully.',
     ],
     'labels' => [
         'all' => 'All',

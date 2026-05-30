@@ -4,28 +4,27 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\StaticPage;
+use App\Models\Membership;
 use Illuminate\Database\Seeder;
 
-class StaticPageSeeder extends Seeder
+class MembershipSeeder extends Seeder
 {
     public function run(): void
     {
-        $pages = config('data-to-seed.static_pages', []);
+        $memberships = config('data-to-seed.memberships', []);
 
-        foreach ($pages as $data) {
-            StaticPage::updateOrCreate(
+        foreach ($memberships as $data) {
+            Membership::updateOrCreate(
                 ['slug' => $data['slug']],
                 [
                     'title' => [
                         'ar' => $data['title']['ar'] ?? '',
                         'en' => $data['title']['en'] ?? '',
                     ],
-                    'content' => [
-                        'ar' => $data['content']['ar'] ?? '',
-                        'en' => $data['content']['en'] ?? '',
+                    'description' => [
+                        'ar' => $data['description']['ar'] ?? '',
+                        'en' => $data['description']['en'] ?? '',
                     ],
-                    'image' => $data['image'] ?? null,
                     'is_active' => $data['is_active'] ?? true,
                 ]
             );

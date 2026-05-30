@@ -20,6 +20,12 @@
                         </a>
                     </li>
 
+                    <li class="nav-item @if (request()->routeIs('web.memberships.*')) active @endif">
+                        <a class="nav-link" href="{{ route('web.memberships.index') }}">
+                            {{ __('web.pages.memberships.title') }}
+                        </a>
+                    </li>
+
                     @foreach ($navigationPages as $page)
                         <li class="nav-item @if (request()->is('web/pages/' . $page['slug'])) active @endif">
                             <a class="nav-link" href="{{ route('web.pages.show', $page['slug']) }}">

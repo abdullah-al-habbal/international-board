@@ -23,8 +23,8 @@ final class StaticPageController extends Controller
         abort_if($page === null, 404);
 
         $this->seoService->setMeta(
-            $page->title,
-            Str::limit(strip_tags((string) $page->content), 160)
+            $page->getTranslation('title', app()->getLocale()),
+            Str::limit(strip_tags((string) $page->getTranslation('content', app()->getLocale())), 160)
         );
 
         return view('web.pages.show', compact('page'));

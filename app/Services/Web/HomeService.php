@@ -29,6 +29,7 @@ final class HomeService
             'statistics' => $this->buildStatistics(),
             'testimonials' => $this->getTestimonials(),
             'aboutPage' => $this->staticPageService->getBySlug('about-us'),
+            'servicesPage' => $this->staticPageService->getBySlug('our-services'),
             'blogPosts' => $this->blogPostService->getLatest(3),
         ];
     }
@@ -44,8 +45,18 @@ final class HomeService
 
     private function getTestimonials(): array
     {
-        $raw = ApplicationSetting::get('home_testimonials', '[]');
+        $value = ApplicationSetting::get('home_testimonials', []);
 
-        return json_decode((string) $raw, true) ?? [];
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
     }
 }

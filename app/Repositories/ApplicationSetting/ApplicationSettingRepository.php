@@ -9,4 +9,9 @@ use App\Models\ApplicationSetting;
 final class ApplicationSettingRepository
 {
     public function __construct(private readonly ApplicationSetting $applicationSetting) {}
+
+    public function findByKey(string $key): ?ApplicationSetting
+    {
+        return $this->applicationSetting->newQuery()->where('key', $key)->first();
+    }
 }

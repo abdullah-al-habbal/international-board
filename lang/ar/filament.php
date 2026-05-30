@@ -10,6 +10,7 @@ return [
             'reports' => 'التقارير',
             'financial_management' => 'الإدارة المالية',
             'accreditation_management' => 'إدارة الاعتماد',
+            'communication' => 'التواصل',
         ],
     ],
 
@@ -39,5 +40,6 @@ return [
         'blog_posts' => 'المقالات',
         'certified_center_document_types' => 'أنواع وثائق المراكز',
         'center_document_type_requests' => 'طلبات أنواع وثائق المراكز',
+        'contact_messages' => 'رسائل التواصل',
     ],
 ];

@@ -1,3 +1,4 @@
+{{-- filePath: resources/views/web/pages/show.blade.php --}}
 @extends('layouts.master')
 
 @section('title', $page->title)

@@ -98,6 +98,8 @@ return [
     'start_date' => 'Start Date',
     'image' => 'Image',
     'sort_order' => 'Sort Order',
+    'is_read' => 'Is Read',
+    'message' => 'Message',
     'type' => 'Type',
     'value' => 'Value',
     'key' => 'Key',

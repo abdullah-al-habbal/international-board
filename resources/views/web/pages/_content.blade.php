@@ -10,6 +10,10 @@
                 <div class="content">
                     {!! $page->content !!}
                 </div>
+
+                @if($page->slug === 'contact-us')
+                    @include('web.contact._form')
+                @endif
             </div>
         </div>
     </div>

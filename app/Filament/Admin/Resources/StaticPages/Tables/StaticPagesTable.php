@@ -17,6 +17,11 @@ class StaticPagesTable
     {
         return $table
             ->columns([
+                TextColumn::make('title')
+                    ->label(__('app.title'))
+                    ->searchable(query: function ($query, $search) {
+                        return $query->where('title->' . app()->getLocale(), 'like', "%{$search}%");
+                    }),
                 TextColumn::make('slug')
                     ->searchable(),
                 ImageColumn::make('image')

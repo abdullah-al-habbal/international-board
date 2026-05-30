@@ -10,6 +10,7 @@ return [
             'reports' => 'Reports',
             'financial_management' => 'Financial Management',
             'accreditation_management' => 'Accreditation Management',
+            'communication' => 'Communication',
         ],
     ],
 
@@ -40,5 +41,6 @@ return [
         'blog_posts' => 'Blog Posts',
         'certified_center_document_types' => 'Center Document Types',
         'center_document_type_requests' => 'Center Document Type Requests',
+        'contact_messages' => 'Contact Messages',
     ],
 ];

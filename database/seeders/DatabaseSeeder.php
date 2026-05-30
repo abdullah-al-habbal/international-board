@@ -13,19 +13,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CountrySeeder::class,
             DocumentTypeSeeder::class,
-
             UserSeeder::class,
             ApplicationSettingSeeder::class,
-
             CertifiedCenterSeeder::class,
             TrainerSeeder::class,
-
             AccreditationRequestSeeder::class,
             CertificationSeeder::class,
             BlogPostSeeder::class,
-
-            MembershipSeeder::class,
             StaticPageSeeder::class,
+            MembershipSeeder::class,
         ]);
     }
 }

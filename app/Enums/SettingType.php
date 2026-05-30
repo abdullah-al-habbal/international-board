@@ -11,5 +11,7 @@ enum SettingType: string
     case Boolean = 'boolean';
     case Json = 'json';
     case Email = 'email';
+    case Phone = 'phone';
     case Url = 'url';
+    case Html = 'html';
 }

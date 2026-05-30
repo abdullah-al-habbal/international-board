@@ -12,7 +12,6 @@ class TrainerSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get some countries for assignment
         $libya = Country::where('code', 'LBY')->first();
         $saudi = Country::where('code', 'SAU')->first();
         $egypt = Country::where('code', 'EGY')->first();
