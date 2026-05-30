@@ -97,10 +97,10 @@ jobs:
           retention-days: 1
 
   # ─────────────────────────────────────────────────────────────
-  # Deploy to Hostinger via FTP (files) + SSH (commands)
+  # Deploy directly to production/ (no atomic, no releases, no shared)
   # ─────────────────────────────────────────────────────────────
   deploy:
-    name: 🚀 Deploy to Hostinger (FTP + SSH)
+    name: 🚀 Deploy to Hostinger
     needs: build
     runs-on: ubuntu-latest
 
@@ -113,26 +113,18 @@ jobs:
           name: release
           path: .
 
-      - name: 📦 Extract tarball
-        run: |
-          mkdir release_content
-          tar -xzf release.tar.gz -C release_content
-
-      - name: 📤 Upload via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.0.0
+      - name: 📤 Upload artifact to server
+        uses: appleboy/scp-action@v0.1.5
         with:
-          server: ${{ secrets.FTP_HOST }}
-          port: ${{ secrets.FTP_PORT }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./release_content/
-          server-dir: domains/internationalboard.uk/public_html/production/
-          dangerous-clean-slate: true
-          exclude: |
-            .env
-            storage/
+          host: ${{ secrets.HOSTINGER_SERVER_IP }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          source: release.tar.gz
+          target: /tmp
+          overwrite: true
 
-      - name: 🚀 Run remote commands (migrations, cache)
+      - name: 🚀 Direct deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -149,12 +141,31 @@ jobs:
             PHP_BIN="$(command -v php8.5 || command -v php || echo /usr/bin/php)"
 
             echo "========================================="
-            echo "🚀 Running post-deploy commands"
-            echo "📂 Target: ${TARGET}"
+            echo "🚀 Deploying directly into: ${TARGET}"
             echo "🐘 PHP: $($PHP_BIN -r 'echo PHP_VERSION;')"
             echo "========================================="
 
+            mkdir -p "$TARGET"
             cd "$TARGET"
+
+            # ─────────────────────────────────────────
+            # Clean old files (keep .env + storage)
+            # ─────────────────────────────────────────
+            if [ -f artisan ]; then
+              echo "🧹 Cleaning old deployment..."
+              find . -maxdepth 1 \
+                ! -name ".env" \
+                ! -name "storage" \
+                ! -name "." \
+                ! -name ".." \
+                -exec rm -rf {} +
+            fi
+
+            # ─────────────────────────────────────────
+            # Extract new release
+            # ─────────────────────────────────────────
+            tar -xzf /tmp/release.tar.gz -C "$TARGET"
+            rm -f /tmp/release.tar.gz
 
             # ─────────────────────────────────────────
             # Ensure runtime directories
@@ -177,7 +188,7 @@ jobs:
             chmod -R ug+rwx storage bootstrap/cache || true
 
             # ─────────────────────────────────────────
-            # Run database migrations
+            # Run database migrations (critical - was missing)
             # ─────────────────────────────────────────
             echo "🧬 Running database migrations..."
             $PHP_BIN artisan migrate --force
@@ -204,4 +215,5 @@ jobs:
             echo "========================================="
             echo "✅ Deployment completed"
             echo "🌐 https://internationalboard.uk"
+            echo "📂 Target: ${TARGET}"
             echo "========================================="
