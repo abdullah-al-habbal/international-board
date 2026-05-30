@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+
   workflow_dispatch:
 
 permissions:
@@ -14,13 +15,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PHP_VERSION: "8.5"
+  PHP_VERSION: "8.4"
   APP_DOMAIN: internationalboard.uk
 
 jobs:
-  # ─────────────────────────────────────────────────────────────
-  # Build release artifact
-  # ─────────────────────────────────────────────────────────────
   build:
     name: 🏗️ Build Artifact
     runs-on: ubuntu-latest
@@ -28,36 +26,16 @@ jobs:
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ env.PHP_VERSION }}
           coverage: none
-          extensions: >
-            mbstring,
-            openssl,
-            pdo_mysql,
-            fileinfo,
-            sodium,
-            curl,
-            tokenizer,
-            xml,
-            ctype,
-            json,
-            bcmath
+          extensions: mbstring, openssl, pdo_mysql, fileinfo, sodium, curl, tokenizer, xml, ctype, json, bcmath
 
-      - name: ♻️ Validate Composer files
+      - name: 📦 Validate Composer
         run: composer validate --strict
-
-      - name: 📋 Prepare CI environment
-        run: |
-          cp .env.example .env
-          echo "APP_ENV=production" >> .env
-          echo "APP_DEBUG=false" >> .env
-          echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
 
       - name: 📦 Install dependencies
         run: |
@@ -65,12 +43,13 @@ jobs:
             --no-dev \
             --prefer-dist \
             --no-interaction \
+            --no-progress \
             --optimize-autoloader
 
-      - name: 🧪 Verify Laravel bootstrap
+      - name: 🧪 Laravel sanity check
         run: php artisan about
 
-      - name: 🗜️ Create release archive
+      - name: 🗜️ Create release package
         run: |
           rm -rf build release.tar.gz
           mkdir -p build/release
@@ -79,30 +58,24 @@ jobs:
             --exclude='.git' \
             --exclude='.github' \
             --exclude='.env' \
-            --exclude='node_modules' \
             --exclude='tests' \
+            --exclude='node_modules' \
             --exclude='storage/logs/*' \
-            --exclude='storage/framework/cache/*' \
-            --exclude='storage/framework/sessions/*' \
-            --exclude='storage/framework/views/*' \
-            --exclude='storage/app/*'
+            --exclude='storage/framework/*'
 
           tar -czf release.tar.gz -C build/release .
 
-      - name: ⬆️ Upload release artifact
+      - name: ⬆️ Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: release
           path: release.tar.gz
           retention-days: 1
 
-  # ─────────────────────────────────────────────────────────────
-  # Deploy directly to production/ (no atomic, no releases, no shared)
-  # ─────────────────────────────────────────────────────────────
   deploy:
     name: 🚀 Deploy to Hostinger
-    needs: build
     runs-on: ubuntu-latest
+    needs: build
 
     if: github.ref == 'refs/heads/production'
 
@@ -113,22 +86,26 @@ jobs:
           name: release
           path: .
 
-      - name: 📤 Upload artifact to server
-        uses: appleboy/scp-action@v0.1.5
+      - name: 🔍 Validate SSH connectivity
+        run: |
+          nc -zv ${{ secrets.HOSTINGER_SERVER_IP }} 65002
+
+      - name: 📤 Upload release via SCP
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
-          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          port: 65002
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           source: release.tar.gz
           target: /tmp
           overwrite: true
 
-      - name: 🚀 Direct deploy
-        uses: appleboy/ssh-action@v1.0.3
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
-          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          port: 65002
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           timeout: 60s
@@ -138,82 +115,25 @@ jobs:
             set -Eeuo pipefail
 
             TARGET="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
-            PHP_BIN="$(command -v php8.5 || command -v php || echo /usr/bin/php)"
 
-            echo "========================================="
-            echo "🚀 Deploying directly into: ${TARGET}"
-            echo "🐘 PHP: $($PHP_BIN -r 'echo PHP_VERSION;')"
-            echo "========================================="
+            echo "Deploying to: $TARGET"
 
-            mkdir -p "$TARGET"
             cd "$TARGET"
 
-            # ─────────────────────────────────────────
-            # Clean old files (keep .env + storage)
-            # ─────────────────────────────────────────
-            if [ -f artisan ]; then
-              echo "🧹 Cleaning old deployment..."
-              find . -maxdepth 1 \
-                ! -name ".env" \
-                ! -name "storage" \
-                ! -name "." \
-                ! -name ".." \
-                -exec rm -rf {} +
-            fi
-
-            # ─────────────────────────────────────────
-            # Extract new release
-            # ─────────────────────────────────────────
+            echo "Extracting release..."
             tar -xzf /tmp/release.tar.gz -C "$TARGET"
             rm -f /tmp/release.tar.gz
 
-            # ─────────────────────────────────────────
-            # Ensure runtime directories
-            # ─────────────────────────────────────────
-            mkdir -p storage/framework/{cache,sessions,views}
-            mkdir -p storage/logs
-            mkdir -p bootstrap/cache
+            echo "Running migrations..."
+            php artisan migrate --force
 
-            # ─────────────────────────────────────────
-            # Enforce .env exists
-            # ─────────────────────────────────────────
-            if [ ! -f .env ]; then
-              echo "❌ Missing .env in ${TARGET}"
-              exit 1
-            fi
+            echo "Clearing and caching..."
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
 
-            # ─────────────────────────────────────────
-            # Permissions
-            # ─────────────────────────────────────────
-            chmod -R ug+rwx storage bootstrap/cache || true
+            echo "Verifying application..."
+            php artisan about
 
-            # ─────────────────────────────────────────
-            # Run database migrations (critical - was missing)
-            # ─────────────────────────────────────────
-            echo "🧬 Running database migrations..."
-            $PHP_BIN artisan migrate --force
-            echo "✅ Migrations complete"
-
-            # ─────────────────────────────────────────
-            # Verify Laravel boot
-            # ─────────────────────────────────────────
-            echo "🧪 Verifying Laravel bootstrap..."
-
-            $PHP_BIN artisan about || {
-              echo "❌ Laravel failed to boot"
-              exit 1
-            }
-
-            # ─────────────────────────────────────────
-            # Build production caches
-            # ─────────────────────────────────────────
-            $PHP_BIN artisan optimize:clear
-            $PHP_BIN artisan config:cache
-            $PHP_BIN artisan route:cache
-            $PHP_BIN artisan view:cache
-
-            echo "========================================="
-            echo "✅ Deployment completed"
-            echo "🌐 https://internationalboard.uk"
-            echo "📂 Target: ${TARGET}"
-            echo "========================================="
+            echo "Deployment completed successfully"
