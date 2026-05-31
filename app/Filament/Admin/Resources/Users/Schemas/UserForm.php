@@ -1,5 +1,5 @@
 <?php
-
+// app/Filament/Admin/Resources/Users/Schemas/UserForm.php
 declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Users\Schemas;
@@ -7,7 +7,6 @@ namespace App\Filament\Admin\Resources\Users\Schemas;
 use App\Enums\UserType;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class UserForm

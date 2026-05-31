@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas;
 
 use App\Models\CertifiedCenterPaymentAgentPerson;
-use App\Models\Trainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Validation\Rule;
 

@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\BlogPosts\Tables;
+namespace App\Filament\Admin\Resources\Membership\Tables;
 
-use App\Models\BlogPost;
+use App\Models\Membership;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class BlogPostsTable
+class MembershipsTable
 {
     public static function configure(Table $table): Table
     {
@@ -23,10 +22,10 @@ class BlogPostsTable
                 TextColumn::make('title')
                     ->label(__('app.title'))
                     ->searchable(query: function ($query, $search) {
-                        return $query->where('title->' . app()->getLocale(), 'like', "%{$search}%");
+                        return $query->where('title->'.app()->getLocale(), 'like', "%{$search}%");
                     })
                     ->sortable(query: function ($query, $direction) {
-                        return $query->orderByRaw("JSON_EXTRACT(title, '$.\"".app()->getLocale()."\"') {$direction}");
+                        return $query->orderByRaw("title->'".app()->getLocale()."' {$direction}");
                     })
                     ->weight('bold')
                     ->formatStateUsing(fn ($record) => $record->getTranslation('title', app()->getLocale()) ?: '—'),
@@ -36,25 +35,15 @@ class BlogPostsTable
                     ->searchable()
                     ->sortable(),
 
-                ImageColumn::make('image')
-                    ->label(__('app.image'))
-                    ->placeholder(__('app.no_image')),
-
-                TextColumn::make('excerpt')
-                    ->label(__('app.excerpt'))
+                TextColumn::make('description')
+                    ->label(__('app.description'))
                     ->limit(50)
-                    ->tooltip(fn (BlogPost $record): string => $record->getTranslation('excerpt', app()->getLocale()) ?? '')
-                    ->formatStateUsing(fn ($record) => $record->getTranslation('excerpt', app()->getLocale()) ?: '—'),
+                    ->tooltip(fn (Membership $record): string => $record->getTranslation('description', app()->getLocale()) ?? '')
+                    ->formatStateUsing(fn ($record) => $record->getTranslation('description', app()->getLocale()) ?: '—'),
 
-                IconColumn::make('is_published')
-                    ->label(__('app.is_published'))
+                IconColumn::make('is_active')
+                    ->label(__('app.is_active'))
                     ->boolean(),
-
-                TextColumn::make('published_at')
-                    ->label(__('app.published_at'))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
@@ -80,6 +69,6 @@ class BlogPostsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('published_at', 'desc');
+            ->defaultSort('created_at', 'desc');
     }
 }

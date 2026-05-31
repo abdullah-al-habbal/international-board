@@ -1,14 +1,14 @@
 <?php
-// app/Filament/Admin/Resources/Users/Schemas/UserInfolist.php
+
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\Users\Schemas;
+namespace App\Filament\Admin\Resources\ContactMessage\Schemas;
 
-use App\Enums\UserType;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
-class UserInfolist
+class ContactMessageInfolist
 {
     public static function configure(Schema $schema): Schema
     {
@@ -17,26 +17,23 @@ class UserInfolist
                 ->label(__('app.name'))
                 ->weight('bold')
                 ->size('xl')
-                ->columnSpanFull()
-                ->formatStateUsing(fn ($state, $record) => $state ?: ($record->name ?? '—')),
+                ->columnSpanFull(),
 
             TextEntry::make('email')
                 ->label(__('app.email'))
                 ->icon('heroicon-o-envelope')
                 ->copyable()
-                ->columnSpan(1)
-                ->formatStateUsing(fn ($state) => $state ?: '—'),
+                ->columnSpan(1),
 
-            TextEntry::make('type')
-                ->label(__('app.user_type'))
-                ->badge()
-                ->columnSpan(1)
-                ->color(fn ($state): string => match ($state instanceof UserType ? $state->value : $state) {
-                    'admin' => 'danger',
-                    'client' => 'info',
-                    default => 'gray',
-                })
-                ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—')),
+            IconEntry::make('is_read')
+                ->label(__('app.is_read'))
+                ->boolean()
+                ->columnSpan(1),
+
+            TextEntry::make('message')
+                ->label(__('app.message'))
+                ->markdown()
+                ->columnSpanFull(),
 
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))
@@ -54,8 +51,7 @@ class UserInfolist
             TextEntry::make('id')
                 ->label(__('app.id'))
                 ->size('sm')
-                ->columnSpan(1)
-                ->formatStateUsing(fn ($state) => $state ?: '—'),
+                ->columnSpan(1),
         ])->columns(2);
     }
 }

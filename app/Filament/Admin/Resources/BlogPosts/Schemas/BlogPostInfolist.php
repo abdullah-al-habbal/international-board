@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\StaticPages\Schemas;
+namespace App\Filament\Admin\Resources\BlogPosts\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
-class StaticPageInfolist
+class BlogPostInfolist
 {
     public static function configure(Schema $schema): Schema
     {
@@ -31,10 +31,22 @@ class StaticPageInfolist
                     ->placeholder(__('app.no_image'))
                     ->columnSpan(1),
 
-                IconEntry::make('is_active')
-                    ->label(__('app.is_active'))
+                IconEntry::make('is_published')
+                    ->label(__('app.is_published'))
                     ->boolean()
                     ->columnSpan(1),
+
+                TextEntry::make('published_at')
+                    ->label(__('app.published_at'))
+                    ->dateTime()
+                    ->icon('heroicon-o-calendar')
+                    ->columnSpan(1),
+
+                TextEntry::make('excerpt')
+                    ->label(__('app.excerpt'))
+                    ->markdown()
+                    ->columnSpanFull()
+                    ->formatStateUsing(fn ($record) => $record->getTranslation('excerpt', app()->getLocale()) ?: '—'),
 
                 TextEntry::make('content')
                     ->label(__('app.content'))
@@ -45,7 +57,7 @@ class StaticPageInfolist
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()
-                    ->icon('heroicon-o-calendar')
+                    ->icon('heroicon-o-clock')
                     ->columnSpan(1),
 
                 TextEntry::make('updated_at')

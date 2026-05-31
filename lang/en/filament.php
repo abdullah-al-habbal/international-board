@@ -1,5 +1,6 @@
 <?php
 
+// filePath: lang/en/filament.php
 return [
     'navigation' => [
         'groups' => [
@@ -11,9 +12,9 @@ return [
             'financial_management' => 'Financial Management',
             'accreditation_management' => 'Accreditation Management',
             'communication' => 'Communication',
+            'memberships' => 'Memberships',
         ],
     ],
-
 
     'labels' => [
         'social_links' => 'Social Links',

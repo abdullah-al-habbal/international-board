@@ -1,14 +1,14 @@
 <?php
-// app/Filament/Admin/Resources/Users/Schemas/UserInfolist.php
+
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\Users\Schemas;
+namespace App\Filament\Admin\Resources\PaymentAgentPersons\Schemas;
 
-use App\Enums\UserType;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
-class UserInfolist
+class PaymentAgentPersonInfolist
 {
     public static function configure(Schema $schema): Schema
     {
@@ -17,45 +17,35 @@ class UserInfolist
                 ->label(__('app.name'))
                 ->weight('bold')
                 ->size('xl')
-                ->columnSpanFull()
-                ->formatStateUsing(fn ($state, $record) => $state ?: ($record->name ?? '—')),
-
+                ->columnSpanFull(),
             TextEntry::make('email')
                 ->label(__('app.email'))
                 ->icon('heroicon-o-envelope')
                 ->copyable()
-                ->columnSpan(1)
-                ->formatStateUsing(fn ($state) => $state ?: '—'),
-
-            TextEntry::make('type')
-                ->label(__('app.user_type'))
-                ->badge()
-                ->columnSpan(1)
-                ->color(fn ($state): string => match ($state instanceof UserType ? $state->value : $state) {
-                    'admin' => 'danger',
-                    'client' => 'info',
-                    default => 'gray',
-                })
-                ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—')),
-
+                ->columnSpan(1),
+            TextEntry::make('phone')
+                ->label(__('app.phone'))
+                ->icon('heroicon-o-phone')
+                ->columnSpan(1),
+            IconEntry::make('is_active')
+                ->label(__('app.is_active'))
+                ->boolean()
+                ->columnSpan(1),
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))
                 ->dateTime()
                 ->icon('heroicon-o-calendar')
                 ->columnSpan(1),
-
             TextEntry::make('updated_at')
                 ->label(__('app.updated_at'))
                 ->dateTime()
                 ->since()
                 ->icon('heroicon-o-clock')
                 ->columnSpan(1),
-
             TextEntry::make('id')
                 ->label(__('app.id'))
                 ->size('sm')
-                ->columnSpan(1)
-                ->formatStateUsing(fn ($state) => $state ?: '—'),
+                ->columnSpan(1),
         ])->columns(2);
     }
 }

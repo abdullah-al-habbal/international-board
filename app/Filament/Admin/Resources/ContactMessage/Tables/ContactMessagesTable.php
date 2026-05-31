@@ -1,19 +1,17 @@
 <?php
-// app/Filament/Admin/Resources/Users/Tables/UsersTable.php
+
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\Users\Tables;
+namespace App\Filament\Admin\Resources\ContactMessage\Tables;
 
-use App\Enums\UserType;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
-class UsersTable
+class ContactMessagesTable
 {
     public static function configure(Table $table): Table
     {
@@ -34,16 +32,15 @@ class UsersTable
                     ->getStateUsing(fn ($record) => $record->email ?: __('app.no_value'))
                     ->copyMessage(__('app.email_copied')),
 
-                TextColumn::make('type')
-                    ->label(__('app.user_type'))
-                    ->badge()
-                    ->color(fn ($state): string => match ($state instanceof UserType ? $state->value : $state) {
-                        'admin' => 'danger',
-                        'client' => 'info',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—'))
-                    ->sortable(),
+                TextColumn::make('message')
+                    ->label(__('app.message'))
+                    ->limit(50)
+                    ->searchable()
+                    ->tooltip(fn (Model $record): string => $record->message ?? ''),
+
+                IconColumn::make('is_read')
+                    ->label(__('app.is_read'))
+                    ->boolean(),
 
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
@@ -59,24 +56,22 @@ class UsersTable
                     ->toggleable(),
             ])
             ->filters([
-                SelectFilter::make('type')
-                    ->label(__('app.user_type'))
-                    ->options([
-                        'admin' => __('app.user_types.admin'),
-                        'client' => __('app.user_types.client'),
-                    ])
-                    ->multiple(),
-
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                Action::make('toggleRead')
+                    ->label(fn (Model $record) => $record->is_read
+                        ? __('app.mark_as_unread')
+                        : __('app.mark_as_read'))
+                    ->icon(fn (Model $record) => $record->is_read
+                        ? 'heroicon-o-eye-slash'
+                        : 'heroicon-o-eye')
+                    ->color(fn (Model $record) => $record->is_read ? 'gray' : 'success')
+                    ->action(function (Model $record): void {
+                        $record->update(['is_read' => !$record->is_read]);
+                    }),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
+            ->toolbarActions([])   // no bulk delete or create
             ->defaultSort('created_at', 'desc');
     }
 }

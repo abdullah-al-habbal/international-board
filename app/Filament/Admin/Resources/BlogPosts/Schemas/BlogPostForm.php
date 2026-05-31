@@ -1,40 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\BlogPosts\Schemas;
 
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 
 class BlogPostForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $locales = ['ar', 'en'];
+
         return $schema
-            ->components([
+            ->schema([
                 TextInput::make('slug')
                     ->label(__('app.slug'))
                     ->required()
-                    ->unique(ignoreRecord: true),
-                TextInput::make('title')
-                    ->label(__('app.title'))
-                    ->required(),
-                TextInput::make('excerpt')
-                    ->label(__('app.excerpt')),
-                RichEditor::make('content')
-                    ->label(__('app.content'))
-                    ->required(),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->columnSpanFull(),
+
+                Tabs::make('Translations')
+                    ->tabs(
+                        collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
+                            ->schema([
+                                TextInput::make("title.{$locale}")
+                                    ->label(__('app.title') . " ({$locale})")
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+
+                                TextInput::make("excerpt.{$locale}")
+                                    ->label(__('app.excerpt') . " ({$locale})")
+                                    ->required()
+                                    ->maxLength(500)
+                                    ->columnSpanFull(),
+
+                                RichEditor::make("content.{$locale}")
+                                    ->label(__('app.content') . " ({$locale})")
+                                    ->required()
+                                    ->columnSpanFull(),
+                            ])
+                        )->toArray()
+                    )
+                    ->columnSpanFull(),
+
                 FileUpload::make('image')
                     ->label(__('app.image'))
-                    ->image(),
-                DateTimePicker::make('published_at')
-                    ->label(__('app.published_at')),
+                    ->image()
+                    ->directory('blog-images')
+                    ->columnSpan(1),
+
                 Toggle::make('is_published')
                     ->label(__('app.is_published'))
-                    ->required(),
+                    ->default(false)
+                    ->columnSpan(1),
+
+                DateTimePicker::make('published_at')
+                    ->label(__('app.published_at'))
+                    ->default(now())
+                    ->required()
+                    ->columnSpan(1),
             ]);
     }
 }

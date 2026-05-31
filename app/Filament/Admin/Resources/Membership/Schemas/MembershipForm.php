@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Filament\Admin\Resources\StaticPages\Schemas;
+declare(strict_types=1);
 
-use Filament\Forms\Components\FileUpload;
+namespace App\Filament\Admin\Resources\Membership\Schemas;
+
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -10,18 +11,20 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 
-class StaticPageForm
+class MembershipForm
 {
     public static function configure(Schema $schema): Schema
     {
-        $locales = ['ar', 'en'];
+        $locales = ['ar', 'en']; 
 
         return $schema
-            ->components([
+            ->schema([
                 TextInput::make('slug')
                     ->label(__('app.slug'))
                     ->required()
-                    ->unique(ignoreRecord: true),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->columnSpanFull(),
 
                 Tabs::make('Translations')
                     ->tabs(
@@ -29,21 +32,23 @@ class StaticPageForm
                             ->schema([
                                 TextInput::make("title.{$locale}")
                                     ->label(__('app.title') . " ({$locale})")
-                                    ->required(),
-                                RichEditor::make("content.{$locale}")
-                                    ->label(__('app.content') . " ({$locale})")
-                                    ->required(),
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+
+                                RichEditor::make("description.{$locale}")
+                                    ->label(__('app.description') . " ({$locale})")
+                                    ->required()
+                                    ->columnSpanFull(),
                             ])
                         )->toArray()
-                    ),
-
-                FileUpload::make('image')
-                    ->label(__('app.image'))
-                    ->image(),
+                    )
+                    ->columnSpanFull(),
 
                 Toggle::make('is_active')
                     ->label(__('app.is_active'))
-                    ->default(true),
+                    ->default(true)
+                    ->columnSpanFull(),
             ]);
     }
 }

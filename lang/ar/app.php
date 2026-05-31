@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 return [
     'dashboard' => 'لوحة التحكم',
     'navigation' => 'التنقل',
@@ -31,7 +29,6 @@ return [
     'pending' => 'قيد الانتظار',
     'approved' => 'موافق عليه',
     'rejected' => 'مرفوض',
-
     'users' => 'المستخدمون',
     'user' => 'مستخدم',
     'certified_centers' => 'المراكز المعتمدة',
@@ -48,7 +45,6 @@ return [
     'static_page' => 'صفحة ثابتة',
     'application_settings' => 'إعدادات التطبيق',
     'application_setting' => 'إعداد التطبيق',
-
     'trainee' => 'متدرب',
     'trainees' => 'المتدربون',
     'date_of_birth' => 'تاريخ الميلاد',
@@ -58,21 +54,16 @@ return [
     'emergency_contact_name' => 'اسم جهة الاتصال في حالات الطوارئ',
     'emergency_contact_phone' => 'هاتف جهة الاتصال في حالات الطوارئ',
     'medical_info' => 'المعلومات الطبية',
-
     'document_types' => 'أنواع الوثائق',
-
     'country' => 'البلد',
     'countries' => 'البلدان',
-
     'male' => 'ذكر',
     'female' => 'أنثى',
     'other' => 'آخر',
-
     'paper_document_received' => 'استلام الوثيقة الورقية',
     'yes' => 'نعم',
     'no' => 'لا',
     'will_be_auto_generated' => 'سيتم إنشاؤها تلقائياً إذا تركت فارغة',
-
     'name' => 'الاسم',
     'email' => 'البريد الإلكتروني',
     'password' => 'كلمة المرور',
@@ -97,7 +88,6 @@ return [
     'type' => 'النوع',
     'value' => 'القيمة',
     'key' => 'المفتاح',
-
     'trainee_name' => 'اسم المتدرب',
     'accredited_serial_number' => 'الرقم المتسلسل المعتمد',
     'document_code' => 'رمز الوثيقة',
@@ -106,26 +96,22 @@ return [
     'trainer_name' => 'اسم المدرب',
     'nationality' => 'الجنسية',
     'notes' => 'ملاحظات',
-
     'requested_start_date' => 'تاريخ البداية المطلوب',
     'requested_end_date' => 'تاريخ النهاية المطلوب',
     'request_notes' => 'ملاحظات الطلب',
     'admin_notes' => 'ملاحظات الإدارة',
     'reviewed_by' => 'تمت المراجعة بواسطة',
     'reviewed_at' => 'تاريخ المراجعة',
-
     'certification_details_section' => 'تفاصيل الشهادة الرئيسية',
     'document_details_section' => 'تفاصيل الوثيقة',
     'document_details_description' => 'معلومات الشهادة والوثيقة',
     'additional_information_section' => 'معلومات إضافية',
     'additional_information_description' => 'ملاحظات وتفاصيل إضافية',
     'notes_placeholder' => 'ملاحظات أو تعليقات إضافية...',
-
     'iso_code_3_helper' => 'رمز ISO 3166-1 alpha-3',
     'iso_code_2_helper' => 'رمز ISO 3166-1 alpha-2',
     'iso_code_3' => 'رمز ISO (3 أحرف)',
     'iso_code_2' => 'رمز ISO (حرفان)',
-
     'descriptive_image' => 'الصورة الوصفية',
     'avatar' => 'الصورة الشخصية',
     'biography' => 'السيرة الذاتية',
@@ -134,12 +120,10 @@ return [
     'confirm_password' => 'تأكيد كلمة المرور',
     'user_type' => 'نوع المستخدم',
     'country_name' => 'اسم البلد',
-
     'name_english' => 'الاسم (بالإنجليزية)',
     'name_arabic' => 'الاسم (بالعربية)',
     'document_type_key_helper' => 'معرف فريد لهذا النوع من الوثائق (مثل: training_certificate)',
     'training_certificate_example' => 'شهادة تدريب',
-
     'specialization_training' => 'تدريب',
     'specialization_consulting' => 'استشارات',
     'specialization_leadership' => 'قيادة',
@@ -152,7 +136,6 @@ return [
     'specialization_hr' => 'الموارد البشرية',
     'specialization_quality_management' => 'إدارة الجودة',
     'specialization_entrepreneurship' => 'ريادة الأعمال',
-
     'edit_requests' => 'طلبات التعديل',
     'edit_request' => 'طلب تعديل',
     'editable_type' => 'نوع الكيان',
@@ -160,7 +143,6 @@ return [
     'rejection_reason' => 'سبب الرفض',
     'edit_request_approved' => 'تمت الموافقة على طلب التعديل بنجاح',
     'edit_request_rejected' => 'تم رفض طلب التعديل',
-
     'center_type_requests' => 'طلبات أنواع المراكز',
     'center_type_request' => 'طلب نوع مركز',
     'request_type' => 'نوع الطلب',
@@ -170,19 +152,15 @@ return [
     'center_type_request_approved' => 'تمت الموافقة على طلب نوع المركز بنجاح',
     'center_type_request_rejected' => 'تم رفض طلب نوع المركز',
     'allowed_document_types' => 'أنواع الوثائق المسموح بها',
-
     'legal_amendments' => 'تعديلات قانونية',
     'legal_amendments_content' => 'سيتم عرض محتوى التعديلات القانونية هنا.',
-
     'trainer_evaluation_mechanism' => 'آلية تقييم المدربين',
     'trainer_evaluation_default_text' => 'سيتم وصف معايير وعملية تقييم المدربين هنا.',
-
     'all_countries' => 'جميع البلدان',
     'view_details' => 'عرض التفاصيل',
     'no_trainers_found' => 'لم يتم العثور على مدربين',
     'back_to_trainers' => 'العودة إلى المدربين',
     'view_trainers' => 'عرض المدربين',
-
     'created_successfully' => 'تم الإنشاء بنجاح',
     'updated_successfully' => 'تم التحديث بنجاح',
     'deleted_successfully' => 'تم الحذف بنجاح',
@@ -190,13 +168,11 @@ return [
     'error_occurred' => 'حدث خطأ',
     'no_records_found' => 'لا توجد سجلات',
     'access_denied' => 'الوصول مرفوض',
-
     'accreditation_started' => 'بدأت فترة الاعتماد',
     'accreditation_ended' => 'انتهت فترة الاعتماد',
     'accreditation_approved' => 'تمت الموافقة على طلب الاعتماد',
     'accreditation_rejected' => 'تم رفض طلب الاعتماد',
     'center_disabled' => 'تم إلغاء تفعيل المركز بسبب انتهاء صلاحية الاعتماد',
-
     'import_page' => [
         'title' => 'استيراد الشهادات',
         'instructions' => [
@@ -285,54 +261,43 @@ return [
             'assign_unassigned' => 'تخصيص غير المخصصة',
         ],
     ],
-
     'not_assigned' => 'غير مخصص',
     'unassigned' => 'غير مخصص',
     'no_center' => 'لا يوجد مركز',
     'no_document_type' => 'لا يوجد نوع مستند',
     'no_trainer' => 'لا يوجد مدرب',
     'no_country' => 'لا يوجد بلد',
-
     'select_center' => 'اختر مركزاً',
     'select_document_type' => 'اختر نوع المستند',
     'select_trainer' => 'اختر مدرباً',
     'select_country' => 'اختر بلداً',
-
     'center_optional' => 'اختياري - يمكن تعيينه لاحقاً',
     'trainer_optional' => 'اختياري - يمكن تعيينه لاحقاً',
-
     'center' => 'المركز',
     'serial_number' => 'الرقم التسلسلي',
     'import_date' => 'تاريخ الاستيراد',
     'last_updated' => 'آخر تحديث',
     'paper_received' => 'استلام الورقة',
-
     'serial_copied' => 'تم نسخ الرقم التسلسلي',
     'accreditation_copied' => 'تم نسخ رقم الاعتماد',
     'copied' => 'تم النسخ',
-
     'missing_center' => 'مراكز غير مخصصة',
     'missing_document_type' => 'نوع مستند غير محدد',
     'from_date' => 'من تاريخ',
     'until_date' => 'إلى تاريخ',
-
     'assign_center' => 'تخصيص مركز',
     'assign_document_type' => 'تخصيص نوع مستند',
     'update_paper_status' => 'تحديث حالة الورقة',
     'paper_received_status' => 'حالة استلام الورقة',
-
     'certificate_pdf' => 'إنشاء شهادة PDF',
-
     'certificate_type_migration_complete' => 'تم ترحيل أنواع الشهادات بنجاح',
     'all_records_preserved' => 'تم الحفاظ على جميع السجلات',
-
     'no_nationality' => 'لم يتم تحديد الجنسية',
     'no_accreditation_date' => 'لا توجد تاريخ اعتماد',
     'no_value' => 'غير محدد',
     'filter_select_placeholder' => 'اختر خيارًا',
     'table_empty_title' => 'لا توجد سجلات',
     'table_empty_description' => 'لا توجد سجلات لعرضها حالياً.',
-
     'document_type_requests' => 'طلبات أنواع الوثائق',
     'document_type_request' => 'طلب نوع وثيقة',
     'requested_document_types' => 'أنواع الوثائق المطلوبة',
@@ -340,14 +305,12 @@ return [
     'requested_at' => 'تاريخ الطلب',
     'assigned_at' => 'تاريخ التخصيص',
     'assigned_centers' => 'المراكز المخصصة',
-
     'certified_center_document_types' => 'أنواع وثائق المراكز',
     'certified_center_document_type' => 'نوع وثيقة المركز',
     'document_type_key' => 'مفتاح نوع الوثيقة',
     'document_type_name' => 'اسم نوع الوثيقة',
     'usage_count' => 'عدد الاستخدامات',
     'centers_count' => 'عدد المراكز',
-
     'id' => 'المعرف',
     'request_details' => 'تفاصيل الطلب',
     'admin_review' => 'مراجعة المشرف',
@@ -392,8 +355,6 @@ return [
     'trainer_accreditation_requests' => 'طلبات اعتماد المدربين',
     'trainer_document_type_request' => 'طلب نوع وثيقة مدرب',
     'trainer_document_type_requests' => 'طلبات أنواع وثائق المدربين',
-    'assign_center' => 'تخصيص مركز',
-    'assign_document_type' => 'تخصيص نوع وثيقة',
     'accreditation_management' => 'إدارة الاعتماد',
     'user_types' => [
         'admin' => 'مسؤول',
@@ -411,4 +372,12 @@ return [
         'rejected' => 'مرفوض',
         'under_review' => 'قيد المراجعة',
     ],
+    'request_document_types' => 'أنواع الوثائق المطلوبة',
+    'mark_as_unread' => 'تحديد كغير مقروء',
+    'mark_as_read' => 'تحديد كمقروء',
+    'contact_messages' => 'رسائل التواصل',
+    'contact_message' => 'رسالة التواصل',
+    'no_image'=> ' لا توجد صورة',
+    'blog_posts' => 'المقالات',
+    'blog_post' => 'مقالة',
 ];

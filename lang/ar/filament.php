@@ -1,5 +1,5 @@
 <?php
-
+// lang/ar/filament.php
 return [
     'navigation' => [
         'groups' => [
@@ -11,13 +11,12 @@ return [
             'financial_management' => 'الإدارة المالية',
             'accreditation_management' => 'إدارة الاعتماد',
             'communication' => 'التواصل',
+            'memberships' => 'العضويات',
         ],
     ],
-
     'labels' => [
         'social_links' => 'روابط التواصل الاجتماعي',
     ],
-
     'resources' => [
         'accreditation_requests' => 'طلبات الاعتماد',
         'application_settings' => 'إعدادات التطبيق',

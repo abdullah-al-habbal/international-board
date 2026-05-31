@@ -1,23 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\Membership\Pages\CreateMembership;
 use App\Filament\Admin\Resources\Membership\Pages\EditMembership;
 use App\Filament\Admin\Resources\Membership\Pages\ListMemberships;
 use App\Filament\Admin\Resources\Membership\Pages\ViewMembership;
+use App\Filament\Admin\Resources\Membership\Schemas\MembershipForm;
+use App\Filament\Admin\Resources\Membership\Schemas\MembershipInfolist;
+use App\Filament\Admin\Resources\Membership\Tables\MembershipsTable;
 use App\Models\Membership;
 use BackedEnum;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class MembershipResource extends Resource
@@ -34,63 +32,48 @@ class MembershipResource extends Resource
         return __('filament.navigation.groups.memberships');
     }
 
+    protected static ?int $navigationSort = 3; // adjust as needed
+
     protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'primary';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.memberships');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('app.membership');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('app.memberships');
+    }
 
     public static function form(Schema $schema): Schema
     {
-        $locales = ['ar', 'en'];
+        return MembershipForm::configure($schema);
+    }
 
-        return $schema
-            ->components([
-                TextInput::make('slug')
-                    ->label(__('app.slug'))
-                    ->required()
-                    ->unique(ignoreRecord: true),
-
-                Tabs::make('Translations')
-                    ->tabs(
-                        collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
-                            ->schema([
-                                TextInput::make("title.{$locale}")
-                                    ->label(__('app.title') . " ({$locale})")
-                                    ->required(),
-                                RichEditor::make("description.{$locale}")
-                                    ->label(__('app.description') . " ({$locale})")
-                                    ->required(),
-                            ])
-                        )->toArray()
-                    ),
-
-                Toggle::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->default(true),
-            ]);
+    public static function infolist(Schema $schema): Schema
+    {
+        return MembershipInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('title')
-                    ->label(__('app.title'))
-                    ->searchable(query: function ($query, $search) {
-                        return $query->where('title->' . app()->getLocale(), 'like', "%{$search}%");
-                    }),
-                TextColumn::make('slug')
-                    ->searchable(),
-                IconColumn::make('is_active')
-                    ->boolean(),
-            ])
-            ->filters([])
-            ->recordActions([
-                \Filament\Actions\ViewAction::make(),
-                \Filament\Actions\EditAction::make(),
-            ])
-            ->toolbarActions([
-                \Filament\Actions\BulkActionGroup::make([
-                    \Filament\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return MembershipsTable::configure($table);
     }
 
     public static function getRelations(): array

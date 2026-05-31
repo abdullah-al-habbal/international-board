@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\StaticPages;
 
 use App\Filament\Admin\Resources\StaticPages\Pages\CreateStaticPage;
@@ -42,6 +44,21 @@ class StaticPageResource extends Resource
     public static function getNavigationBadgeColor(): ?string
     {
         return 'primary';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.static_pages');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('app.static_page');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('app.static_pages');
     }
 
     public static function form(Schema $schema): Schema

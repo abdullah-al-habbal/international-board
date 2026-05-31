@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ContactMessage\Pages\ListContactMessages;
 use App\Filament\Admin\Resources\ContactMessage\Pages\ViewContactMessage;
+use App\Filament\Admin\Resources\ContactMessage\Schemas\ContactMessageInfolist;
+use App\Filament\Admin\Resources\ContactMessage\Tables\ContactMessagesTable;
 use App\Models\ContactMessage;
 use BackedEnum;
-use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ContactMessageResource extends Resource
@@ -28,36 +29,43 @@ class ContactMessageResource extends Resource
         return __('filament.navigation.groups.communication');
     }
 
+    protected static ?int $navigationSort = 2; // adjust as needed
+
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function form(Schema $schema): Schema
+    public static function getNavigationBadge(): ?string
     {
-        return $schema;
+        return (string) static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'primary';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('app.contact_messages');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('app.contact_message');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('app.contact_messages');
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return ContactMessageInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->label(__('app.name'))
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label(__('app.email'))
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->label(__('app.created_at'))
-                    ->dateTime()
-                    ->sortable(),
-                IconColumn::make('is_read')
-                    ->label(__('app.is_read'))
-                    ->boolean(),
-            ])
-            ->defaultSort('created_at', 'desc')
-            ->recordActions([
-                ViewAction::make(),
-            ])
-            ->toolbarActions([]);
+        return ContactMessagesTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -69,7 +77,7 @@ class ContactMessageResource extends Resource
     {
         return [
             'index' => ListContactMessages::route('/'),
-            'view' => ViewContactMessage::route('/{record}'),
+            'view'  => ViewContactMessage::route('/{record}'),
         ];
     }
 }

@@ -1,11 +1,13 @@
 <?php
 // app/Models/BlogPost.php
 declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Support\Facades\Storage;
 
 class BlogPost extends Model
 {
@@ -26,7 +28,7 @@ class BlogPost extends Model
     public function getImageUrlAttribute(): ?string
     {
         if ($this->attributes['image'] ?? null) {
-            return \Illuminate\Support\Facades\Storage::url($this->attributes['image']);
+            return Storage::url($this->attributes['image']);
         }
         return null;
     }
