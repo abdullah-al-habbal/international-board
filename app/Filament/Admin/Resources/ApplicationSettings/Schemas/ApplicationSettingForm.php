@@ -1,16 +1,23 @@
 <?php
+
 // app\Filament\Admin\Resources\ApplicationSettings\Schemas\ApplicationSettingForm.php
+
 namespace App\Filament\Admin\Resources\ApplicationSettings\Schemas;
 
 use App\Enums\SettingType;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class ApplicationSettingForm
 {
+    private static function resolveType(mixed $type): ?string
+    {
+        return $type instanceof SettingType ? $type->value : $type;
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -21,43 +28,43 @@ class ApplicationSettingForm
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->rules(['alpha_dash'])
-                    ->disabled(fn($operation) => $operation === 'edit')
-                    ->dehydrated(fn($state, $operation) => $operation === 'create'),
+                    ->disabled(fn ($operation) => $operation === 'edit')
+                    ->dehydrated(fn ($state, $operation) => $operation === 'create'),
 
                 Select::make('type')
                     ->label('Type')
                     ->options(
                         collect(SettingType::cases())
-                            ->mapWithKeys(fn($case) => [
-                                $case->value => ucfirst($case->value)
+                            ->mapWithKeys(fn (SettingType $case) => [
+                                $case->value => $case->label(),
                             ])
                     )
                     ->default(SettingType::Text->value)
                     ->live()
                     ->required()
-                    ->disabled(fn($operation) => $operation === 'edit'),
+                    ->disabled(fn ($operation) => $operation === 'edit'),
 
                 TextInput::make('value')
                     ->label(__('app.value'))
-                    ->visible(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Phone->value, SettingType::Url->value]))
-                    ->required(fn($get) => in_array($get('type'), [SettingType::Text->value, SettingType::Email->value, SettingType::Phone->value, SettingType::Url->value])),
+                    ->visible(fn ($get) => in_array(self::resolveType($get('type')), [SettingType::Text->value, SettingType::Email->value, SettingType::Phone->value, SettingType::Url->value]))
+                    ->required(fn ($get) => in_array(self::resolveType($get('type')), [SettingType::Text->value, SettingType::Email->value, SettingType::Phone->value, SettingType::Url->value])),
 
                 TextInput::make('value')
                     ->label(__('app.value'))
                     ->numeric()
-                    ->visible(fn($get) => $get('type') === SettingType::Number->value)
-                    ->required(fn($get) => $get('type') === SettingType::Number->value),
+                    ->visible(fn ($get) => self::resolveType($get('type')) === SettingType::Number->value)
+                    ->required(fn ($get) => self::resolveType($get('type')) === SettingType::Number->value),
 
                 Toggle::make('value')
                     ->label(__('app.value'))
-                    ->visible(fn($get) => $get('type') === SettingType::Boolean->value)
-                    ->required(fn($get) => $get('type') === SettingType::Boolean->value),
+                    ->visible(fn ($get) => self::resolveType($get('type')) === SettingType::Boolean->value)
+                    ->required(fn ($get) => self::resolveType($get('type')) === SettingType::Boolean->value),
 
                 Textarea::make('value')
                     ->label(__('app.value'))
-                    ->visible(fn($get) => in_array($get('type'), [SettingType::Json->value, SettingType::Html->value]))
-                    ->rules(fn($get) => $get('type') === SettingType::Json->value ? ['json'] : [])
-                    ->required(fn($get) => in_array($get('type'), [SettingType::Json->value, SettingType::Html->value])),
+                    ->visible(fn ($get) => in_array(self::resolveType($get('type')), [SettingType::Json->value, SettingType::Html->value]))
+                    ->rules(fn ($get) => self::resolveType($get('type')) === SettingType::Json->value ? ['json'] : [])
+                    ->required(fn ($get) => in_array(self::resolveType($get('type')), [SettingType::Json->value, SettingType::Html->value])),
             ]);
     }
 }

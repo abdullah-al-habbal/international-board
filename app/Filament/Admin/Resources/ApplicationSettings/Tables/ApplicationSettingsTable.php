@@ -1,9 +1,11 @@
 <?php
+
 // app\Filament\Admin\Resources\ApplicationSettings\Tables\ApplicationSettingsTable.php
+
 namespace App\Filament\Admin\Resources\ApplicationSettings\Tables;
 
+use App\Enums\SettingType;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -31,7 +33,7 @@ class ApplicationSettingsTable
                         }
 
                         if (is_array($value)) {
-                            return json_encode($value);
+                            return json_encode($value, JSON_UNESCAPED_UNICODE);
                         }
 
                         return $value ?: 'No value';
@@ -41,7 +43,7 @@ class ApplicationSettingsTable
                 TextColumn::make('type')
                     ->label('Type')
                     ->badge()
-                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->formatStateUsing(fn (?SettingType $state): string => $state?->label() ?? '')
                     ->searchable(),
 
                 TextColumn::make('created_at')

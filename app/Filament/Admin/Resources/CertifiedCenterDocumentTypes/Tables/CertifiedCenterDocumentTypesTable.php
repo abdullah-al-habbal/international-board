@@ -1,18 +1,20 @@
 <?php
-// filePath: app/Filament/Admin/Resources/CertifiedCenterDocumentTypes/Tables/CertifiedCenterDocumentTypesTable.php
 
 declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Tables;
 
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CertifiedCenterDocumentTypesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['certifications' => fn ($q) => $q->whereColumn('certifications.certified_center_id', 'certified_center_document_types.certified_center_id')]))
             ->columns([
                 TextColumn::make('certifiedCenter.name')
                     ->label(__('app.certified_center'))
@@ -28,21 +30,24 @@ class CertifiedCenterDocumentTypesTable
 
                 TextColumn::make('documentType.name')
                     ->label(__('app.document_type_name'))
-                    ->formatStateUsing(fn($record) => $record->documentType?->getTranslation('name', 'en')),
+                    ->formatStateUsing(fn ($record) => $record->documentType?->getTranslation('name', app()->getLocale()) ?: '—'),
 
-                TextColumn::make('documentType.certifications_count')
+                TextColumn::make('certifications_count')
                     ->label(__('app.usage_count'))
-                    ->counts('documentType.certifications')
                     ->badge()
-                    ->color('success'),
+                    ->color('success')
+                    ->sortable(),
 
                 TextColumn::make('created_at')
                     ->label(__('app.assigned_at'))
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([])
-            ->recordActions([])
+            ->recordActions([
+                ViewAction::make(),
+            ])
             ->defaultSort('created_at', 'desc');
     }
 }

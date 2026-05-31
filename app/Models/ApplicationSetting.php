@@ -33,13 +33,16 @@ class ApplicationSetting extends Model
     public function getTypedValue(mixed $rawValue = null): mixed
     {
         $value = $rawValue ?? $this->getRawOriginal('value');
+        $type = $this->type;
 
-        return match ($this->type) {
+        if (! $type instanceof SettingType) {
+            return $value;
+        }
+
+        return match ($type) {
             SettingType::Json => json_decode($value, true) ?? $value,
             SettingType::Boolean => filter_var($value, FILTER_VALIDATE_BOOLEAN),
-            SettingType::Number => is_numeric($value) ? (float) $value : $value,
-            SettingType::Email => $value,
-            SettingType::Url => $value,
+            SettingType::Number => filter_var($value, FILTER_VALIDATE_INT) !== false ? (int) $value : (float) $value,
             default => $value,
         };
     }
@@ -48,7 +51,7 @@ class ApplicationSetting extends Model
     {
         $setting = self::where('key', $key)->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return $default;
         }
 
@@ -58,12 +61,16 @@ class ApplicationSetting extends Model
     protected function value(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value): mixed => $this->getTypedValue($value),
+            get: fn (mixed $value): mixed => $this->getTypedValue($value),
         );
     }
 
     public static function set(string $key, mixed $value, SettingType $type = SettingType::Text): void
     {
+        if ($type === SettingType::Json && is_array($value)) {
+            $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        }
+
         static::updateOrCreate(
             ['key' => $key],
             ['value' => $value, 'type' => $type]

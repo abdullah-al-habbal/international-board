@@ -24,7 +24,7 @@ final class ListCertifications extends ListRecords
         return [
             Action::make('export_csv')
                 ->label('Export CSV')
-                ->icon('heroicon-o-download')
+                ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
                     $query = Certification::with([
                         'certifiedCenter',
@@ -73,7 +73,7 @@ final class ListCertifications extends ListRecords
                 }),
             Action::make('import_csv')
                 ->label('Import CSV')
-                ->icon('heroicon-o-upload')
+                ->icon('heroicon-o-arrow-up-tray')
                 ->form([
                     FileUpload::make('file')
                         ->label('CSV File')

@@ -1,4 +1,5 @@
 <?php
+
 // filePath: app/Filament/Admin/Resources/CertifiedCenterDocumentTypes/Pages/ListCertifiedCenterDocumentTypes.php
 
 declare(strict_types=1);

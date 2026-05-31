@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewApplicationSetting extends ViewRecord
 {
-    protected static string $resource =  ApplicationSettingResource::class;
+    protected static string $resource = ApplicationSettingResource::class;
 
     protected function getHeaderActions(): array
     {

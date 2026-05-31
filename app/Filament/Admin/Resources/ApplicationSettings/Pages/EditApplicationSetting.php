@@ -9,7 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditApplicationSetting extends EditRecord
 {
-    protected static string $resource =  ApplicationSettingResource::class;
+    protected static string $resource = ApplicationSettingResource::class;
 
     protected function getHeaderActions(): array
     {

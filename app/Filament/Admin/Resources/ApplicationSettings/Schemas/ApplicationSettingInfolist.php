@@ -1,7 +1,10 @@
 <?php
+
 // app\Filament\Admin\Resources\ApplicationSettings\Schemas\ApplicationSettingInfolist.php
+
 namespace App\Filament\Admin\Resources\ApplicationSettings\Schemas;
 
+use App\Enums\SettingType;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -25,7 +28,7 @@ class ApplicationSettingInfolist
                         }
 
                         if (is_array($value)) {
-                            return json_encode($value, JSON_PRETTY_PRINT);
+                            return json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
                         }
 
                         return $value;
@@ -34,7 +37,7 @@ class ApplicationSettingInfolist
                 TextEntry::make('type')
                     ->label('Type')
                     ->badge()
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
+                    ->formatStateUsing(fn (?SettingType $state): string => $state?->label() ?? ''),
 
                 TextEntry::make('created_at')
                     ->label('Created At')

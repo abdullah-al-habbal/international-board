@@ -6,8 +6,8 @@ namespace App\Filament\Admin\Resources\Certifications\Pages;
 
 use App\Filament\Admin\Resources\Certifications\CertificationResource;
 use App\Imports\CertificationsImportHandler;
-use App\Services\CertificationExportHandler;
-use App\Services\CsvImportHandler;
+use App\Services\Certification\CertificationExportHandler;
+use App\Services\Csv\CsvImportHandler;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\FileUpload;
@@ -23,7 +23,7 @@ final class ListCertifications extends ListRecords
         return [
             Action::make('export_csv')
                 ->label('Export CSV')
-                ->icon('heroicon-o-download')
+                ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
                     return app(CertificationExportHandler::class)
                         ->exportForAdmin();
@@ -31,7 +31,7 @@ final class ListCertifications extends ListRecords
 
             Action::make('import_csv')
                 ->label('Import CSV')
-                ->icon('heroicon-o-upload')
+                ->icon('heroicon-o-arrow-up-tray')
                 ->form([
                     FileUpload::make('file')
                         ->label('CSV File')
