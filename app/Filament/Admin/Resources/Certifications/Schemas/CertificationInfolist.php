@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
+use Carbon\Carbon;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -54,8 +55,17 @@ class CertificationInfolist
 
                 TextEntry::make('accreditation_date')
                     ->label(__('app.accreditation_date'))
-                    ->date()
-                    ->placeholder('-'),
+                    ->placeholder('-')
+                    ->formatStateUsing(function ($state) {
+                        if (empty($state)) {
+                            return '—';
+                        }
+                        try {
+                            return Carbon::parse($state)->format('M d, Y');
+                        } catch (\Exception $e) {
+                            return __('app.invalid_date');
+                        }
+                    }),
 
                 TextEntry::make('trainer.name')
                     ->label(__('app.trainer'))

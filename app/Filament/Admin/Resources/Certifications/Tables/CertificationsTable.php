@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
 use App\Models\Certification;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -32,15 +33,15 @@ class CertificationsTable
                     ->sortable()
                     ->toggleable()
                     ->badge()
-                    ->getStateUsing(fn($record) => $record->certifiedCenter?->name ?? __('app.unassigned'))
-                    ->color(fn($record) => $record->certified_center_id ? 'primary' : 'gray'),
+                    ->getStateUsing(fn ($record) => $record->certifiedCenter?->name ?? __('app.unassigned'))
+                    ->color(fn ($record) => $record->certified_center_id ? 'primary' : 'gray'),
 
                 TextColumn::make('trainee.name')
                     ->label(__('app.trainee'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
-                    ->getStateUsing(fn($record) => $record->trainee?->name ?? __('app.unassigned')),
+                    ->getStateUsing(fn ($record) => $record->trainee?->name ?? __('app.unassigned')),
 
                 TextColumn::make('nationality')
                     ->label(__('app.nationality'))
@@ -48,14 +49,14 @@ class CertificationsTable
                     ->badge()
                     ->color('info')
                     ->toggleable()
-                    ->getStateUsing(fn($record) => $record->nationality ?: __('app.no_nationality')),
+                    ->getStateUsing(fn ($record) => $record->nationality ?: __('app.no_nationality')),
 
                 TextColumn::make('documentType.name')
                     ->label(__('app.document_type'))
                     ->searchable()
                     ->sortable()
                     ->badge()
-                    ->color(fn($record) => $record->document_type_id ? 'info' : 'gray')
+                    ->color(fn ($record) => $record->document_type_id ? 'info' : 'gray')
                     ->icon('heroicon-o-document')
                     ->getStateUsing(function ($record) {
                         if (! $record->documentType) {
@@ -98,29 +99,31 @@ class CertificationsTable
                     ->sortable()
                     ->toggleable()
                     ->badge()
-                    ->color(fn($record) => $record->trainer_id ? 'warning' : 'gray')
-                    ->getStateUsing(fn($record) => $record->trainer?->name ?? __('app.unassigned')),
+                    ->color(fn ($record) => $record->trainer_id ? 'warning' : 'gray')
+                    ->getStateUsing(fn ($record) => $record->trainer?->name ?? __('app.unassigned')),
 
                 TextColumn::make('country.name')
                     ->label(__('app.country'))
                     ->searchable(['countries.name'])
                     ->sortable()
                     ->badge()
-                    ->color(fn($record) => $record->country_id ? 'info' : 'gray')
+                    ->color(fn ($record) => $record->country_id ? 'info' : 'gray')
                     ->toggleable()
-                    ->getStateUsing(fn($record) => $record->country?->name ?? __('app.unassigned')),
+                    ->getStateUsing(fn ($record) => $record->country?->name ?? __('app.unassigned')),
 
                 TextColumn::make('accreditation_date')
                     ->label(__('app.accreditation_date'))
-                    ->date('M d, Y')
                     ->sortable()
                     ->toggleable()
-                    ->getStateUsing(function ($record) {
-                        if (empty($record->accreditation_date)) {
+                    ->formatStateUsing(function ($state) {
+                        if (empty($state)) {
                             return __('app.no_accreditation_date');
                         }
-
-                        return $record->accreditation_date;
+                        try {
+                            return Carbon::parse($state)->format('M d, Y');
+                        } catch (\Exception $e) {
+                            return __('app.invalid_date');
+                        }
                     }),
 
                 IconColumn::make('paper_received')
@@ -201,22 +204,22 @@ class CertificationsTable
                         return $query
                             ->when(
                                 $data['from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('accreditation_date', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('accreditation_date', '>=', $date),
                             )
                             ->when(
                                 $data['until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('accreditation_date', '<=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('accreditation_date', '<=', $date),
                             );
                     }),
 
                 Filter::make('missing_center')
                     ->label(__('app.missing_center'))
-                    ->query(fn(Builder $query): Builder => $query->whereNull('certified_center_id'))
+                    ->query(fn (Builder $query): Builder => $query->whereNull('certified_center_id'))
                     ->toggle(),
 
                 Filter::make('missing_document_type')
                     ->label(__('app.missing_document_type'))
-                    ->query(fn(Builder $query): Builder => $query->whereNull('document_type_id'))
+                    ->query(fn (Builder $query): Builder => $query->whereNull('document_type_id'))
                     ->toggle(),
             ])
             ->recordActions([

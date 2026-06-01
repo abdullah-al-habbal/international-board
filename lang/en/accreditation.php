@@ -1,4 +1,5 @@
 <?php
+
 // filePath: lang/en/accreditation.php
 return [
     'blocked' => [

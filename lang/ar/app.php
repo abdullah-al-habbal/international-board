@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 return [
     'dashboard' => 'لوحة التحكم',
     'navigation' => 'التنقل',
@@ -294,6 +296,7 @@ return [
     'all_records_preserved' => 'تم الحفاظ على جميع السجلات',
     'no_nationality' => 'لم يتم تحديد الجنسية',
     'no_accreditation_date' => 'لا توجد تاريخ اعتماد',
+    'invalid_date' => 'تاريخ غير صالح',
     'no_value' => 'غير محدد',
     'filter_select_placeholder' => 'اختر خيارًا',
     'table_empty_title' => 'لا توجد سجلات',
@@ -377,7 +380,7 @@ return [
     'mark_as_read' => 'تحديد كمقروء',
     'contact_messages' => 'رسائل التواصل',
     'contact_message' => 'رسالة التواصل',
-    'no_image'=> ' لا توجد صورة',
+    'no_image' => ' لا توجد صورة',
     'blog_posts' => 'المقالات',
     'blog_post' => 'مقالة',
 ];

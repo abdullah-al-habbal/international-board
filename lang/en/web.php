@@ -1,6 +1,8 @@
 <?php
+
 // lang\en\web.php
 declare(strict_types=1);
+
 return [
     'default_title' => 'National Certification Authority',
     'site_logo' => 'National Certification Authority Logo',

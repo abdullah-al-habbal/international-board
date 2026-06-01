@@ -348,6 +348,7 @@ return [
     'all_records_preserved' => 'All existing records have been preserved.',
     'no_nationality' => 'No nationality specified.',
     'no_accreditation_date' => 'No accreditation date provided.',
+    'invalid_date' => 'Invalid Date',
     'no_value' => 'Not specified',
     'filter_select_placeholder' => 'Select an option',
     'table_empty_title' => 'No Records Found',

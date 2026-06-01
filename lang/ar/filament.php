@@ -1,4 +1,5 @@
 <?php
+
 // lang/ar/filament.php
 return [
     'navigation' => [
