@@ -153,7 +153,7 @@ final class CertificationsImportHandler
         return $nationalityMap[$lookup] ?? $cleaned;
     }
 
-    private function normalizePaperStatus(?string $status): ?bool
+    private function normalizePaperStatus(?string $status): ?string
     {
         if (empty($status)) {
             return null;
@@ -162,9 +162,9 @@ final class CertificationsImportHandler
         $value = mb_strtolower(trim($status));
 
         return match ($value) {
-            'y', 'yes', 'yas', '1', 'true' => true,
-            'n', 'no', '0', 'false' => false,
-            default => null,
+            'y', 'yes', 'yas', '1', 'true' => 'YES',
+            'n', 'no', '0', 'false' => 'NO',
+            default => mb_strtoupper(trim($status)),
         };
     }
 

@@ -123,14 +123,6 @@ jobs:
 
             cd "$TARGET"
 
-            # Backup current version before deployment
-            echo "Creating backup..."
-            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-            if [ -d "backup_$TIMESTAMP" ]; then
-              rm -rf "backup_$TIMESTAMP"
-            fi
-            cp -r . "backup_$TIMESTAMP" || true
-
             echo "Extracting release..."
             tar -xzf /tmp/release.tar.gz -C "$TARGET"
             rm -f /tmp/release.tar.gz

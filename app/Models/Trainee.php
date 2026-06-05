@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,9 +33,19 @@ class Trainee extends Model
 
     protected function casts(): array
     {
-        return [
-            'date_of_birth' => 'date',
-        ];
+        return [];
+    }
+
+    public function getDateOfBirthAttribute($value): ?string
+    {
+        if (blank($value)) {
+            return null;
+        }
+        try {
+            return Carbon::parse($value)->toDateString();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public function country(): BelongsTo

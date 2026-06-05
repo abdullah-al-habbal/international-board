@@ -19,13 +19,13 @@ class TraineesTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('app.name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
 
                 TextColumn::make('email')
-                    ->label(__('Email'))
+                    ->label(__('app.email'))
                     ->searchable()
                     ->sortable()
                     ->icon('heroicon-o-envelope')
@@ -33,66 +33,70 @@ class TraineesTable
                     ->toggleable(),
 
                 TextColumn::make('phone')
-                    ->label(__('Phone'))
+                    ->label(__('app.phone'))
                     ->searchable()
                     ->icon('heroicon-o-phone')
                     ->getStateUsing(fn ($record) => $record->phone ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('country.name')
-                    ->label(__('Country'))
+                    ->label(__('app.country'))
                     ->searchable()
                     ->sortable()
                     ->getStateUsing(fn ($record) => $record->country->name ?? __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('nationality')
-                    ->label(__('Nationality'))
+                    ->label(__('app.nationality'))
                     ->searchable()
                     ->sortable()
                     ->getStateUsing(fn ($record) => $record->nationality ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('gender')
-                    ->label(__('Gender'))
+                    ->label(__('app.gender'))
                     ->badge()
                     ->getStateUsing(fn ($record) => $record->gender ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('occupation')
-                    ->label(__('Occupation'))
+                    ->label(__('app.occupation'))
                     ->searchable()
                     ->getStateUsing(fn ($record) => $record->occupation ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('organization')
-                    ->label(__('Organization'))
+                    ->label(__('app.organization'))
                     ->searchable()
                     ->getStateUsing(fn ($record) => $record->organization ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('date_of_birth')
-                    ->label(__('Date of Birth'))
-                    ->date()
+                    ->label(__('app.date_of_birth'))
                     ->sortable()
-                    ->getStateUsing(fn ($record) => $record->date_of_birth ?: __('app.no_value'))
-                    ->toggleable(),
+                    ->toggleable()
+                    ->formatStateUsing(function ($state) {
+                        if (blank($state)) {
+                            return __('app.no_value');
+                        }
+                        return $state;
+                    }),
 
                 TextColumn::make('certifications_count')
-                    ->label(__('Certifications'))
+                    ->label(__('app.certifications'))
                     ->counts('certifications')
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->since()
                     ->sortable()
@@ -100,17 +104,17 @@ class TraineesTable
             ])
             ->filters([
                 SelectFilter::make('country_id')
-                    ->label(__('Country'))
+                    ->label(__('app.country'))
                     ->relationship('country', 'name')
                     ->searchable()
                     ->preload()
                     ->multiple(),
 
                 SelectFilter::make('gender')
-                    ->label(__('Gender'))
+                    ->label(__('app.gender'))
                     ->options([
-                        'male' => __('Male'),
-                        'female' => __('Female'),
+                        'male' => __('app.male'),
+                        'female' => __('app.female'),
                     ])
                     ->multiple(),
             ])

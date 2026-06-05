@@ -45,7 +45,9 @@ class CertifiedCenterResource extends Resource
 
     public static function getNavigationBadgeColor(): ?string
     {
-        $expired = app(CertifiedCenterService::class)->getExpiredAccreditationCount();
+        $expired = cache()->remember('certified_centers_expired_count', 60, function () {
+            return app(CertifiedCenterService::class)->getExpiredAccreditationCount();
+        });
 
         return $expired > 0 ? 'danger' : 'primary';
     }

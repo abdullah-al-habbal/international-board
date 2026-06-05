@@ -27,7 +27,8 @@ class CertifiedCenterForm
                 TextInput::make('password')
                     ->label(__('app.password'))
                     ->password()
-                    ->required(),
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn (?string $state) => filled($state)),
                 Textarea::make('address')
                     ->label(__('app.address'))
                     ->columnSpanFull(),

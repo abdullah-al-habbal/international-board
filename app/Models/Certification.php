@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use App\Policies\CertificationPolicy;
@@ -40,10 +41,19 @@ class Certification extends Model
 
     protected function casts(): array
     {
-        return [
-            'accreditation_date' => 'date',
-            'paper_received' => 'boolean',
-        ];
+        return [];
+    }
+
+    public function getAccreditationDateAttribute($value): ?string
+    {
+        if (blank($value)) {
+            return null;
+        }
+        try {
+            return Carbon::parse($value)->toDateString();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public function certifiedCenter(): BelongsTo
