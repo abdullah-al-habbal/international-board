@@ -50,8 +50,7 @@ class CertificationInfolist
                     ->copyMessageDuration(1500),
 
                 TextEntry::make('document_code')
-                    ->label(__('app.document_code'))
-                    ->placeholder('-'),
+                    ->label(__('app.document_code')),
 
                 TextEntry::make('accreditation_date')
                     ->label(__('app.accreditation_date'))

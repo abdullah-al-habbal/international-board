@@ -110,14 +110,6 @@ class CertificationForm
 
                 Section::make(__('app.document_details_section'))
                     ->schema([
-                        Grid::make(2)
-                            ->schema([
-
-                                TextInput::make('document_code')
-                                    ->label(__('app.document_code'))
-                                    ->maxLength(255),
-                            ]),
-
                         Toggle::make('paper_received')
                             ->label(__('app.paper_document_received'))
                             ->default(false),

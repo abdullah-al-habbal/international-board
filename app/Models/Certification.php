@@ -18,11 +18,26 @@ use App\Models\DocumentType;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 #[UsePolicy(CertificationPolicy::class)]
 class Certification extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::creating(function (Certification $certification) {
+            if (empty($certification->document_code)) {
+                $certification->document_code = self::generateDocumentCode();
+            }
+        });
+    }
+
+    protected static function generateDocumentCode(): string
+    {
+        return 'CERT-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4));
+    }
 
     protected $fillable = [
         'certified_center_id',
@@ -41,8 +56,9 @@ class Certification extends Model
 
     protected function casts(): array
     {
-        return [];
-    }
+    return [
+        'accreditation_date' => 'date',
+    ];    }
 
     public function getAccreditationDateAttribute($value): ?string
     {

@@ -41,7 +41,7 @@
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.document_code') }}</th>
-                                    <td>{{ $certification->document_code ?? '—' }}</td>
+                                    <td>{{ $certification->document_code }}</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('web.labels.accreditation_number') }}</th>
@@ -51,13 +51,14 @@
                                     <th>{{ __('web.labels.issue_date') }}</th>
                                     <td>
                                         @if($certification->accreditation_date)
+                                            @php
+                                                $accreditationDate = \Carbon\Carbon::parse($certification->accreditation_date);
+                                            @endphp
                                             <span class="d-block fw-semibold">
-                                                {{ $certification->accreditation_date->format('Y-m-d') }}
+                                                {{ $accreditationDate->format('Y-m-d') }}
                                             </span>
                                             <small class="text-muted">
-                                                {{ $certification->accreditation_date
-                                                    ->locale(app()->getLocale())
-                                                    ->diffForHumans() }}
+                                                {{ $accreditationDate->locale(app()->getLocale())->diffForHumans() }}
                                             </small>
                                         @else
                                             <span class="text-muted">—</span>

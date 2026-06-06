@@ -7,18 +7,18 @@ namespace App\Filament\Center\Resources\Certifications\Pages;
 use App\Filament\Center\Resources\Certifications\CertificationResource;
 use App\Imports\CertificationsImportHandler;
 use App\Models\Certification;
-use App\Services\CsvExportHandler;
-use App\Services\CsvImportHandler;
+use App\Services\Csv\CsvExportHandler;
+use App\Services\Csv\CsvImportHandler;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 final class ListCertifications extends ListRecords
 {
     protected static string $resource = CertificationResource::class;
-    // fix: move the export logic into a handler Class.
     protected function getHeaderActions(): array
     {
         return [
@@ -32,7 +32,7 @@ final class ListCertifications extends ListRecords
                         'trainer',
                         'country',
                         'trainee',
-                    ])->where('certified_center_id', auth()->id())
+                    ])->where('certified_center_id', Auth::id())
                       ->orderByDesc('created_at');
 
                     $headers = [
