@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables;
 
 use App\Enums\AccreditationStatus;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -30,6 +33,13 @@ class TrainerAccreditationRequestsTable
                     ->label(__('app.end_date'))
                     ->date()
                     ->sortable(),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record) => $record->status === AccreditationStatus::Pending),
+                DeleteAction::make()
+                    ->visible(fn ($record) => $record->status === AccreditationStatus::Pending),
             ])
             ->defaultSort('created_at', 'desc');
     }

@@ -16,6 +16,8 @@ use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerA
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\CreateTrainerAccreditationRequest;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ViewTrainerAccreditationRequest;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\EditTrainerAccreditationRequest;
 use Illuminate\Support\Facades\Auth;
 
 class TrainerAccreditationRequestResource extends Resource
@@ -87,6 +89,8 @@ class TrainerAccreditationRequestResource extends Resource
         return [
             'index' => ListTrainerAccreditationRequests::route('/'),
             'create' => CreateTrainerAccreditationRequest::route('/create'),
+            'view' => ViewTrainerAccreditationRequest::route('/{record}'),
+            'edit' => EditTrainerAccreditationRequest::route('/{record}/edit'),
         ];
     }
 }

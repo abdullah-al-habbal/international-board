@@ -30,7 +30,8 @@ class TrainerDocumentTypeRequestsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record) => $record->status === DocumentTypeRequestStatus::Pending),
                 DeleteAction::make()
                     ->visible(fn ($record) => $record->status === DocumentTypeRequestStatus::Pending),
             ])
