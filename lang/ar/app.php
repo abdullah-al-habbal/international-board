@@ -389,4 +389,5 @@ return [
     'document_type_request_approved' => 'تمت الموافقة على طلب نوع الوثيقة بنجاح.',
     'document_type_request_rejected' => 'تم رفض طلب نوع الوثيقة بنجاح.',
     'cannot_delete_processed_request' => 'لا يمكن حذف طلب تمت الموافقة عليه أو رفضه.',
+    'password_keep_hint' => 'اتركه فارغًا للاحتفاظ بكلمة المرور الحالية.',
 ];

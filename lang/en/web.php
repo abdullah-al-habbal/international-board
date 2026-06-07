@@ -142,5 +142,12 @@ return [
         'nationality' => 'Nationality',
         'no_trainer' => 'No trainer assigned',
         'not_assigned' => 'N/A',
+        'email' => 'Email',
+        'accreditation_period' => 'Accreditation Period',
+        'active' => 'Active',
+        'expired' => 'Expired',
+        'manager_name' => 'Manager',
+        'certifications' => 'Certifications',
+        'certification' => 'Certification',
     ],
 ];

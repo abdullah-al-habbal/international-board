@@ -148,5 +148,12 @@ return [
         'nationality' => 'الجنسية',
         'no_trainer' => 'لا يوجد مدرب معين',
         'not_assigned' => 'غير محدد',
+        'email' => 'البريد الإلكتروني',
+        'accreditation_period' => 'فترة الاعتماد',
+        'active' => 'نشط',
+        'expired' => 'منتهي',
+        'manager_name' => 'مدير المركز',
+        'certifications' => 'الشهادات',
+        'certification' => 'شهادة',
     ],
 ];

@@ -392,4 +392,5 @@ return [
     'document_type_request_approved' => 'Document type request approved successfully.',
     'document_type_request_rejected' => 'Document type request rejected successfully.',
     'cannot_delete_processed_request' => 'Cannot delete an approved or rejected request.',
+    'password_keep_hint' => 'Leave empty to keep the current password.',
 ];
