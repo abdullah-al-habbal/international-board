@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages;
 
-use App\Filament\Trainer\Resources\TrainerAccreditationRequestResource;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\TrainerAccreditationRequestResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages;
 
-use App\Filament\Trainer\Resources\TrainerDocumentTypeRequestResource;
+use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\TrainerDocumentTypeRequestResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTrainerDocumentTypeRequest extends CreateRecord

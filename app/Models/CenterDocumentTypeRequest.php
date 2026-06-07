@@ -30,6 +30,17 @@ class CenterDocumentTypeRequest extends Model
         ];
     }
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::deleting(function (self $request): void {
+            if ($request->status !== DocumentTypeRequestStatus::Pending) {
+                throw new \RuntimeException(__('app.cannot_delete_processed_request'));
+            }
+        });
+    }
+
     public function certifiedCenter(): BelongsTo
     {
         return $this->belongsTo(CertifiedCenter::class);

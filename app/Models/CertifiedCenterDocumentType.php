@@ -40,6 +40,7 @@ class CertifiedCenterDocumentType extends Model
 
     public function certifications(): HasMany
     {
-        return $this->hasMany(Certification::class, 'document_type_id', 'document_type_id');
+        return $this->hasMany(Certification::class, 'document_type_id', 'document_type_id')
+            ->where('certified_center_id', $this->certified_center_id);
     }
 }

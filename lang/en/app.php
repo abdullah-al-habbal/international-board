@@ -386,4 +386,10 @@ return [
     'no_image' => 'No Image',
     'blog_posts' => 'Blog Posts',
     'blog_post' => 'Blog Post',
+
+    'approved_document_types' => 'Approved Document Types',
+    'approved_document_type' => 'Approved Document Type',
+    'document_type_request_approved' => 'Document type request approved successfully.',
+    'document_type_request_rejected' => 'Document type request rejected successfully.',
+    'cannot_delete_processed_request' => 'Cannot delete an approved or rejected request.',
 ];

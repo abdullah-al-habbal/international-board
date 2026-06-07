@@ -1,13 +1,13 @@
 <?php
-// filePath: app/Filament/Admin/Resources/CenterDocumentTypeRequests/Tables/CenterDocumentTypeRequestsTable.php
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\CenterDocumentTypeRequests\Tables;
+namespace App\Filament\Admin\Resources\TrainerDocumentTypeRequests\Tables;
 
 use App\Enums\DocumentTypeRequestStatus;
-use App\Models\CenterDocumentTypeRequest;
-use App\Models\CertifiedCenterDocumentType;
+use App\Models\DocumentType;
+use App\Models\TrainerDocumentType;
+use App\Models\TrainerDocumentTypeRequest;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -18,7 +18,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
 
-class CenterDocumentTypeRequestsTable
+class TrainerDocumentTypeRequestsTable
 {
     public static function configure(Table $table): Table
     {
@@ -30,25 +30,22 @@ class CenterDocumentTypeRequestsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('certifiedCenter.name')
-                    ->label(__('app.certified_center'))
+                TextColumn::make('trainer.name')
+                    ->label(__('app.trainer'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'pending' => 'warning',
-                        'approved' => 'success',
-                        'rejected' => 'danger',
-                        default => 'gray',
-                    })
+                    ->color(fn (DocumentTypeRequestStatus $state): string => $state->color())
                     ->sortable(),
 
                 TextColumn::make('requested_document_types')
-                    ->label(__('app.requested_count'))
-                    ->formatStateUsing(fn($state) => count($state ?? [])),
+                    ->label(__('app.requested_types'))
+                    ->formatStateUsing(function ($state) {
+                        return DocumentType::whereIn('id', $state ?? [])->pluck('name')->implode(', ');
+                    }),
 
                 TextColumn::make('admin_notes')
                     ->label(__('app.admin_notes'))
@@ -72,23 +69,23 @@ class CenterDocumentTypeRequestsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()
-                    ->visible(fn (CenterDocumentTypeRequest $record): bool => $record->status === DocumentTypeRequestStatus::Pending),
+                    ->visible(fn (TrainerDocumentTypeRequest $record): bool => $record->status === DocumentTypeRequestStatus::Pending),
 
                 Action::make('approve')
                     ->label(__('app.approve'))
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
-                    ->visible(fn (CenterDocumentTypeRequest $record): bool => $record->status === DocumentTypeRequestStatus::Pending)
-                    ->action(function (CenterDocumentTypeRequest $record): void {
+                    ->visible(fn (TrainerDocumentTypeRequest $record): bool => $record->status === DocumentTypeRequestStatus::Pending)
+                    ->action(function (TrainerDocumentTypeRequest $record): void {
                         DB::transaction(function () use ($record): void {
                             $record->update([
                                 'status' => DocumentTypeRequestStatus::Approved,
                             ]);
 
                             foreach ($record->requested_document_types ?? [] as $docTypeId) {
-                                CertifiedCenterDocumentType::firstOrCreate([
-                                    'certified_center_id' => $record->certified_center_id,
+                                TrainerDocumentType::firstOrCreate([
+                                    'trainer_id' => $record->trainer_id,
                                     'document_type_id' => $docTypeId,
                                 ]);
                             }
@@ -105,14 +102,14 @@ class CenterDocumentTypeRequestsTable
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
                     ->requiresConfirmation()
-                    ->visible(fn (CenterDocumentTypeRequest $record): bool => $record->status === DocumentTypeRequestStatus::Pending)
+                    ->visible(fn (TrainerDocumentTypeRequest $record): bool => $record->status === DocumentTypeRequestStatus::Pending)
                     ->form([
                         Textarea::make('admin_notes')
                             ->label(__('app.admin_notes'))
                             ->required()
                             ->rows(3),
                     ])
-                    ->action(function (CenterDocumentTypeRequest $record, array $data): void {
+                    ->action(function (TrainerDocumentTypeRequest $record, array $data): void {
                         $record->update([
                             'status' => DocumentTypeRequestStatus::Rejected,
                             'admin_notes' => $data['admin_notes'],

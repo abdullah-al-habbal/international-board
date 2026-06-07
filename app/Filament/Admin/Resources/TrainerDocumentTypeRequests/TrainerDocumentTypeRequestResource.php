@@ -1,24 +1,23 @@
 <?php
-// filePath: app/Filament/Admin/Resources/CenterDocumentTypeRequests/CenterDocumentTypeRequestResource.php
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\CenterDocumentTypeRequests;
+namespace App\Filament\Admin\Resources\TrainerDocumentTypeRequests;
 
-use App\Filament\Admin\Resources\CenterDocumentTypeRequests\Pages\ListCenterDocumentTypeRequests;
-use App\Filament\Admin\Resources\CenterDocumentTypeRequests\Pages\ViewCenterDocumentTypeRequest;
-use App\Filament\Admin\Resources\CenterDocumentTypeRequests\Schemas\CenterDocumentTypeRequestInfolist;
-use App\Filament\Admin\Resources\CenterDocumentTypeRequests\Tables\CenterDocumentTypeRequestsTable;
-use App\Models\CenterDocumentTypeRequest;
+use App\Filament\Admin\Resources\TrainerDocumentTypeRequests\Pages\ListTrainerDocumentTypeRequests;
+use App\Filament\Admin\Resources\TrainerDocumentTypeRequests\Pages\ViewTrainerDocumentTypeRequest;
+use App\Filament\Admin\Resources\TrainerDocumentTypeRequests\Schemas\TrainerDocumentTypeRequestInfolist;
+use App\Filament\Admin\Resources\TrainerDocumentTypeRequests\Tables\TrainerDocumentTypeRequestsTable;
+use App\Models\TrainerDocumentTypeRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
-class CenterDocumentTypeRequestResource extends Resource
+class TrainerDocumentTypeRequestResource extends Resource
 {
-    protected static ?string $model = CenterDocumentTypeRequest::class;
+    protected static ?string $model = TrainerDocumentTypeRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -30,7 +29,7 @@ class CenterDocumentTypeRequestResource extends Resource
         return __('filament.navigation.groups.content');
     }
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 8;
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -46,27 +45,27 @@ class CenterDocumentTypeRequestResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.document_type_requests');
+        return __('app.trainer_document_type_requests');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.document_type_request');
+        return __('app.trainer_document_type_request');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.document_type_requests');
+        return __('app.trainer_document_type_requests');
     }
 
     public static function infolist(Schema $schema): Schema
     {
-        return CenterDocumentTypeRequestInfolist::configure($schema);
+        return TrainerDocumentTypeRequestInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return CenterDocumentTypeRequestsTable::configure($table);
+        return TrainerDocumentTypeRequestsTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -77,8 +76,8 @@ class CenterDocumentTypeRequestResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListCenterDocumentTypeRequests::route('/'),
-            'view' => ViewCenterDocumentTypeRequest::route('/{record}'),
+            'index' => ListTrainerDocumentTypeRequests::route('/'),
+            'view' => ViewTrainerDocumentTypeRequest::route('/{record}'),
         ];
     }
 }

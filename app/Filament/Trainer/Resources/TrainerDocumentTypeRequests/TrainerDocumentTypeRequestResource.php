@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Trainer\Resources;
+namespace App\Filament\Trainer\Resources\TrainerDocumentTypeRequests;
 
 use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages\CreateTrainerDocumentTypeRequest;
 use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages\ListTrainerDocumentTypeRequests;

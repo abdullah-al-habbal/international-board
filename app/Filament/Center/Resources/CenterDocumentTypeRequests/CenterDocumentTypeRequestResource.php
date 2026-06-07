@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Center\Resources;
+namespace App\Filament\Center\Resources\CenterDocumentTypeRequests;
 
 use App\Models\CenterDocumentTypeRequest;
 use BackedEnum;
@@ -15,6 +15,7 @@ use App\Filament\Center\Resources\CenterDocumentTypeRequests\Schemas\CenterDocum
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\Tables\CenterDocumentTypeRequestsTable;
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\Pages\ListCenterDocumentTypeRequests;
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\Pages\CreateCenterDocumentTypeRequest;
+
 class CenterDocumentTypeRequestResource extends Resource
 {
     protected static ?string $model = CenterDocumentTypeRequest::class;

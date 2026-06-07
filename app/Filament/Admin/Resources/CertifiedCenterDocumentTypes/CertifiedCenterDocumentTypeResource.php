@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\CertifiedCenterDocumentTypes;
 
 use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Pages\ListCertifiedCenterDocumentTypes;
 use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Pages\ViewCertifiedCenterDocumentType;
+use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Schemas\CertifiedCenterDocumentTypeForm;
 use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Schemas\CertifiedCenterDocumentTypeInfolist;
 use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Tables\CertifiedCenterDocumentTypesTable;
 use App\Models\CertifiedCenterDocumentType;
@@ -61,6 +62,11 @@ class CertifiedCenterDocumentTypeResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return CertifiedCenterDocumentTypeInfolist::configure($schema);
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return CertifiedCenterDocumentTypeForm::configure($schema);
     }
 
     public static function table(Table $table): Table

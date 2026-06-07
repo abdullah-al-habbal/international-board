@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Trainer\Resources;
+namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests;
 
 use App\Models\TrainerAccreditationRequest;
 use BackedEnum;
@@ -15,6 +15,7 @@ use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerA
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\CreateTrainerAccreditationRequest;
+
 class TrainerAccreditationRequestResource extends Resource
 {
     protected static ?string $model = TrainerAccreditationRequest::class;
