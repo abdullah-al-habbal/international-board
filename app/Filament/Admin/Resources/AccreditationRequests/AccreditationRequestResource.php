@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\AccreditationRequests;
 
-use App\Filament\Admin\Resources\AccreditationRequests\Pages\CreateAccreditationRequest;
 use App\Filament\Admin\Resources\AccreditationRequests\Pages\EditAccreditationRequest;
 use App\Filament\Admin\Resources\AccreditationRequests\Pages\ListAccreditationRequests;
 use App\Filament\Admin\Resources\AccreditationRequests\Pages\ViewAccreditationRequest;
@@ -93,7 +92,6 @@ class AccreditationRequestResource extends Resource
     {
         return [
             'index' => ListAccreditationRequests::route('/'),
-            'create' => CreateAccreditationRequest::route('/create'),
             'view' => ViewAccreditationRequest::route('/{record}'),
             'edit' => EditAccreditationRequest::route('/{record}/edit'),
         ];

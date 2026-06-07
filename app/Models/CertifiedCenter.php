@@ -26,6 +26,7 @@ use App\Models\CertifiedCenterFinancialRequest;
 use App\Models\Country;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 #[UsePolicy(CertifiedCenterPolicy::class)]
 class CertifiedCenter extends Authenticatable implements FilamentUser
@@ -192,7 +193,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     public function getLogoUrlAttribute(): ?string
     {
         if ($this->attributes['logo'] ?? null) {
-            return \Illuminate\Support\Facades\Storage::url($this->attributes['logo']);
+            return Storage::url($this->attributes['logo']);
         }
         return null;
     }
