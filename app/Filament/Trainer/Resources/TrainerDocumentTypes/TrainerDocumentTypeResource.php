@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerDocumentTypes;
 
+use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\EditTrainerDocumentType;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\ListTrainerDocumentTypes;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Tables\TrainerDocumentTypesTable;
 use App\Models\TrainerDocumentType;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,9 +47,24 @@ class TrainerDocumentTypeResource extends Resource
 
     protected static ?int $navigationSort = 12;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getNavigationBadge() > 0 ? 'success' : 'gray';
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('trainer_id', Auth::id());
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return \App\Filament\Trainer\Resources\TrainerDocumentTypes\Schemas\TrainerDocumentTypeForm::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -59,6 +76,7 @@ class TrainerDocumentTypeResource extends Resource
     {
         return [
             'index' => ListTrainerDocumentTypes::route('/'),
+            'edit' => EditTrainerDocumentType::route('/{record}/edit'),
         ];
     }
 }

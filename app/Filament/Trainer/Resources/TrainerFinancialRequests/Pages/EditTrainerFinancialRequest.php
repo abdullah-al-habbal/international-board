@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages;
 
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\TrainerFinancialRequestResource;
-use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\EditRecord;
 
-class ListTrainerFinancialRequests extends ListRecords
+class EditTrainerFinancialRequest extends EditRecord
 {
     protected static string $resource = TrainerFinancialRequestResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getRedirectUrl(): string
     {
-        return [
-            CreateAction::make(),
-        ];
+        return $this->getResource()::getUrl('index');
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests;
 
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\CreateTrainerFinancialRequest;
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\EditTrainerFinancialRequest;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ListTrainerFinancialRequests;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ViewTrainerFinancialRequest;
 use App\Models\TrainerFinancialRequest;
@@ -58,6 +60,16 @@ class TrainerFinancialRequestResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getNavigationBadge() > 0 ? 'warning' : 'gray';
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('trainer_id', auth('trainer')->id());
@@ -82,7 +94,9 @@ class TrainerFinancialRequestResource extends Resource
     {
         return [
             'index' => ListTrainerFinancialRequests::route('/'),
+            'create' => CreateTrainerFinancialRequest::route('/create'),
             'view' => ViewTrainerFinancialRequest::route('/{record}'),
+            'edit' => EditTrainerFinancialRequest::route('/{record}/edit'),
         ];
     }
 }

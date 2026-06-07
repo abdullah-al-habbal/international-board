@@ -42,7 +42,6 @@ class EnsureCenterIsAccredited
 
         if ($request->routeIs(
             'filament.center.resources.accreditation-requests.*',
-            'filament.center.resources.center-financial-requests.*',
             'filament.center.pages.dashboard',
         )) {
             return $next($request);

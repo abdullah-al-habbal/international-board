@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas;
 
+use App\Models\CertifiedCenterPaymentAgentPerson;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class TrainerFinancialRequestForm
@@ -15,21 +17,32 @@ class TrainerFinancialRequestForm
     {
         return $schema
             ->components([
-                TextInput::make('agent_person_id')
+                Select::make('agent_person_id')
                     ->label(__('app.agent_person'))
-                    ->formatStateUsing(fn ($record) => $record?->agentPerson?->name)
-                    ->disabled(),
+                    ->options(function () {
+                        return CertifiedCenterPaymentAgentPerson::with('certifiedCenter')
+                            ->get()
+                            ->groupBy(fn ($ap) => $ap->certifiedCenter?->name ?? __('app.unassigned'))
+                            ->map(fn ($group) => $group->pluck('name', 'id'));
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 TextInput::make('total_payment')
-                    ->money('USD')
-                    ->disabled(),
+                    ->label(__('app.total_amount'))
+                    ->numeric()
+                    ->required(),
                 TextInput::make('amount_paid')
-                    ->money('USD')
-                    ->disabled(),
-                TextInput::make('remaining_amount')
-                    ->money('USD')
-                    ->disabled(),
-                DatePicker::make('date')->disabled(),
-                Textarea::make('reason')->disabled()->columnSpanFull(),
+                    ->label(__('app.paid_amount'))
+                    ->numeric()
+                    ->required(),
+                DatePicker::make('date')
+                    ->label(__('app.date'))
+                    ->required(),
+                Textarea::make('reason')
+                    ->label(__('app.notes'))
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
             ]);
     }
 }

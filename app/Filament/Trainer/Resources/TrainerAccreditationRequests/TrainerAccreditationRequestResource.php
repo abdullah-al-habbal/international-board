@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests;
 
+use App\Enums\AccreditationStatus;
 use App\Models\TrainerAccreditationRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -47,6 +48,24 @@ class TrainerAccreditationRequestResource extends Resource
     }
 
     protected static ?int $navigationSort = 20;
+
+    public static function canCreate(): bool
+    {
+        return ! TrainerAccreditationRequest::query()
+            ->where('trainer_id', Auth::id())
+            ->where('status', '!=', AccreditationStatus::Rejected->value)
+            ->exists();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getNavigationBadge() > 0 ? 'warning' : 'gray';
+    }
 
     public static function getEloquentQuery(): Builder
     {

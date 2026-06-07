@@ -6,6 +6,9 @@ namespace App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Tables;
 
 use App\Enums\DocumentTypeRequestStatus;
 use App\Models\DocumentType;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -24,6 +27,12 @@ class TrainerDocumentTypeRequestsTable
                     ->formatStateUsing(function ($state) {
                         return DocumentType::whereIn('id', $state)->pluck('name')->implode(', ');
                     }),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make()
+                    ->visible(fn ($record) => $record->status === DocumentTypeRequestStatus::Pending),
             ])
             ->defaultSort('created_at', 'desc');
     }

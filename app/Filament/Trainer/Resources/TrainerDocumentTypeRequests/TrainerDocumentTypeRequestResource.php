@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerDocumentTypeRequests;
 
+use App\Enums\DocumentTypeRequestStatus;
 use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages\CreateTrainerDocumentTypeRequest;
+use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages\EditTrainerDocumentTypeRequest;
 use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages\ListTrainerDocumentTypeRequests;
 use App\Models\TrainerDocumentTypeRequest;
 use BackedEnum;
@@ -48,7 +50,7 @@ class TrainerDocumentTypeRequestResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('status', \App\Enums\DocumentTypeRequestStatus::Pending)->count();
+        return (string) static::getModel()::where('status', DocumentTypeRequestStatus::Pending)->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -88,6 +90,7 @@ class TrainerDocumentTypeRequestResource extends Resource
         return [
             'index' => ListTrainerDocumentTypeRequests::route('/'),
             'create' => CreateTrainerDocumentTypeRequest::route('/create'),
+            'edit' => EditTrainerDocumentTypeRequest::route('/{record}/edit'),
         ];
     }
 }
