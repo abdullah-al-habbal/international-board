@@ -15,6 +15,7 @@ use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerA
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\CreateTrainerAccreditationRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TrainerAccreditationRequestResource extends Resource
 {
@@ -49,7 +50,7 @@ class TrainerAccreditationRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('trainer_id', auth()->id());
+        return parent::getEloquentQuery()->where('trainer_id', Auth::id());
     }
 
     public static function form(Schema $schema): Schema

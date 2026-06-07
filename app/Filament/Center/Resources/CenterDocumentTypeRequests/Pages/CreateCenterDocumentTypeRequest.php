@@ -6,6 +6,7 @@ namespace App\Filament\Center\Resources\CenterDocumentTypeRequests\Pages;
 
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\CenterDocumentTypeRequestResource;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateCenterDocumentTypeRequest extends CreateRecord
 {
@@ -13,7 +14,7 @@ class CreateCenterDocumentTypeRequest extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['certified_center_id'] = auth()->id();
+        $data['certified_center_id'] = Auth::id();
         return $data;
     }
 }

@@ -63,7 +63,7 @@ class AccreditationRequestObserver
 
             if (!$hasOtherActive) {
                 $center->update([
-                    'status' => CenterStatus::Suspended,
+                    'status' => CenterStatus::Suspended->value,
                     'is_active' => false,
                 ]);
             }

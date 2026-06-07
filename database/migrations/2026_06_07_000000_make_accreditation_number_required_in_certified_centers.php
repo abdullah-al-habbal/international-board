@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
+use App\Models\CertifiedCenter;
 
 return new class extends Migration
 {
@@ -15,9 +15,14 @@ return new class extends Migration
         DB::transaction(function (): void {
             $centers = DB::table('certified_centers')->whereNull('accreditation_number')->get();
             foreach ($centers as $center) {
+                do {
+                    $number = random_int(10000, 99999);
+                    $candidate = 'IBVTQ' . $number;
+                } while (CertifiedCenter::where('accreditation_number', $candidate)->exists());
+
                 DB::table('certified_centers')
                     ->where('id', $center->id)
-                    ->update(['accreditation_number' => (string) Str::orderedUuid()]);
+                    ->update(['accreditation_number' => $candidate]);
             }
         });
 

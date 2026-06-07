@@ -15,6 +15,7 @@ use App\Filament\Center\Resources\CenterDocumentTypeRequests\Schemas\CenterDocum
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\Tables\CenterDocumentTypeRequestsTable;
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\Pages\ListCenterDocumentTypeRequests;
 use App\Filament\Center\Resources\CenterDocumentTypeRequests\Pages\CreateCenterDocumentTypeRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CenterDocumentTypeRequestResource extends Resource
 {
@@ -49,7 +50,7 @@ class CenterDocumentTypeRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('certified_center_id', auth()->id());
+        return parent::getEloquentQuery()->where('certified_center_id', Auth::id());
     }
 
     public static function form(Schema $schema): Schema

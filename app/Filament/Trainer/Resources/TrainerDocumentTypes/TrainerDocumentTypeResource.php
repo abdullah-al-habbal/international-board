@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class TrainerDocumentTypeResource extends Resource
 {
@@ -46,7 +47,7 @@ class TrainerDocumentTypeResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('trainer_id', auth()->id());
+        return parent::getEloquentQuery()->where('trainer_id', Auth::id());
     }
 
     public static function table(Table $table): Table

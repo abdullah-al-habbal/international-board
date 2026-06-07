@@ -21,7 +21,7 @@
 | Resource | Model | Scoping |
 |----------|-------|---------|
 | `AccreditationRequestResource` | `AccreditationRequest` | Own center only; create blocked if active request exists |
-| `CertificationResource` | `Certification` | `certified_center_id = auth()->id()`; gated when not accredited |
+| `CertificationResource` | `Certification` | `certified_center_id = AUth::id()`; gated when not accredited |
 | `TraineeResource` | `Trainee` | Via `whereHas('certifications', ... center_id ...)` |
 | `CenterTypeRequestResource` | `CenterTypeRequest` | Own center |
 | `CenterDocumentTypeRequestResource` | `CenterDocumentTypeRequest` | Own center |
@@ -45,7 +45,7 @@
 ### Middleware & access
 
 - `EnsureTrainerIsAccredited` in **auth** middleware stack
-- All resources: `getEloquentQuery()` → `where('trainer_id', auth()->id())`
+- All resources: `getEloquentQuery()` → `where('trainer_id', AUth::id())`
 
 ### Resources (3)
 

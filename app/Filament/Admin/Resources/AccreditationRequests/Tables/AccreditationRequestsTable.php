@@ -15,6 +15,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class AccreditationRequestsTable
 {
@@ -82,8 +83,8 @@ class AccreditationRequestsTable
                     ->visible(fn(AccreditationRequest $record) => $record->status !== AccreditationStatus::Approved)
                     ->action(function (AccreditationRequest $record): void {
                         $record->update([
-                            'status' => AccreditationStatus::Approved,
-                            'reviewed_by' => auth()->id(),
+                            'status' => AccreditationStatus::Approved->value,
+                            'reviewed_by' => Auth::id(),
                             'reviewed_at' => now(),
                         ]);
 
@@ -92,7 +93,7 @@ class AccreditationRequestsTable
                             $center->update([
                                 'accreditation_period_start' => $record->requested_start_date,
                                 'accreditation_period_end' => $record->requested_end_date,
-                                'status' => CenterStatus::Active,
+                                'status' => CenterStatus::Active->value,
                                 'is_active' => true,
                             ]);
                         }
@@ -106,8 +107,8 @@ class AccreditationRequestsTable
                     ->visible(fn(AccreditationRequest $record) => $record->status !== AccreditationStatus::Rejected)
                     ->action(function (AccreditationRequest $record): void {
                         $record->update([
-                            'status' => AccreditationStatus::Rejected,
-                            'reviewed_by' => auth()->id(),
+                            'status' => AccreditationStatus::Rejected->value,
+                            'reviewed_by' => Auth::id(),
                             'reviewed_at' => now(),
                         ]);
 
@@ -123,7 +124,7 @@ class AccreditationRequestsTable
 
                         if (!$hasOtherActive) {
                             $center->update([
-                                'status' => CenterStatus::Suspended,
+                                'status' => CenterStatus::Suspended->value,
                                 'is_active' => false,
                             ]);
                         }
@@ -137,8 +138,8 @@ class AccreditationRequestsTable
                     ->visible(fn(AccreditationRequest $record) => $record->status !== AccreditationStatus::UnderReview)
                     ->action(function (AccreditationRequest $record): void {
                         $record->update([
-                            'status' => AccreditationStatus::UnderReview,
-                            'reviewed_by' => auth()->id(),
+                            'status' => AccreditationStatus::UnderReview->value,
+                            'reviewed_by' => Auth::id(),
                             'reviewed_at' => now(),
                         ]);
                     }),

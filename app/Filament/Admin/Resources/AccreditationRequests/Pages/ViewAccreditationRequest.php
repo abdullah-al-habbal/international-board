@@ -11,6 +11,7 @@ use App\Models\AccreditationRequest;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\Auth;
 
 class ViewAccreditationRequest extends ViewRecord
 {
@@ -51,8 +52,8 @@ class ViewAccreditationRequest extends ViewRecord
                 ->visible(fn() => $this->record->status !== AccreditationStatus::UnderReview)
                 ->action(function (): void {
                     $this->record->update([
-                        'status' => AccreditationStatus::UnderReview,
-                        'reviewed_by' => auth()->id(),
+                        'status' => AccreditationStatus::UnderReview->value,
+                        'reviewed_by' => Auth::id(),
                         'reviewed_at' => now(),
                     ]);
                     $this->refreshFormData(['status', 'reviewed_by', 'reviewed_at']);
@@ -64,8 +65,8 @@ class ViewAccreditationRequest extends ViewRecord
     private function approve(AccreditationRequest $request): void
     {
         $request->update([
-            'status' => AccreditationStatus::Approved,
-            'reviewed_by' => auth()->id(),
+            'status' => AccreditationStatus::Approved->value,
+            'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);
 
@@ -75,7 +76,7 @@ class ViewAccreditationRequest extends ViewRecord
             $center->update([
                 'accreditation_period_start' => $request->requested_start_date,
                 'accreditation_period_end' => $request->requested_end_date,
-                'status' => CenterStatus::Active,
+                'status' => CenterStatus::Active->value,
                 'is_active' => true,
             ]);
         }
@@ -84,8 +85,8 @@ class ViewAccreditationRequest extends ViewRecord
     private function reject(AccreditationRequest $request): void
     {
         $request->update([
-            'status' => AccreditationStatus::Rejected,
-            'reviewed_by' => auth()->id(),
+            'status' => AccreditationStatus::Rejected->value,
+            'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);
 
@@ -102,7 +103,7 @@ class ViewAccreditationRequest extends ViewRecord
 
         if (!$hasOtherActive) {
             $center->update([
-                'status' => CenterStatus::Suspended,
+                'status' => CenterStatus::Suspended->value,
                 'is_active' => false,
             ]);
         }

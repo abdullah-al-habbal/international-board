@@ -6,6 +6,7 @@ namespace App\Services\Accreditation;
 
 use App\Enums\AccreditationStatus;
 use App\Models\TrainerAccreditationRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 final class TrainerAccreditationApprovalService
@@ -22,7 +23,7 @@ final class TrainerAccreditationApprovalService
 
             $request->update([
                 'status' => AccreditationStatus::Approved,
-                'reviewed_by' => auth()->id(),
+                'reviewed_by' => Auth::id(),
                 'reviewed_at' => now(),
             ]);
         });
@@ -33,7 +34,7 @@ final class TrainerAccreditationApprovalService
         $request->update([
             'status' => AccreditationStatus::Rejected,
             'admin_notes' => $adminNotes,
-            'reviewed_by' => auth()->id(),
+            'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);
     }

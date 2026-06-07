@@ -6,6 +6,7 @@ namespace App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\Pages;
 
 use App\Filament\Trainer\Resources\TrainerDocumentTypeRequests\TrainerDocumentTypeRequestResource;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateTrainerDocumentTypeRequest extends CreateRecord
 {
@@ -13,7 +14,7 @@ class CreateTrainerDocumentTypeRequest extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['trainer_id'] = auth()->id();
+        $data['trainer_id'] = Auth::id();
         return $data;
     }
 }

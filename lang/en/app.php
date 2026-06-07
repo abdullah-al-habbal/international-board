@@ -224,6 +224,7 @@ return [
         'rejected' => 'Rejected',
         'under_review' => 'Under Review',
     ],
+    'under_review' => 'Under Review',
     'approve' => 'Approve',
     'reject' => 'Reject',
     'remaining_amount' => 'Remaining Amount',

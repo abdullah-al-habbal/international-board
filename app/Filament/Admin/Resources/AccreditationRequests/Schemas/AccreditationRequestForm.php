@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\AccreditationRequests\Schemas;
 
+use App\Enums\AccreditationStatus;
 use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -41,6 +42,11 @@ class AccreditationRequestForm
                     ->disabled()
                     ->dehydrated(false)
                     ->columnSpanFull(),
+
+                Select::make('status')
+                    ->label(__('app.status'))
+                    ->options(AccreditationStatus::class)
+                    ->required(),
 
                 Textarea::make('admin_notes')
                     ->label(__('app.admin_notes'))

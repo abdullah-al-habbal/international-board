@@ -6,14 +6,18 @@ namespace App\Observers;
 
 use App\Models\CertifiedCenter;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class CertifiedCenterObserver
 {
     public function creating(CertifiedCenter $center): void
     {
         if (empty($center->accreditation_number)) {
-            $center->accreditation_number = (string) Str::orderedUuid();
+            do {
+                $number = random_int(10000, 99999);
+                $candidate = 'IBVTQ' . $number;
+            } while (CertifiedCenter::where('accreditation_number', $candidate)->exists());
+
+            $center->accreditation_number = $candidate;
         }
     }
 

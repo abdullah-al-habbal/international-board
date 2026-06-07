@@ -375,6 +375,7 @@ return [
         'rejected' => 'مرفوض',
         'under_review' => 'قيد المراجعة',
     ],
+    'under_review' => 'قيد المراجعة',
     'request_document_types' => 'أنواع الوثائق المطلوبة',
     'mark_as_unread' => 'تحديد كغير مقروء',
     'mark_as_read' => 'تحديد كمقروء',
