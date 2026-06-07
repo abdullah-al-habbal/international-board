@@ -89,6 +89,13 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'accreditation' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/accreditation.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

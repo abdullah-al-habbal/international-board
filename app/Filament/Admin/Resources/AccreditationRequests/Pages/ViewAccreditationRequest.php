@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\AccreditationRequests\Pages;
 
 use App\Enums\AccreditationStatus;
-use App\Enums\CenterStatus;
 use App\Filament\Admin\Resources\AccreditationRequests\AccreditationRequestResource;
 use App\Models\AccreditationRequest;
 use Filament\Actions\Action;
@@ -69,17 +68,6 @@ class ViewAccreditationRequest extends ViewRecord
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);
-
-        $center = $request->certifiedCenter;
-
-        if ($center) {
-            $center->update([
-                'accreditation_period_start' => $request->requested_start_date,
-                'accreditation_period_end' => $request->requested_end_date,
-                'status' => CenterStatus::Active->value,
-                'is_active' => true,
-            ]);
-        }
     }
 
     private function reject(AccreditationRequest $request): void
@@ -89,23 +77,5 @@ class ViewAccreditationRequest extends ViewRecord
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);
-
-        $center = $request->certifiedCenter;
-
-        if (!$center) {
-            return;
-        }
-
-        $hasOtherActive = $center->accreditationRequests()
-            ->where('id', '!=', $request->id)
-            ->where('status', AccreditationStatus::Approved)
-            ->exists();
-
-        if (!$hasOtherActive) {
-            $center->update([
-                'status' => CenterStatus::Suspended->value,
-                'is_active' => false,
-            ]);
-        }
     }
 }

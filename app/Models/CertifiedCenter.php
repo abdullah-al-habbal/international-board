@@ -168,9 +168,17 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
             ->exists();
     }
 
+    public function hasApprovedNonExpiredRequest(): bool
+    {
+        return $this->accreditationRequests()
+            ->where('status', AccreditationStatus::Approved)
+            ->where('requested_end_date', '>=', now())
+            ->exists();
+    }
+
     public function canPerformActions(): bool
     {
-        return $this->is_active && $this->hasActiveAccreditationRequest();
+        return $this->is_active && $this->hasApprovedNonExpiredRequest();
     }
 
     public function accreditationBlockReason(): ?string
@@ -179,7 +187,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
             return __('accreditation.blocked.center_inactive');
         }
 
-        if (!$this->hasApprovedAccreditationRequest()) {
+        if (!$this->hasApprovedNonExpiredRequest()) {
             return __('accreditation.blocked.no_approved_request');
         }
 

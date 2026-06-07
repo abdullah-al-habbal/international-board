@@ -10,6 +10,7 @@ use Closure;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureCenterIsAccredited
@@ -28,19 +29,37 @@ class EnsureCenterIsAccredited
             return $next($request);
         }
 
+        Log::channel('accreditation')->debug('[Center Middleware] Checking accreditation gate', [
+            'center_id' => $center->id,
+            'is_active' => $center->is_active,
+            'route' => $request->route()?->getName(),
+            'can_perform' => $this->gateService->currentCenterCanPerformActions(),
+        ]);
+
         if ($this->gateService->currentCenterCanPerformActions()) {
             return $next($request);
         }
 
-        if ($request->routeIs('filament.center.resources.accreditation-requests.*') ||
-            $request->routeIs('filament.center.resources.center-financial-requests.*')) {
+        if ($request->routeIs(
+            'filament.center.resources.accreditation-requests.*',
+            'filament.center.resources.center-financial-requests.*',
+            'filament.center.pages.dashboard',
+        )) {
             return $next($request);
         }
+
+        $reason = $this->gateService->currentCenterAccreditationBlockReason();
+
+        Log::channel('accreditation')->warning('[Center Middleware] Blocked center', [
+            'center_id' => $center->id,
+            'reason' => $reason,
+            'route' => $request->route()?->getName(),
+        ]);
 
         Notification::make()
             ->warning()
             ->title(__('accreditation.blocked.title'))
-            ->body($this->gateService->currentCenterAccreditationBlockReason())
+            ->body($reason)
             ->persistent()
             ->send();
 

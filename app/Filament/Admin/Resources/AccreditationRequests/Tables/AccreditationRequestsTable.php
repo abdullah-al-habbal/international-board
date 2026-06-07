@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\AccreditationRequests\Tables;
 
 use App\Enums\AccreditationStatus;
-use App\Enums\CenterStatus;
 use App\Models\AccreditationRequest;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -87,16 +86,6 @@ class AccreditationRequestsTable
                             'reviewed_by' => Auth::id(),
                             'reviewed_at' => now(),
                         ]);
-
-                        $center = $record->certifiedCenter;
-                        if ($center) {
-                            $center->update([
-                                'accreditation_period_start' => $record->requested_start_date,
-                                'accreditation_period_end' => $record->requested_end_date,
-                                'status' => CenterStatus::Active->value,
-                                'is_active' => true,
-                            ]);
-                        }
                     }),
 
                 Action::make('reject')
@@ -111,23 +100,6 @@ class AccreditationRequestsTable
                             'reviewed_by' => Auth::id(),
                             'reviewed_at' => now(),
                         ]);
-
-                        $center = $record->certifiedCenter;
-                        if (!$center) {
-                            return;
-                        }
-
-                        $hasOtherActive = $center->accreditationRequests()
-                            ->where('id', '!=', $record->id)
-                            ->where('status', AccreditationStatus::Approved)
-                            ->exists();
-
-                        if (!$hasOtherActive) {
-                            $center->update([
-                                'status' => CenterStatus::Suspended->value,
-                                'is_active' => false,
-                            ]);
-                        }
                     }),
 
                 Action::make('under_review')

@@ -21,4 +21,9 @@ return [
     'create_disabled' => [
         'has_active' => 'You already have an active or approved accreditation request.',
     ],
+
+    'errors' => [
+        'active_request_exists' => 'An active or pending accreditation request already exists for this account.',
+        'time_overlap' => 'Accreditation period overlaps with an existing approved request.',
+    ],
 ];

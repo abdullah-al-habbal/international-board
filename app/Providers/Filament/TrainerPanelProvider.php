@@ -59,6 +59,7 @@ final class TrainerPanelProvider extends PanelProvider
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
+            EnsureTrainerIsAccredited::class,
         ];
     }
 
@@ -66,7 +67,6 @@ final class TrainerPanelProvider extends PanelProvider
     {
         return [
             Authenticate::class,
-            EnsureTrainerIsAccredited::class,
         ];
     }
 

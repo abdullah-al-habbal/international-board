@@ -10,7 +10,7 @@ use App\Models\Certification;
 use App\Models\TrainerDocumentType;
 use App\Models\TrainerFinancialRequest;
 use App\Models\TrainerAccreditationRequest;
-use Carbon\Carbon;
+use App\Enums\AccreditationStatus;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -94,13 +94,20 @@ class Trainer extends Authenticatable implements FilamentUser
             return false;
         }
 
-        if (!$this->membership_start_date || !$this->membership_end_date) {
-            return false;
-        }
-        // fix: Argument '1' passed to between() is expected to be of type DateTimeInterface|string, date|null givenPHP(PHP0406)
-        return Carbon::now()->between($this->membership_start_date, $this->membership_end_date);
+        return $this->accreditationRequests()
+            ->where('status', AccreditationStatus::Approved)
+            ->where('requested_end_date', '>=', now())
+            ->exists();
     }
 
+    public function hasActiveAccreditationRequest(): bool
+    {
+        return $this->accreditationRequests()
+            ->where('status', AccreditationStatus::Approved)
+            ->where('requested_start_date', '<=', now())
+            ->where('requested_end_date', '>=', now())
+            ->exists();
+    }
 
     public function accreditationBlockReason(): ?string
     {
@@ -109,11 +116,12 @@ class Trainer extends Authenticatable implements FilamentUser
         }
 
         if (!$this->isAccredited()) {
-            return __('accreditation.blocked.membership_expired');
+            return __('accreditation.blocked.no_approved_request');
         }
 
         return null;
     }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $panel->getId() === 'trainer' && $this->is_active;

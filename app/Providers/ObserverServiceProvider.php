@@ -8,9 +8,11 @@ use App\Models\AccreditationRequest;
 use App\Models\Certification;
 use App\Models\CertifiedCenter;
 use App\Models\Trainer;
+use App\Models\TrainerAccreditationRequest;
 use App\Observers\AccreditationRequestObserver;
 use App\Observers\CertificationObserver;
 use App\Observers\CertifiedCenterObserver;
+use App\Observers\TrainerAccreditationRequestObserver;
 use App\Observers\TrainerObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +25,7 @@ final class ObserverServiceProvider extends ServiceProvider
         AccreditationRequest::observe(AccreditationRequestObserver::class);
         CertifiedCenter::observe(CertifiedCenterObserver::class);
         Trainer::observe(TrainerObserver::class);
+        TrainerAccreditationRequest::observe(TrainerAccreditationRequestObserver::class);
         Certification::observe(CertificationObserver::class);
     }
 }

@@ -11,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class TrainerAccreditationRequestsTable
 {
@@ -63,6 +64,20 @@ class TrainerAccreditationRequestsTable
                     ->action(function ($record, array $data) {
                         app(TrainerAccreditationApprovalService::class)->reject($record, $data['admin_notes']);
                         Notification::make()->danger()->title(__('app.rejected'))->send();
+                    }),
+                Action::make('under_review')
+                    ->label(__('app.under_review'))
+                    ->icon('heroicon-o-eye')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->visible(fn ($record) => $record->status !== AccreditationStatus::UnderReview)
+                    ->action(function ($record) {
+                        $record->update([
+                            'status' => AccreditationStatus::UnderReview->value,
+                            'reviewed_by' => Auth::id(),
+                            'reviewed_at' => now(),
+                        ]);
+                        Notification::make()->info()->title(__('app.under_review'))->send();
                     }),
                 EditAction::make(),
             ])
