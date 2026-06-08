@@ -38,7 +38,7 @@ final class CertificationPolicy
             return false;
         }
 
-        return $user->allowedDocumentTypes()->where('document_types.id', $documentTypeId)->exists();
+        return $this->isActiveCenterUser($user);
     }
 
     public function update(User|CertifiedCenter $user, Certification $certification): bool

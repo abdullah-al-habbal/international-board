@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Center\Pages;
 
 use Filament\Auth\Pages\EditProfile;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
 
 class CenterProfilePage extends EditProfile
 {
@@ -31,18 +30,24 @@ class CenterProfilePage extends EditProfile
             ->live(debounce: 500);
     }
 
-    protected function getPasswordFormComponent(): ?Component
+    protected function getPasswordFormComponent(): Component
     {
-        return null;
+        return TextInput::make('password')
+            ->label(__('filament-panels::auth/pages/edit-profile.form.password.label'))
+            ->hidden();
     }
 
-    protected function getPasswordConfirmationFormComponent(): ?Component
+    protected function getPasswordConfirmationFormComponent(): Component
     {
-        return null;
+        return TextInput::make('passwordConfirmation')
+            ->label(__('filament-panels::auth/pages/edit-profile.form.password_confirmation.label'))
+            ->hidden();
     }
 
-    protected function getCurrentPasswordFormComponent(): ?Component
+    protected function getCurrentPasswordFormComponent(): Component
     {
-        return null;
+        return TextInput::make('currentPassword')
+            ->label(__('filament-panels::auth/pages/edit-profile.form.current_password.label'))
+            ->hidden();
     }
 }

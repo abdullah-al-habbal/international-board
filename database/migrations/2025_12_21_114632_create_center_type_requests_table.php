@@ -15,7 +15,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->foreignId('document_type_id')
                 ->nullable()
-                ->constrained('document_types')
+                ->constrained('board_document_types')
                 ->nullOnDelete();
             $table->string('requested_name');
             $table->text('requested_description')->nullable();

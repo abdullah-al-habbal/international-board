@@ -16,19 +16,19 @@ class TraineeFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'email' => $this->faker->optional()->unique()->safeEmail(),
-            'phone' => $this->faker->optional()->phoneNumber(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->phoneNumber(),
             'nationality' => $this->faker->country(),
             'country_id' => Country::inRandomOrder()->first()?->id,
-            'date_of_birth' => $this->faker->optional()->dateTimeBetween('-50 years', '-18 years'),
+            'date_of_birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
             'gender' => $this->faker->randomElement(['male', 'female']),
-            'occupation' => $this->faker->optional()->jobTitle(),
-            'organization' => $this->faker->optional()->company(),
-            'address' => $this->faker->optional()->address(),
-            'emergency_contact_name' => $this->faker->optional()->name(),
-            'emergency_contact_phone' => $this->faker->optional()->phoneNumber(),
-            'medical_info' => $this->faker->optional()->paragraph(),
-            'notes' => $this->faker->optional()->paragraph(),
+            'occupation' => $this->faker->jobTitle(),
+            'organization' => $this->faker->company(),
+            'address' => $this->faker->address(),
+            'emergency_contact_name' => $this->faker->name(),
+            'emergency_contact_phone' => $this->faker->phoneNumber(),
+            'medical_info' => $this->faker->paragraph(),
+            'notes' => $this->faker->paragraph(),
         ];
     }
 
