@@ -1,37 +1,47 @@
-# Financial Request Module — Implementation Plan
+# Project Restructure Plan
 
-## Overview
-Complete the Financial Request module across Admin, Center, and Trainer panels with proper structure, validation, and consistency.
+## Objective
+
+Prepare the codebase for a clean `migrate:fresh` by consolidating migrations to **one file per table**, removing `nationality` from the `certifications` table (sourced from `Country` relationship), and restructuring document types into **three independent tables** with embedded approval workflow.
+
+## How to Use This Plan
+
+Each phase is a numbered file in `docs/tasks/`. Process them **in order** — each phase depends on the previous one completing successfully.
+
+| Phase | File | Description |
+|-------|------|-------------|
+| 1 | `01-migration-consolidation.md` | Create consolidated `create_` migration files (one per table) |
+| 2 | `02-delete-obsolete-files.md` | Delete old migration files, model files, and Filament resource directories |
+| 3 | `03-model-updates.md` | Update models: `DocumentType`, `CertifiedCenterDocumentType`, `TrainerDocumentType`, `Certification`, `CertifiedCenter`, `Trainer` |
+| 4 | `04-nationality-removal.md` | Remove `nationality` from `Certification` model and all code references |
+| 5 | `05-document-type-restructuring.md` | Rewrite doc type models with `key`/`name`/`status`/`reviewer`; remove FK references to `board_document_types` |
+| 6 | `06-filament-resource-updates.md` | Update/create Filament resources for the three doc type tables with approval workflow |
+| 7 | `07-verify-and-cleanup.md` | Run `migrate:fresh`, seed, clear caches, verify no broken routes |
+| 8 | `08-behavioral-rules.md` | Redirects, profile editing, welcome widget, import source rules |
+
+## Key Decisions
+
+- **No cross-references** between `board_document_types`, `trainer_document_types`, and `certified_center_document_types`
+- **`status` field** (`pending`/`approved`/`rejected`) replaces `is_published` and the old request table workflow
+- **`nationality`** removed from `certifications` — access via `$certification->country?->nationality`
+- **Countries** `name`/`nationality` stored as JSON for Spatie translatable
+- **Certifications** FK `document_type_id` → `board_document_types`
+- **`accreditation_requests`** renamed to **`center_accreditation_requests`** to match `trainer_accreditation_requests` pattern
+- **Accreditation requests** no longer have user-specified dates — `requested_start_date`/`requested_end_date` removed; `accreditation_start_date`/`accreditation_end_date` set by admin on approval
+- **`source` column** on `certifications` (enum: board/center/trainer) tracks origin; imports from Excel are always `source = 'board'`
+- **Trainer membership** `membership_start_date` auto-set to `now()` on create; admin chooses `membership_end_date`
 
 ## Execution Order
 
-### Phase 1: Model Layer
-1. Add `financialRequests()` HasMany relation to `CertifiedCenter` model
-2. Remove float accessor overrides from both models (keep `remaining_amount` accessor)
+```
+Phase 1  →  create new migration files (incl. center_accreditation_requests, source column, accreditation dates)
+Phase 2  →  delete old files (migrations, models, filament dirs)
+Phase 3  →  update models (incl. model renames, accreditation dates, source enum, scopes)
+Phase 4  →  remove nationality references
+Phase 5  →  restructure doc type models
+Phase 6  →  update Filament resources (incl. accreditation forms, trainer membership, redirects, welcome widget)
+Phase 7  →  verify (migrate:fresh, seed, clear cache, test)
+Phase 8  →  apply behavioral rules (redirects, profile editing, welcome message, import source)
+```
 
-### Phase 2: File Structure Fixes
-3. Move `Admin/Resources/CertifiedCenterFinancialRequestResource.php` → `Admin/Resources/CertifiedCenterFinancialRequests/` + update namespace
-4. Move `Admin/Resources/PaymentAgentPersonResource.php` → `Admin/Resources/PaymentAgentPersons/` + update namespace
-5. Move `Center/Resources/CenterFinancialRequestResource.php` → `Center/Resources/CenterFinancialRequests/` + update namespace
-6. Move `Trainer/Resources/TrainerFinancialRequestResource.php` → `Trainer/Resources/TrainerFinancialRequests/` + update namespace
-7. Update all Page imports referencing the old flat resource FQCNs
-
-### Phase 3: New Resources & Pages
-8. Create `Admin/Resources/TrainerFinancialRequests/` full resource (Resource, Pages, Schemas, Tables)
-9. Create `Center/Resources/CenterFinancialRequests/ViewCenterFinancialRequest` page + Infolist schema
-10. Create `Trainer/Resources/TrainerFinancialRequests/ViewTrainerFinancialRequest` page + Infolist schema
-
-### Phase 4: Validation & Business Logic
-11. Harden `CertifiedCenterFinancialRequestForm` (Admin) — agent_person_id ownership, min/gte/lte constraints, date rules
-12. Harden new `TrainerFinancialRequestForm` (Admin) — same rules applied
-
-### Phase 5: Auth & Middleware
-13. Fix auth guards in `getEloquentQuery()` — use explicit `auth('certified_center')` / `auth('trainer')`
-14. Change Center navigation group → `__('app.financial_management')`
-15. Add financial route whitelist to `EnsureCenterIsAccredited`
-16. Add financial route whitelist to `EnsureTrainerIsAccredited`
-
-### Phase 6: Admin Context Views
-17. Create `FinancialRequestsRelationManager` for `CertifiedCenterResource`
-18. Create `FinancialRequestsRelationManager` for `TrainerResource`
-19. Create `CenterFinancialRequestsRelationManager` & `TrainerFinancialRequestsRelationManager` for `PaymentAgentPersonResource`
+> **Note:** The bootstrap route cache (`bootstrap/cache/routes-v7.php`) references deleted Filament classes. Phase 7 handles this with `route:clear`.
