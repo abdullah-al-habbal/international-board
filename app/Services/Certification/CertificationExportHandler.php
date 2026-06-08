@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Certification;
 
 use App\Models\Certification;
+use App\Models\CertifiedCenter;
 use App\Services\Csv\CsvExportHandler;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -17,13 +18,13 @@ final class CertificationExportHandler
     public function exportForCenter(int $centerId): StreamedResponse
     {
         $query = Certification::with([
-                'certifiedCenter',
-                'documentType',
-                'trainer',
+                'creator',
+                'assignedTrainer',
                 'country',
                 'trainee',
             ])
-            ->where('certified_center_id', $centerId)
+            ->where('creator_type', CertifiedCenter::class)
+            ->where('creator_id', $centerId)
             ->orderByDesc('created_at');
 
         return $this->export($query, 'certifications.csv');
@@ -32,9 +33,8 @@ final class CertificationExportHandler
     public function exportForAdmin(): StreamedResponse
     {
         $query = Certification::with([
-                'certifiedCenter',
-                'documentType',
-                'trainer',
+                'creator',
+                'assignedTrainer',
                 'country',
                 'trainee',
             ])
@@ -49,12 +49,11 @@ final class CertificationExportHandler
             'ID',
             'Serial Number',
             'Trainee Name',
-            'Center',
+            'Issued By',
+            'Assigned Trainer',
             'Document Code',
-            'Document Type',
             'Accreditation Number',
             'Accreditation Date',
-            'Trainer Name',
             'Nationality',
             'Paper Received',
             'Country',
@@ -66,12 +65,11 @@ final class CertificationExportHandler
             $certification->id,
             $certification->accredited_serial_number,
             $certification->trainee?->name,
-            $certification->certifiedCenter?->name,
+            $certification->creator?->name,
+            $certification->assignedTrainer?->name,
             $certification->document_code,
-            $certification->documentType?->name,
             $certification->accreditation_number,
             $certification->accreditation_date?->format('Y-m-d'),
-            $certification->trainer?->name,
             $certification->country?->nationality,
             $certification->paper_received ? 'YES' : 'NO',
             $certification->country?->name,

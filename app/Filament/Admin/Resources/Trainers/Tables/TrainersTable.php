@@ -22,19 +22,19 @@ class TrainersTable
         return $table
             ->columns([
                 ImageColumn::make('avatar')
-                    ->label(__('Avatar'))
+                    ->label(__('app.avatar'))
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl(url('assets/website/images/avatar.png'))
                     ->size(40),
 
                 TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('app.name'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
 
                 TextColumn::make('email')
-                    ->label(__('Email'))
+                    ->label(__('app.email'))
                     ->searchable()
                     ->sortable()
                     ->icon('heroicon-o-envelope')
@@ -42,21 +42,28 @@ class TrainersTable
                     ->toggleable(),
 
                 TextColumn::make('phone')
-                    ->label(__('Phone'))
+                    ->label(__('app.phone'))
                     ->searchable()
                     ->icon('heroicon-o-phone')
                     ->getStateUsing(fn ($record) => $record->phone ?: __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('country.name')
-                    ->label(__('Country'))
+                    ->label(__('app.country'))
                     ->searchable()
                     ->sortable()
                     ->getStateUsing(fn ($record) => $record->country->name ?? __('app.no_value'))
                     ->toggleable(),
 
+                TextColumn::make('center.name')
+                    ->label(__('app.center'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->getStateUsing(fn ($record) => $record->center?->name ?? __('app.no_center')),
+
                 TextColumn::make('specializations')
-                    ->label(__('Specializations'))
+                    ->label(__('app.specializations'))
                     ->badge()
                     ->separator(',')
                     ->limit(2)
@@ -64,14 +71,14 @@ class TrainersTable
                     ->toggleable(),
 
                 TextColumn::make('certifications_count')
-                    ->label(__('Certifications'))
+                    ->label(__('app.certifications'))
                     ->counts('certifications')
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
 
                 IconColumn::make('is_active')
-                    ->label(__('Active'))
+                    ->label(__('app.active'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -80,13 +87,13 @@ class TrainersTable
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->since()
                     ->sortable()
@@ -94,13 +101,13 @@ class TrainersTable
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label(__('Active Status'))
-                    ->placeholder(__('All Trainers'))
-                    ->trueLabel(__('Active Only'))
-                    ->falseLabel(__('Inactive Only')),
+                    ->label(__('app.active_status'))
+                    ->placeholder(__('app.all_trainers'))
+                    ->trueLabel(__('app.active_only'))
+                    ->falseLabel(__('app.inactive_only')),
 
                 SelectFilter::make('country_id')
-                    ->label(__('Country'))
+                    ->label(__('app.country'))
                     ->relationship('country', 'name')
                     ->searchable()
                     ->preload()

@@ -25,6 +25,7 @@ use App\Models\CertifiedCenterFinancialRequest;
 use App\Models\Country;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 
 #[UsePolicy(CertifiedCenterPolicy::class)]
@@ -65,9 +66,14 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         ];
     }
 
-    public function certifications(): HasMany
+    public function certifications(): MorphMany
     {
-        return $this->hasMany(Certification::class);
+        return $this->morphMany(Certification::class, 'creator');
+    }
+
+    public function trainers(): HasMany
+    {
+        return $this->hasMany(Trainer::class, 'center_id');
     }
 
     public function accreditationRequests(): HasMany

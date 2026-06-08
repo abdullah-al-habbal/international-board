@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Trainers\Schemas;
 
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -60,6 +61,14 @@ class TrainerForm
                 ])
                 ->columnSpan(1),
 
+            Select::make('center_id')
+                ->label(__('app.center'))
+                ->relationship('center', 'name')
+                ->searchable()
+                ->preload()
+                ->nullable()
+                ->columnSpan(1),
+
             FileUpload::make('avatar')
                 ->label(__('app.avatar'))
                 ->image()
@@ -110,7 +119,7 @@ class TrainerForm
                 ->inline(false)
                 ->columnSpanFull(),
 
-            \Filament\Forms\Components\DateTimePicker::make('membership_end_date')
+            DateTimePicker::make('membership_end_date')
                 ->label(__('app.membership_end_date'))
                 ->required()
                 ->after(now())

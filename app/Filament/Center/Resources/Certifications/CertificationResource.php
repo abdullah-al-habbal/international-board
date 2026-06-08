@@ -96,15 +96,14 @@ class CertificationResource extends Resource
         $center = Auth::guard('certified_center')->user();
 
         if ($center instanceof CertifiedCenter) {
-            $query->where('certified_center_id', $center->id);
+            $query->where('creator_type', CertifiedCenter::class)
+                  ->where('creator_id', $center->id);
         }
 
         return $query->with([
             'trainee',
             'country',
-            'trainer',
-            'certifiedCenter',
-            'documentType',
+            'creator',
         ]);
     }
 

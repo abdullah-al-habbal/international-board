@@ -15,5 +15,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@test.com',
         ]);
+
+        User::factory(4)->client()->create();
     }
 }

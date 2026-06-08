@@ -79,9 +79,7 @@ class CertificationResource extends Resource
         return parent::getEloquentQuery()->with([
             'trainee',
             'country',
-            'trainer',
-            'certifiedCenter',
-            'documentType',
+            'creator',
         ]);
     }
 

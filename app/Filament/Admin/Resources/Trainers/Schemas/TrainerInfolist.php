@@ -15,19 +15,19 @@ class TrainerInfolist
     {
         return $schema->schema([
             ImageEntry::make('avatar')
-                ->label(__('Avatar'))
+                ->label(__('app.avatar'))
                 ->circular()
-                ->defaultImageUrl(url('/images/default-avatar.png'))
+                ->defaultImageUrl(url('assets/website/images/avatar.png'))
                 ->columnSpanFull(),
 
             TextEntry::make('name')
-                ->label(__('Name'))
+                ->label(__('app.name'))
                 ->weight('bold')
                 ->size('lg')
                 ->columnSpan(2),
 
             IconEntry::make('is_active')
-                ->label(__('Status'))
+                ->label(__('app.status'))
                 ->boolean()
                 ->trueIcon('heroicon-o-check-circle')
                 ->falseIcon('heroicon-o-x-circle')
@@ -36,59 +36,65 @@ class TrainerInfolist
                 ->columnSpan(1),
 
             TextEntry::make('email')
-                ->label(__('Email'))
+                ->label(__('app.email'))
                 ->icon('heroicon-o-envelope')
                 ->copyable()
                 ->placeholder('—')
                 ->columnSpan(1),
 
             TextEntry::make('phone')
-                ->label(__('Phone'))
+                ->label(__('app.phone'))
                 ->icon('heroicon-o-phone')
                 ->copyable()
                 ->placeholder('—')
                 ->columnSpan(1),
 
             TextEntry::make('country.name')
-                ->label(__('Country'))
+                ->label(__('app.country'))
                 ->icon('heroicon-o-globe-alt')
                 ->placeholder('—')
                 ->columnSpan(1),
 
+            TextEntry::make('center.name')
+                ->label(__('app.center'))
+                ->icon('heroicon-o-building-office-2')
+                ->placeholder('—')
+                ->columnSpan(1),
+
             TextEntry::make('address')
-                ->label(__('Address'))
+                ->label(__('app.address'))
                 ->icon('heroicon-o-map-pin')
                 ->placeholder('—')
                 ->columnSpanFull(),
 
             TextEntry::make('bio')
-                ->label(__('Biography'))
+                ->label(__('app.biography'))
                 ->markdown()
                 ->placeholder('—')
                 ->columnSpanFull(),
 
             TextEntry::make('specializations')
-                ->label(__('Specializations'))
+                ->label(__('app.specializations'))
                 ->badge()
                 ->separator(',')
                 ->placeholder('—')
                 ->columnSpanFull(),
 
             TextEntry::make('certifications_count')
-                ->label(__('Certifications Count'))
+                ->label(__('app.certifications_count'))
                 ->numeric()
                 ->default(0)
                 ->icon('heroicon-o-document-text')
                 ->columnSpan(1),
 
             TextEntry::make('created_at')
-                ->label(__('Created At'))
+                ->label(__('app.created_at'))
                 ->dateTime()
                 ->icon('heroicon-o-calendar')
                 ->columnSpan(1),
 
             TextEntry::make('updated_at')
-                ->label(__('Updated At'))
+                ->label(__('app.updated_at'))
                 ->dateTime()
                 ->since()
                 ->icon('heroicon-o-clock')

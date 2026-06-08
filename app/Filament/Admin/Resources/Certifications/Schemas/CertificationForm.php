@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
-use App\Enums\CertificationSource;
+use App\Models\CertifiedCenter;
 use App\Models\Country;
 use App\Models\Trainee;
 use App\Models\Trainer;
+use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class CertificationForm
 {
@@ -28,36 +30,44 @@ class CertificationForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Select::make('certified_center_id')
-                                    ->label(__('app.certified_center'))
-                                    ->relationship('certifiedCenter', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->placeholder(__('app.select_center'))
-                                    ->helperText(__('app.center_optional')),
+                                Select::make('creator_type')
+                                    ->label(__('app.issued_by'))
+                                    ->options([
+                                        User::class => __('app.board_admin'),
+                                        CertifiedCenter::class => __('app.certified_center'),
+                                        Trainer::class => __('app.trainer'),
+                                    ])
+                                    ->reactive()
+                                    ->required(),
 
-                                Select::make('document_type_id')
-                                    ->label(__('app.document_type'))
-                                    ->relationship('documentType', 'name')
-                                    ->getOptionLabelFromRecordUsing(function ($record) {
-                                        $name = $record->name;
-                                        if (empty($name)) {
-                                            $name = $record->getTranslation('name', 'en');
+                                Select::make('creator_id')
+                                    ->label(__('app.select_creator'))
+                                    ->options(function (callable $get) {
+                                        $type = $get('creator_type');
+                                        if (!$type) {
+                                            return [];
                                         }
-
-                                        return $name ?: $record->key;
+                                        return $type::pluck('name', 'id');
                                     })
                                     ->required()
                                     ->searchable()
-                                    ->preload()
-                                    ->placeholder(__('app.select_document_type')),
+                                    ->preload(),
 
-                                Select::make('source')
-                                    ->label(__('app.source'))
-                                    ->options(CertificationSource::class)
-                                    ->default('board')
-                                    ->required()
-                                    ->columnSpan(1),
+                                Select::make('assigned_trainer_id')
+                                    ->label(__('app.assigned_trainer'))
+                                    ->options(function (callable $get) {
+                                        $creatorType = $get('creator_type');
+                                        $creatorId = $get('creator_id');
+                                        if ($creatorType !== CertifiedCenter::class || !$creatorId) {
+                                            return [];
+                                        }
+                                        return Trainer::where('center_id', $creatorId)
+                                            ->pluck('name', 'id');
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->visible(fn (callable $get) => $get('creator_type') === CertifiedCenter::class)
+                                    ->nullable(),
                             ]),
 
                         Grid::make(2)
@@ -94,34 +104,6 @@ class CertificationForm
                                     ])
                                     ->createOptionUsing(function (array $data): int {
                                         return Trainee::create($data)->getKey();
-                                    }),
-
-                                Select::make('trainer_id')
-                                    ->label(__('app.trainer_name'))
-                                    ->relationship('trainer', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label(__('app.name'))
-                                            ->required()
-                                            ->maxLength(255),
-                                        TextInput::make('email')
-                                            ->label(__('app.email'))
-                                            ->email()
-                                            ->maxLength(255),
-                                        TextInput::make('phone')
-                                            ->label(__('app.phone'))
-                                            ->tel()
-                                            ->maxLength(255),
-                                        Select::make('country_id')
-                                            ->label(__('app.country'))
-                                            ->relationship('country', 'name')
-                                            ->searchable()
-                                            ->preload(),
-                                    ])
-                                    ->createOptionUsing(function (array $data): int {
-                                        return Trainer::create($data)->getKey();
                                     }),
                             ]),
 

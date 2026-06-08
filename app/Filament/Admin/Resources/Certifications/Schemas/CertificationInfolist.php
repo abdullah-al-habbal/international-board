@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
+use App\Models\CertifiedCenter;
+use App\Models\Trainer;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -14,34 +17,33 @@ class CertificationInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('certifiedCenter.name')
-                    ->label(__('app.certified_center'))
-                    ->placeholder(__('app.not_assigned'))
-                    ->default(__('app.not_assigned'))
-                    ->badge()
-                    ->color(fn ($record) => $record->certified_center_id ? 'primary' : 'gray'),
-
-                TextEntry::make('documentType.name')
-                    ->label(__('app.document_type'))
+                TextEntry::make('creator')
+                    ->label(__('app.issued_by'))
                     ->getStateUsing(function ($record) {
-                        if (! $record->documentType) {
-                            return __('app.no_document_type');
+                        if (!$record->creator) {
+                            return __('app.not_assigned');
                         }
-
-                        $name = $record->documentType->name;
-                        if (empty($name)) {
-                            $name = $record->documentType->getTranslation('name', app()->getLocale());
-                        }
-
-                        return $name ?: $record->documentType->key;
+                        $label = match ($record->creator_type) {
+                            User::class => __('app.board_admin'),
+                            CertifiedCenter::class => __('app.certified_center'),
+                            Trainer::class => __('app.trainer'),
+                            default => __('app.unknown'),
+                        };
+                        return $label . ': ' . $record->creator->name;
                     })
                     ->badge()
-                    ->color(fn ($record) => $record->document_type_id ? 'info' : 'gray'),
+                    ->color(fn ($record) => $record->creator_id ? 'primary' : 'gray'),
 
                 TextEntry::make('trainee.name')
                     ->label(__('app.trainee_name'))
                     ->placeholder(__('app.not_assigned'))
                     ->default(__('app.not_assigned')),
+
+                TextEntry::make('assignedTrainer.name')
+                    ->label(__('app.assigned_trainer'))
+                    ->placeholder(__('app.not_assigned'))
+                    ->badge()
+                    ->color('warning'),
 
                 TextEntry::make('accredited_serial_number')
                     ->label(__('app.accredited_serial_number'))
@@ -65,13 +67,6 @@ class CertificationInfolist
                             return __('app.invalid_date');
                         }
                     }),
-
-                TextEntry::make('trainer.name')
-                    ->label(__('app.trainer'))
-                    ->placeholder(__('app.not_assigned'))
-                    ->default(__('app.not_assigned'))
-                    ->badge()
-                    ->color(fn ($record) => $record->trainer_id ? 'warning' : 'gray'),
 
                 TextEntry::make('country.name')
                     ->label(__('app.country'))

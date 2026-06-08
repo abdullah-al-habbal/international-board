@@ -108,6 +108,10 @@ class TrainerAccreditationRequestObserver
 
     private function assertNoTimeOverlap(TrainerAccreditationRequest $request, bool $excludeSelf = false): void
     {
+        if (is_null($request->accreditation_start_date) || is_null($request->accreditation_end_date)) {
+            return;
+        }
+
         $query = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)

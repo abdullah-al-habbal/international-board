@@ -1,5 +1,4 @@
 <?php
-// app/Services/Certification/CertificationService.php
 
 declare(strict_types=1);
 
@@ -40,11 +39,6 @@ final class CertificationService
     public function getCountByDateRange(\DateTime $startDate, \DateTime $endDate): int
     {
         return $this->repo->getCountByDateRange($startDate, $endDate);
-    }
-
-    public function getCountByDocumentType(int|string $type): int
-    {
-        return $this->repo->getCountByDocumentType($type);
     }
 
     public function getMonthlyCounts(?int $year = null): array

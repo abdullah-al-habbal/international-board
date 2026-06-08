@@ -15,32 +15,32 @@ class CountryForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label(__('Country Name'))
+                    ->label(__('app.country_name'))
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
                 TextInput::make('code')
-                    ->label(__('ISO Code (3 letters)'))
+                    ->label(__('app.iso_code_3'))
                     ->required()
                     ->length(3)
                     ->unique(ignoreRecord: true)
                     ->placeholder('USA'),
 
                 TextInput::make('code_2')
-                    ->label(__('ISO Code (2 letters)'))
+                    ->label(__('app.iso_code_2'))
                     ->required()
                     ->length(2)
                     ->unique(ignoreRecord: true)
                     ->placeholder('US'),
 
                 TextInput::make('nationality')
-                    ->label(__('Nationality'))
+                    ->label(__('app.nationality'))
                     ->maxLength(255)
-                    ->placeholder(__('American')),
+                    ->placeholder(__('app.american')),
 
                 Toggle::make('is_active')
-                    ->label(__('Active'))
+                    ->label(__('app.active'))
                     ->default(true)
                     ->required(),
             ]);

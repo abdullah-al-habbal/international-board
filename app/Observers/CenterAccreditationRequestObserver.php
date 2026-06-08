@@ -107,6 +107,10 @@ class CenterAccreditationRequestObserver
 
     private function assertNoTimeOverlap(CenterAccreditationRequest $request, bool $excludeSelf = false): void
     {
+        if (is_null($request->accreditation_start_date) || is_null($request->accreditation_end_date)) {
+            return;
+        }
+
         $query = CenterAccreditationRequest::query()
             ->where('certified_center_id', $request->certified_center_id)
             ->where('status', AccreditationStatus::Approved->value)

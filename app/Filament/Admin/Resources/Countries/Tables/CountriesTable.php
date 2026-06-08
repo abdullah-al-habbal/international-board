@@ -20,14 +20,14 @@ class CountriesTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('Country Name'))
+                    ->label(__('app.country_name'))
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
                     ->description(fn ($record) => $record->nationality ?: __('app.no_value')),
 
                 TextColumn::make('code')
-                    ->label(__('ISO 3'))
+                    ->label(__('app.iso_code_3'))
                     ->badge()
                     ->color('primary')
                     ->searchable()
@@ -35,7 +35,7 @@ class CountriesTable
                     ->alignCenter(),
 
                 TextColumn::make('code_2')
-                    ->label(__('ISO 2'))
+                    ->label(__('app.iso_code_2'))
                     ->badge()
                     ->color('info')
                     ->searchable()
@@ -43,7 +43,7 @@ class CountriesTable
                     ->alignCenter(),
 
                 IconColumn::make('is_active')
-                    ->label(__('Active'))
+                    ->label(__('app.active'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -53,23 +53,23 @@ class CountriesTable
                     ->alignCenter(),
 
                 TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label(__('Active Status'))
-                    ->placeholder(__('All countries'))
-                    ->trueLabel(__('Active only'))
-                    ->falseLabel(__('Inactive only'))
+                    ->label(__('app.active_status'))
+                    ->placeholder(__('app.all_countries'))
+                    ->trueLabel(__('app.active_only'))
+                    ->falseLabel(__('app.inactive_only'))
                     ->native(false),
             ])
             ->recordActions([

@@ -15,6 +15,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -31,6 +32,7 @@ class Trainer extends Authenticatable implements FilamentUser
         'phone',
         'address',
         'country_id',
+        'center_id',
         'specializations',
         'is_active',
         'unique_trainer_code',
@@ -62,9 +64,14 @@ class Trainer extends Authenticatable implements FilamentUser
         return $this->belongsTo(Country::class);
     }
 
-    public function certifications(): HasMany
+    public function center(): BelongsTo
     {
-        return $this->hasMany(Certification::class);
+        return $this->belongsTo(CertifiedCenter::class, 'center_id');
+    }
+
+    public function certifications(): MorphMany
+    {
+        return $this->morphMany(Certification::class, 'creator');
     }
 
     public function financialRequests(): HasMany
@@ -118,7 +125,7 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $panel->getId() === 'trainer' && $this->is_active;
+        return $panel->getId() === 'trainer' && $this->is_active && is_null($this->center_id);
     }
 
     public function getAvatarUrlAttribute(): ?string

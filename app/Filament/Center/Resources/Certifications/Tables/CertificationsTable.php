@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
 use App\Models\Certification;
+use App\Models\Trainer;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -33,26 +34,6 @@ class CertificationsTable
                     ->weight('bold')
                     ->getStateUsing(fn ($record) => $record->trainee?->name ?? __('app.unassigned')),
 
-                TextColumn::make('documentType.name')
-                    ->label(__('app.document_type'))
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color(fn ($record) => $record->document_type_id ? 'info' : 'gray')
-                    ->icon('heroicon-o-document')
-                    ->getStateUsing(function ($record) {
-                        if (! $record->documentType) {
-                            return __('app.no_document_type');
-                        }
-
-                        $name = $record->documentType->name;
-                        if (empty($name)) {
-                            $name = $record->documentType->getTranslation('name', app()->getLocale());
-                        }
-
-                        return $name ?: $record->key;
-                    }),
-
                 TextColumn::make('accredited_serial_number')
                     ->label(__('app.serial_number'))
                     ->searchable()
@@ -67,12 +48,18 @@ class CertificationsTable
                     ->sortable()
                     ->toggleable(),
 
+                TextColumn::make('assignedTrainer.name')
+                    ->label(__('app.assigned_trainer'))
+                    ->searchable()
+                    ->toggleable()
+                    ->badge()
+                    ->color('warning')
+                    ->getStateUsing(fn ($record) => $record->assignedTrainer?->name ?? __('app.unassigned')),
+
                 TextColumn::make('country.name')
                     ->label(__('app.country'))
-                    ->searchable(['countries.name'])
+                    ->searchable()
                     ->sortable()
-                    ->badge()
-                    ->color(fn ($record) => $record->country_id ? 'info' : 'gray')
                     ->toggleable()
                     ->getStateUsing(fn ($record) => $record->country?->name ?? __('app.unassigned')),
 
@@ -111,20 +98,6 @@ class CertificationsTable
             ])
             ->filters([
 
-                SelectFilter::make('document_type_id')
-                    ->label(__('app.document_type'))
-                    ->relationship('documentType', 'name')
-                    ->getOptionLabelFromRecordUsing(function ($record) {
-                        $name = $record->name;
-                        if (empty($name)) {
-                            $name = $record->getTranslation('name', app()->getLocale());
-                        }
-
-                        return $name ?: $record->key;
-                    })
-                    ->searchable()
-                    ->preload(),
-
                 SelectFilter::make('nationality')
                     ->label(__('app.nationality'))
                     ->relationship('country', 'nationality')
@@ -157,11 +130,6 @@ class CertificationsTable
                                 fn (Builder $query, $date): Builder => $query->whereDate('accreditation_date', '<=', $date),
                             );
                     }),
-
-                Filter::make('missing_document_type')
-                    ->label(__('app.missing_document_type'))
-                    ->query(fn (Builder $query): Builder => $query->whereNull('document_type_id'))
-                    ->toggle(),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -175,32 +143,6 @@ class CertificationsTable
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-
-                    BulkAction::make('assignDocumentType')
-                        ->label(__('app.assign_document_type'))
-                        ->icon('heroicon-o-document')
-                        ->color('info')
-                        ->form([
-                            Select::make('document_type_id')
-                                ->label(__('app.document_type'))
-                                ->relationship('documentType', 'name')
-                                ->getOptionLabelFromRecordUsing(function ($record) {
-                                    $name = $record->name;
-                                    if (empty($name)) {
-                                        $name = $record->getTranslation('name', app()->getLocale());
-                                    }
-
-                                    return $name ?: $record->key;
-                                })
-                                ->required()
-                                ->searchable()
-                                ->preload(),
-                        ])
-                        ->action(function (array $data, $records) {
-                            $records->each(function ($record) use ($data) {
-                                $record->update(['document_type_id' => $data['document_type_id']]);
-                            });
-                        }),
 
                     BulkAction::make('updatePaperStatus')
                         ->label(__('app.update_paper_status'))

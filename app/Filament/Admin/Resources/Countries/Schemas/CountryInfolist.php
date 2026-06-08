@@ -15,31 +15,31 @@ class CountryInfolist
         return $schema
             ->components([
                 TextEntry::make('name')
-                    ->label(__('Country Name')),
+                    ->label(__('app.country_name')),
 
                 TextEntry::make('code')
-                    ->label(__('ISO Code (3 letters)'))
+                    ->label(__('app.iso_code_3'))
                     ->badge(),
 
                 TextEntry::make('code_2')
-                    ->label(__('ISO Code (2 letters)'))
+                    ->label(__('app.iso_code_2'))
                     ->badge(),
 
                 TextEntry::make('nationality')
-                    ->label(__('Nationality'))
+                    ->label(__('app.nationality'))
                     ->placeholder('-'),
 
                 IconEntry::make('is_active')
-                    ->label(__('Status'))
+                    ->label(__('app.status'))
                     ->boolean(),
 
                 TextEntry::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->placeholder('-'),
 
                 TextEntry::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->placeholder('-'),
             ]);

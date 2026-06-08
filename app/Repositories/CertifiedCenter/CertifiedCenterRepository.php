@@ -26,7 +26,7 @@ final class CertifiedCenterRepository
                 isset($filters['country_id']) && $filters['country_id'] !== '',
                 fn($q) => $q->where('country_id', $filters['country_id'])
             )
-            ->with(['country', 'approvedDocumentTypes.documentType'])
+            ->with(['country', 'approvedDocumentTypes'])
             ->paginate($perPage);
     }
 
@@ -36,7 +36,7 @@ final class CertifiedCenterRepository
             ->newQuery()
             ->where('id', $id)
             ->where('is_active', true)
-            ->with(['country', 'approvedDocumentTypes.documentType', 'certifications'])
+            ->with(['country', 'approvedDocumentTypes', 'certifications'])
             ->first();
     }
 

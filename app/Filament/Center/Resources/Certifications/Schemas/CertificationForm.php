@@ -6,6 +6,7 @@ namespace App\Filament\Center\Resources\Certifications\Schemas;
 
 use App\Models\Country;
 use App\Models\Trainee;
+use App\Models\Trainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class CertificationForm
 {
@@ -25,22 +27,6 @@ class CertificationForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-
-                                Select::make('document_type_id')
-                                    ->label(__('app.document_type'))
-                                    ->relationship('documentType', 'name')
-                                    ->getOptionLabelFromRecordUsing(function ($record) {
-                                        $name = $record->name;
-                                        if (empty($name)) {
-                                            $name = $record->getTranslation('name', app()->getLocale());
-                                        }
-
-                                        return $name ?: $record->key;
-                                    })
-                                    ->required()
-                                    ->searchable()
-                                    ->preload()
-                                    ->placeholder(__('app.select_document_type')),
 
                                 Select::make('trainee_id')
                                     ->label(__('app.trainee_name'))
@@ -105,6 +91,13 @@ class CertificationForm
                                     ->label(__('app.accreditation_date'))
                                     ->required()
                                     ->default(now()),
+
+                                Select::make('assigned_trainer_id')
+                                    ->label(__('app.assigned_trainer'))
+                                    ->options(Trainer::where('center_id', Auth::id())->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable(),
                             ]),
                     ]),
 

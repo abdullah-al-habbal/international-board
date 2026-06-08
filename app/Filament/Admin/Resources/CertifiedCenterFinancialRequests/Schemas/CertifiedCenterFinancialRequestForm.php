@@ -50,7 +50,7 @@ class CertifiedCenterFinancialRequestForm
                                 ->where('certified_center_id', $centerId)
                                 ->exists();
                             if (! $exists) {
-                                $fail(__('The selected agent person does not belong to the selected center.'));
+                                $fail(__('app.agent_person_mismatch'));
                             }
                         };
                     }),

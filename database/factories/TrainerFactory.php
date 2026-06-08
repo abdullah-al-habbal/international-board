@@ -19,7 +19,7 @@ class TrainerFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'bio' => $this->faker->optional()->paragraph(),
-            'avatar' => $this->faker->optional()->imageUrl(200, 200, 'people'),
+            'avatar' => '',
             'address' => $this->faker->optional()->address(),
             'country_id' => Country::inRandomOrder()->first()?->id,
             'specializations' => $this->faker->randomElements([

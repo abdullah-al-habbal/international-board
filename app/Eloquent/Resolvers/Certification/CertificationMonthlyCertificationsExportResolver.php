@@ -16,7 +16,7 @@ final class CertificationMonthlyCertificationsExportResolver
     public function query(): Builder
     {
         return $this->model->newQuery()
-            ->with(['trainee', 'certifiedCenter'])
+            ->with(['trainee', 'creator'])
             ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
             ->orderBy('created_at', 'desc');
     }

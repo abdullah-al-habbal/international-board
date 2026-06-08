@@ -18,7 +18,7 @@ class DocumentTypesTable
         return $table
             ->columns([
                 TextColumn::make('key')
-                    ->label(__('Key'))
+                    ->label(__('app.key'))
                     ->searchable()
                     ->sortable()
                     ->badge()
@@ -27,21 +27,21 @@ class DocumentTypesTable
                     ->extraAttributes(['class' => 'text-lg font-semibold']),
 
                 TextColumn::make('name.en')
-                    ->label(__('Name (English)'))
+                    ->label(__('app.name_english'))
                     ->placeholder('(no english)')
                     ->formatStateUsing(fn($state) => $state ?: '(no english)')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('name.ar')
-                    ->label(__('Name (Arabic)'))
+                    ->label(__('app.name_arabic'))
                     ->placeholder('(no arabic)')
                     ->formatStateUsing(fn($state) => $state ?: '(no arabic)')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('certifications_count')
-                    ->label(__('Usage'))
+                    ->label(__('app.usage_count'))
                     ->counts('certifications')
                     ->badge()
                     ->color('success')
@@ -49,13 +49,13 @@ class DocumentTypesTable
                     ->alignCenter(),
 
                 TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

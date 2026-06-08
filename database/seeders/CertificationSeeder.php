@@ -6,30 +6,28 @@ namespace Database\Seeders;
 
 use App\Models\Certification;
 use App\Models\CertifiedCenter;
+use App\Models\Country;
+use App\Models\Trainee;
+use App\Models\Trainer;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CertificationSeeder extends Seeder
 {
     public function run(): void
     {
-        $centerIds = CertifiedCenter::pluck('id')->toArray();
+        $users = User::all();
+        $centers = CertifiedCenter::all();
+        $trainers = Trainer::all();
+        $trainees = Trainee::all();
+        $countries = Country::all();
 
-        if (empty($centerIds)) {
-            return;
-        }
-
-        $certifications = Certification::factory()
-            ->count(50)
-            ->make()
-            ->map(function ($certification) use ($centerIds) {
-                $certification->certified_center_id = fake()->randomElement($centerIds);
-
-                return $certification->toArray();
-            })
-            ->toArray();
-
-        collect($certifications)->chunk(25)->each(function ($chunk) {
-            Certification::insert($chunk->toArray());
-        });
+        Certification::factory(5)
+            ->recycle($users)
+            ->recycle($centers)
+            ->recycle($trainers)
+            ->recycle($trainees)
+            ->recycle($countries)
+            ->create();
     }
 }

@@ -19,13 +19,13 @@ final class CertificationsExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Serial Number', 'Trainee', 'Center', 'Created At'];
+        $headers = ['ID', 'Serial Number', 'Trainee', 'Issued By', 'Created At'];
 
         $formatter = fn (Certification $certification): array => [
             $certification->id,
             $certification->accredited_serial_number,
             $certification->trainee?->name,
-            $certification->certifiedCenter?->name,
+            $certification->creator?->name,
             $certification->created_at->format('Y-m-d'),
         ];
 

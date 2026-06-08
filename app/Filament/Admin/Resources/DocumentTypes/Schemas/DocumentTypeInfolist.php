@@ -14,29 +14,29 @@ class DocumentTypeInfolist
         return $schema
             ->components([
                 TextEntry::make('key')
-                    ->label(__('Key'))
+                    ->label(__('app.key'))
                     ->badge()
                     ->color('primary'),
 
                 TextEntry::make('name.en')
-                    ->label(__('Name (English)')),
+                    ->label(__('app.name_english')),
 
                 TextEntry::make('name.ar')
-                    ->label(__('Name (Arabic)')),
+                    ->label(__('app.name_arabic')),
 
                 TextEntry::make('certifications_count')
-                    ->label(__('Certifications Count'))
+                    ->label(__('app.certifications_count'))
                     ->counts('certifications')
                     ->badge()
                     ->color('success'),
 
                 TextEntry::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('app.created_at'))
                     ->dateTime()
                     ->placeholder('-'),
 
                 TextEntry::make('updated_at')
-                    ->label(__('Updated At'))
+                    ->label(__('app.updated_at'))
                     ->dateTime()
                     ->placeholder('-'),
             ]);

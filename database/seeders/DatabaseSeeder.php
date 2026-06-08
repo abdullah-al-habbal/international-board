@@ -11,17 +11,37 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            // Config-based seeders (deterministic data)
             CountrySeeder::class,
-            DocumentTypeSeeder::class,
-            UserSeeder::class,
             ApplicationSettingSeeder::class,
-            CertifiedCenterSeeder::class,
-            TrainerSeeder::class,
-            AccreditationRequestSeeder::class,
-            CertificationSeeder::class,
-            BlogPostSeeder::class,
+            DocumentTypeSeeder::class,
+
+            // Independent models
+            UserSeeder::class,
             StaticPageSeeder::class,
             MembershipSeeder::class,
+            BlogPostSeeder::class,
+            ContactMessageSeeder::class,
+
+            // Models depending on basic data
+            CertifiedCenterSeeder::class,
+            TrainerSeeder::class,
+            TraineeSeeder::class,
+
+            // Center-dependent models
+            CertifiedCenterPaymentAgentPersonSeeder::class,
+            CertifiedCenterDocumentTypeSeeder::class,
+            CenterTypeRequestSeeder::class,
+            CertifiedCenterFinancialRequestSeeder::class,
+            AccreditationRequestSeeder::class,
+
+            // Trainer-dependent models
+            TrainerAccreditationRequestSeeder::class,
+            TrainerDocumentTypeSeeder::class,
+            TrainerFinancialRequestSeeder::class,
+
+            // Models depending on everything above
+            CertificationSeeder::class,
         ]);
     }
 }

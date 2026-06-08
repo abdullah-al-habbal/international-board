@@ -1,5 +1,4 @@
 <?php
-// app/Models/Certification.php
 
 declare(strict_types=1);
 
@@ -12,13 +11,8 @@ use App\Policies\CertificationPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\CertificationSource;
-use App\Models\CertifiedCenter;
-use App\Models\Country;
-use App\Models\DocumentType;
-use App\Models\Trainee;
-use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
 #[UsePolicy(CertificationPolicy::class)]
@@ -41,15 +35,14 @@ class Certification extends Model
     }
 
     protected $fillable = [
-        'certified_center_id',
+        'creator_type',
+        'creator_id',
         'trainee_id',
-        'source',
+        'assigned_trainer_id',
         'accredited_serial_number',
         'document_code',
         'accreditation_number',
-        'document_type_id',
         'accreditation_date',
-        'trainer_id',
         'country_id',
         'paper_received',
         'notes',
@@ -59,7 +52,6 @@ class Certification extends Model
     {
         return [
             'accreditation_date' => 'date',
-            'source' => CertificationSource::class,
         ];
     }
 
@@ -75,9 +67,9 @@ class Certification extends Model
         }
     }
 
-    public function certifiedCenter(): BelongsTo
+    public function creator(): MorphTo
     {
-        return $this->belongsTo(CertifiedCenter::class);
+        return $this->morphTo();
     }
 
     public function country(): BelongsTo
@@ -85,37 +77,20 @@ class Certification extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function trainer(): BelongsTo
-    {
-        return $this->belongsTo(Trainer::class);
-    }
-
-    public function documentType(): BelongsTo
-    {
-        return $this->belongsTo(DocumentType::class);
-    }
-
     public function trainee(): BelongsTo
     {
         return $this->belongsTo(Trainee::class);
     }
 
-    #[Scope]
-    protected function forCenter(Builder $query, int $centerId): void
+    public function assignedTrainer(): BelongsTo
     {
-        $query->where('certified_center_id', $centerId);
+        return $this->belongsTo(Trainer::class, 'assigned_trainer_id');
     }
 
     #[Scope]
-    protected function ofType(Builder $query, int|string $type): void
+    protected function createdBy(Builder $query, string $type, int $id): void
     {
-        if (is_int($type)) {
-            $query->where('document_type_id', $type);
-        } else {
-            $query->whereHas('documentType', function (Builder $q) use ($type) {
-                $q->where('key', $type);
-            });
-        }
+        $query->where('creator_type', $type)->where('creator_id', $id);
     }
 
     #[Scope]
@@ -128,14 +103,6 @@ class Certification extends Model
     protected function byTraineeName(Builder $query, string $name): void
     {
         $query->whereHas('trainee', function (Builder $q) use ($name) {
-            $q->where('name', 'like', "%{$name}%");
-        });
-    }
-
-    #[Scope]
-    protected function byTrainerName(Builder $query, string $name): void
-    {
-        $query->whereHas('trainer', function (Builder $q) use ($name) {
             $q->where('name', 'like', "%{$name}%");
         });
     }

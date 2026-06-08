@@ -11,14 +11,6 @@ class CertifiedCenterSeeder extends Seeder
 {
     public function run(): void
     {
-        CertifiedCenter::factory()->create([
-            'name' => 'Test Center',
-            'email' => 'center@test.com',
-            'password' => bcrypt('password'),
-            'status' => 'active',
-            'is_active' => true,
-            'accreditation_period_start' => now()->subDays(30),
-            'accreditation_period_end' => now()->addDays(365),
-        ]);
+        CertifiedCenter::factory(5)->create();
     }
 }

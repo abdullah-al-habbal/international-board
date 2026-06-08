@@ -1,11 +1,11 @@
 <?php
-// app/Repositories/Certification/CertificationRepository.php
 
 declare(strict_types=1);
 
 namespace App\Repositories\Certification;
 
 use App\Models\Certification;
+use App\Models\CertifiedCenter;
 use Illuminate\Database\Eloquent\Collection;
 
 final class CertificationRepository
@@ -15,11 +15,10 @@ final class CertificationRepository
     public function findByDocumentCode(string $code): ?Certification
     {
         return $this->model->with([
-            'certifiedCenter:id,name',
+            'creator',
+            'assignedTrainer',
             'trainee:id,name',
             'country:id,name',
-            'trainer:id,name',
-            'documentType:id,name',
         ])
             ->byDocumentCode($code)
             ->first();
@@ -28,11 +27,10 @@ final class CertificationRepository
     public function findBySerial(string $serial): ?Certification
     {
         return $this->model->with([
-            'certifiedCenter:id,name',
+            'creator',
+            'assignedTrainer',
             'trainee:id,name',
             'country:id,name',
-            'trainer:id,name',
-            'documentType:id,name',
         ])
         ->where(function ($query) use ($serial): void {
             $query->where('accredited_serial_number', $serial)
@@ -44,9 +42,9 @@ final class CertificationRepository
     public function latest(int $limit = 10): Collection
     {
         return $this->model->with([
-            'certifiedCenter:id,name',
+            'creator',
+            'assignedTrainer',
             'trainee:id,name',
-            'documentType:id,name',
         ])
             ->recentlyCreated()
             ->take($limit)
@@ -68,35 +66,30 @@ final class CertificationRepository
         return $this->model->betweenDates($startDate, $endDate)->count();
     }
 
-    public function getCountByDocumentType(int|string $type): int
-    {
-        return $this->model->ofType($type)->count();
-    }
-
     public function getTotalCountByCenter(int $centerId): int
     {
-        return $this->model->forCenter($centerId)->count();
+        return $this->model
+            ->where('creator_type', CertifiedCenter::class)
+            ->where('creator_id', $centerId)
+            ->count();
     }
 
     public function getCountThisMonthByCenter(int $centerId): int
     {
-        return $this->model->forCenter($centerId)->createdThisMonth()->count();
+        return $this->model
+            ->where('creator_type', CertifiedCenter::class)
+            ->where('creator_id', $centerId)
+            ->createdThisMonth()
+            ->count();
     }
 
     public function getCertificationsByCenter(int $centerId, int $limit = 50): Collection
     {
         return $this->model
-            ->forCenter($centerId)
+            ->where('creator_type', CertifiedCenter::class)
+            ->where('creator_id', $centerId)
             ->recentlyCreated()
             ->limit($limit)
-            ->get();
-    }
-
-    public function getCertificationsByDocumentType(int|string $type): Collection
-    {
-        return $this->model
-            ->ofType($type)
-            ->recentlyCreated()
             ->get();
     }
 
@@ -104,14 +97,6 @@ final class CertificationRepository
     {
         return $this->model
             ->byTraineeName($name)
-            ->recentlyCreated()
-            ->get();
-    }
-
-    public function searchByTrainerName(string $name): Collection
-    {
-        return $this->model
-            ->byTrainerName($name)
             ->recentlyCreated()
             ->get();
     }
@@ -144,7 +129,9 @@ final class CertificationRepository
     {
         $year ??= now()->year;
 
-        $monthlyCounts = $this->model->forCenter($centerId)
+        $monthlyCounts = $this->model
+            ->where('creator_type', CertifiedCenter::class)
+            ->where('creator_id', $centerId)
             ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
             ->whereYear('created_at', $year)
             ->groupBy('month')

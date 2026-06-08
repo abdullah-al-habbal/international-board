@@ -28,6 +28,10 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('avatar')->nullable();
             $table->text('bio')->nullable();
+            $table->foreignId('center_id')
+                ->nullable()
+                ->constrained('certified_centers')
+                ->nullOnDelete();
             $table->timestamps();
         });
     }

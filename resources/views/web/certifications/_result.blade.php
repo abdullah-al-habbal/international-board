@@ -1,4 +1,8 @@
-{{-- resources/views/web/certifications/_result.blade.php --}}
+@php
+    use App\Models\CertifiedCenter;
+    use App\Models\Trainer;
+    use App\Models\User;
+@endphp
 <section class="section">
     <div class="container">
         <div class="row justify-content-center">
@@ -21,15 +25,38 @@
                         <table class="table table-bordered align-middle">
                             <tbody>
                                 <tr>
-                                    <th class="w-35">{{ __('web.labels.document_type') }}</th>
+                                    <th class="w-35">{{ __('web.labels.issued_by') }}</th>
                                     <td>
-                                        @if($certification->documentType?->name)
-                                            <span class="badge bg-primary px-3 py-2">
-                                                <i class="tf-ion-ios-paper-outline mr-1"></i>
-                                                {{ $certification->documentType->name }}
+                                        @php
+                                            $creatorLabel = match ($certification->creator_type) {
+                                                User::class => __('web.labels.board'),
+                                                CertifiedCenter::class => __('web.labels.center'),
+                                                Trainer::class => __('web.labels.tra    iner'),
+                                                default => __('web.labels.unknown'),
+                                            };
+                                        @endphp
+                                        @if($certification->creator)
+                                            <span class="badge bg-dark px-3 py-2">
+                                                <i class="tf-ion-ios-location-outline mr-1"></i>
+                                                {{ $creatorLabel }}: {{ $certification->creator->name }}
                                             </span>
                                         @else
-                                            <span class="badge bg-secondary px-3 py-2">{{ __('web.labels.not_assigned') }}</span>
+                                            <span class="badge bg-secondary px-3 py-2">
+                                                {{ __('web.labels.not_assigned') }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('web.labels.assigned_trainer') }}</th>
+                                    <td>
+                                        @if($certification->assignedTrainer)
+                                            <span class="badge bg-warning text-dark px-3 py-2">
+                                                <i class="tf-ion-ios-person-outline mr-1"></i>
+                                                {{ $certification->assignedTrainer->name }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted">—</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -62,36 +89,6 @@
                                             </small>
                                         @else
                                             <span class="text-muted">—</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>{{ __('web.labels.trainer') }}</th>
-                                    <td>
-                                        @if($certification->trainer?->name)
-                                            <span class="badge bg-info text-dark px-3 py-2">
-                                                <i class="tf-ion-ios-people-outline mr-1"></i>
-                                                {{ $certification->trainer->name }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-secondary px-3 py-2">
-                                                {{ __('web.labels.no_trainer') }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>{{ __('web.labels.center') }}</th>
-                                    <td>
-                                        @if($certification->certifiedCenter?->name)
-                                            <span class="badge bg-dark px-3 py-2">
-                                                <i class="tf-ion-ios-location-outline mr-1"></i>
-                                                {{ $certification->certifiedCenter->name }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-secondary opacity-75 px-3 py-2">
-                                                {{ __('web.labels.not_assigned') }}
-                                            </span>
                                         @endif
                                     </td>
                                 </tr>

@@ -13,27 +13,16 @@ class CertificationInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('documentType.name')
-                    ->label(__('app.document_type'))
-                    ->getStateUsing(function ($record) {
-                        if (! $record->documentType) {
-                            return __('app.no_document_type');
-                        }
-
-                        $name = $record->documentType->name;
-                        if (empty($name)) {
-                            $name = $record->documentType->getTranslation('name', app()->getLocale());
-                        }
-
-                        return $name ?: $record->key;
-                    })
-                    ->badge()
-                    ->color(fn ($record) => $record->document_type_id ? 'info' : 'gray'),
-
                 TextEntry::make('trainee.name')
                     ->label(__('app.trainee_name'))
                     ->placeholder(__('app.not_assigned'))
                     ->default(__('app.not_assigned')),
+
+                TextEntry::make('assignedTrainer.name')
+                    ->label(__('app.assigned_trainer'))
+                    ->placeholder(__('app.not_assigned'))
+                    ->badge()
+                    ->color('warning'),
 
                 TextEntry::make('accredited_serial_number')
                     ->label(__('app.accredited_serial_number'))

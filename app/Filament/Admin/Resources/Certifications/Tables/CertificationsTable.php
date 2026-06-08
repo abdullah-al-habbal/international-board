@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
 use App\Models\Certification;
+use App\Models\CertifiedCenter;
+use App\Models\Trainer;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -27,14 +30,22 @@ class CertificationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('certifiedCenter.name')
-                    ->label(__('app.center'))
+                TextColumn::make('creator')
+                    ->label(__('app.issued_by'))
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->badge()
-                    ->getStateUsing(fn ($record) => $record->certifiedCenter?->name ?? __('app.unassigned'))
-                    ->color(fn ($record) => $record->certified_center_id ? 'primary' : 'gray'),
+                    ->getStateUsing(fn ($record) => $record->creator?->name ?? __('app.unassigned'))
+                    ->color(fn ($record) => $record->creator_id ? 'primary' : 'gray'),
+
+                TextColumn::make('assignedTrainer.name')
+                    ->label(__('app.assigned_trainer'))
+                    ->searchable()
+                    ->toggleable()
+                    ->badge()
+                    ->color('warning')
+                    ->getStateUsing(fn ($record) => $record->assignedTrainer?->name ?? __('app.unassigned')),
 
                 TextColumn::make('trainee.name')
                     ->label(__('app.trainee'))
@@ -50,26 +61,6 @@ class CertificationsTable
                     ->color('info')
                     ->toggleable()
                     ->getStateUsing(fn ($record) => $record->country?->nationality ?: __('app.no_nationality')),
-
-                TextColumn::make('documentType.name')
-                    ->label(__('app.document_type'))
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color(fn ($record) => $record->document_type_id ? 'info' : 'gray')
-                    ->icon('heroicon-o-document')
-                    ->getStateUsing(function ($record) {
-                        if (! $record->documentType) {
-                            return __('app.no_document_type');
-                        }
-
-                        $name = $record->documentType->name;
-                        if (empty($name)) {
-                            $name = $record->documentType->getTranslation('name', app()->getLocale());
-                        }
-
-                        return $name ?: $record->documentType->key;
-                    }),
 
                 TextColumn::make('accredited_serial_number')
                     ->label(__('app.serial_number'))
@@ -92,15 +83,6 @@ class CertificationsTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-
-                TextColumn::make('trainer.name')
-                    ->label(__('app.trainer'))
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable()
-                    ->badge()
-                    ->color(fn ($record) => $record->trainer_id ? 'warning' : 'gray')
-                    ->getStateUsing(fn ($record) => $record->trainer?->name ?? __('app.unassigned')),
 
                 TextColumn::make('country.name')
                     ->label(__('app.country'))
@@ -154,25 +136,19 @@ class CertificationsTable
             ])
             ->filters([
 
-                SelectFilter::make('document_type_id')
-                    ->label(__('app.document_type'))
-                    ->relationship('documentType', 'name')
-                    ->getOptionLabelFromRecordUsing(function ($record) {
-                        $name = $record->name;
-                        if (empty($name)) {
-                            $name = $record->getTranslation('name', app()->getLocale());
+                SelectFilter::make('creator_type')
+                    ->label(__('app.issued_by'))
+                    ->options([
+                        User::class => __('app.board_admin'),
+                        CertifiedCenter::class => __('app.certified_center'),
+                        Trainer::class => __('app.trainer'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (blank($data['value'])) {
+                            return $query;
                         }
-
-                        return $name ?: $record->key;
-                    })
-                    ->searchable()
-                    ->preload(),
-
-                SelectFilter::make('certified_center_id')
-                    ->label(__('app.center'))
-                    ->relationship('certifiedCenter', 'name')
-                    ->searchable()
-                    ->preload(),
+                        return $query->where('creator_type', $data['value']);
+                    }),
 
                 SelectFilter::make('nationality')
                     ->label(__('app.nationality'))
@@ -208,14 +184,9 @@ class CertificationsTable
                             );
                     }),
 
-                Filter::make('missing_center')
-                    ->label(__('app.missing_center'))
-                    ->query(fn (Builder $query): Builder => $query->whereNull('certified_center_id'))
-                    ->toggle(),
-
-                Filter::make('missing_document_type')
-                    ->label(__('app.missing_document_type'))
-                    ->query(fn (Builder $query): Builder => $query->whereNull('document_type_id'))
+                Filter::make('missing_creator')
+                    ->label(__('app.missing_creator'))
+                    ->query(fn (Builder $query): Builder => $query->whereNull('creator_id'))
                     ->toggle(),
             ])
             ->recordActions([
@@ -231,46 +202,38 @@ class CertificationsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
 
-                    BulkAction::make('assignCenter')
-                        ->label(__('app.assign_center'))
-                        ->icon('heroicon-o-building-office')
+                    BulkAction::make('assignCreator')
+                        ->label(__('app.assign_creator'))
+                        ->icon('heroicon-o-user')
                         ->color('info')
                         ->form([
-                            Select::make('certified_center_id')
-                                ->label(__('app.certified_center'))
-                                ->relationship('certifiedCenter', 'name')
+                            Select::make('creator_type')
+                                ->label(__('app.issued_by'))
+                                ->options([
+                                    User::class => __('app.board_admin'),
+                                    CertifiedCenter::class => __('app.certified_center'),
+                                    Trainer::class => __('app.trainer'),
+                                ])
+                                ->reactive()
+                                ->required(),
+                            Select::make('creator_id')
+                                ->label(__('app.select_creator'))
+                                ->options(function (callable $get) {
+                                    $type = $get('creator_type');
+                                    if (!$type) {
+                                        return [];
+                                    }
+                                    return $type::pluck('name', 'id');
+                                })
                                 ->required()
                                 ->searchable(),
                         ])
                         ->action(function (array $data, $records) {
                             $records->each(function ($record) use ($data) {
-                                $record->update(['certified_center_id' => $data['certified_center_id']]);
-                            });
-                        }),
-
-                    BulkAction::make('assignDocumentType')
-                        ->label(__('app.assign_document_type'))
-                        ->icon('heroicon-o-document')
-                        ->color('info')
-                        ->form([
-                            Select::make('document_type_id')
-                                ->label(__('app.document_type'))
-                                ->relationship('documentType', 'name')
-                                ->getOptionLabelFromRecordUsing(function ($record) {
-                                    $name = $record->name;
-                                    if (empty($name)) {
-                                        $name = $record->getTranslation('name', app()->getLocale());
-                                    }
-
-                                    return $name ?: $record->key;
-                                })
-                                ->required()
-                                ->searchable()
-                                ->preload(),
-                        ])
-                        ->action(function (array $data, $records) {
-                            $records->each(function ($record) use ($data) {
-                                $record->update(['document_type_id' => $data['document_type_id']]);
+                                $record->update([
+                                    'creator_type' => $data['creator_type'],
+                                    'creator_id' => $data['creator_id'],
+                                ]);
                             });
                         }),
 

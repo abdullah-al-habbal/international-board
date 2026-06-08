@@ -2,7 +2,7 @@
 <div class="text-center">
     <img
         loading="lazy"
-        src="{{ $trainer->avatar_url ?? asset('assets/website/images/about/member.jpg') }}"
+        src="{{ $trainer->avatar_url ?? asset('assets/website/images/avatar.png') }}"
         class="img-standard"
         alt="{{ $trainer->name }}"
     >

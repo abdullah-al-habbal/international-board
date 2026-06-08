@@ -20,7 +20,9 @@ class CenterAccreditationRequestFactory extends Factory
             'accreditation_end_date' => fake()->dateTimeBetween('+1 year', '+2 years')->format('Y-m-d H:i:s'),
             'admin_notes' => fake()->boolean(30) ? fake()->paragraph() : null,
             'reviewed_by' => null,
-            'reviewed_at' => fake()->boolean(40) ? fake()->dateTimeBetween('-1 month', 'now')->format('Y-m-d H:i:s') : null,
+            'reviewed_at' => fake()->boolean(40)
+                ? fake()->dateTimeBetween('-1 month', 'now')->format('Y-m-d H:i:s')
+                : null,
         ];
     }
 }

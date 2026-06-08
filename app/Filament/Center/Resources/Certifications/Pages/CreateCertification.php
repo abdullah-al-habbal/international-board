@@ -2,9 +2,10 @@
 
 namespace App\Filament\Center\Resources\Certifications\Pages;
 
-use App\Enums\CertificationSource;
 use App\Filament\Center\Resources\Certifications\CertificationResource;
+use App\Models\CertifiedCenter;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateCertification extends CreateRecord
 {
@@ -12,7 +13,8 @@ class CreateCertification extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['source'] = CertificationSource::Center->value;
+        $data['creator_type'] = CertifiedCenter::class;
+        $data['creator_id'] = Auth::guard('certified_center')->id();
 
         return $data;
     }

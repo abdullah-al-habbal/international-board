@@ -3,7 +3,7 @@
     <div class="col-lg-4 col-md-6 col-sm-6 mb-5">
         <div class="card card-glow h-100 text-center p-4">
             <div class="img-square-wrap mb-4">
-                <img loading="lazy" src="{{ $trainer->avatar_url ?? asset('assets/website/images/about/member.jpg') }}"
+                <img loading="lazy" src="{{ $trainer->avatar_url ?? asset('assets/website/images/avatar.png') }}"
                     class="img-square" alt="{{ $trainer->name }}">
             </div>
             <div class="card-body p-0">
