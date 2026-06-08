@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Center\Pages\CenterProfilePage;
 use App\Filament\Center\Widgets\AccreditationStatusBanner;
+use App\Filament\Center\Widgets\WelcomeWidget;
 use App\Http\Middleware\EnsureCenterIsAccredited;
 use App\Providers\Traits\ResolvesFilamentColor;
 use Filament\Http\Middleware\Authenticate;
@@ -37,6 +39,7 @@ final class CenterPanelProvider extends PanelProvider
             ->colors(['primary' => $this->resolveColor($config['color'])])
             ->authGuard($config['guard'])
             ->authPasswordBroker($config['password_broker'])
+            ->profile(CenterProfilePage::class)
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.dashboard'))
@@ -46,6 +49,7 @@ final class CenterPanelProvider extends PanelProvider
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Center/Widgets'), for: $config['widgets_path'])
             ->widgets([
+                WelcomeWidget::class,
                 AccreditationStatusBanner::class,
             ])
             ->middleware($this->getMiddleware())

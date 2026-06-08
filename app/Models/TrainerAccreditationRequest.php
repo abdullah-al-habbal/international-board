@@ -15,20 +15,20 @@ class TrainerAccreditationRequest extends Model
 
     protected $fillable = [
         'trainer_id',
-        'requested_start_date',
-        'requested_end_date',
         'request_notes',
         'status',
         'admin_notes',
         'reviewed_by',
         'reviewed_at',
+        'accreditation_start_date',
+        'accreditation_end_date',
     ];
 
     protected function casts(): array
     {
         return [
-            'requested_start_date' => 'date',
-            'requested_end_date' => 'date',
+            'accreditation_start_date' => 'datetime',
+            'accreditation_end_date' => 'datetime',
             'status' => AccreditationStatus::class,
             'reviewed_at' => 'datetime',
         ];

@@ -356,6 +356,8 @@ return [
     'security_update_body' => 'يرجى تسجيل الدخول مرة أخرى بعد تحديث بيانات الاعتماد.',
     'trainer_accreditation_request' => 'طلب اعتماد مدرب',
     'trainer_accreditation_requests' => 'طلبات اعتماد المدربين',
+    'trainer_document_type' => 'نوع وثيقة مدرب',
+    'trainer_document_types' => 'أنواع وثائق المدربين',
     'trainer_document_type_request' => 'طلب نوع وثيقة مدرب',
     'trainer_document_type_requests' => 'طلبات أنواع وثائق المدربين',
     'accreditation_management' => 'إدارة الاعتماد',

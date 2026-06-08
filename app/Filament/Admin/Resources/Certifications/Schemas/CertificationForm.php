@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
+use App\Enums\CertificationSource;
 use App\Models\Country;
 use App\Models\Trainee;
 use App\Models\Trainer;
@@ -50,6 +51,13 @@ class CertificationForm
                                     ->searchable()
                                     ->preload()
                                     ->placeholder(__('app.select_document_type')),
+
+                                Select::make('source')
+                                    ->label(__('app.source'))
+                                    ->options(CertificationSource::class)
+                                    ->default('board')
+                                    ->required()
+                                    ->columnSpan(1),
                             ]),
 
                         Grid::make(2)

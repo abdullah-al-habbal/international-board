@@ -4,39 +4,48 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Tables;
 
+use App\Enums\DocumentTypeRequestStatus;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class CertifiedCenterDocumentTypesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->withCount(['certifications' => fn ($q) => $q->whereColumn('certifications.certified_center_id', 'certified_center_document_types.certified_center_id')]))
             ->columns([
                 TextColumn::make('certifiedCenter.name')
                     ->label(__('app.certified_center'))
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('documentType.key')
+                TextColumn::make('key')
                     ->label(__('app.document_type_key'))
                     ->badge()
                     ->color('primary')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('documentType.name')
-                    ->label(__('app.document_type_name'))
-                    ->formatStateUsing(fn ($record) => $record->documentType?->getTranslation('name', app()->getLocale()) ?: '—'),
-
-                TextColumn::make('certifications_count')
-                    ->label(__('app.usage_count'))
-                    ->badge()
-                    ->color('success')
+                TextColumn::make('name.en')
+                    ->label(__('app.name_english'))
+                    ->searchable()
                     ->sortable(),
+
+                TextColumn::make('name.ar')
+                    ->label(__('app.name_arabic'))
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->label(__('app.status'))
+                    ->badge()
+                    ->color(fn ($state) => $state?->color() ?? 'gray')
+                    ->formatStateUsing(fn ($state) => $state?->label() ?? '—'),
 
                 TextColumn::make('created_at')
                     ->label(__('app.assigned_at'))
@@ -44,8 +53,37 @@ class CertifiedCenterDocumentTypesTable
                     ->sortable()
                     ->toggleable(),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options(collect(DocumentTypeRequestStatus::cases())->mapWithKeys(fn ($case) => [$case->value => $case->label()])),
+            ])
             ->recordActions([
+                Action::make('approve')
+                    ->label(__('app.approve'))
+                    ->visible(fn ($record) => $record->status === DocumentTypeRequestStatus::Pending)
+                    ->action(function ($record) {
+                        $record->update([
+                            'status' => DocumentTypeRequestStatus::Approved,
+                            'reviewed_by_admin_id' => Auth::id(),
+                        ]);
+                    }),
+
+                Action::make('reject')
+                    ->label(__('app.reject'))
+                    ->visible(fn ($record) => $record->status === DocumentTypeRequestStatus::Pending)
+                    ->form([
+                        Textarea::make('admin_notes')
+                            ->label(__('app.rejection_reason'))
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $record->update([
+                            'status' => DocumentTypeRequestStatus::Rejected,
+                            'admin_notes' => $data['admin_notes'],
+                            'reviewed_by_admin_id' => Auth::id(),
+                        ]);
+                    }),
+
                 ViewAction::make(),
             ])
             ->defaultSort('created_at', 'desc');

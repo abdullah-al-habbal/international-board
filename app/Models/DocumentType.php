@@ -16,17 +16,14 @@ class DocumentType extends Model
     use HasFactory;
     use HasTranslations;
 
+    protected $table = 'board_document_types';
+
     public $translatable = ['name'];
 
     protected $fillable = [
         'key',
         'name',
     ];
-
-    public function approvedCenters(): HasMany
-    {
-        return $this->hasMany(CertifiedCenterDocumentType::class);
-    }
 
     public function certifications(): HasMany
     {

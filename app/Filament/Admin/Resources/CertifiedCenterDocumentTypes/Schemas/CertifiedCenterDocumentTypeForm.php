@@ -2,7 +2,9 @@
 
 namespace App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Schemas;
 
+use App\Enums\DocumentTypeRequestStatus;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class CertifiedCenterDocumentTypeForm
@@ -14,8 +16,30 @@ class CertifiedCenterDocumentTypeForm
                 Select::make('certified_center_id')
                     ->relationship('certifiedCenter', 'name')
                     ->required(),
-                Select::make('document_type_id')
-                    ->relationship('documentType', 'name')
+
+                TextInput::make('key')
+                    ->label(__('app.key'))
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText(__('app.document_type_key_helper'))
+                    ->placeholder('training_certificate'),
+
+                TextInput::make('name.en')
+                    ->label(__('app.name_english'))
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder(__('app.training_certificate_example')),
+
+                TextInput::make('name.ar')
+                    ->label(__('app.name_arabic'))
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder('شهادة تدريب'),
+
+                Select::make('status')
+                    ->label(__('app.status'))
+                    ->options(collect(DocumentTypeRequestStatus::cases())->mapWithKeys(fn ($case) => [$case->value => $case->label()]))
+                    ->default(DocumentTypeRequestStatus::Pending->value)
                     ->required(),
             ]);
     }

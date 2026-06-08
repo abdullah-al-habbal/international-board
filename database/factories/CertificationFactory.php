@@ -21,7 +21,6 @@ class CertificationFactory extends Factory
             'document_code' => fake()->regexify('[A-Z]{2}[0-9]{4}'),
             'accreditation_date' => fake()->dateTimeBetween('-2 years', 'now'),
             'trainer_id' => Trainer::factory(),
-            'nationality' => fake()->country(),
             'notes' => fake()->boolean(40) ? fake()->paragraph() : null,
         ];
     }

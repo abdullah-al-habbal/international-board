@@ -67,10 +67,8 @@
         @if ($center->approvedDocumentTypes->isNotEmpty())
             <h5 class="mt-4 mb-3">{{ __('web.labels.document_types') }}</h5>
             <div class="d-flex flex-wrap gap-2">
-                @foreach ($center->approvedDocumentTypes as $pivot)
-                    @if ($pivot->is_published && $pivot->documentType)
-                        <span class="badge bg-primary px-3 py-2">{{ $pivot->documentType->name }}</span>
-                    @endif
+                @foreach ($center->approvedDocumentTypes as $docType)
+                    <span class="badge bg-primary px-3 py-2">{{ $docType->name }}</span>
                 @endforeach
             </div>
         @endif

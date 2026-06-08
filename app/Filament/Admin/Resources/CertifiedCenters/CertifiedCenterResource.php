@@ -7,7 +7,6 @@ use App\Filament\Admin\Resources\CertifiedCenters\Pages\EditCertifiedCenter;
 use App\Filament\Admin\Resources\CertifiedCenters\Pages\ListCertifiedCenters;
 use App\Filament\Admin\Resources\CertifiedCenters\Pages\ViewCertifiedCenter;
 use App\Filament\Admin\Resources\CertifiedCenters\RelationManagers\ApprovedDocumentTypesRelationManager;
-use App\Filament\Admin\Resources\CertifiedCenters\RelationManagers\DocumentTypeRequestsRelationManager;
 use App\Filament\Admin\Resources\CertifiedCenters\RelationManagers\FinancialRequestsRelationManager;
 use App\Filament\Admin\Resources\CertifiedCenters\Schemas\CertifiedCenterForm;
 use App\Filament\Admin\Resources\CertifiedCenters\Schemas\CertifiedCenterInfolist;
@@ -96,7 +95,6 @@ class CertifiedCenterResource extends Resource
     {
         return [
             ApprovedDocumentTypesRelationManager::class,
-            DocumentTypeRequestsRelationManager::class,
             FinancialRequestsRelationManager::class,
         ];
     }

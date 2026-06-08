@@ -12,6 +12,7 @@ use App\Policies\CertificationPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\CertificationSource;
 use App\Models\CertifiedCenter;
 use App\Models\Country;
 use App\Models\DocumentType;
@@ -42,7 +43,7 @@ class Certification extends Model
     protected $fillable = [
         'certified_center_id',
         'trainee_id',
-        'nationality',
+        'source',
         'accredited_serial_number',
         'document_code',
         'accreditation_number',
@@ -56,9 +57,11 @@ class Certification extends Model
 
     protected function casts(): array
     {
-    return [
-        'accreditation_date' => 'date',
-    ];    }
+        return [
+            'accreditation_date' => 'date',
+            'source' => CertificationSource::class,
+        ];
+    }
 
     public function getAccreditationDateAttribute($value): ?string
     {
@@ -140,7 +143,9 @@ class Certification extends Model
     #[Scope]
     protected function byNationality(Builder $query, string $nationality): void
     {
-        $query->where('nationality', $nationality);
+        $query->whereHas('country', function (Builder $q) use ($nationality) {
+            $q->where('nationality', $nationality);
+        });
     }
 
     #[Scope]

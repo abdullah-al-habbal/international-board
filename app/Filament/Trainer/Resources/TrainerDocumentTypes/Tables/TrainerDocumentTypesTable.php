@@ -7,7 +7,6 @@ namespace App\Filament\Trainer\Resources\TrainerDocumentTypes\Tables;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class TrainerDocumentTypesTable
@@ -16,13 +15,28 @@ class TrainerDocumentTypesTable
     {
         return $table
             ->columns([
-                TextColumn::make('documentType.name')
-                    ->label(__('app.document_type'))
+                TextColumn::make('key')
+                    ->label(__('app.document_type_key'))
+                    ->badge()
+                    ->color('primary')
                     ->searchable()
                     ->sortable(),
 
-                ToggleColumn::make('is_published')
-                    ->label(__('app.is_published')),
+                TextColumn::make('name.en')
+                    ->label(__('app.name_english'))
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('name.ar')
+                    ->label(__('app.name_arabic'))
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->label(__('app.status'))
+                    ->badge()
+                    ->color(fn ($state) => $state?->color() ?? 'gray')
+                    ->formatStateUsing(fn ($state) => $state?->label() ?? '—'),
             ])
             ->recordActions([
                 EditAction::make(),

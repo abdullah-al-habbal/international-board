@@ -112,9 +112,9 @@
                                 <tr>
                                     <th>{{ __('web.labels.nationality') }}</th>
                                     <td>
-                                        @if($certification->nationality)
+                                        @if($certification->country?->nationality)
                                             <span class="badge bg-dark">
-                                                {{ $certification->nationality }}
+                                                {{ $certification->country->nationality }}
                                             </span>
                                         @else
                                             <span class="badge bg-secondary opacity-75">

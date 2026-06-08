@@ -43,13 +43,13 @@ class CertificationsTable
                     ->weight('bold')
                     ->getStateUsing(fn ($record) => $record->trainee?->name ?? __('app.unassigned')),
 
-                TextColumn::make('nationality')
+                TextColumn::make('country.nationality')
                     ->label(__('app.nationality'))
                     ->searchable()
                     ->badge()
                     ->color('info')
                     ->toggleable()
-                    ->getStateUsing(fn ($record) => $record->nationality ?: __('app.no_nationality')),
+                    ->getStateUsing(fn ($record) => $record->country?->nationality ?: __('app.no_nationality')),
 
                 TextColumn::make('documentType.name')
                     ->label(__('app.document_type'))
@@ -176,14 +176,10 @@ class CertificationsTable
 
                 SelectFilter::make('nationality')
                     ->label(__('app.nationality'))
-                    ->options(function () {
-                        return Certification::whereNotNull('nationality')
-                            ->distinct()
-                            ->pluck('nationality', 'nationality')
-                            ->toArray();
-                    })
-                    ->placeholder(__('app.filter_select_placeholder'))
-                    ->searchable(),
+                    ->relationship('country', 'nationality')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder(__('app.filter_select_placeholder')),
 
                 SelectFilter::make('paper_received')
                     ->label(__('app.paper_received'))

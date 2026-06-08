@@ -127,12 +127,9 @@ class CertificationsTable
 
                 SelectFilter::make('nationality')
                     ->label(__('app.nationality'))
-                    ->options(function () {
-                        return Certification::whereNotNull('nationality')
-                            ->distinct()
-                            ->pluck('nationality', 'nationality')
-                            ->toArray();
-                    }),
+                    ->relationship('country', 'nationality')
+                    ->searchable()
+                    ->preload(),
 
                 SelectFilter::make('paper_received')
                     ->label(__('app.paper_received'))

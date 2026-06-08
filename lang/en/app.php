@@ -130,6 +130,8 @@ return [
     'trainer_financial_request' => 'Trainer Financial Request',
     'trainer_accreditation_requests' => 'Trainer Accreditation Requests',
     'trainer_accreditation_request' => 'Trainer Accreditation Request',
+    'trainer_document_types' => 'Trainer Document Types',
+    'trainer_document_type' => 'Trainer Document Type',
     'trainer_document_type_requests' => 'Trainer Document Type Requests',
     'trainer_document_type_request' => 'Trainer Document Type Request',
     'financial_history' => 'Financial History',

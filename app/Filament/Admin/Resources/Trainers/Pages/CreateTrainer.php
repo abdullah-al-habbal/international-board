@@ -11,8 +11,17 @@ class CreateTrainer extends CreateRecord
 {
     protected static string $resource = TrainerResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['membership_start_date'] = now();
+
+        return $data;
+    }
+
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return \App\Filament\Admin\Resources\Certifications\CertificationResource::getUrl('create', [
+            'trainer_id' => $this->record->id,
+        ]);
     }
 }

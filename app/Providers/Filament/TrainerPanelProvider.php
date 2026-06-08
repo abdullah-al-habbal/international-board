@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Trainer\Pages\TrainerProfilePage;
+use App\Filament\Trainer\Widgets\WelcomeWidget;
 use App\Http\Middleware\EnsureTrainerIsAccredited;
 use App\Providers\Traits\ResolvesFilamentColor;
 use Filament\Http\Middleware\Authenticate;
@@ -36,6 +38,7 @@ final class TrainerPanelProvider extends PanelProvider
             ->colors(['primary' => $this->resolveColor($config['color'])])
             ->authGuard($config['guard'])
             ->authPasswordBroker($config['password_broker'])
+            ->profile(TrainerProfilePage::class)
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.trainer_dashboard'))
@@ -43,6 +46,9 @@ final class TrainerPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Trainer/Pages'), for: $config['pages_path'])
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Trainer/Widgets'), for: $config['widgets_path'])
+            ->widgets([
+                WelcomeWidget::class,
+            ])
             ->middleware($this->getMiddleware())
             ->authMiddleware($this->getAuthMiddleware());
     }

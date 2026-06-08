@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Events;
 
-use App\Models\AccreditationRequest;
+use App\Models\CenterAccreditationRequest;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,7 +15,7 @@ class AccreditationStarted
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public readonly AccreditationRequest $accreditationRequest
+        public readonly CenterAccreditationRequest $accreditationRequest
     ) {}
 
     public function broadcastOn(): array

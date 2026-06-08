@@ -33,7 +33,7 @@ class TrainerAccreditationRequestObserver
             ]);
         }
 
-        if ($request->isDirty(['requested_start_date', 'requested_end_date'])) {
+        if ($request->isDirty(['accreditation_start_date', 'accreditation_end_date'])) {
             $this->assertNoTimeOverlap($request, excludeSelf: true);
         }
     }
@@ -93,8 +93,8 @@ class TrainerAccreditationRequestObserver
         $hasCurrentlyActiveApproved = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('requested_start_date', '<=', now())
-            ->where('requested_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', now())
+            ->where('accreditation_end_date', '>=', now())
             ->exists();
 
         if ($hasActive || $hasCurrentlyActiveApproved) {
@@ -111,8 +111,8 @@ class TrainerAccreditationRequestObserver
         $query = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('requested_start_date', '<', $request->requested_end_date)
-            ->where('requested_end_date', '>', $request->requested_start_date);
+            ->where('accreditation_start_date', '<', $request->accreditation_end_date)
+            ->where('accreditation_end_date', '>', $request->accreditation_start_date);
 
         if ($excludeSelf) {
             $query->where('id', '!=', $request->id);
@@ -121,8 +121,8 @@ class TrainerAccreditationRequestObserver
         if ($query->exists()) {
             Log::channel('accreditation')->warning('[Trainer] Blocked overlapping accreditation period', [
                 'trainer_id' => $request->trainer_id,
-                'start' => $request->requested_start_date,
-                'end' => $request->requested_end_date,
+                'start' => $request->accreditation_start_date,
+                'end' => $request->accreditation_end_date,
             ]);
 
             throw new \DomainException(__('accreditation.errors.time_overlap'));
@@ -131,16 +131,16 @@ class TrainerAccreditationRequestObserver
 
     private function handleApproved(TrainerAccreditationRequest $request, Trainer $trainer): void
     {
-        $trainer->membership_start_date = $request->requested_start_date;
-        $trainer->membership_end_date = $request->requested_end_date;
+        $trainer->membership_start_date = $request->accreditation_start_date;
+        $trainer->membership_end_date = $request->accreditation_end_date;
         $trainer->is_active = true;
         $trainer->saveQuietly();
 
         Log::channel('accreditation')->info('[Trainer] Accreditation approved', [
             'trainer_id' => $trainer->id,
             'period' => [
-                'start' => $request->requested_start_date,
-                'end' => $request->requested_end_date,
+                'start' => $request->accreditation_start_date,
+                'end' => $request->accreditation_end_date,
             ],
         ]);
     }
@@ -150,8 +150,8 @@ class TrainerAccreditationRequestObserver
         $hasOtherActive = $trainer->accreditationRequests()
             ->where('id', '!=', $request->id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('requested_start_date', '<=', now())
-            ->where('requested_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', now())
+            ->where('accreditation_end_date', '>=', now())
             ->exists();
 
         if (!$hasOtherActive) {

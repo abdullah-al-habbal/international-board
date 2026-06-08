@@ -72,7 +72,7 @@ final class CertificationExportHandler
             $certification->accreditation_number,
             $certification->accreditation_date?->format('Y-m-d'),
             $certification->trainer?->name,
-            $certification->nationality,
+            $certification->country?->nationality,
             $certification->paper_received ? 'YES' : 'NO',
             $certification->country?->name,
             $certification->notes,

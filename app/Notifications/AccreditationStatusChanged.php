@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
-use App\Models\AccreditationRequest;
+use App\Models\CenterAccreditationRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -19,7 +19,7 @@ final class AccreditationStatusChanged extends Notification implements ShouldQue
     private const CENTER_ROUTE = '/center';
 
     public function __construct(
-        private readonly AccreditationRequest $accreditationRequest
+        private readonly CenterAccreditationRequest $accreditationRequest
     ) {}
 
     public function via(mixed $notifiable): array

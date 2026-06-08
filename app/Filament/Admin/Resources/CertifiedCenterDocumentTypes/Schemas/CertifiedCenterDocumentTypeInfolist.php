@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\Schemas;
 
-use App\Models\CertifiedCenterDocumentType;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -23,21 +22,25 @@ class CertifiedCenterDocumentTypeInfolist
                 ->weight('bold')
                 ->columnSpanFull(),
 
-            TextEntry::make('documentType.key')
+            TextEntry::make('key')
                 ->label(__('app.document_type_key'))
                 ->badge()
                 ->color('primary')
                 ->columnSpan(1),
 
-            TextEntry::make('documentType.name')
-                ->label(__('app.document_type_name'))
+            TextEntry::make('name.en')
+                ->label(__('app.name_english'))
                 ->columnSpan(1),
 
-            TextEntry::make('certifications_count')
-                ->label(__('app.usage_count'))
+            TextEntry::make('name.ar')
+                ->label(__('app.name_arabic'))
+                ->columnSpan(1),
+
+            TextEntry::make('status')
+                ->label(__('app.status'))
                 ->badge()
-                ->color('success')
-                ->state(fn (CertifiedCenterDocumentType $record): int => $record->certifications()->where('certified_center_id', $record->certified_center_id)->count())
+                ->color(fn ($state) => $state?->color() ?? 'gray')
+                ->formatStateUsing(fn ($state) => $state?->label() ?? '—')
                 ->columnSpan(1),
 
             TextEntry::make('created_at')

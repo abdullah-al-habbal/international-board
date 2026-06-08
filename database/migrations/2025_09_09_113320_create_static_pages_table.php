@@ -1,7 +1,5 @@
 <?php
 
-// database/migrations/2025_09_09_113320_create_static_pages_table.php
-
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;

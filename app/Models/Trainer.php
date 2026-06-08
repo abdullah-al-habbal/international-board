@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Country;
-use App\Models\TrainerDocumentTypeRequest;
 use App\Models\Certification;
 use App\Models\TrainerDocumentType;
 use App\Models\TrainerFinancialRequest;
@@ -78,11 +77,6 @@ class Trainer extends Authenticatable implements FilamentUser
         return $this->hasMany(TrainerDocumentType::class);
     }
 
-    public function documentTypeRequests(): HasMany
-    {
-        return $this->hasMany(TrainerDocumentTypeRequest::class);
-    }
-
     public function accreditationRequests(): HasMany
     {
         return $this->hasMany(TrainerAccreditationRequest::class);
@@ -96,7 +90,7 @@ class Trainer extends Authenticatable implements FilamentUser
 
         return $this->accreditationRequests()
             ->where('status', AccreditationStatus::Approved)
-            ->where('requested_end_date', '>=', now())
+            ->where('accreditation_end_date', '>=', now())
             ->exists();
     }
 
@@ -104,8 +98,8 @@ class Trainer extends Authenticatable implements FilamentUser
     {
         return $this->accreditationRequests()
             ->where('status', AccreditationStatus::Approved)
-            ->where('requested_start_date', '<=', now())
-            ->where('requested_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', now())
+            ->where('accreditation_end_date', '>=', now())
             ->exists();
     }
 

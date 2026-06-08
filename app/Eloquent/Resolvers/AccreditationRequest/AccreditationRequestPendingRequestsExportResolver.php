@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Eloquent\Resolvers\AccreditationRequest;
 
 use App\Enums\AccreditationStatus;
-use App\Models\AccreditationRequest;
+use App\Models\CenterAccreditationRequest;
 use Illuminate\Database\Eloquent\Builder;
 
 final class AccreditationRequestPendingRequestsExportResolver
 {
     public function __construct(
-        private readonly AccreditationRequest $model,
+        private readonly CenterAccreditationRequest $model,
     ) {}
 
     public function query(): Builder

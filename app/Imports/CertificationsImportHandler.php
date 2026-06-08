@@ -42,7 +42,7 @@ final class CertificationsImportHandler
 
         return [
             'trainee_id' => $this->getOrCreateTrainee($traineeNameRaw, $nationalityRaw),
-            'nationality' => $this->cleanNationality($nationalityRaw),
+            'source' => 'board',
             'accredited_serial_number' => $serialNumber,
             'document_code' => $this->cleanValue($documentCodeRaw),
             'accreditation_number' => $this->cleanValue($accreditationNumberRaw),

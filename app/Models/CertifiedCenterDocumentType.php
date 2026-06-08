@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DocumentTypeRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CertifiedCenterDocumentType extends Model
 {
@@ -17,14 +17,18 @@ class CertifiedCenterDocumentType extends Model
 
     protected $fillable = [
         'certified_center_id',
-        'document_type_id',
-        'is_published',
+        'key',
+        'name',
+        'status',
+        'admin_notes',
+        'reviewed_by_admin_id',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_published' => 'boolean',
+            'name' => 'array',
+            'status' => DocumentTypeRequestStatus::class,
         ];
     }
 
@@ -33,14 +37,8 @@ class CertifiedCenterDocumentType extends Model
         return $this->belongsTo(CertifiedCenter::class);
     }
 
-    public function documentType(): BelongsTo
+    public function reviewer(): BelongsTo
     {
-        return $this->belongsTo(DocumentType::class);
-    }
-
-    public function certifications(): HasMany
-    {
-        return $this->hasMany(Certification::class, 'document_type_id', 'document_type_id')
-            ->where('certified_center_id', $this->certified_center_id);
+        return $this->belongsTo(User::class, 'reviewed_by_admin_id');
     }
 }

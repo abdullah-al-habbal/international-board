@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DocumentTypeRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,14 +17,18 @@ class TrainerDocumentType extends Model
 
     protected $fillable = [
         'trainer_id',
-        'document_type_id',
-        'is_published',
+        'key',
+        'name',
+        'status',
+        'admin_notes',
+        'reviewed_by_admin_id',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_published' => 'boolean',
+            'name' => 'array',
+            'status' => DocumentTypeRequestStatus::class,
         ];
     }
 
@@ -32,8 +37,8 @@ class TrainerDocumentType extends Model
         return $this->belongsTo(Trainer::class);
     }
 
-    public function documentType(): BelongsTo
+    public function reviewer(): BelongsTo
     {
-        return $this->belongsTo(DocumentType::class);
+        return $this->belongsTo(User::class, 'reviewed_by_admin_id');
     }
 }

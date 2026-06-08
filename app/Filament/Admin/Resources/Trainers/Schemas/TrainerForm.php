@@ -109,6 +109,12 @@ class TrainerForm
                 ->default(true)
                 ->inline(false)
                 ->columnSpanFull(),
+
+            \Filament\Forms\Components\DateTimePicker::make('membership_end_date')
+                ->label(__('app.membership_end_date'))
+                ->required()
+                ->after(now())
+                ->columnSpan(1),
         ])->columns(2);
     }
 }

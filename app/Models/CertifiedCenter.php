@@ -17,8 +17,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\AccreditationRequest;
-use App\Models\CenterDocumentTypeRequest;
+use App\Models\CenterAccreditationRequest;
 use App\Models\CenterTypeRequest;
 use App\Models\Certification;
 use App\Models\CertifiedCenterDocumentType;
@@ -73,7 +72,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function accreditationRequests(): HasMany
     {
-        return $this->hasMany(AccreditationRequest::class);
+        return $this->hasMany(CenterAccreditationRequest::class);
     }
 
     public function country(): BelongsTo
@@ -86,14 +85,14 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         return $this->hasMany(CenterTypeRequest::class);
     }
 
-    public function documentTypeRequests(): HasMany
+    public function documentTypes(): HasMany
     {
-        return $this->hasMany(CenterDocumentTypeRequest::class);
+        return $this->hasMany(CertifiedCenterDocumentType::class);
     }
 
     public function approvedDocumentTypes(): HasMany
     {
-        return $this->hasMany(CertifiedCenterDocumentType::class);
+        return $this->documentTypes()->where('status', 'approved');
     }
 
     public function financialRequests(): HasMany
@@ -163,8 +162,8 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
         return $this->accreditationRequests()
             ->where('status', AccreditationStatus::Approved)
-            ->where('requested_start_date', '<=', $now)
-            ->where('requested_end_date', '>=', $now)
+            ->where('accreditation_start_date', '<=', $now)
+            ->where('accreditation_end_date', '>=', $now)
             ->exists();
     }
 
@@ -172,7 +171,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     {
         return $this->accreditationRequests()
             ->where('status', AccreditationStatus::Approved)
-            ->where('requested_end_date', '>=', now())
+            ->where('accreditation_end_date', '>=', now())
             ->exists();
     }
 

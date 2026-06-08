@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Repositories\AccreditationRequest;
 
 use App\Enums\AccreditationStatus;
-use App\Models\AccreditationRequest;
+use App\Models\CenterAccreditationRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 final class AccreditationRequestRepository
 {
-    public function __construct(private readonly AccreditationRequest $model)
+    public function __construct(private readonly CenterAccreditationRequest $model)
     {
     }
 
-    public function findByCenter(int $centerId): ?AccreditationRequest
+    public function findByCenter(int $centerId): ?CenterAccreditationRequest
     {
         return $this->model->forCenter($centerId)->recentlyCreated()->first();
     }
@@ -97,7 +97,7 @@ final class AccreditationRequestRepository
             ->toArray();
     }
 
-    public function findPendingForCenter(int $centerId): ?AccreditationRequest
+    public function findPendingForCenter(int $centerId): ?CenterAccreditationRequest
     {
         return $this->model
             ->forCenter($centerId)

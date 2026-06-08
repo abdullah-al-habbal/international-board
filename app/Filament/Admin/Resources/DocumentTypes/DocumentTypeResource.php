@@ -8,7 +8,6 @@ use App\Filament\Admin\Resources\DocumentTypes\Pages\CreateDocumentType;
 use App\Filament\Admin\Resources\DocumentTypes\Pages\EditDocumentType;
 use App\Filament\Admin\Resources\DocumentTypes\Pages\ListDocumentTypes;
 use App\Filament\Admin\Resources\DocumentTypes\Pages\ViewDocumentType;
-use App\Filament\Admin\Resources\DocumentTypes\RelationManagers\ApprovedCentersRelationManager;
 use App\Filament\Admin\Resources\DocumentTypes\Schemas\DocumentTypeForm;
 use App\Filament\Admin\Resources\DocumentTypes\Schemas\DocumentTypeInfolist;
 use App\Filament\Admin\Resources\DocumentTypes\Tables\DocumentTypesTable;
@@ -78,9 +77,7 @@ class DocumentTypeResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            ApprovedCentersRelationManager::class,
-        ];
+        return [];
     }
 
     public static function getPages(): array

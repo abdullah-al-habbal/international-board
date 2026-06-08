@@ -10,39 +10,20 @@ return new class extends Migration
     {
         Schema::create('certifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('certified_center_id')
-                ->nullable()
-                ->constrained('certified_centers')
-                ->nullOnDelete();
+            $table->string('source')->default('board');
+            $table->foreignId('certified_center_id')->nullable()->constrained('certified_centers')->nullOnDelete();
             $table->string('accredited_serial_number', 100)->index();
             $table->string('document_code', 50);
             $table->string('accreditation_number', 100)->nullable();
-            $table->foreignId('document_type_id')
-                ->nullable()
-                ->constrained('document_types')
-                ->nullOnDelete();
+            $table->foreignId('document_type_id')->nullable()->constrained('board_document_types')->nullOnDelete();
             $table->date('accreditation_date')->nullable()->index();
-            $table->foreignId('trainer_id')
-                ->nullable()
-                ->constrained('trainers')
-                ->nullOnDelete();
-            $table->foreignId('country_id')
-                ->nullable()
-                ->constrained('countries')
-                ->nullOnDelete();
-            $table->string('nationality', 255)->nullable()->index();
-            $table->foreignId('trainee_id')
-                ->nullable()
-                ->constrained('trainees')
-                ->nullOnDelete();
+            $table->foreignId('trainer_id')->nullable()->constrained('trainers')->nullOnDelete();
+            $table->foreignId('country_id')->nullable()->constrained('countries')->nullOnDelete();
+            $table->foreignId('trainee_id')->nullable()->constrained('trainees')->nullOnDelete();
             $table->text('notes')->nullable();
             $table->string('paper_received', 10)->nullable();
             $table->timestamps();
-
-            $table->unique(
-                ['accredited_serial_number', 'document_code'],
-                'certifications_serial_doc_unique'
-            );
+            $table->unique(['accredited_serial_number', 'document_code'], 'certifications_serial_doc_unique');
         });
     }
 
