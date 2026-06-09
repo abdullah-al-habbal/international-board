@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\Trainers\Schemas;
+namespace App\Filament\Center\Resources\Trainers\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -16,12 +14,11 @@ class TrainerForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->schema([
+        return $schema->columns(2)->schema([
             TextInput::make('name')
                 ->label(__('app.name'))
                 ->required()
                 ->maxLength(255)
-                ->autofocus()
                 ->columnSpanFull(),
 
             TextInput::make('email')
@@ -29,45 +26,20 @@ class TrainerForm
                 ->email()
                 ->maxLength(255)
                 ->unique(ignoreRecord: true)
-                ->nullable()
-                ->columnSpan(1),
+                ->nullable(),
 
             TextInput::make('phone')
                 ->label(__('app.phone'))
                 ->tel()
                 ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            TextInput::make('password')
-                ->label(__('app.password'))
-                ->password()
-                ->revealable()
-                ->required(fn (string $operation): bool => $operation === 'create')
-                ->dehydrated(fn (?string $state) => filled($state))
-                ->hint(fn (string $operation) => $operation === 'edit' ? __('app.password_keep_hint') : null)
-                ->columnSpan(1),
+                ->nullable(),
 
             Select::make('country_id')
                 ->label(__('app.country'))
                 ->relationship('country', 'name')
                 ->searchable()
                 ->preload()
-                ->nullable()
-                ->createOptionForm([
-                    TextInput::make('name')->required()->maxLength(255),
-                    TextInput::make('code')->maxLength(10),
-                    TextInput::make('code_2')->maxLength(10),
-                ])
-                ->columnSpan(1),
-
-            Select::make('center_id')
-                ->label(__('app.center'))
-                ->relationship('center', 'name')
-                ->searchable()
-                ->preload()
-                ->nullable()
-                ->columnSpan(1),
+                ->nullable(),
 
             FileUpload::make('avatar')
                 ->label(__('app.avatar'))
@@ -75,22 +47,7 @@ class TrainerForm
                 ->avatar()
                 ->directory('trainers/avatars')
                 ->visibility('public')
-                ->nullable()
-                ->columnSpan(1),
-
-            Textarea::make('address')
-                ->label(__('app.address'))
-                ->maxLength(65535)
-                ->rows(2)
-                ->nullable()
-                ->columnSpanFull(),
-
-            Textarea::make('bio')
-                ->label(__('app.biography'))
-                ->maxLength(65535)
-                ->rows(4)
-                ->nullable()
-                ->columnSpanFull(),
+                ->nullable(),
 
             Select::make('specializations')
                 ->label(__('app.specializations'))
@@ -116,14 +73,7 @@ class TrainerForm
             Toggle::make('is_active')
                 ->label(__('app.active'))
                 ->default(true)
-                ->inline(false)
-                ->columnSpanFull(),
-
-            DateTimePicker::make('accreditation_period_end')
-                ->label(__('app.accreditation_period_end'))
-                ->required()
-                ->after(fn () => now())
-                ->columnSpan(1),
-        ])->columns(2);
+                ->inline(false),
+        ]);
     }
 }

@@ -33,6 +33,7 @@ class TrainerFactory extends Factory
                 'Project Management',
             ], $this->faker->numberBetween(1, 4)),
             'is_active' => $this->faker->boolean(90),
+            'password' => 'password',
         ];
     }
 

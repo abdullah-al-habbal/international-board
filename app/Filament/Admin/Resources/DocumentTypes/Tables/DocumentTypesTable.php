@@ -40,14 +40,6 @@ class DocumentTypesTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('certifications_count')
-                    ->label(__('app.usage_count'))
-                    ->counts('certifications')
-                    ->badge()
-                    ->color('success')
-                    ->sortable()
-                    ->alignCenter(),
-
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()

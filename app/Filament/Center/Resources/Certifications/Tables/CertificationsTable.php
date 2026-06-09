@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
-use App\Models\Certification;
-use App\Models\Trainer;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;

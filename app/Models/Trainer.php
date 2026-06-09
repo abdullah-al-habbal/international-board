@@ -10,8 +10,11 @@ use App\Models\TrainerDocumentType;
 use App\Models\TrainerFinancialRequest;
 use App\Models\TrainerAccreditationRequest;
 use App\Enums\AccreditationStatus;
+use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,8 +40,8 @@ class Trainer extends Authenticatable implements FilamentUser
         'is_active',
         'unique_trainer_code',
         'accreditation_number',
-        'membership_start_date',
-        'membership_end_date',
+        'accreditation_period_start',
+        'accreditation_period_end',
         'password',
     ];
 
@@ -53,8 +56,8 @@ class Trainer extends Authenticatable implements FilamentUser
             'address' => 'array',
             'specializations' => 'array',
             'is_active' => 'boolean',
-            'membership_start_date' => 'date',
-            'membership_end_date' => 'date',
+            'accreditation_period_start' => 'datetime',
+            'accreditation_period_end' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -89,25 +92,69 @@ class Trainer extends Authenticatable implements FilamentUser
         return $this->hasMany(TrainerAccreditationRequest::class);
     }
 
+    #[Scope]
+    protected function accreditationExpired(Builder $query): void
+    {
+        $query->where('accreditation_period_end', '<', now());
+    }
+
+    #[Scope]
+    protected function accreditationActive(Builder $query): void
+    {
+        $query->where('accreditation_period_start', '<=', now())
+            ->where('accreditation_period_end', '>=', now());
+    }
+
+    public function isAccreditationActive(): bool
+    {
+        if (!$this->accreditation_period_start || !$this->accreditation_period_end) {
+            return false;
+        }
+
+        return Carbon::now()->between(
+            $this->accreditation_period_start,
+            $this->accreditation_period_end
+        );
+    }
+
     public function isAccredited(): bool
     {
         if (!$this->is_active) {
             return false;
         }
 
+        return $this->hasApprovedNonExpiredRequest();
+    }
+
+    public function hasApprovedAccreditationRequest(): bool
+    {
+        return $this->accreditationRequests()
+            ->where('status', AccreditationStatus::Approved)
+            ->exists();
+    }
+
+    public function hasActiveAccreditationRequest(): bool
+    {
+        $now = Carbon::now();
+
+        return $this->accreditationRequests()
+            ->where('status', AccreditationStatus::Approved)
+            ->where('accreditation_start_date', '<=', $now)
+            ->where('accreditation_end_date', '>=', $now)
+            ->exists();
+    }
+
+    public function hasApprovedNonExpiredRequest(): bool
+    {
         return $this->accreditationRequests()
             ->where('status', AccreditationStatus::Approved)
             ->where('accreditation_end_date', '>=', now())
             ->exists();
     }
 
-    public function hasActiveAccreditationRequest(): bool
+    public function canPerformActions(): bool
     {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
-            ->exists();
+        return $this->is_active && $this->hasApprovedNonExpiredRequest();
     }
 
     public function accreditationBlockReason(): ?string
@@ -116,8 +163,12 @@ class Trainer extends Authenticatable implements FilamentUser
             return __('accreditation.blocked.trainer_inactive');
         }
 
-        if (!$this->isAccredited()) {
+        if (!$this->hasApprovedNonExpiredRequest()) {
             return __('accreditation.blocked.no_approved_request');
+        }
+
+        if (!$this->hasActiveAccreditationRequest()) {
+            return __('accreditation.blocked.period_expired');
         }
 
         return null;

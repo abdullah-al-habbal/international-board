@@ -21,23 +21,33 @@ final class CertificationPolicy
 
     public function view(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $this->isAdminUser($user) || $this->isOwnerCenter($user, $certification);
+        return $this->isAdminUser($user)
+            || $this->isOwnerCenter($user, $certification)
+            || $this->isOwnerTrainer($user, $certification);
     }
 
     public function create(User|CertifiedCenter|Trainer $user): bool
     {
-        return $this->isAdminUser($user) || $this->isActiveCenterUser($user);
+        return $this->isAdminUser($user)
+            || $this->isActiveCenterUser($user)
+            || $this->isActiveTrainerUser($user);
     }
 
     public function update(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $this->isAdminUser($user) || $this->canOwnerModify($user, $certification);
+        return $this->isAdminUser($user)
+            || $this->canOwnerCenterModify($user, $certification)
+            || $this->canOwnerTrainerModify($user, $certification);
     }
 
     public function delete(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $this->isAdminUser($user) || $this->canOwnerModify($user, $certification);
+        return $this->isAdminUser($user)
+            || $this->canOwnerCenterModify($user, $certification)
+            || $this->canOwnerTrainerModify($user, $certification);
     }
+
+    // ------ Helpers ------
 
     private function isAdminUser(User|CertifiedCenter|Trainer $user): bool
     {
@@ -49,29 +59,42 @@ final class CertificationPolicy
         return $user instanceof CertifiedCenter;
     }
 
+    private function isTrainerUser(User|CertifiedCenter|Trainer $user): bool
+    {
+        return $user instanceof Trainer;
+    }
+
     private function isActiveCenterUser(User|CertifiedCenter|Trainer $user): bool
     {
         return $this->isCenterUser($user) && $user->canPerformActions();
     }
 
+    private function isActiveTrainerUser(User|CertifiedCenter|Trainer $user): bool
+    {
+        return $this->isTrainerUser($user) && $user->canPerformActions();
+    }
+
     private function isOwnerCenter(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $this->isCenterUser($user) && $this->isCertificationOwner($user, $certification);
+        return $this->isCenterUser($user)
+            && $certification->creator_type === CertifiedCenter::class
+            && $certification->creator_id === $user->id;
     }
 
-    private function isCertificationOwner(CertifiedCenter $center, Certification $certification): bool
+    private function isOwnerTrainer(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $certification->creator_type === CertifiedCenter::class
-            && $certification->creator_id === $center->id;
+        return $this->isTrainerUser($user)
+            && $certification->creator_type === Trainer::class
+            && $certification->creator_id === $user->id;
     }
 
-    private function canOwnerModify(User|CertifiedCenter|Trainer $user, Certification $certification): bool
+    private function canOwnerCenterModify(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $this->isOwnerCenter($user, $certification) && $this->isUserActive($user);
+        return $this->isOwnerCenter($user, $certification) && $user->canPerformActions();
     }
 
-    private function isUserActive(User|CertifiedCenter|Trainer $user): bool
+    private function canOwnerTrainerModify(User|CertifiedCenter|Trainer $user, Certification $certification): bool
     {
-        return $this->isCenterUser($user) && $user->canPerformActions();
+        return $this->isOwnerTrainer($user, $certification) && $user->canPerformActions();
     }
 }

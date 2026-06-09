@@ -24,12 +24,6 @@ class DocumentTypeInfolist
                 TextEntry::make('name.ar')
                     ->label(__('app.name_arabic')),
 
-                TextEntry::make('certifications_count')
-                    ->label(__('app.certifications_count'))
-                    ->counts('certifications')
-                    ->badge()
-                    ->color('success'),
-
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()

@@ -8,6 +8,7 @@ use App\Enums\AccreditationStatus;
 use App\Services\Accreditation\TrainerAccreditationApprovalService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -27,18 +28,20 @@ class TrainerAccreditationRequestsTable
                     ->label(__('app.status'))
                     ->badge()
                     ->color(fn (AccreditationStatus $state): string => $state->color()),
-                TextColumn::make('requested_start_date')
-                    ->label(__('app.start_date'))
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('requested_end_date')
-                    ->label(__('app.end_date'))
-                    ->date()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('app.requested_at'))
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('accreditation_start_date')
+                    ->label(__('app.start_date'))
+                    ->date()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('accreditation_end_date')
+                    ->label(__('app.end_date'))
+                    ->date()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->actions([
                 Action::make('approve')
@@ -46,8 +49,17 @@ class TrainerAccreditationRequestsTable
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(fn ($record) => $record->status === AccreditationStatus::Pending || $record->status === AccreditationStatus::UnderReview)
-                    ->action(function ($record) {
-                        app(TrainerAccreditationApprovalService::class)->approve($record);
+                    ->form([
+                        DateTimePicker::make('accreditation_end_date')
+                            ->label(__('app.end_date'))
+                            ->required()
+                            ->after(fn () => now()),
+                    ])
+                    ->action(function ($record, array $data) {
+                        app(TrainerAccreditationApprovalService::class)->approve(
+                            $record,
+                            $data['accreditation_end_date']
+                        );
                         Notification::make()->success()->title(__('app.approved'))->send();
                     })
                     ->requiresConfirmation(),

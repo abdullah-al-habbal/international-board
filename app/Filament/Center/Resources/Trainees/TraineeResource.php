@@ -11,6 +11,7 @@ use App\Filament\Center\Resources\Trainees\Pages\ViewTrainee;
 use App\Filament\Center\Resources\Trainees\Schemas\TraineeForm;
 use App\Filament\Center\Resources\Trainees\Schemas\TraineeInfolist;
 use App\Filament\Center\Resources\Trainees\Tables\TraineesTable;
+use App\Models\CertifiedCenter;
 use App\Models\Trainee;
 use App\Services\Accreditation\AccreditationGateService;
 use BackedEnum;
@@ -97,7 +98,8 @@ class TraineeResource extends Resource
             ->whereHas(
                 'certifications',
                 fn($q) =>
-                $q->where('certified_center_id', $centerId)
+                $q->where('creator_type', CertifiedCenter::class)
+                    ->where('creator_id', $centerId)
             );
     }
 

@@ -1,3 +1,4 @@
+{{-- resources/views/filament/center/widgets/accreditation-status-banner.blade.php --}}
 @php
     $center = $this->getCenter();
     $isAccredited = $center->canPerformActions();
@@ -38,7 +39,7 @@
 
             @if(!$isAccredited)
                 <div>
-                    <x-filament::button :href="route('filament.center.resources.accreditation-requests.index')" tag="a"
+                    <x-filament::button :href="route('filament.center.resources.center-accreditation-requests.index')" tag="a"
                         color="primary" size="sm">
                         {{ __('accreditation.banner.action') }}
                     </x-filament::button>

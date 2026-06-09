@@ -1,3 +1,4 @@
+{{-- resources/views/filament/center/widgets/accreditation-banner.blade.php --}}
 @if ($isBlocked)
     <div class="rounded-xl border border-warning-200 bg-warning-50 p-4 dark:border-warning-700 dark:bg-warning-900/20">
         <div class="flex items-start gap-3">

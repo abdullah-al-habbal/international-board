@@ -37,7 +37,7 @@ final class AccreditationGateService
 
     public function trainerCanPerformActions(Trainer $trainer): bool
     {
-        return $trainer->isAccredited();
+        return $trainer->canPerformActions();
     }
 
     public function currentTrainerCanPerformActions(): bool
@@ -49,7 +49,7 @@ final class AccreditationGateService
             return false;
         }
 
-        return $trainer->isAccredited();
+        return $trainer->canPerformActions();
     }
 
     public function currentTrainerAccreditationBlockReason(): ?string

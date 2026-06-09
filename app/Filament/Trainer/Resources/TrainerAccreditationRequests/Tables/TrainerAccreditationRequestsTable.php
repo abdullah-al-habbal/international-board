@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables;
 
 use App\Enums\AccreditationStatus;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -24,22 +21,21 @@ class TrainerAccreditationRequestsTable
                 TextColumn::make('status')
                     ->label(__('app.status'))
                     ->badge()
-                    ->color(fn(AccreditationStatus $state): string => $state->color()),
-                TextColumn::make('requested_start_date')
+                    ->color(fn (AccreditationStatus $state): string => $state->color()),
+                TextColumn::make('accreditation_start_date')
                     ->label(__('app.start_date'))
                     ->date()
-                    ->sortable(),
-                TextColumn::make('requested_end_date')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('accreditation_end_date')
                     ->label(__('app.end_date'))
                     ->date()
-                    ->sortable(),
-            ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make()
-                    ->visible(fn ($record) => $record->status === AccreditationStatus::Pending),
-                DeleteAction::make()
-                    ->visible(fn ($record) => $record->status === AccreditationStatus::Pending),
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('admin_notes')
+                    ->label(__('app.admin_notes'))
+                    ->limit(50)
+                    ->toggleable(),
             ])
             ->defaultSort('created_at', 'desc');
     }

@@ -27,10 +27,10 @@ class TrainerAccreditationRequest extends Model
     protected function casts(): array
     {
         return [
-            'accreditation_start_date' => 'datetime',
-            'accreditation_end_date' => 'datetime',
             'status' => AccreditationStatus::class,
             'reviewed_at' => 'datetime',
+            'accreditation_start_date' => 'datetime',
+            'accreditation_end_date' => 'datetime',
         ];
     }
 

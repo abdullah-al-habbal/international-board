@@ -84,7 +84,7 @@ class CenterAccreditationRequestsTable
                         DateTimePicker::make('accreditation_end_date')
                             ->label(__('app.accreditation_end_date'))
                             ->required()
-                            ->after(now()),
+                            ->after(fn () => now()),
                     ])
                     ->visible(fn(CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::Approved)
                     ->action(function (CenterAccreditationRequest $record, array $data): void {

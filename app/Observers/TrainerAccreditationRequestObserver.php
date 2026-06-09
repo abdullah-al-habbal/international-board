@@ -15,7 +15,6 @@ class TrainerAccreditationRequestObserver
     public function creating(TrainerAccreditationRequest $request): void
     {
         $this->assertNoDuplicateActiveRequest($request);
-        $this->assertNoTimeOverlap($request);
     }
 
     public function updating(TrainerAccreditationRequest $request): void
@@ -48,7 +47,6 @@ class TrainerAccreditationRequestObserver
             ? $request->status
             : AccreditationStatus::from($request->status);
 
-        // Safety net: fill reviewer info if the action didn't set them
         if ($status->isReviewed()) {
             $needsSave = false;
             if (empty($request->reviewed_by)) {
@@ -135,8 +133,8 @@ class TrainerAccreditationRequestObserver
 
     private function handleApproved(TrainerAccreditationRequest $request, Trainer $trainer): void
     {
-        $trainer->membership_start_date = $request->accreditation_start_date;
-        $trainer->membership_end_date = $request->accreditation_end_date;
+        $trainer->accreditation_period_start = $request->accreditation_start_date;
+        $trainer->accreditation_period_end = $request->accreditation_end_date;
         $trainer->is_active = true;
         $trainer->saveQuietly();
 

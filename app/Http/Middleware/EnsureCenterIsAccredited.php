@@ -41,7 +41,7 @@ class EnsureCenterIsAccredited
         }
 
         if ($request->routeIs(
-            'filament.center.resources.accreditation-requests.*',
+            'filament.center.resources.center-accreditation-requests.*',
             'filament.center.pages.dashboard',
         )) {
             return $next($request);
@@ -62,6 +62,6 @@ class EnsureCenterIsAccredited
             ->persistent()
             ->send();
 
-        return redirect()->route('filament.center.resources.accreditation-requests.index');
+        return redirect()->route('filament.center.resources.center-accreditation-requests.index');
     }
 }
