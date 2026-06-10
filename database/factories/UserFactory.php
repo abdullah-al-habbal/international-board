@@ -4,44 +4,45 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
-    protected static ?string $password;
+    protected static ?string $password = null;
 
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-            'type' => fake()->randomElement(['admin', 'client']),
+            'password' => static::$password ??= Hash::make('password'),
+            'type' => UserType::Client->value,
             'remember_token' => Str::random(10),
         ];
     }
 
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn () => [
             'email_verified_at' => null,
         ]);
     }
 
     public function admin(): static
     {
-        return $this->state(fn(array $attributes) => [
-            'type' => 'admin',
+        return $this->state(fn () => [
+            'type' => UserType::Admin->value,
         ]);
     }
 
     public function client(): static
     {
-        return $this->state(fn(array $attributes) => [
-            'type' => 'client',
+        return $this->state(fn () => [
+            'type' => UserType::Client->value,
         ]);
     }
 }
