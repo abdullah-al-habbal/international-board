@@ -13,6 +13,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use App\Filament\Admin\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
 use App\Filament\Admin\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
+use Illuminate\Database\Eloquent\Model;
 
 class TrainerAccreditationRequestResource extends Resource
 {
@@ -53,7 +54,7 @@ class TrainerAccreditationRequestResource extends Resource
         return static::getNavigationBadge() > 0 ? 'warning' : 'gray';
     }
 
-    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    public static function getRecordTitle(?Model $record): string
     {
         if (!$record) {
             return static::getModelLabel();

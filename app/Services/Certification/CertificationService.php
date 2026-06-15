@@ -60,4 +60,9 @@ final class CertificationService
     {
         return $this->repo->getCountThisMonthByCenter($centerId);
     }
+
+    public function getStatistics(): array
+    {
+        return $this->repo->getStatistics();
+    }
 }

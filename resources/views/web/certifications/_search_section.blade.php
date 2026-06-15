@@ -1,5 +1,5 @@
 {{-- resources/views/web/certifications/_search_section.blade.php --}}
-<section class="section pb-0">
+<section class="section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 text-center">

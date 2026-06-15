@@ -6,10 +6,13 @@ namespace App\Filament\Center\Resources\CenterAccreditationRequests\Pages;
 
 use App\Enums\AccreditationStatus;
 use App\Filament\Center\Resources\CenterAccreditationRequests\CenterAccreditationRequestResource;
+use App\Filament\Traits\RedirectsToShowPage;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCenterAccreditationRequest extends CreateRecord
 {
+    use RedirectsToShowPage;
+
     protected static string $resource = CenterAccreditationRequestResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
@@ -20,10 +23,5 @@ class CreateCenterAccreditationRequest extends CreateRecord
         unset($data['admin_notes'], $data['reviewed_by'], $data['reviewed_at']);
 
         return $data;
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
     }
 }

@@ -18,11 +18,13 @@ class DocumentTypeInfolist
                     ->badge()
                     ->color('primary'),
 
-                TextEntry::make('name.en')
-                    ->label(__('app.name_english')),
+                TextEntry::make('name_en')
+                    ->label(__('app.name_english'))
+                    ->state(fn ($record) => $record->getTranslation('name', 'en')),
 
-                TextEntry::make('name.ar')
-                    ->label(__('app.name_arabic')),
+                TextEntry::make('name_ar')
+                    ->label(__('app.name_arabic'))
+                    ->state(fn ($record) => $record->getTranslation('name', 'ar')),
 
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))

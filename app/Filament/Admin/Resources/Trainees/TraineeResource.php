@@ -16,6 +16,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class TraineeResource extends Resource
 {
@@ -60,7 +61,7 @@ class TraineeResource extends Resource
         return __('app.trainees');
     }
 
-    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    public static function getRecordTitle(?Model $record): string
     {
         if (!$record) {
             return static::getModelLabel();

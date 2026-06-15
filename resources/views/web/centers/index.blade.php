@@ -9,6 +9,8 @@
         'subtitle' => __('web.pages.centers.subtitle'),
     ])
 
+    @include('web.centers._statistics')
+
     <section class="section">
         <div class="container">
             @include('web.centers._filters')

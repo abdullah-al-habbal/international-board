@@ -26,19 +26,17 @@ class DocumentTypesTable
                     ->weight('medium')
                     ->extraAttributes(['class' => 'text-lg font-semibold']),
 
-                TextColumn::make('name.en')
+                TextColumn::make('name_en')
                     ->label(__('app.name_english'))
-                    ->placeholder('(no english)')
-                    ->formatStateUsing(fn($state) => $state ?: '(no english)')
-                    ->searchable()
-                    ->sortable(),
+                    ->state(fn ($record) => $record->getTranslation('name', 'en') ?? '(no english)')
+                    ->searchable(query: fn ($query, $search) => $query->where('name->en', 'like', "%{$search}%"))
+                    ->sortable(query: fn ($query, $direction) => $query->orderBy('name->en', $direction)),
 
-                TextColumn::make('name.ar')
+                TextColumn::make('name_ar')
                     ->label(__('app.name_arabic'))
-                    ->placeholder('(no arabic)')
-                    ->formatStateUsing(fn($state) => $state ?: '(no arabic)')
-                    ->searchable()
-                    ->sortable(),
+                    ->state(fn ($record) => $record->getTranslation('name', 'ar') ?? '(no arabic)')
+                    ->searchable(query: fn ($query, $search) => $query->where('name->ar', 'like', "%{$search}%"))
+                    ->sortable(query: fn ($query, $direction) => $query->orderBy('name->ar', $direction)),
 
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))

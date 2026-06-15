@@ -94,6 +94,18 @@ return [
         'trainers' => 'Certified Trainers',
         'centers' => 'Accredited Centers',
     ],
+    'stats' => [
+        'certifications' => 'Total Certifications',
+        'countries' => 'Countries',
+        'trainees' => 'Trainees',
+        'trainers' => 'Trainers',
+        'by_creator' => 'Certifications by Creator',
+        'board' => 'Board',
+        'center' => 'Center',
+        'trainer' => 'Trainer',
+        'active_centers' => 'Active Centers',
+        'active_trainers' => 'Active Trainers',
+    ],
     'cta' => [
         'title' => 'Verify a Certification Today',
         'text' => 'Enter a serial number to instantly verify the authenticity and validity of any issued certification.',

@@ -17,7 +17,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-
+use Illuminate\Database\Eloquent\Model;
 class TrainerResource extends Resource
 {
     protected static ?string $model = Trainer::class;
@@ -61,7 +61,7 @@ class TrainerResource extends Resource
         return __('app.trainers');
     }
 
-    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    public static function getRecordTitle(?Model $record): string
     {
         if (!$record) {
             return static::getModelLabel();

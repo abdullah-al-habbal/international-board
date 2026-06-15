@@ -59,4 +59,16 @@ final class CertifiedCenterRepository
     {
         return $this->model->newQuery()->accreditationExpired()->count();
     }
+
+    public function getStatistics(): array
+    {
+        return [
+            'total_active_centers' => $this->countActive(),
+            'active_countries' => $this->model->newQuery()
+                ->where('is_active', true)
+                ->whereNotNull('country_id')
+                ->distinct('country_id')
+                ->count('country_id'),
+        ];
+    }
 }

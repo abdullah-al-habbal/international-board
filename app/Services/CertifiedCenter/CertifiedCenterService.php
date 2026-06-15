@@ -65,4 +65,9 @@ final class CertifiedCenterService
             ->sortBy(fn (Country $country): string => (string) $country->name)
             ->values();
     }
+
+    public function getStatistics(): array
+    {
+        return $this->repo->getStatistics();
+    }
 }

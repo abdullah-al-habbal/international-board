@@ -64,12 +64,6 @@ class CertificationForm
                 ->required()
                 ->maxLength(100),
 
-            TextInput::make('document_code')
-                ->label(__('app.document_code'))
-                ->required()
-                ->maxLength(50)
-                ->default(fn () => Str::upper(Str::random(8))),
-
             TextInput::make('accreditation_number')
                 ->label(__('app.accreditation_number'))
                 ->nullable()

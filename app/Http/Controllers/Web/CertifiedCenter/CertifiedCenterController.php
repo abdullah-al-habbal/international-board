@@ -29,8 +29,9 @@ final class CertifiedCenterController extends Controller
         );
 
         $countries = $this->service->getFilterCountries();
+        $stats = $this->service->getStatistics();
 
-        return view('web.centers.index', compact('centers', 'countries'));
+        return view('web.centers.index', compact('centers', 'countries', 'stats'));
     }
 
     public function show(int $id): View

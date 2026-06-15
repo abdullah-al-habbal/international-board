@@ -142,4 +142,34 @@ final class CertificationRepository
             ->map(fn(int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
+
+    public function getStatistics(): array
+    {
+        $total = $this->model->newQuery()->count();
+        $distinctCountries = $this->model->newQuery()
+            ->whereNotNull('country_id')
+            ->distinct('country_id')
+            ->count('country_id');
+        $distinctTrainees = $this->model->newQuery()
+            ->whereNotNull('trainee_id')
+            ->distinct('trainee_id')
+            ->count('trainee_id');
+        $distinctTrainers = $this->model->newQuery()
+            ->whereNotNull('assigned_trainer_id')
+            ->distinct('assigned_trainer_id')
+            ->count('assigned_trainer_id');
+        $byCreatorRaw = $this->model->newQuery()
+            ->selectRaw('creator_type, count(*) as count')
+            ->groupBy('creator_type')
+            ->pluck('count', 'creator_type')
+            ->toArray();
+
+        return [
+            'total'       => $total,
+            'countries'   => $distinctCountries,
+            'trainees'    => $distinctTrainees,
+            'trainers'    => $distinctTrainers,
+            'by_creator'  => $byCreatorRaw,
+        ];
+    }
 }

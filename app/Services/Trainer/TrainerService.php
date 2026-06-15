@@ -44,4 +44,9 @@ final class TrainerService
             (string) __('app.trainer_evaluation_default_text')
         );
     }
+
+    public function getStatistics(): array
+    {
+        return $this->repo->getStatistics();
+    }
 }

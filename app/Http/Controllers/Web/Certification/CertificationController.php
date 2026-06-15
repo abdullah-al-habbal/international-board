@@ -7,13 +7,14 @@ namespace App\Http\Controllers\Web\Certification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Certification\CertificationSearchRequest;
 use App\Services\Certification\CertificationService;
+use App\Services\Seo\SeoService;
 use Illuminate\View\View;
 
 final class CertificationController extends Controller
 {
     public function __construct(
         private readonly CertificationService $service,
-        private readonly \App\Services\Seo\SeoService $seoService
+        private readonly SeoService $seoService
     ) {}
 
     public function index(): View
@@ -22,7 +23,8 @@ final class CertificationController extends Controller
             __('web.pages.certifications.title'),
             __('web.pages.certifications.subtitle')
         );
-        return view('web.certifications.index');
+        $stats = $this->service->getStatistics();
+        return view('web.certifications.index', compact('stats'));
     }
 
     public function search(CertificationSearchRequest $request): View

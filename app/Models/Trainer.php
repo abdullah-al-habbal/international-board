@@ -25,7 +25,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Trainer extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'name',

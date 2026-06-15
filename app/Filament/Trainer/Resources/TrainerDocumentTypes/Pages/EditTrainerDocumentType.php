@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages;
 
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\TrainerDocumentTypeResource;
+use App\Filament\Traits\RedirectsToShowPage;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTrainerDocumentType extends EditRecord
 {
-    protected static string $resource = TrainerDocumentTypeResource::class;
+    use RedirectsToShowPage;
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
+    protected static string $resource = TrainerDocumentTypeResource::class;
 }

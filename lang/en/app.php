@@ -84,6 +84,7 @@ return [
     'accreditation_number' => 'Accreditation Number',
     'accreditation_period_start' => 'Accreditation Start Date',
     'accreditation_period_end' => 'Accreditation End Date',
+    'accreditation_end_date' => 'Accreditation End Date',
     'status' => 'Status',
     'status_approved' => 'Approved',
     'status_pending' => 'Pending',

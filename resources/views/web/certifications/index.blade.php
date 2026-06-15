@@ -9,5 +9,6 @@
         'subtitle' => __('web.pages.certifications.subtitle'),
     ])
 
-        @include('web.certifications._search_section')
+    @include('web.certifications._statistics')
+    @include('web.certifications._search_section')
 @endsection

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
+use Illuminate\Database\Eloquent\Model;
 
 class TrainerFinancialRequestResource extends Resource
 {
@@ -48,7 +49,7 @@ class TrainerFinancialRequestResource extends Resource
         return __('app.financial_history');
     }
 
-    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    public static function getRecordTitle(?Model $record): string
     {
         if (!$record) {
             return static::getModelLabel();

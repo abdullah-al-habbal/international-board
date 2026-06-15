@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages;
 
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\TrainerFinancialRequestResource;
+use App\Filament\Traits\RedirectsToShowPage;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTrainerFinancialRequest extends EditRecord
 {
-    protected static string $resource = TrainerFinancialRequestResource::class;
+    use RedirectsToShowPage;
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
+    protected static string $resource = TrainerFinancialRequestResource::class;
 }

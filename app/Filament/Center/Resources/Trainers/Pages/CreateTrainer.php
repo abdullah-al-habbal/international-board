@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Center\Resources\Trainers\Pages;
 
 use App\Filament\Center\Resources\Trainers\TrainerResource;
+use App\Filament\Traits\RedirectsToShowPage;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTrainer extends CreateRecord
 {
+    use RedirectsToShowPage;
+
     protected static string $resource = TrainerResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
@@ -17,10 +20,5 @@ class CreateTrainer extends CreateRecord
         $data['is_active'] = true;
 
         return $data;
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
     }
 }

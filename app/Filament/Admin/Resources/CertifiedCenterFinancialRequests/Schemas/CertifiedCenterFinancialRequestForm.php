@@ -10,7 +10,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Illuminate\Validation\Rule;
 
 class CertifiedCenterFinancialRequestForm
 {
@@ -65,9 +64,7 @@ class CertifiedCenterFinancialRequestForm
                     ->numeric()
                     ->required()
                     ->minValue(0)
-                    ->rule(function (callable $get) {
-                        return Rule::lte((string) ($get('total_payment') ?? 0));
-                    })
+                    ->maxValue(fn (callable $get): float => (float) ($get('total_payment') ?? 0))
                     ->live(onBlur: true),
                 Textarea::make('reason')
                     ->label(__('app.notes'))

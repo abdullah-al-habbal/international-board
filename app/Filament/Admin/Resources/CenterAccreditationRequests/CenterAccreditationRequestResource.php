@@ -14,6 +14,9 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+
+
 
 class CenterAccreditationRequestResource extends Resource
 {
@@ -43,7 +46,7 @@ class CenterAccreditationRequestResource extends Resource
         return static::getModel()::pending()->count() > 0 ? 'warning' : 'gray';
     }
 
-    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    public static function getRecordTitle(?Model $record): string
     {
         if (!$record) {
             return static::getModelLabel();

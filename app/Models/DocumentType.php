@@ -17,10 +17,17 @@ class DocumentType extends Model
 
     protected $table = 'board_document_types';
 
-    public $translatable = ['name'];
+    public array $translatable = ['name'];
 
     protected $fillable = [
         'key',
         'name',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'name' => 'array',
+        ];
+    }
 }

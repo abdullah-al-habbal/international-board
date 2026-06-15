@@ -61,4 +61,9 @@ final class TrainerRepository
     {
         return $this->model->newQuery()->where('is_active', false)->count();
     }
+
+    public function getStatistics(): array
+    {
+        return ['total_active_trainers' => $this->countActive()];
+    }
 }

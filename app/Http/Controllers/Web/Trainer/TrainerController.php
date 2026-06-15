@@ -31,8 +31,9 @@ final class TrainerController extends Controller
         );
 
         $whatsappNumber = $this->appSettingService->getByKey('whatsapp_number');
+        $stats = $this->service->getStatistics();
 
-        return view('web.trainers.index', compact('trainers', 'whatsappNumber'));
+        return view('web.trainers.index', compact('trainers', 'whatsappNumber', 'stats'));
     }
 
     public function show(int $trainer): View

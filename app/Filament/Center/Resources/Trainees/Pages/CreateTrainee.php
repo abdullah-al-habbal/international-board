@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Filament\Center\Resources\Trainees\Pages;
 
 use App\Filament\Center\Resources\Trainees\TraineeResource;
+use App\Filament\Traits\RedirectsToShowPage;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTrainee extends CreateRecord
 {
-    protected static string $resource = TraineeResource::class;
+    use RedirectsToShowPage;
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
+    protected static string $resource = TraineeResource::class;
 }

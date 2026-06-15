@@ -22,6 +22,7 @@ class TrainerFactory extends Factory
             'avatar' => '',
             'address' => $this->faker->optional()->address(),
             'country_id' => Country::inRandomOrder()->first()?->id,
+            // Too many arguments. Expected 1. Found 2.intelephense(P1119)
             'specializations' => $this->faker->randomElements([
                 'Training',
                 'Consulting',
