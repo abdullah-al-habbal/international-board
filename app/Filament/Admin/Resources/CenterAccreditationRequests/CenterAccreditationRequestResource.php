@@ -16,8 +16,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-
-
 class CenterAccreditationRequestResource extends Resource
 {
     protected static ?string $model = CenterAccreditationRequest::class;

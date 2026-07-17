@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - production
-
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering from GitHub Actions tab
 
 permissions:
   contents: read
@@ -19,89 +18,14 @@ env:
   APP_DOMAIN: internationalboard.uk
 
 jobs:
-  build:
-    name: 🏗️ Build Artifact
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🐘 Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ env.PHP_VERSION }}
-          coverage: none
-          extensions: mbstring, openssl, pdo_mysql, fileinfo, sodium, curl, tokenizer, xml, ctype, json, bcmath
-
-      - name: 📦 Validate Composer
-        run: composer validate --strict
-
-      - name: 📦 Install dependencies
-        run: |
-          composer install \
-            --no-dev \
-            --prefer-dist \
-            --no-interaction \
-            --no-progress \
-            --optimize-autoloader
-
-      - name: 🧪 Laravel sanity check
-        run: php artisan about
-
-      - name: 🗜️ Create release package
-        run: |
-          rm -rf build release.tar.gz
-          mkdir -p build/release
-
-          rsync -a ./ build/release/ \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='.env' \
-            --exclude='tests' \
-            --exclude='node_modules' \
-            --exclude='storage/logs/*' \
-            --exclude='storage/framework/*'
-
-          tar -czf release.tar.gz -C build/release .
-
-      - name: ⬆️ Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release
-          path: release.tar.gz
-          retention-days: 1
-
   deploy:
-    name: 🚀 Deploy to Hostinger
+    name: 🚀 Deploy to Hostinger via Git
     runs-on: ubuntu-latest
-    needs: build
 
     if: github.ref == 'refs/heads/production'
 
     steps:
-      - name: ⬇️ Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: release
-          path: .
-
-      - name: 🔍 Validate SSH connectivity
-        run: |
-          timeout 10s nc -zv ${{ secrets.HOSTINGER_SERVER_IP }} 65002 || exit 1
-
-      - name: 📤 Upload release via SCP
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.HOSTINGER_SERVER_IP }}
-          port: 65002
-          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
-          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-          source: release.tar.gz
-          target: /tmp
-          overwrite: true
-
-      - name: 🚀 Deploy via SSH
+      - name: 🚀 Deploy via SSH (Git Pull)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -115,28 +39,34 @@ jobs:
             set -Eeuo pipefail
 
             TARGET="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
+            DEPLOY_KEY="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/.ssh/deploy_key"
+            
+            # Tell Git to use the deploy key we created earlier
+            export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY -o IdentitiesOnly=yes -o StrictHostKeyChecking=no"
 
-            echo "Deploying to: $TARGET"
-
-            # Ensure target directory exists
-            mkdir -p "$TARGET"
-
+            echo "🎯 Deploying to: $TARGET"
             cd "$TARGET"
 
-            echo "Extracting release..."
-            tar -xzf /tmp/release.tar.gz -C "$TARGET"
-            rm -f /tmp/release.tar.gz
+            echo "📥 Fetching latest changes from Git..."
+            git fetch origin production
+            git reset --hard origin/production
+            
+            # Clean any untracked files that might have been left behind (respects .gitignore)
+            git clean -fd
 
-            echo "Running migrations..."
+            echo "📦 Installing PHP dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "🗄️ Running migrations..."
             php artisan migrate --force
 
-            echo "Clearing and caching..."
+            echo "🧹 Clearing and caching..."
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            echo "Verifying application..."
+            echo "✅ Verifying application..."
             php artisan about
 
-            echo "Deployment completed successfully"
+            echo "🎉 Deployment completed successfully"
