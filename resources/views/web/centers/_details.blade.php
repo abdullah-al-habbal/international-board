@@ -79,11 +79,7 @@
                 @foreach ($center->certifications as $certification)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
-                            @if ($certification->documentType)
-                                {{ $certification->documentType->name }}
-                            @else
-                                {{ __('web.labels.certification') }} #{{ $certification->id }}
-                            @endif
+                            {{ __('web.labels.certification') }} #{{ $certification->id }}
                         </span>
                         @if ($certification->document_code)
                             <span class="badge bg-secondary">{{ $certification->document_code }}</span>

@@ -13,7 +13,7 @@ class HealthCheckController extends Controller
     public function __invoke(Request $req): JsonResponse
     {
         $token = $req->header('X-Health-Token');
-        $envToken = env('HEALTH_TOKEN');
+        $envToken = config('services.health.token');
         if ($envToken && $token !== $envToken) {
             return response()->json(['status' => 'forbidden'], 403);
         }
