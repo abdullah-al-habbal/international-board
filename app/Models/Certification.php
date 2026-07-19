@@ -26,12 +26,21 @@ class Certification extends Model
             if (empty($certification->document_code)) {
                 $certification->document_code = self::generateDocumentCode();
             }
+
+            if (empty($certification->accredited_serial_number)) {
+                $certification->accredited_serial_number = self::generateAccreditedSerialNumber();
+            }
         });
     }
 
     protected static function generateDocumentCode(): string
     {
         return 'CERT-'.now()->format('Ymd').'-'.strtoupper(Str::random(4));
+    }
+
+    protected static function generateAccreditedSerialNumber(): string
+    {
+        return 'SN-'.now()->format('Ymd').'-'.strtoupper(Str::random(6));
     }
 
     protected $fillable = [
