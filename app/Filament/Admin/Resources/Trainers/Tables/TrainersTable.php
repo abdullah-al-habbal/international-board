@@ -62,12 +62,11 @@ class TrainersTable
                     ->toggleable()
                     ->getStateUsing(fn ($record) => $record->center?->name ?? __('app.no_center')),
 
-                TextColumn::make('specializations')
+                TextColumn::make('specializations.name')
                     ->label(__('app.specializations'))
                     ->badge()
                     ->separator(',')
                     ->limit(2)
-                    ->getStateUsing(fn ($record) => ! empty($record->specializations) ? $record->specializations : __('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('certifications_count')

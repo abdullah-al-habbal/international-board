@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -32,7 +33,6 @@ class Trainer extends Authenticatable implements FilamentUser
         'address',
         'country_id',
         'center_id',
-        'specializations',
         'is_active',
         'unique_trainer_code',
         'accreditation_number',
@@ -50,7 +50,6 @@ class Trainer extends Authenticatable implements FilamentUser
     {
         return [
             'address' => 'array',
-            'specializations' => 'array',
             'is_active' => 'boolean',
             'accreditation_period_start' => 'datetime',
             'accreditation_period_end' => 'datetime',
@@ -66,6 +65,12 @@ class Trainer extends Authenticatable implements FilamentUser
     public function center(): BelongsTo
     {
         return $this->belongsTo(CertifiedCenter::class, 'center_id');
+    }
+
+    public function specializations(): BelongsToMany
+    {
+        return $this->belongsToMany(Specialization::class, 'specialization_trainer')
+            ->withTimestamps();
     }
 
     public function certifications(): MorphMany

@@ -51,12 +51,11 @@ class TrainersTable
                     ->getStateUsing(fn ($record) => $record->country->name ?? __('app.no_value'))
                     ->toggleable(),
 
-                TextColumn::make('specializations')
+                TextColumn::make('specializations.name')
                     ->label(__('app.specializations'))
                     ->badge()
                     ->separator(',')
                     ->limit(2)
-                    ->getStateUsing(fn ($record) => ! empty($record->specializations) ? $record->specializations : __('app.no_value'))
                     ->toggleable(),
 
                 IconColumn::make('is_active')

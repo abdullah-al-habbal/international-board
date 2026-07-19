@@ -73,7 +73,7 @@ class TrainerInfolist
                 ->placeholder('—')
                 ->columnSpanFull(),
 
-            TextEntry::make('specializations')
+            TextEntry::make('specializations.name')
                 ->label(__('app.specializations'))
                 ->badge()
                 ->separator(',')

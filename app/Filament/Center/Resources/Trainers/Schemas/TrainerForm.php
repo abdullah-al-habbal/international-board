@@ -50,23 +50,11 @@ class TrainerForm
                 ->nullable(),
 
             Select::make('specializations')
+                ->relationship('specializations', 'name')
                 ->label(__('app.specializations'))
                 ->multiple()
-                ->options([
-                    'Training' => __('app.specialization_training'),
-                    'Consulting' => __('app.specialization_consulting'),
-                    'Leadership' => __('app.specialization_leadership'),
-                    'Management' => __('app.specialization_management'),
-                    'Communication' => __('app.specialization_communication'),
-                    'Technical Skills' => __('app.specialization_technical_skills'),
-                    'Soft Skills' => __('app.specialization_soft_skills'),
-                    'Project Management' => __('app.specialization_project_management'),
-                    'Digital Marketing' => __('app.specialization_digital_marketing'),
-                    'HR' => __('app.specialization_hr'),
-                    'Quality Management' => __('app.specialization_quality_management'),
-                    'Entrepreneurship' => __('app.specialization_entrepreneurship'),
-                ])
                 ->searchable()
+                ->preload()
                 ->nullable()
                 ->columnSpanFull(),
 

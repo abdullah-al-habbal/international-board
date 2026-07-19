@@ -41,5 +41,6 @@ return [
         'certified_center_document_types' => 'أنواع وثائق المراكز',
         'center_document_type_requests' => 'طلبات أنواع وثائق المراكز',
         'contact_messages' => 'رسائل التواصل',
+        'specializations' => 'التخصصات',
     ],
 ];

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             BlogPostSeeder::class,
             ContactMessageSeeder::class,
             CertifiedCenterSeeder::class,
+            SpecializationSeeder::class,
             TrainerSeeder::class,
             TraineeSeeder::class,
             CertifiedCenterPaymentAgentPersonSeeder::class,

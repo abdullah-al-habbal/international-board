@@ -12,13 +12,6 @@ class CreateTrainer extends CreateRecord
 {
     protected static string $resource = TrainerResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['accreditation_period_start'] = now();
-
-        return $data;
-    }
-
     protected function getRedirectUrl(): string
     {
         return CertificationResource::getUrl('create', [

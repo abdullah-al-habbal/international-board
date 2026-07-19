@@ -40,7 +40,16 @@ class CertificationForm
                                     ->required(),
 
                                 Select::make('creator_id')
-                                    ->label(__('app.select_creator'))
+                                    ->label(function (callable $get) {
+                                        $type = $get('creator_type');
+
+                                        return match ($type) {
+                                            User::class => __('app.board_admin'),
+                                            CertifiedCenter::class => __('app.certified_center'),
+                                            Trainer::class => __('app.trainer'),
+                                            default => __('app.select_creator'),
+                                        };
+                                    })
                                     ->options(function (callable $get) {
                                         $type = $get('creator_type');
                                         if (! $type) {

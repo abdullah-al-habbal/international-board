@@ -51,7 +51,7 @@ class TrainerInfolist
                 ->icon('heroicon-o-globe-alt')
                 ->placeholder('—'),
 
-            TextEntry::make('specializations')
+            TextEntry::make('specializations.name')
                 ->label(__('app.specializations'))
                 ->badge()
                 ->separator(',')
