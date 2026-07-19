@@ -20,7 +20,7 @@ final class AccreditationGateService
         /** @var CertifiedCenter|null $center */
         $center = Auth::guard('certified_center')->user();
 
-        if (!$center instanceof CertifiedCenter) {
+        if (! $center instanceof CertifiedCenter) {
             return false;
         }
 
@@ -45,7 +45,7 @@ final class AccreditationGateService
         /** @var Trainer|null $trainer */
         $trainer = Auth::guard('trainer')->user();
 
-        if (!$trainer instanceof Trainer) {
+        if (! $trainer instanceof Trainer) {
             return false;
         }
 

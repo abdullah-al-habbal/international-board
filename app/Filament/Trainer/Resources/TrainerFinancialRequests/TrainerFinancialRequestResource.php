@@ -8,6 +8,9 @@ use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\CreateTrainerF
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\EditTrainerFinancialRequest;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ListTrainerFinancialRequests;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ViewTrainerFinancialRequest;
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
+use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
 use App\Models\TrainerFinancialRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -15,9 +18,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
 use Illuminate\Database\Eloquent\Model;
 
 class TrainerFinancialRequestResource extends Resource
@@ -51,13 +51,12 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) {
+        if (! $record) {
             return static::getModelLabel();
         }
 
-        return $record->trainer?->name ?? 'Request #' . $record->id;
+        return $record->trainer?->name ?? 'Request #'.$record->id;
     }
-
 
     protected static ?int $navigationSort = 10;
 

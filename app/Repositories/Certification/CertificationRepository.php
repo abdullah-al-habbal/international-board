@@ -32,11 +32,11 @@ final class CertificationRepository
             'trainee:id,name',
             'country:id,name',
         ])
-        ->where(function ($query) use ($serial): void {
-            $query->where('accredited_serial_number', $serial)
-                  ->orWhere('document_code', $serial);
-        })
-        ->first();
+            ->where(function ($query) use ($serial): void {
+                $query->where('accredited_serial_number', $serial)
+                    ->orWhere('document_code', $serial);
+            })
+            ->first();
     }
 
     public function latest(int $limit = 10): Collection
@@ -121,7 +121,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 
@@ -139,7 +139,7 @@ final class CertificationRepository
             ->pluck('count', 'month');
 
         return collect(range(1, 12))
-            ->map(fn(int $month) => $monthlyCounts->get($month, 0))
+            ->map(fn (int $month) => $monthlyCounts->get($month, 0))
             ->toArray();
     }
 
@@ -165,11 +165,11 @@ final class CertificationRepository
             ->toArray();
 
         return [
-            'total'       => $total,
-            'countries'   => $distinctCountries,
-            'trainees'    => $distinctTrainees,
-            'trainers'    => $distinctTrainers,
-            'by_creator'  => $byCreatorRaw,
+            'total' => $total,
+            'countries' => $distinctCountries,
+            'trainees' => $distinctTrainees,
+            'trainers' => $distinctTrainers,
+            'by_creator' => $byCreatorRaw,
         ];
     }
 }

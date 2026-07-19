@@ -47,7 +47,7 @@ class TrainersRelationManager extends RelationManager
                     ->badge()
                     ->separator(',')
                     ->limit(2)
-                    ->getStateUsing(fn ($record) => !empty($record->specializations) ? $record->specializations : __('app.no_value'))
+                    ->getStateUsing(fn ($record) => ! empty($record->specializations) ? $record->specializations : __('app.no_value'))
                     ->toggleable(),
 
                 IconColumn::make('is_active')

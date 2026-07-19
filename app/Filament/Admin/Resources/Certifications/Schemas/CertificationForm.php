@@ -17,7 +17,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Builder;
 
 class CertificationForm
 {
@@ -44,23 +43,35 @@ class CertificationForm
                                     ->label(__('app.select_creator'))
                                     ->options(function (callable $get) {
                                         $type = $get('creator_type');
-                                        if (!$type) {
+                                        if (! $type) {
                                             return [];
                                         }
-                                        return $type::pluck('name', 'id');
+
+                                        return $type::query()->limit(20)->pluck('name', 'id');
+                                    })
+                                    ->getSearchResultsUsing(function (string $search, callable $get) {
+                                        $type = $get('creator_type');
+                                        if (! $type) {
+                                            return [];
+                                        }
+
+                                        return $type::query()
+                                            ->where('name', 'like', "%{$search}%")
+                                            ->limit(50)
+                                            ->pluck('name', 'id');
                                     })
                                     ->required()
-                                    ->searchable()
-                                    ->preload(),
+                                    ->searchable(),
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
                                     ->options(function (callable $get) {
                                         $creatorType = $get('creator_type');
                                         $creatorId = $get('creator_id');
-                                        if ($creatorType !== CertifiedCenter::class || !$creatorId) {
+                                        if ($creatorType !== CertifiedCenter::class || ! $creatorId) {
                                             return [];
                                         }
+
                                         return Trainer::where('center_id', $creatorId)
                                             ->pluck('name', 'id');
                                     })

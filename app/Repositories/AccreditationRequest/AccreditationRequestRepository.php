@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 final class AccreditationRequestRepository
 {
-    public function __construct(private readonly CenterAccreditationRequest $model)
-    {
-    }
+    public function __construct(private readonly CenterAccreditationRequest $model) {}
 
     public function findByCenter(int $centerId): ?CenterAccreditationRequest
     {

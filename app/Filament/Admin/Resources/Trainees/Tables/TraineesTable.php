@@ -79,6 +79,7 @@ class TraineesTable
                         if (blank($state)) {
                             return __('app.no_value');
                         }
+
                         return $state;
                     }),
 

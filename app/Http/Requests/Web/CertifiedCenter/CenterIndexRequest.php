@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Requests\Web\CertifiedCenter;
@@ -15,9 +16,9 @@ final class CenterIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search'     => ['nullable', 'string', 'max:100'],
+            'search' => ['nullable', 'string', 'max:100'],
             'country_id' => ['nullable', 'integer', 'exists:countries,id'],
-            'page'       => ['nullable', 'integer', 'min:1'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ];
     }
 

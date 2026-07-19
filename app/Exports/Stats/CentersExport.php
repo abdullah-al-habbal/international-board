@@ -32,7 +32,7 @@ final class CentersExport implements CsvStatExportable
             $this->resolver->query(),
             $headers,
             $formatter,
-            'centers_' . now()->format('Ymd_His') . '.csv'
+            'centers_'.now()->format('Ymd_His').'.csv'
         );
     }
 

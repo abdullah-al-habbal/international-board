@@ -1,4 +1,5 @@
 <?php
+
 // app\Services\Web\HomeService.php
 declare(strict_types=1);
 
@@ -20,8 +21,7 @@ final class HomeService
         private readonly CertifiedCenterRepository $centerRepository,
         private readonly StaticPageService $staticPageService,
         private readonly BlogPostService $blogPostService
-    ) {
-    }
+    ) {}
 
     public function getHomeData(): array
     {
@@ -37,9 +37,9 @@ final class HomeService
     private function buildStatistics(): array
     {
         return [
-            'certifications' => Cache::rememberForever('home_stats_certifications', fn() => $this->certificationRepository->getTotalCount()),
-            'trainers' => Cache::rememberForever('home_stats_trainers', fn() => $this->trainerRepository->countActive()),
-            'centers' => Cache::rememberForever('home_stats_centers', fn() => $this->centerRepository->countActive()),
+            'certifications' => Cache::rememberForever('home_stats_certifications', fn () => $this->certificationRepository->getTotalCount()),
+            'trainers' => Cache::rememberForever('home_stats_trainers', fn () => $this->trainerRepository->countActive()),
+            'centers' => Cache::rememberForever('home_stats_centers', fn () => $this->centerRepository->countActive()),
         ];
     }
 

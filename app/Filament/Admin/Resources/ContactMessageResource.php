@@ -77,7 +77,7 @@ class ContactMessageResource extends Resource
     {
         return [
             'index' => ListContactMessages::route('/'),
-            'view'  => ViewContactMessage::route('/{record}'),
+            'view' => ViewContactMessage::route('/{record}'),
         ];
     }
 }

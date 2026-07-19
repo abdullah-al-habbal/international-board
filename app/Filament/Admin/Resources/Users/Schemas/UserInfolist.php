@@ -1,4 +1,5 @@
 <?php
+
 // app/Filament/Admin/Resources/Users/Schemas/UserInfolist.php
 declare(strict_types=1);
 

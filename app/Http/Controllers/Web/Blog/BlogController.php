@@ -1,17 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Services\Blog\BlogPostService;
+use App\Services\Seo\SeoService;
 use Illuminate\Contracts\View\View;
 
 final class BlogController extends Controller
 {
     public function __construct(
         private readonly BlogPostService $service,
-        private readonly \App\Services\Seo\SeoService $seoService
+        private readonly SeoService $seoService
     ) {}
 
     public function index(): View
@@ -22,6 +24,7 @@ final class BlogController extends Controller
         );
 
         $posts = $this->service->getPublishedPaginated();
+
         return view('web.blog.index', compact('posts'));
     }
 

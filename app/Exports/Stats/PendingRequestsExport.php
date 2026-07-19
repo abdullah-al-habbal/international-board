@@ -33,7 +33,7 @@ final class PendingRequestsExport implements CsvStatExportable
             $this->resolver->query(),
             $headers,
             $formatter,
-            'pending_requests_' . now()->format('Ymd_His') . '.csv'
+            'pending_requests_'.now()->format('Ymd_His').'.csv'
         );
     }
 

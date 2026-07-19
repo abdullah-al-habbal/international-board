@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\Trainer;
@@ -57,6 +58,7 @@ final class TrainerController extends Controller
         );
 
         $evaluationText = $this->service->getEvaluationText();
+
         return view('web.trainers.evaluation', compact('evaluationText'));
     }
 }

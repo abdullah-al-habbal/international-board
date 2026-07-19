@@ -17,15 +17,14 @@ class EnsureCenterIsAccredited
 {
     public function __construct(
         private readonly AccreditationGateService $gateService
-    ) {
-    }
+    ) {}
 
     public function handle(Request $request, Closure $next): Response
     {
         /** @var CertifiedCenter|null $center */
         $center = Auth::guard('certified_center')->user();
 
-        if (!$center) {
+        if (! $center) {
             return $next($request);
         }
 

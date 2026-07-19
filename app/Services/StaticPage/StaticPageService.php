@@ -1,6 +1,8 @@
 <?php
+
 // app/Services/StaticPage/StaticPageService.php
 declare(strict_types=1);
+
 namespace App\Services\StaticPage;
 
 use App\Models\StaticPage;
@@ -11,8 +13,7 @@ final class StaticPageService
 {
     public function __construct(
         private readonly StaticPageRepository $repository
-    ) {
-    }
+    ) {}
 
     public function getBySlug(string $slug): ?StaticPage
     {

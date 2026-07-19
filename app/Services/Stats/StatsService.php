@@ -18,8 +18,7 @@ final class StatsService
         private readonly CertificationService $certificationService,
         private readonly UserService $userService,
         private readonly TrainerService $trainerService,
-    ) {
-    }
+    ) {}
 
     public function getDashboardStats(): array
     {

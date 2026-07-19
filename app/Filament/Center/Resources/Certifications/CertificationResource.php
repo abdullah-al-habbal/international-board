@@ -97,7 +97,7 @@ class CertificationResource extends Resource
 
         if ($center instanceof CertifiedCenter) {
             $query->where('creator_type', CertifiedCenter::class)
-                  ->where('creator_id', $center->id);
+                ->where('creator_id', $center->id);
         }
 
         return $query->with([

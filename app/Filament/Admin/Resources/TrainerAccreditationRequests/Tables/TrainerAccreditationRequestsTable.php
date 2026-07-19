@@ -9,6 +9,7 @@ use App\Services\Accreditation\TrainerAccreditationApprovalService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -69,7 +70,7 @@ class TrainerAccreditationRequestsTable
                     ->color('danger')
                     ->visible(fn ($record) => $record->status === AccreditationStatus::Pending || $record->status === AccreditationStatus::UnderReview)
                     ->form([
-                        \Filament\Forms\Components\Textarea::make('admin_notes')
+                        Textarea::make('admin_notes')
                             ->label(__('app.admin_notes'))
                             ->required(),
                     ])

@@ -14,7 +14,7 @@ final class ApplicationSettingService
     {
         $setting = $this->applicationSettingRepository->findByKey($key);
 
-        if (!$setting) {
+        if (! $setting) {
             return $default;
         }
 

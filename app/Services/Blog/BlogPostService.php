@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services\Blog;
 
+use App\Models\BlogPost;
 use App\Repositories\Blog\BlogPostRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\BlogPost;
 
 final class BlogPostService
 {

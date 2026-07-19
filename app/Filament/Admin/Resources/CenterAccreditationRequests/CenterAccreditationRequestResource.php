@@ -46,13 +46,12 @@ class CenterAccreditationRequestResource extends Resource
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) {
+        if (! $record) {
             return static::getModelLabel();
         }
 
-        return $record->certifiedCenter?->name ?? 'Request #' . $record->id;
+        return $record->certifiedCenter?->name ?? 'Request #'.$record->id;
     }
-
 
     public static function getNavigationLabel(): string
     {

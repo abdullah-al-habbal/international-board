@@ -99,7 +99,7 @@ return [
         'countries' => 'Countries',
         'trainees' => 'Trainees',
         'trainers' => 'Trainers',
-        'by_creator' => 'Certifications by Creator',
+        'by_creator' => 'Certifications by Issuing Authority',
         'board' => 'Board',
         'center' => 'Center',
         'trainer' => 'Trainer',

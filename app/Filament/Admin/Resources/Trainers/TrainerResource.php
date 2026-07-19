@@ -8,9 +8,9 @@ use App\Filament\Admin\Resources\Trainers\Pages\CreateTrainer;
 use App\Filament\Admin\Resources\Trainers\Pages\EditTrainer;
 use App\Filament\Admin\Resources\Trainers\Pages\ListTrainers;
 use App\Filament\Admin\Resources\Trainers\Pages\ViewTrainer;
+use App\Filament\Admin\Resources\Trainers\RelationManagers\FinancialRequestsRelationManager;
 use App\Filament\Admin\Resources\Trainers\Schemas\TrainerForm;
 use App\Filament\Admin\Resources\Trainers\Schemas\TrainerInfolist;
-use App\Filament\Admin\Resources\Trainers\RelationManagers\FinancialRequestsRelationManager;
 use App\Filament\Admin\Resources\Trainers\Tables\TrainersTable;
 use App\Models\Trainer;
 use BackedEnum;
@@ -18,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+
 class TrainerResource extends Resource
 {
     protected static ?string $model = Trainer::class;
@@ -63,13 +64,12 @@ class TrainerResource extends Resource
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) {
+        if (! $record) {
             return static::getModelLabel();
         }
 
-        return $record->name ?? 'Trainer #' . $record->id;
+        return $record->name ?? 'Trainer #'.$record->id;
     }
-
 
     public static function form(Schema $schema): Schema
     {

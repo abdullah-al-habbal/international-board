@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources\CertifiedCenters\RelationManagers;
 
+use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\CertifiedCenterDocumentTypeResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
-use App\Filament\Admin\Resources\CertifiedCenterDocumentTypes\CertifiedCenterDocumentTypeResource;
 
 class ApprovedDocumentTypesRelationManager extends RelationManager
 {

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 final class ListCertifications extends ListRecords
 {
     protected static string $resource = CertificationResource::class;
+
     protected function getHeaderActions(): array
     {
         return [
@@ -29,8 +30,8 @@ final class ListCertifications extends ListRecords
                         'country',
                         'trainee',
                     ])->where('creator_type', CertifiedCenter::class)
-                      ->where('creator_id', Auth::id())
-                      ->orderByDesc('created_at');
+                        ->where('creator_id', Auth::id())
+                        ->orderByDesc('created_at');
 
                     $headers = [
                         'ID',

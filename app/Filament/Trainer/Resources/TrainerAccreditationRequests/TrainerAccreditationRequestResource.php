@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests;
 
 use App\Enums\AccreditationStatus;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\CreateTrainerAccreditationRequest;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\EditTrainerAccreditationRequest;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ViewTrainerAccreditationRequest;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use App\Models\TrainerAccreditationRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -12,12 +18,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
-use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
-use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
-use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\CreateTrainerAccreditationRequest;
-use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ViewTrainerAccreditationRequest;
-use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\EditTrainerAccreditationRequest;
 use Illuminate\Support\Facades\Auth;
 
 class TrainerAccreditationRequestResource extends Resource

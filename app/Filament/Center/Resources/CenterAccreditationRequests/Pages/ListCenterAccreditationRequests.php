@@ -17,7 +17,7 @@ class ListCenterAccreditationRequests extends ListRecords
     {
         return [
             CreateAction::make()
-                ->disabled(!CenterAccreditationRequestResource::canCreate())
+                ->disabled(! CenterAccreditationRequestResource::canCreate())
                 ->tooltip($this->getCreateDisabledTooltip()),
         ];
     }

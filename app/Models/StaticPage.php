@@ -49,10 +49,9 @@ class StaticPage extends Model
         $query->where('slug', $slug);
     }
 
-
     #[Scope]
     protected function orderByTitle(Builder $query, string $direction = 'asc'): void
     {
-        $query->orderBy('title->' . app()->getLocale(), $direction);
+        $query->orderBy('title->'.app()->getLocale(), $direction);
     }
 }

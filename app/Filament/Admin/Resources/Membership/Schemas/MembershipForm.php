@@ -15,7 +15,7 @@ class MembershipForm
 {
     public static function configure(Schema $schema): Schema
     {
-        $locales = ['ar', 'en']; 
+        $locales = ['ar', 'en'];
 
         return $schema
             ->schema([
@@ -31,13 +31,13 @@ class MembershipForm
                         collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
                             ->schema([
                                 TextInput::make("title.{$locale}")
-                                    ->label(__('app.title') . " ({$locale})")
+                                    ->label(__('app.title')." ({$locale})")
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpanFull(),
 
                                 RichEditor::make("description.{$locale}")
-                                    ->label(__('app.description') . " ({$locale})")
+                                    ->label(__('app.description')." ({$locale})")
                                     ->required()
                                     ->columnSpanFull(),
                             ])

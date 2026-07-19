@@ -1,4 +1,5 @@
 <?php
+
 // config\logging.php
 declare(strict_types=1);
 

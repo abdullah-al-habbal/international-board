@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     public function boot(): void
     {

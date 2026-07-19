@@ -5,27 +5,21 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
-use App\Enums\PanelId;
-use Carbon\Carbon;
-use Filament\Panel;
 use App\Enums\CenterStatus;
-use Illuminate\Database\Eloquent\Attributes\Scope;
-use Illuminate\Database\Eloquent\Builder;
+use App\Enums\PanelId;
 use App\Policies\CertifiedCenterPolicy;
+use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use App\Models\CenterAccreditationRequest;
-use App\Models\CenterTypeRequest;
-use App\Models\Certification;
-use App\Models\CertifiedCenterDocumentType;
-use App\Models\CertifiedCenterFinancialRequest;
-use App\Models\Country;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
 #[UsePolicy(CertifiedCenterPolicy::class)]
@@ -106,7 +100,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         return $this->hasMany(CertifiedCenterFinancialRequest::class);
     }
 
-
     #[Scope]
     protected function active(Builder $query): void
     {
@@ -145,7 +138,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function isAccreditationActive(): bool
     {
-        if (!$this->accreditation_period_start || !$this->accreditation_period_end) {
+        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
             return false;
         }
 
@@ -188,15 +181,15 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function accreditationBlockReason(): ?string
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return __('accreditation.blocked.center_inactive');
         }
 
-        if (!$this->hasApprovedNonExpiredRequest()) {
+        if (! $this->hasApprovedNonExpiredRequest()) {
             return __('accreditation.blocked.no_approved_request');
         }
 
-        if (!$this->hasActiveAccreditationRequest()) {
+        if (! $this->hasActiveAccreditationRequest()) {
             return __('accreditation.blocked.period_expired');
         }
 
@@ -208,6 +201,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         if ($this->attributes['logo'] ?? null) {
             return Storage::url($this->attributes['logo']);
         }
+
         return null;
     }
 }

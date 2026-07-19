@@ -18,11 +18,11 @@ final class CertificationExportHandler
     public function exportForCenter(int $centerId): StreamedResponse
     {
         $query = Certification::with([
-                'creator',
-                'assignedTrainer',
-                'country',
-                'trainee',
-            ])
+            'creator',
+            'assignedTrainer',
+            'country',
+            'trainee',
+        ])
             ->where('creator_type', CertifiedCenter::class)
             ->where('creator_id', $centerId)
             ->orderByDesc('created_at');
@@ -33,11 +33,11 @@ final class CertificationExportHandler
     public function exportForAdmin(): StreamedResponse
     {
         $query = Certification::with([
-                'creator',
-                'assignedTrainer',
-                'country',
-                'trainee',
-            ])
+            'creator',
+            'assignedTrainer',
+            'country',
+            'trainee',
+        ])
             ->orderByDesc('created_at');
 
         return $this->export($query, 'certifications.csv');

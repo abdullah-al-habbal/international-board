@@ -1,4 +1,5 @@
 <?php
+
 // app/Filament/Admin/Resources/Users/Tables/UsersTable.php
 declare(strict_types=1);
 

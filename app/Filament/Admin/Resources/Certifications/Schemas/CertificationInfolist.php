@@ -20,7 +20,7 @@ class CertificationInfolist
                 TextEntry::make('creator')
                     ->label(__('app.issued_by'))
                     ->getStateUsing(function ($record) {
-                        if (!$record->creator) {
+                        if (! $record->creator) {
                             return __('app.not_assigned');
                         }
                         $label = match ($record->creator_type) {
@@ -29,7 +29,8 @@ class CertificationInfolist
                             Trainer::class => __('app.trainer'),
                             default => __('app.unknown'),
                         };
-                        return $label . ': ' . $record->creator->name;
+
+                        return $label.': '.$record->creator->name;
                     })
                     ->badge()
                     ->color(fn ($record) => $record->creator_id ? 'primary' : 'gray'),

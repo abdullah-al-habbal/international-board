@@ -32,7 +32,7 @@ final class AdminUsersExport implements CsvStatExportable
             $this->resolver->query(),
             $headers,
             $formatter,
-            'admin_users_' . now()->format('Ymd_His') . '.csv'
+            'admin_users_'.now()->format('Ymd_His').'.csv'
         );
     }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
-use App\Models\Certification;
 use App\Models\CertifiedCenter;
 use App\Models\Trainer;
 use App\Models\User;
@@ -147,6 +146,7 @@ class CertificationsTable
                         if (blank($data['value'])) {
                             return $query;
                         }
+
                         return $query->where('creator_type', $data['value']);
                     }),
 
@@ -220,10 +220,22 @@ class CertificationsTable
                                 ->label(__('app.select_creator'))
                                 ->options(function (callable $get) {
                                     $type = $get('creator_type');
-                                    if (!$type) {
+                                    if (! $type) {
                                         return [];
                                     }
-                                    return $type::pluck('name', 'id');
+
+                                    return $type::query()->limit(20)->pluck('name', 'id');
+                                })
+                                ->getSearchResultsUsing(function (string $search, callable $get) {
+                                    $type = $get('creator_type');
+                                    if (! $type) {
+                                        return [];
+                                    }
+
+                                    return $type::query()
+                                        ->where('name', 'like', "%{$search}%")
+                                        ->limit(50)
+                                        ->pluck('name', 'id');
                                 })
                                 ->required()
                                 ->searchable(),

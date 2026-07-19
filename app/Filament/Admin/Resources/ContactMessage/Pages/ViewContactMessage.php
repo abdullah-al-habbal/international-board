@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources\ContactMessage\Pages;
 
 use App\Filament\Admin\Resources\ContactMessageResource;
-use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Schema;

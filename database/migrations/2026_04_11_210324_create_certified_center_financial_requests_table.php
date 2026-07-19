@@ -1,4 +1,5 @@
 <?php
+
 // database/migrations/2026_04_11_210324_create_certified_center_financial_requests_table.php
 declare(strict_types=1);
 

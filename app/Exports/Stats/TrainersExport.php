@@ -38,7 +38,7 @@ final class TrainersExport implements CsvStatExportable
             $this->resolver->query(),
             $headers,
             $formatter,
-            'trainers_' . now()->format('Ymd_His') . '.csv'
+            'trainers_'.now()->format('Ymd_His').'.csv'
         );
     }
 

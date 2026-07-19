@@ -16,7 +16,7 @@ class TrainerDocumentTypeFactory extends Factory
         return [
             'trainer_id' => Trainer::factory(),
             'key' => $key,
-            'name' => ['en' => ucwords(str_replace('-', ' ', $key)), 'ar' => 'نوع ' . fake()->word()],
+            'name' => ['en' => ucwords(str_replace('-', ' ', $key)), 'ar' => 'نوع '.fake()->word()],
             'status' => fake()->randomElement(['pending', 'approved', 'rejected']),
             'admin_notes' => null,
             'reviewed_by_admin_id' => null,

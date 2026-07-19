@@ -33,7 +33,7 @@ final class MonthlyCertificationsExport implements CsvStatExportable
             $this->resolver->query(),
             $headers,
             $formatter,
-            'monthly_certifications_' . now()->format('Ymd_His') . '.csv'
+            'monthly_certifications_'.now()->format('Ymd_His').'.csv'
         );
     }
 

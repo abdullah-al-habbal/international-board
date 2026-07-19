@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Trainers\Pages;
 
+use App\Filament\Admin\Resources\Certifications\CertificationResource;
 use App\Filament\Admin\Resources\Trainers\TrainerResource;
 use Filament\Resources\Pages\CreateRecord;
-use App\Filament\Admin\Resources\Certifications\CertificationResource;
+
 class CreateTrainer extends CreateRecord
 {
     protected static string $resource = TrainerResource::class;

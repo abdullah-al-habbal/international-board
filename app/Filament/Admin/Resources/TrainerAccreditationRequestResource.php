@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\AccreditationStatus;
 use App\Filament\Admin\Resources\TrainerAccreditationRequests\Pages;
+use App\Filament\Admin\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
+use App\Filament\Admin\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use App\Models\TrainerAccreditationRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use App\Filament\Admin\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
-use App\Filament\Admin\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use Illuminate\Database\Eloquent\Model;
 
 class TrainerAccreditationRequestResource extends Resource
@@ -43,10 +44,10 @@ class TrainerAccreditationRequestResource extends Resource
     {
         return __('app.trainer_accreditation_requests');
     }
-    
+
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('status', \App\Enums\AccreditationStatus::Pending)->count();
+        return (string) static::getModel()::where('status', AccreditationStatus::Pending)->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -56,13 +57,12 @@ class TrainerAccreditationRequestResource extends Resource
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) {
+        if (! $record) {
             return static::getModelLabel();
         }
 
-        return $record->trainer?->name ?? 'Request #' . $record->id;
+        return $record->trainer?->name ?? 'Request #'.$record->id;
     }
-
 
     protected static ?int $navigationSort = 20;
 

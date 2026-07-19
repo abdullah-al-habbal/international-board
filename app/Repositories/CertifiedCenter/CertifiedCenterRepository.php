@@ -1,4 +1,5 @@
 <?php
+
 // app\Repositories\CertifiedCenter\CertifiedCenterRepository.php
 declare(strict_types=1);
 
@@ -9,9 +10,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class CertifiedCenterRepository
 {
-    public function __construct(private readonly CertifiedCenter $model)
-    {
-    }
+    public function __construct(private readonly CertifiedCenter $model) {}
 
     public function paginateActive(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
@@ -20,11 +19,11 @@ final class CertifiedCenterRepository
             ->where('is_active', true)
             ->when(
                 isset($filters['search']) && $filters['search'] !== '',
-                fn($q) => $q->where('name', 'like', "%{$filters['search']}%")
+                fn ($q) => $q->where('name', 'like', "%{$filters['search']}%")
             )
             ->when(
                 isset($filters['country_id']) && $filters['country_id'] !== '',
-                fn($q) => $q->where('country_id', $filters['country_id'])
+                fn ($q) => $q->where('country_id', $filters['country_id'])
             )
             ->with(['country', 'approvedDocumentTypes'])
             ->paginate($perPage);

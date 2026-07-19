@@ -28,10 +28,10 @@ class StaticPageForm
                         collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
                             ->schema([
                                 TextInput::make("title.{$locale}")
-                                    ->label(__('app.title') . " ({$locale})")
+                                    ->label(__('app.title')." ({$locale})")
                                     ->required(),
                                 RichEditor::make("content.{$locale}")
-                                    ->label(__('app.content') . " ({$locale})")
+                                    ->label(__('app.content')." ({$locale})")
                                     ->required(),
                             ])
                         )->toArray()

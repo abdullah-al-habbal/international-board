@@ -97,8 +97,7 @@ class TraineeResource extends Resource
         return parent::getEloquentQuery()
             ->whereHas(
                 'certifications',
-                fn($q) =>
-                $q->where('creator_type', CertifiedCenter::class)
+                fn ($q) => $q->where('creator_type', CertifiedCenter::class)
                     ->where('creator_id', $centerId)
             );
     }

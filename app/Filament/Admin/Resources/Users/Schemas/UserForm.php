@@ -1,4 +1,5 @@
 <?php
+
 // app/Filament/Admin/Resources/Users/Schemas/UserForm.php
 declare(strict_types=1);
 
@@ -29,7 +30,6 @@ class UserForm
                 ->unique(ignoreRecord: true)
                 ->columnSpan(1),
 
-
             TextInput::make('password')
                 ->label(__('app.password'))
                 ->password()
@@ -39,7 +39,6 @@ class UserForm
                 ->dehydrated(fn ($state) => filled($state))
                 ->required(fn (string $context) => $context === 'create')
                 ->columnSpan(1),
-
 
             TextInput::make('password_confirmation')
                 ->label(__('app.confirm_password'))

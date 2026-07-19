@@ -33,19 +33,19 @@ class BlogPostForm
                         collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
                             ->schema([
                                 TextInput::make("title.{$locale}")
-                                    ->label(__('app.title') . " ({$locale})")
+                                    ->label(__('app.title')." ({$locale})")
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpanFull(),
 
                                 TextInput::make("excerpt.{$locale}")
-                                    ->label(__('app.excerpt') . " ({$locale})")
+                                    ->label(__('app.excerpt')." ({$locale})")
                                     ->required()
                                     ->maxLength(500)
                                     ->columnSpanFull(),
 
                                 RichEditor::make("content.{$locale}")
-                                    ->label(__('app.content') . " ({$locale})")
+                                    ->label(__('app.content')." ({$locale})")
                                     ->required()
                                     ->columnSpanFull(),
                             ])

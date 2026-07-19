@@ -39,7 +39,7 @@ class TrainerAccreditationRequestObserver
 
     public function updated(TrainerAccreditationRequest $request): void
     {
-        if (!$request->wasChanged('status')) {
+        if (! $request->wasChanged('status')) {
             return;
         }
 
@@ -64,10 +64,11 @@ class TrainerAccreditationRequestObserver
 
         $trainer = $request->trainer;
 
-        if (!$trainer) {
+        if (! $trainer) {
             Log::channel('accreditation')->warning('[Trainer] Request updated but trainer not found', [
                 'request_id' => $request->id,
             ]);
+
             return;
         }
 
@@ -156,7 +157,7 @@ class TrainerAccreditationRequestObserver
             ->where('accreditation_end_date', '>=', now())
             ->exists();
 
-        if (!$hasOtherActive) {
+        if (! $hasOtherActive) {
             $trainer->is_active = false;
             $trainer->saveQuietly();
 

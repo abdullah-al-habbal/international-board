@@ -6,12 +6,12 @@ namespace App\Providers;
 
 use App\Repositories\AccreditationRequest\AccreditationRequestRepository;
 use App\Repositories\ApplicationSetting\ApplicationSettingRepository;
+use App\Repositories\Blog\BlogPostRepository;
 use App\Repositories\Certification\CertificationRepository;
 use App\Repositories\CertifiedCenter\CertifiedCenterRepository;
 use App\Repositories\StaticPage\StaticPageRepository;
 use App\Repositories\Trainer\TrainerRepository;
 use App\Repositories\User\UserRepository;
-use App\Repositories\Blog\BlogPostRepository;
 use Illuminate\Support\ServiceProvider;
 
 final class RepositoryServiceProvider extends ServiceProvider

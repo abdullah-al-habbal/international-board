@@ -1,6 +1,8 @@
 <?php
+
 // app/Repositories/StaticPage/StaticPageRepository.php
 declare(strict_types=1);
+
 namespace App\Repositories\StaticPage;
 
 use App\Models\StaticPage;
@@ -8,9 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class StaticPageRepository
 {
-    public function __construct(private readonly StaticPage $model)
-    {
-    }
+    public function __construct(private readonly StaticPage $model) {}
 
     public function findBySlug(string $slug): ?StaticPage
     {

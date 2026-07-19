@@ -31,6 +31,7 @@ final class CenterStatsOverview extends BaseWidget
     {
         /** @var CertifiedCenter $center */
         $center = Auth::guard('certified_center')->user();
+
         return $center;
     }
 

@@ -13,7 +13,7 @@ class Setting
         return cache()->remember(
             "setting_{$key}",
             3600,
-            fn() => ApplicationSetting::get($key, $default)
+            fn () => ApplicationSetting::get($key, $default)
         );
     }
 }

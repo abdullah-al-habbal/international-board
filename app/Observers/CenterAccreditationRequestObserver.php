@@ -40,7 +40,7 @@ class CenterAccreditationRequestObserver
 
     public function updated(CenterAccreditationRequest $request): void
     {
-        if (!$request->wasChanged('status')) {
+        if (! $request->wasChanged('status')) {
             return;
         }
 
@@ -65,10 +65,11 @@ class CenterAccreditationRequestObserver
 
         $center = $request->certifiedCenter;
 
-        if (!$center) {
+        if (! $center) {
             Log::channel('accreditation')->warning('[Center] Request updated but center not found', [
                 'request_id' => $request->id,
             ]);
+
             return;
         }
 
@@ -155,7 +156,7 @@ class CenterAccreditationRequestObserver
             ->where('accreditation_end_date', '>=', now())
             ->exists();
 
-        if (!$hasOtherActive) {
+        if (! $hasOtherActive) {
             $center->is_active = false;
             $center->saveQuietly();
 

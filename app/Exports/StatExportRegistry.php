@@ -18,13 +18,13 @@ use InvalidArgumentException;
 final class StatExportRegistry
 {
     private const MAP = [
-        'total_centers'          => CentersExport::class,
-        'active_centers'         => ActiveCentersExport::class,
-        'expired_centers'        => ExpiredCentersExport::class,
-        'total_certifications'   => CertificationsExport::class,
-        'pending_requests'       => PendingRequestsExport::class,
-        'admin_users'            => AdminUsersExport::class,
-        'trainers'               => TrainersExport::class,
+        'total_centers' => CentersExport::class,
+        'active_centers' => ActiveCentersExport::class,
+        'expired_centers' => ExpiredCentersExport::class,
+        'total_certifications' => CertificationsExport::class,
+        'pending_requests' => PendingRequestsExport::class,
+        'admin_users' => AdminUsersExport::class,
+        'trainers' => TrainersExport::class,
         'monthly_certifications' => MonthlyCertificationsExport::class,
     ];
 

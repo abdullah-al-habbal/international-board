@@ -96,7 +96,7 @@ class CertificationResource extends Resource
 
         if ($trainer instanceof Trainer) {
             $query->where('creator_type', Trainer::class)
-                  ->where('creator_id', $trainer->id);
+                ->where('creator_id', $trainer->id);
         }
 
         return $query->with([

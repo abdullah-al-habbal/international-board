@@ -1,4 +1,5 @@
 <?php
+
 // app\Http\Controllers\Web\Certification\CertificationController.php
 declare(strict_types=1);
 
@@ -24,6 +25,7 @@ final class CertificationController extends Controller
             __('web.pages.certifications.subtitle')
         );
         $stats = $this->service->getStatistics();
+
         return view('web.certifications.index', compact('stats'));
     }
 
@@ -34,7 +36,7 @@ final class CertificationController extends Controller
         $notFound = $serial !== null && $serial !== '' && $certification === null;
 
         $this->seoService->setMeta(
-            __('web.pages.certifications.title') . ($serial ? ": {$serial}" : ''),
+            __('web.pages.certifications.title').($serial ? ": {$serial}" : ''),
             __('web.pages.certifications.subtitle')
         );
 
@@ -47,7 +49,7 @@ final class CertificationController extends Controller
         abort_if($certification === null, 404);
 
         $this->seoService->setMeta(
-            "{$certification->trainee?->name} | " . __('web.labels.serial_number') . ": {$serial}",
+            "{$certification->trainee?->name} | ".__('web.labels.serial_number').": {$serial}",
             __('web.pages.certifications.subtitle')
         );
 

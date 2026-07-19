@@ -15,7 +15,7 @@ class MembershipFactory extends Factory
 
         return [
             'slug' => Str::slug($title),
-            'title' => ['en' => $title, 'ar' => 'عضوية ' . fake()->word()],
+            'title' => ['en' => $title, 'ar' => 'عضوية '.fake()->word()],
             'description' => ['en' => fake()->paragraph(), 'ar' => fake()->paragraph()],
             'is_active' => true,
         ];

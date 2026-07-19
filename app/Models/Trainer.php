@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Country;
-use App\Models\Certification;
-use App\Models\TrainerDocumentType;
-use App\Models\TrainerFinancialRequest;
-use App\Models\TrainerAccreditationRequest;
 use App\Enums\AccreditationStatus;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
@@ -108,7 +103,7 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function isAccreditationActive(): bool
     {
-        if (!$this->accreditation_period_start || !$this->accreditation_period_end) {
+        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
             return false;
         }
 
@@ -120,7 +115,7 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function isAccredited(): bool
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -160,15 +155,15 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function accreditationBlockReason(): ?string
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return __('accreditation.blocked.trainer_inactive');
         }
 
-        if (!$this->hasApprovedNonExpiredRequest()) {
+        if (! $this->hasApprovedNonExpiredRequest()) {
             return __('accreditation.blocked.no_approved_request');
         }
 
-        if (!$this->hasActiveAccreditationRequest()) {
+        if (! $this->hasActiveAccreditationRequest()) {
             return __('accreditation.blocked.period_expired');
         }
 
@@ -185,6 +180,7 @@ class Trainer extends Authenticatable implements FilamentUser
         if ($this->attributes['avatar'] ?? null) {
             return Storage::url($this->attributes['avatar']);
         }
+
         return null;
     }
 }

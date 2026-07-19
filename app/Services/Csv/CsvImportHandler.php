@@ -38,6 +38,7 @@ final class CsvImportHandler
 
                 if ($index === 0 && ($options['has_header'] ?? true)) {
                     $headers = $this->stripUtf8Bom($row);
+
                     continue;
                 }
 
@@ -49,6 +50,7 @@ final class CsvImportHandler
                     if ($result === false) {
                         $stats['failed']++;
                         $stats['errors'][] = "Row {$index}: processor returned false.";
+
                         continue;
                     }
 
@@ -80,7 +82,7 @@ final class CsvImportHandler
                 DB::rollBack();
             }
 
-            throw new \RuntimeException('CSV import failed: ' . $exception->getMessage(), 0, $exception);
+            throw new \RuntimeException('CSV import failed: '.$exception->getMessage(), 0, $exception);
         }
 
         return $stats;

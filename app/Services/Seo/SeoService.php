@@ -16,7 +16,7 @@ final class SeoService
     ): void {
         $defaultTitle = config('app.name', __('web.default_title'));
         $title = $title ? "{$title} | {$defaultTitle}" : $defaultTitle;
-        
+
         $meta = [
             'title' => $title,
             'description' => $description ?? __('web.pages.home.hero_text'),

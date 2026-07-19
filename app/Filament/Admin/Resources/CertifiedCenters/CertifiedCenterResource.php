@@ -70,13 +70,12 @@ class CertifiedCenterResource extends Resource
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) {
+        if (! $record) {
             return static::getModelLabel();
         }
 
-        return $record->name ?? 'Center #' . $record->id;
+        return $record->name ?? 'Center #'.$record->id;
     }
-
 
     public static function form(Schema $schema): Schema
     {

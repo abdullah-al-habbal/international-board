@@ -1,17 +1,18 @@
 <?php
+
 // app/Models/BlogPost.php
 declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Translatable\HasTranslations;
 
 class BlogPost extends Model
 {
-    use HasTranslations, HasFactory;
+    use HasFactory, HasTranslations;
 
     public $translatable = ['title', 'content', 'excerpt'];
 
@@ -30,6 +31,7 @@ class BlogPost extends Model
         if ($this->attributes['image'] ?? null) {
             return Storage::url($this->attributes['image']);
         }
+
         return null;
     }
 }

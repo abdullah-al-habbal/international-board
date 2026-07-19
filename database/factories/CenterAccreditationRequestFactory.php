@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\CenterAccreditationRequest;
 use App\Models\CertifiedCenter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CenterAccreditationRequestFactory extends Factory
 {
-    protected $model = \App\Models\CenterAccreditationRequest::class;
+    protected $model = CenterAccreditationRequest::class;
 
     public function definition(): array
     {

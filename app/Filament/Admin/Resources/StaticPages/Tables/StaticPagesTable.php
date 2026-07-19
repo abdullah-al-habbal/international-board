@@ -23,7 +23,7 @@ class StaticPagesTable
                 TextColumn::make('title')
                     ->label(__('app.title'))
                     ->searchable(query: function ($query, $search) {
-                        return $query->where('title->' . app()->getLocale(), 'like', "%{$search}%");
+                        return $query->where('title->'.app()->getLocale(), 'like', "%{$search}%");
                     })
                     ->sortable(query: function ($query, $direction) {
                         return $query->orderByRaw("JSON_EXTRACT(title, '$.\"".app()->getLocale()."\"') {$direction}");

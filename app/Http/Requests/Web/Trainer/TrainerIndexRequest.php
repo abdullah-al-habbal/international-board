@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Requests\Web\Trainer;
@@ -15,10 +16,10 @@ final class TrainerIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search'         => ['nullable', 'string', 'max:100'],
-            'country_id'     => ['nullable', 'integer', 'exists:countries,id'],
+            'search' => ['nullable', 'string', 'max:100'],
+            'country_id' => ['nullable', 'integer', 'exists:countries,id'],
             'specialization' => ['nullable', 'string', 'max:100'],
-            'page'           => ['nullable', 'integer', 'min:1'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ];
     }
 

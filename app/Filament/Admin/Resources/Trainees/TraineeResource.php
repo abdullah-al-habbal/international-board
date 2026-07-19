@@ -63,13 +63,12 @@ class TraineeResource extends Resource
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) {
+        if (! $record) {
             return static::getModelLabel();
         }
 
-        return $record->name ?? 'Trainee #' . $record->id;
+        return $record->name ?? 'Trainee #'.$record->id;
     }
-
 
     public static function form(Schema $schema): Schema
     {

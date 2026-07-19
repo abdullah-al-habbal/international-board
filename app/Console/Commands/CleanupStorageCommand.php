@@ -16,6 +16,7 @@ class CleanupStorageCommand extends Command
     protected $description = 'Delete old logs and unwanted files in storage';
 
     private const LOG_RETENTION_DAYS = 7;
+
     private const TARGET_FILENAME = 't.txt';
 
     public function __construct(
@@ -42,6 +43,7 @@ class CleanupStorageCommand extends Command
 
         if (! $this->files->isDirectory($path)) {
             $this->warn("Logs path not found: {$path}");
+
             return 0;
         }
 
@@ -56,6 +58,7 @@ class CleanupStorageCommand extends Command
 
         if (! $this->files->isDirectory($path)) {
             $this->warn("Storage path not found: {$path}");
+
             return 0;
         }
 
@@ -80,9 +83,11 @@ class CleanupStorageCommand extends Command
     {
         try {
             $this->files->delete($file->getPathname());
+
             return 1;
         } catch (\Throwable $e) {
             $this->error("Delete failed: {$file->getPathname()} — {$e->getMessage()}");
+
             return 0;
         }
     }

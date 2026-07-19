@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services\CertifiedCenter;
@@ -11,9 +12,7 @@ use Illuminate\Support\Collection;
 
 final class CertifiedCenterService
 {
-    public function __construct(private readonly CertifiedCenterRepository $repo)
-    {
-    }
+    public function __construct(private readonly CertifiedCenterRepository $repo) {}
 
     public function listActive(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {

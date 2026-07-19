@@ -86,7 +86,7 @@ class CenterAccreditationRequestsTable
                             ->required()
                             ->after(fn () => now()),
                     ])
-                    ->visible(fn(CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::Approved)
+                    ->visible(fn (CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::Approved)
                     ->action(function (CenterAccreditationRequest $record, array $data): void {
                         $record->update([
                             'status' => AccreditationStatus::Approved->value,
@@ -102,7 +102,7 @@ class CenterAccreditationRequestsTable
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->visible(fn(CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::Rejected)
+                    ->visible(fn (CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::Rejected)
                     ->action(function (CenterAccreditationRequest $record): void {
                         $record->update([
                             'status' => AccreditationStatus::Rejected->value,
@@ -116,7 +116,7 @@ class CenterAccreditationRequestsTable
                     ->icon('heroicon-o-eye')
                     ->color('info')
                     ->requiresConfirmation()
-                    ->visible(fn(CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::UnderReview)
+                    ->visible(fn (CenterAccreditationRequest $record) => $record->status !== AccreditationStatus::UnderReview)
                     ->action(function (CenterAccreditationRequest $record): void {
                         $record->update([
                             'status' => AccreditationStatus::UnderReview->value,

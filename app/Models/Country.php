@@ -28,5 +28,4 @@ class Country extends Model
             'is_active' => 'boolean',
         ];
     }
-
 }

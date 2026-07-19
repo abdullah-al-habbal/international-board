@@ -1,4 +1,5 @@
 <?php
+
 // d:\board\database\migrations\2026_04_11_210327_create_trainer_financial_requests_table.php
 declare(strict_types=1);
 

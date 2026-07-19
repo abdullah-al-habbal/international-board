@@ -33,7 +33,7 @@ final class ExpiredCentersExport implements CsvStatExportable
             $this->resolver->query(),
             $headers,
             $formatter,
-            'expired_centers_' . now()->format('Ymd_His') . '.csv'
+            'expired_centers_'.now()->format('Ymd_His').'.csv'
         );
     }
 

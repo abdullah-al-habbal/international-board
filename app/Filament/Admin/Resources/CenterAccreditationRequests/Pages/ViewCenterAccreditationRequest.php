@@ -33,7 +33,7 @@ class ViewCenterAccreditationRequest extends ViewRecord
                         ->required()
                         ->after(fn () => now()),
                 ])
-                ->visible(fn() => $this->record->status !== AccreditationStatus::Approved)
+                ->visible(fn () => $this->record->status !== AccreditationStatus::Approved)
                 ->action(function (array $data): void {
                     $this->approve($this->record, $data);
                     $this->refreshFormData(['status', 'reviewed_by', 'reviewed_at', 'accreditation_start_date', 'accreditation_end_date']);
@@ -44,7 +44,7 @@ class ViewCenterAccreditationRequest extends ViewRecord
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->visible(fn() => $this->record->status !== AccreditationStatus::Rejected)
+                ->visible(fn () => $this->record->status !== AccreditationStatus::Rejected)
                 ->action(function (): void {
                     $this->reject($this->record);
                     $this->refreshFormData(['status', 'reviewed_by', 'reviewed_at']);
@@ -55,7 +55,7 @@ class ViewCenterAccreditationRequest extends ViewRecord
                 ->icon('heroicon-o-eye')
                 ->color('info')
                 ->requiresConfirmation()
-                ->visible(fn() => $this->record->status !== AccreditationStatus::UnderReview)
+                ->visible(fn () => $this->record->status !== AccreditationStatus::UnderReview)
                 ->action(function (): void {
                     $this->record->update([
                         'status' => AccreditationStatus::UnderReview->value,
@@ -66,7 +66,6 @@ class ViewCenterAccreditationRequest extends ViewRecord
                 }),
         ];
     }
-
 
     private function approve(CenterAccreditationRequest $request, array $data): void
     {

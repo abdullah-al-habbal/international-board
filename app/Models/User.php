@@ -54,43 +54,53 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->morphMany(Certification::class, 'creator');
     }
+
     public function scopeOfType(Builder $query, UserType|string $type): Builder
     {
         return $query->where('type', $type instanceof UserType ? $type->value : $type);
     }
+
     public function scopeAdmin(Builder $query): Builder
     {
         return $query->where('type', UserType::Admin->value);
     }
+
     public function scopeClient(Builder $query): Builder
     {
         return $query->where('type', UserType::Client->value);
     }
+
     public function scopeByEmail(Builder $query, string $email): Builder
     {
         return $query->where('email', $email);
     }
+
     public function scopeVerified(Builder $query): Builder
     {
         return $query->whereNotNull('email_verified_at');
     }
+
     public function scopeUnverified(Builder $query): Builder
     {
         return $query->whereNull('email_verified_at');
     }
+
     public function scopeCreatedThisMonth(Builder $query): Builder
     {
         return $query->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year);
     }
+
     public function scopeCreatedThisYear(Builder $query): Builder
     {
         return $query->whereYear('created_at', now()->year);
     }
+
     public function scopeOrderByName(Builder $query, string $direction = 'asc'): Builder
     {
         return $query->orderBy('name', $direction);
     }
+
     public function scopeOrderByCreated(Builder $query, string $direction = 'desc'): Builder
     {
         return $query->orderBy('created_at', $direction);

@@ -1,4 +1,5 @@
 <?php
+
 // filePath: config/data-to-seed.php
 return [
 

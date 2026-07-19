@@ -68,7 +68,7 @@ class ContactMessagesTable
                         : 'heroicon-o-eye')
                     ->color(fn (Model $record) => $record->is_read ? 'gray' : 'success')
                     ->action(function (Model $record): void {
-                        $record->update(['is_read' => !$record->is_read]);
+                        $record->update(['is_read' => ! $record->is_read]);
                     }),
             ])
             ->toolbarActions([])   // no bulk delete or create

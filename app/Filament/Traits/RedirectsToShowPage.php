@@ -1,4 +1,5 @@
 <?php
+
 // app\Filament\Traits\RedirectsToShowPage.php
 declare(strict_types=1);
 

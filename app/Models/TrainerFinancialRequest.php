@@ -31,8 +31,8 @@ class TrainerFinancialRequest extends Model
     {
         return [
             'total_payment' => 'decimal:2',
-            'amount_paid'   => 'decimal:2',
-            'date'          => 'date',
+            'amount_paid' => 'decimal:2',
+            'date' => 'date',
         ];
     }
 

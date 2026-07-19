@@ -16,15 +16,14 @@ class EnsureTrainerIsAccredited
 {
     public function __construct(
         private readonly AccreditationGateService $gateService
-    ) {
-    }
+    ) {}
 
     public function handle(Request $request, Closure $next): Response
     {
         /** @var Trainer|null $trainer */
         $trainer = Auth::guard('trainer')->user();
 
-        if (!$trainer) {
+        if (! $trainer) {
             return $next($request);
         }
 

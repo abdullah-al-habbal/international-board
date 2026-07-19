@@ -15,7 +15,7 @@ class BlogPostFactory extends Factory
     public function definition(): array
     {
         $titleEn = $this->faker->sentence();
-        $titleAr = "عنوان افتراضي " . $this->faker->word();
+        $titleAr = 'عنوان افتراضي '.$this->faker->word();
 
         return [
             'title' => [
@@ -28,7 +28,7 @@ class BlogPostFactory extends Factory
                 'ar' => 'مقتطف قصير من المقال باللغة العربية.',
             ],
             'content' => [
-                'en' => '<p>' . implode('</p><p>', $this->faker->paragraphs(3)) . '</p>',
+                'en' => '<p>'.implode('</p><p>', $this->faker->paragraphs(3)).'</p>',
                 'ar' => '<p>محتوى المقال باللغة العربية يوضح تفاصيل الخبر.</p>',
             ],
             'is_published' => true,

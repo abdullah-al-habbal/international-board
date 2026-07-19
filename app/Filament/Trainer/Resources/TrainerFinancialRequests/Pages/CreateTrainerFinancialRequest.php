@@ -17,6 +17,7 @@ class CreateTrainerFinancialRequest extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['trainer_id'] = auth('trainer')->id();
+
         return $data;
     }
 }
