@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Trainers\Schemas;
 
+use App\Models\Country;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -56,8 +57,18 @@ class TrainerForm
                 ->nullable()
                 ->createOptionForm([
                     TextInput::make('name')->required()->maxLength(255),
-                    TextInput::make('code')->maxLength(10),
-                    TextInput::make('code_2')->maxLength(10),
+                    TextInput::make('code')
+                        ->maxLength(3)
+                        ->minLength(3)
+                        ->alpha()
+                        ->unique(Country::class, 'code')
+                        ->helperText(__('app.iso_code_3_helper')),
+                    TextInput::make('code_2')
+                        ->maxLength(2)
+                        ->minLength(2)
+                        ->alpha()
+                        ->unique(Country::class, 'code_2')
+                        ->helperText(__('app.iso_code_2_helper')),
                 ])
                 ->columnSpan(1),
 

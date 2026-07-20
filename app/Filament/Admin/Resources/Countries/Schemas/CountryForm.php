@@ -24,15 +24,21 @@ class CountryForm
                     ->label(__('app.iso_code_3'))
                     ->required()
                     ->length(3)
+                    ->alpha()
+
                     ->unique(ignoreRecord: true)
-                    ->placeholder('USA'),
+                    ->placeholder('USA')
+                    ->helperText(__('app.iso_code_3_helper')),
 
                 TextInput::make('code_2')
                     ->label(__('app.iso_code_2'))
                     ->required()
                     ->length(2)
+                    ->alpha()
+
                     ->unique(ignoreRecord: true)
-                    ->placeholder('US'),
+                    ->placeholder('US')
+                    ->helperText(__('app.iso_code_2_helper')),
 
                 TextInput::make('nationality')
                     ->label(__('app.nationality'))

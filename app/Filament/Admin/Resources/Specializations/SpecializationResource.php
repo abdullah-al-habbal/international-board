@@ -48,14 +48,28 @@ class SpecializationResource extends Resource
         return __('app.specializations');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'primary';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-            TextInput::make('name')
-                ->label(__('app.name'))
+            TextInput::make('name.en')
+                ->label(__('app.name_english'))
                 ->required()
-                ->maxLength(255)
-                ->columnSpanFull(),
+                ->maxLength(255),
+
+            TextInput::make('name.ar')
+                ->label(__('app.name_arabic'))
+                ->required()
+                ->maxLength(255),
 
             Toggle::make('is_active')
                 ->label(__('app.active'))
@@ -68,10 +82,17 @@ class SpecializationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('name')
-                ->label(__('app.name'))
-                ->searchable()
-                ->sortable(),
+            TextColumn::make('name_en')
+                ->label(__('app.name_english'))
+                ->state(fn ($record) => $record->getTranslation('name', 'en') ?? '(no english)')
+                ->searchable(query: fn ($query, $search) => $query->where('name->en', 'like', "%{$search}%"))
+                ->sortable(query: fn ($query, $direction) => $query->orderBy('name->en', $direction)),
+
+            TextColumn::make('name_ar')
+                ->label(__('app.name_arabic'))
+                ->state(fn ($record) => $record->getTranslation('name', 'ar') ?? '(no arabic)')
+                ->searchable(query: fn ($query, $search) => $query->where('name->ar', 'like', "%{$search}%"))
+                ->sortable(query: fn ($query, $direction) => $query->orderBy('name->ar', $direction)),
 
             IconColumn::make('is_active')
                 ->label(__('app.active'))
