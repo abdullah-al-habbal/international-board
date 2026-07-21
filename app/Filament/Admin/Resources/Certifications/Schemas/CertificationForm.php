@@ -6,10 +6,12 @@ namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
 use App\Models\CertifiedCenter;
 use App\Models\Country;
+use App\Models\DocumentType;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -24,6 +26,9 @@ class CertificationForm
     {
         return $schema
             ->components([
+                Hidden::make('documentable_type')
+                    ->default(DocumentType::class),
+
                 Section::make(__('app.import_page.instructions.heading'))
                     ->description(__('app.certification_details_section'))
                     ->schema([
@@ -88,6 +93,20 @@ class CertificationForm
                                     ->preload()
                                     ->visible(fn (callable $get) => $get('creator_type') === CertifiedCenter::class)
                                     ->nullable(),
+                            ]),
+
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('documentable_id')
+                                    ->label(__('app.document_type_name'))
+                                    ->options(function () {
+                                        return DocumentType::query()
+                                            ->get()
+                                            ->mapWithKeys(fn ($dt) => [$dt->id => $dt->name[app()->getLocale()] ?? $dt->name['en'] ?? $dt->key]);
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
                             ]),
 
                         Grid::make(2)

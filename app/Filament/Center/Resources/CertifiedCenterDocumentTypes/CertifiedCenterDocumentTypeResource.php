@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\CertifiedCenterDocumentTypes;
 
+use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Pages\CreateCertifiedCenterDocumentType;
+use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Pages\EditCertifiedCenterDocumentType;
 use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Pages\ListCertifiedCenterDocumentTypes;
+use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Pages\ViewCertifiedCenterDocumentType;
+use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Schemas\CertifiedCenterDocumentTypeForm;
+use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Schemas\CertifiedCenterDocumentTypeInfolist;
 use App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Tables\CertifiedCenterDocumentTypesTable;
 use App\Models\CertifiedCenterDocumentType;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,17 +36,17 @@ class CertifiedCenterDocumentTypeResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.approved_document_types');
+        return __('app.document_types');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.approved_document_type');
+        return __('app.document_type');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.approved_document_types');
+        return __('app.document_types');
     }
 
     protected static ?int $navigationSort = 12;
@@ -48,6 +54,16 @@ class CertifiedCenterDocumentTypeResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('certified_center_id', Auth::id());
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return CertifiedCenterDocumentTypeInfolist::configure($schema);
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return CertifiedCenterDocumentTypeForm::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -59,6 +75,9 @@ class CertifiedCenterDocumentTypeResource extends Resource
     {
         return [
             'index' => ListCertifiedCenterDocumentTypes::route('/'),
+            'create' => CreateCertifiedCenterDocumentType::route('/create'),
+            'view' => ViewCertifiedCenterDocumentType::route('/{record}'),
+            'edit' => EditCertifiedCenterDocumentType::route('/{record}/edit'),
         ];
     }
 }

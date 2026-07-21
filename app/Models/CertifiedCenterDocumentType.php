@@ -8,6 +8,7 @@ use App\Enums\DocumentTypeRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class CertifiedCenterDocumentType extends Model
 {
@@ -35,6 +36,11 @@ class CertifiedCenterDocumentType extends Model
     public function certifiedCenter(): BelongsTo
     {
         return $this->belongsTo(CertifiedCenter::class);
+    }
+
+    public function certifications(): MorphMany
+    {
+        return $this->morphMany(Certification::class, 'documentable');
     }
 
     public function reviewer(): BelongsTo

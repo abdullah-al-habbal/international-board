@@ -51,6 +51,11 @@ class CertificationsTable
     private static function getColumns(): array
     {
         return [
+            TextColumn::make('documentable.name')
+                ->label(__('app.document_type'))
+                ->searchable()
+                ->sortable(),
+
             TextColumn::make('accredited_serial_number')
                 ->label(__('app.accredited_serial_number'))
                 ->searchable()

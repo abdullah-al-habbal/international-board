@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Resources\TrainerDocumentTypes\Schemas;
+namespace App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class TrainerDocumentTypeForm
+class CertifiedCenterDocumentTypeForm
 {
     public static function configure(Schema $schema): Schema
     {

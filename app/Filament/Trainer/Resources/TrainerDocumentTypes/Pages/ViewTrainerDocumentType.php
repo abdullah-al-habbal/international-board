@@ -5,17 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages;
 
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\TrainerDocumentTypeResource;
-use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ViewRecord;
 
-class ListTrainerDocumentTypes extends ListRecords
+class ViewTrainerDocumentType extends ViewRecord
 {
     protected static string $resource = TrainerDocumentTypeResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make(),
-        ];
-    }
 }

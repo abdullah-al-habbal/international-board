@@ -1,6 +1,5 @@
 <?php
 
-// /home/lenovo/work/projects/international-board/lang/en/app.php
 declare(strict_types=1);
 
 return [
@@ -23,6 +22,7 @@ return [
     'delete' => 'Delete',
     'create' => 'Create',
     'create_certification' => 'Create Certification',
+    'add_certification' => 'Add Certification',
     'add_trainer' => 'Add Trainer',
     'save' => 'Save',
     'cancel' => 'Cancel',
@@ -96,7 +96,7 @@ return [
     'content' => 'Content',
     'date' => 'Date',
     'slug' => 'Article URL (Browser Link)',
-    'slug_helper' => 'This appears in the browser address bar. Example: '.url('/blog/').'my-training-course',
+    'slug_helper' => 'This appears in the browser address bar. Example: ' . url('/blog/') . 'my-training-course',
     'slug_hint' => 'Tip: Write a short text without spaces. Auto-generated from title if left empty.',
     'start_date' => 'Start Date',
     'image' => 'Image',
@@ -136,9 +136,9 @@ return [
     'financial_request' => 'Financial Request',
     'request_document_types' => 'Requested Document Types',
     'document_type_request' => 'Document Type Request',
-
     'certification_details_section' => 'Certification Details',
     'certification_details' => 'Certification Details',
+    'certification_details_description' => 'Select the document type and trainee information',
     'document_details_section' => 'Document Details',
     'document_details_description' => 'Certificate and document information',
     'additional_information_section' => 'Additional Information',
@@ -372,6 +372,7 @@ return [
     'assigned_centers' => 'Assigned Centers',
     'certified_center_document_types' => 'Center Document Types',
     'certified_center_document_type' => 'Center Document Type',
+    'board_document_type' => 'Board Document Type',
     'document_type_key' => 'Document Type Key',
     'document_type_name' => 'Document Type Name',
     'usage_count' => 'Usage Count',
@@ -397,14 +398,10 @@ return [
     'no_image' => 'No Image',
     'blog_posts' => 'Blog Posts',
     'blog_post' => 'Blog Post',
-
-    'approved_document_types' => 'Document Types',
-    'approved_document_type' => 'Approved Document Type',
     'document_type_request_approved' => 'Document type request approved successfully.',
     'document_type_request_rejected' => 'Document type request rejected successfully.',
     'cannot_delete_processed_request' => 'Cannot delete an approved or rejected request.',
     'password_keep_hint' => 'Leave empty to keep the current password.',
-
     'certifications_count' => 'Certifications Count',
     'american' => 'American',
     'active_status' => 'Active Status',

@@ -53,6 +53,13 @@ class CertificationsTable
                     ->weight('bold')
                     ->getStateUsing(fn ($record) => $record->trainee?->name ?? __('app.unassigned')),
 
+                TextColumn::make('documentable.name')
+                    ->label(__('app.document_type'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->placeholder(__('app.unassigned')),
+
                 TextColumn::make('accredited_serial_number')
                     ->label(__('app.serial_number'))
                     ->searchable()

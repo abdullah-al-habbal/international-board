@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Certifications\Schemas;
 
+use App\Enums\DocumentTypeRequestStatus;
+use App\Models\CertifiedCenter;
+use App\Models\CertifiedCenterDocumentType;
 use App\Models\Country;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -23,8 +27,34 @@ class CertificationForm
     {
         return $schema
             ->components([
+                Hidden::make('creator_type')
+                    ->default(CertifiedCenter::class),
+
+                Hidden::make('creator_id')
+                    ->default(fn () => Auth::guard('certified_center')->id()),
+
+                Hidden::make('documentable_type')
+                    ->default(CertifiedCenterDocumentType::class),
+
                 Section::make(__('app.certification_details_section'))
                     ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('documentable_id')
+                                    ->label(__('app.document_type'))
+                                    ->options(function () {
+                                        $centerId = Auth::guard('certified_center')->id();
+
+                                        return CertifiedCenterDocumentType::where('certified_center_id', $centerId)
+                                            ->where('status', DocumentTypeRequestStatus::Approved)
+                                            ->get()
+                                            ->mapWithKeys(fn ($dt) => [$dt->id => $dt->name[app()->getLocale()] ?? $dt->name['en'] ?? $dt->key]);
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                            ]),
+
                         Grid::make(2)
                             ->schema([
 

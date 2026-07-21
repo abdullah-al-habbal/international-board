@@ -46,6 +46,8 @@ class Certification extends Model
     protected $fillable = [
         'creator_type',
         'creator_id',
+        'documentable_type',
+        'documentable_id',
         'trainee_id',
         'assigned_trainer_id',
         'accredited_serial_number',
@@ -77,6 +79,11 @@ class Certification extends Model
     }
 
     public function creator(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function documentable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -115,7 +122,7 @@ class Certification extends Model
             $q->where('name', 'like', "%{$name}%");
         });
     }
-    
+
     #[Scope]
     protected function createdThisMonth(Builder $query): void
     {

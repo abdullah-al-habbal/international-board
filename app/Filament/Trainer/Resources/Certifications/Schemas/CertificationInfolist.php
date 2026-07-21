@@ -22,6 +22,10 @@ class CertificationInfolist
                     TextEntry::make('country.name')
                         ->label(__('app.country')),
 
+                    TextEntry::make('documentable.name')
+                        ->label(__('app.document_type'))
+                        ->placeholder(__('app.not_assigned')),
+
                     TextEntry::make('accredited_serial_number')
                         ->label(__('app.accredited_serial_number')),
 

@@ -8,6 +8,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Translatable\HasTranslations;
 
 class DocumentType extends Model
@@ -23,6 +24,11 @@ class DocumentType extends Model
         'key',
         'name',
     ];
+
+    public function certifications(): MorphMany
+    {
+        return $this->morphMany(Certification::class, 'documentable');
+    }
 
     protected function casts(): array
     {
