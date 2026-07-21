@@ -63,6 +63,28 @@ Registered in `bootstrap/providers.php`. These change framework behavior globall
 - Enums in `app/Enums/` (e.g. `PanelId`, `UserType`) — use them instead of string/magic literals.
 - Run `pint` before committing; phpstan must stay green against the baseline.
 
+## Deployment
+
+Single branch: `production`. Deployed to Hostinger via SSH git pull.
+
+```bash
+# Standard deployment (safe, no data loss)
+git commit -m "Add new feature"
+git push origin production
+
+# Destructive deployment (drops all tables, re-runs migrations + seeders)
+git commit -m "[migrate:fresh] Redesign trainees table"
+git push origin production
+```
+
+Destructive keywords: `[migrate:fresh]`, `[destructive]`, `[reset-db]`, `[fresh]`.
+
+Manual trigger: GitHub Actions → CI/CD Pipeline → Run workflow → check `force_migrate_fresh`.
+
+**No backups.** Acceptable because there is no production data.
+
+CI/CD pipeline: `.github/workflows/ci.yml`
+
 ## Knowledge graph (graphify)
 
 A knowledge graph exists at `graphify-out/`. For codebase questions prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, `graphify explain "<concept>"` over raw grep. After modifying code run `graphify update .` to keep it current (AST-only, no API cost). See `AGENTS.md`.

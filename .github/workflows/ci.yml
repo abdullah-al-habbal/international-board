@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - production
-  workflow_dispatch: # Allows manual triggering from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      force_migrate_fresh:
+        description: 'Force migrate:fresh + seed (destructive)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -18,14 +24,45 @@ env:
   APP_DOMAIN: internationalboard.uk
 
 jobs:
-  deploy:
-    name: 🚀 Deploy to Hostinger via Git
+  check-destructive:
+    name: Check for destructive migration trigger
     runs-on: ubuntu-latest
+    outputs:
+      is_destructive: ${{ steps.check.outputs.is_destructive }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - name: Check commit message for destructive keyword
+        id: check
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+
+          if echo "$COMMIT_MSG" | grep -iqE "\[migrate:fresh\]|\[destructive\]|\[reset-db\]|\[fresh\]"; then
+            echo "is_destructive=true" >> $GITHUB_OUTPUT
+            echo "Destructive migration detected in commit message"
+          else
+            echo "is_destructive=false" >> $GITHUB_OUTPUT
+            echo "Standard migration"
+          fi
+
+      - name: Check manual trigger for destructive
+        if: github.event.inputs.force_migrate_fresh == 'true'
+        run: |
+          echo "is_destructive=true" >> $GITHUB_OUTPUT
+          echo "Manual destructive migration triggered"
+
+  deploy:
+    name: Deploy to Hostinger via Git
+    runs-on: ubuntu-latest
+    needs: check-destructive
     if: github.ref == 'refs/heads/production'
 
     steps:
-      - name: 🚀 Deploy via SSH (Git Pull)
+      - name: Deploy via SSH (Git Pull)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -40,33 +77,38 @@ jobs:
 
             TARGET="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
             DEPLOY_KEY="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/.ssh/deploy_key"
-            
-            # Tell Git to use the deploy key we created earlier
+
             export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY -o IdentitiesOnly=yes -o StrictHostKeyChecking=no"
 
-            echo "🎯 Deploying to: $TARGET"
+            echo "Deploying to: $TARGET"
             cd "$TARGET"
 
-            echo "📥 Fetching latest changes from Git..."
+            echo "Fetching latest changes from Git..."
             git fetch origin production
             git reset --hard origin/production
-            
-            # Clean any untracked files that might have been left behind (respects .gitignore)
             git clean -fd
 
-            echo "📦 Installing PHP dependencies..."
+            echo "Installing PHP dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
 
-            echo "🗄️ Running migrations..."
-            php artisan migrate --force
+            IS_DESTRUCTIVE="${{ needs.check-destructive.outputs.is_destructive }}"
 
-            echo "🧹 Clearing and caching..."
+            if [ "$IS_DESTRUCTIVE" = "true" ]; then
+              echo "RUNNING DESTRUCTIVE MIGRATION: migrate:fresh --seed"
+              echo "WARNING: All data will be lost!"
+              php artisan migrate:fresh --force --seed
+            else
+              echo "Running standard migrations..."
+              php artisan migrate --force
+            fi
+
+            echo "Clearing and caching..."
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            echo "✅ Verifying application..."
+            echo "Verifying application..."
             php artisan about
 
-            echo "🎉 Deployment completed successfully"
+            echo "Deployment completed successfully"
