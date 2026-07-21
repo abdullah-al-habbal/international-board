@@ -9,10 +9,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\HasTranslations;
 
 class TrainerDocumentType extends Model
 {
     use HasFactory;
+    use HasTranslations;
+
+    public array $translatable = ['name'];
 
     protected $table = 'trainer_document_types';
 

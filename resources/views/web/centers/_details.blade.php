@@ -1,8 +1,47 @@
+<!-- resources\views\web\centers\_details.blade.php -->
 <div class="card card-glow p-4">
     <div class="card-body p-0">
         <h3 class="mb-4">{{ $center->name }}</h3>
 
-        <div class="row mb-3">
+        {{-- Status --}}
+        <div class="mb-4">
+            @if ($center->is_active)
+                <span class="badge bg-success px-3 py-2">
+                    <i class="tf-ion-ios-checkmark-outline mr-1"></i> {{ __('web.labels.active') }}
+                </span>
+            @else
+                <span class="badge bg-secondary px-3 py-2">
+                    <i class="tf-ion-ios-close-outline mr-1"></i> {{ __('web.labels.inactive') }}
+                </span>
+            @endif
+        </div>
+
+        {{-- Basic info grid --}}
+        <div class="row mb-2">
+            <div class="col-sm-4 fw-bold">{{ __('web.labels.email') }}:</div>
+            <div class="col-sm-8">
+                <a href="mailto:{{ $center->email }}" class="text-primary">{{ $center->email }}</a>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 fw-bold">{{ __('app.phone') }}:</div>
+            <div class="col-sm-8">{{ $center->phone ?? '—' }}</div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 fw-bold">{{ __('app.address') }}:</div>
+            <div class="col-sm-8">
+                @if($center->address)
+                    <i class="tf-ion-ios-location-outline mr-1 text-primary"></i> {{ $center->address }}
+                @else
+                    <span class="text-muted">&mdash;</span>
+                @endif
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 fw-bold">{{ __('web.labels.manager_name') }}:</div>
+            <div class="col-sm-8">{{ $center->manager_name ?? '—' }}</div>
+        </div>
+        <div class="row mb-2">
             <div class="col-sm-4 fw-bold">{{ __('web.labels.country') }}:</div>
             <div class="col-sm-8">
                 @if ($center->country)
@@ -13,82 +52,100 @@
             </div>
         </div>
 
-        @if ($center->accreditation_number)
-            <div class="row mb-3">
-                <div class="col-sm-4 fw-bold">{{ __('web.labels.accreditation_number') }}:</div>
-                <div class="col-sm-8"><code>{{ $center->accreditation_number }}</code></div>
+        {{-- Accreditation details --}}
+        <hr>
+        <h5 class="mb-3">{{ __('web.labels.accreditation_details') }}</h5>
+        <div class="row mb-2">
+            <div class="col-sm-4 fw-bold">{{ __('web.labels.accreditation_number') }}:</div>
+            <div class="col-sm-8">
+                @if($center->accreditation_number)
+                    <code>{{ $center->accreditation_number }}</code>
+                @else
+                    <span class="text-muted">&mdash;</span>
+                @endif
             </div>
-        @endif
-
-        @if ($center->accreditation_period_start && $center->accreditation_period_end)
-            <div class="row mb-3">
-                <div class="col-sm-4 fw-bold">{{ __('web.labels.accreditation_period') }}:</div>
-                <div class="col-sm-8">
-                    {{ $center->accreditation_period_start->format('M d, Y') }} – {{ $center->accreditation_period_end->format('M d, Y') }}
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 fw-bold">{{ __('web.labels.accreditation_period') }}:</div>
+            <div class="col-sm-8">
+                @if($center->accreditation_period_start && $center->accreditation_period_end)
+                    {{ $center->accreditation_period_start->format('M d, Y') }} &ndash; {{ $center->accreditation_period_end->format('M d, Y') }}
                     @if ($center->isAccreditationActive())
                         <span class="badge bg-success ms-2">{{ __('web.labels.active') }}</span>
                     @else
                         <span class="badge bg-danger ms-2">{{ __('web.labels.expired') }}</span>
                     @endif
-                </div>
+                @else
+                    <span class="text-muted">&mdash;</span>
+                @endif
             </div>
-        @endif
+        </div>
 
-        @if ($center->email)
-            <div class="row mb-3">
-                <div class="col-sm-4 fw-bold">{{ __('web.labels.email') }}:</div>
-                <div class="col-sm-8">
-                    <a href="mailto:{{ $center->email }}" class="text-primary">{{ $center->email }}</a>
-                </div>
-            </div>
-        @endif
-
-        @if ($center->manager_name)
-            <div class="row mb-3">
-                <div class="col-sm-4 fw-bold">{{ __('web.labels.manager_name') }}:</div>
-                <div class="col-sm-8">{{ $center->manager_name }}</div>
-            </div>
-        @endif
-
-        @if ($center->address)
-            <div class="row mb-3">
-                <div class="col-sm-4 fw-bold">{{ __('app.address') }}:</div>
-                <div class="col-sm-8"><i class="tf-ion-ios-location-outline mr-2 text-primary"></i> {{ $center->address }}</div>
-            </div>
-        @endif
-
-        @if ($center->phone)
-            <div class="row mb-3">
-                <div class="col-sm-4 fw-bold">{{ __('app.phone') }}:</div>
-                <div class="col-sm-8"><i class="tf-ion-ios-telephone-outline mr-2 text-primary"></i> {{ $center->phone }}</div>
-            </div>
-        @endif
-
-        @if ($center->approvedDocumentTypes->isNotEmpty())
-            <h5 class="mt-4 mb-3">{{ __('web.labels.document_types') }}</h5>
+        {{-- Approved Document Types --}}
+        @if($center->approvedDocumentTypes->isNotEmpty())
+            <hr>
+            <h5 class="mb-3">{{ __('web.labels.document_types') }}</h5>
             <div class="d-flex flex-wrap gap-2">
-                @foreach ($center->approvedDocumentTypes as $docType)
+                @foreach($center->approvedDocumentTypes as $docType)
                     <span class="badge bg-primary px-3 py-2">{{ $docType->name }}</span>
                 @endforeach
             </div>
         @endif
 
-        @if ($center->certifications->isNotEmpty())
-            <h5 class="mt-4 mb-3">{{ __('web.labels.certifications') }}</h5>
+        {{-- Relation counts --}}
+        <hr>
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <div class="fw-bold">{{ __('web.labels.certifications_count') }}</div>
+                    <span class="badge bg-success fs-6">{{ $center->certifications->count() }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <div class="fw-bold">{{ __('web.labels.trainers_count') }}</div>
+                    <span class="badge bg-primary fs-6">{{ $center->trainers->count() }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <div class="fw-bold">{{ __('web.labels.document_types_count') }}</div>
+                    <span class="badge bg-warning text-dark fs-6">{{ $center->documentTypes->count() }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <div class="fw-bold">{{ __('web.labels.accreditation_requests_count') }}</div>
+                    <span class="badge bg-info fs-6">{{ $center->accreditationRequests->count() }}</span>
+                </div>
+            </div>
+            @if($center->financialRequests->isNotEmpty())
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded text-center">
+                    <div class="fw-bold">{{ __('web.labels.financial_requests_count') }}</div>
+                    <span class="badge bg-dark fs-6">{{ $center->financialRequests->count() }}</span>
+                </div>
+            </div>
+            @endif
+        </div>
+
+        {{-- Latest certifications --}}
+        @if($center->certifications->isNotEmpty())
+            <hr>
+            <h5 class="mb-3">{{ __('web.labels.latest_certifications') }}</h5>
             <ul class="list-group list-group-flush">
-                @foreach ($center->certifications as $certification)
+                @foreach($center->certifications->take(5) as $cert)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            {{ __('web.labels.certification') }} #{{ $certification->id }}
-                        </span>
-                        @if ($certification->document_code)
-                            <span class="badge bg-secondary">{{ $certification->document_code }}</span>
+                        <span>{{ __('web.labels.certification') }} #{{ $cert->id }}</span>
+                        @if($cert->document_code)
+                            <span class="badge bg-secondary">{{ $cert->document_code }}</span>
                         @endif
                     </li>
                 @endforeach
             </ul>
         @endif
 
+        {{-- Back button --}}
         <div class="mt-5">
             <a href="{{ route('web.centers.index') }}" class="btn btn-main">
                 <i class="tf-ion-ios-arrow-back mr-1"></i> {{ __('web.buttons.back') }}

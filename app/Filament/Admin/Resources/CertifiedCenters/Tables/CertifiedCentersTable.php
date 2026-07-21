@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -37,6 +38,11 @@ class CertifiedCentersTable
                 TextColumn::make('manager_name')
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
+
+                ImageColumn::make('logo')
+                    ->label(__('app.logo'))
+                    ->disk('public')
+                    ->defaultImageUrl(url('assets/website/images/avatar.png')),
 
                 TextColumn::make('accreditation_period_start')
                     ->dateTime()

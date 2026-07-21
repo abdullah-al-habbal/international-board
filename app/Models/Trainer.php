@@ -18,11 +18,35 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Trainer extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use Notifiable;
+
+    protected static function booted(): void
+    {
+        static::creating(function (Trainer $trainer) {
+            if (empty($trainer->unique_trainer_code)) {
+                $trainer->unique_trainer_code = self::generateUniqueCode();
+            }
+
+            if (empty($trainer->accreditation_number)) {
+                $trainer->accreditation_number = self::generateAccreditationNumber();
+            }
+        });
+    }
+
+    protected static function generateUniqueCode(): string
+    {
+        return strtoupper(Str::random(8));
+    }
+
+    protected static function generateAccreditationNumber(): string
+    {
+        return 'TR-'.now()->format('Ymd').'-'.strtoupper(Str::random(4));
+    }
 
     protected $fillable = [
         'name',
@@ -182,8 +206,8 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function getAvatarUrlAttribute(): ?string
     {
-        if ($this->attributes['avatar'] ?? null) {
-            return Storage::url($this->attributes['avatar']);
+        if (! empty($this->attributes['avatar'])) {
+            return Storage::disk('public')->url($this->attributes['avatar']);
         }
 
         return null;

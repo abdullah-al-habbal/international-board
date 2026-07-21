@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\CertifiedCenters\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -25,6 +26,10 @@ class CertifiedCenterInfolist
                     ->placeholder('-'),
                 TextEntry::make('manager_name')
                     ->placeholder('-'),
+                ImageEntry::make('logo')
+                    ->label(__('app.logo'))
+                    ->disk('public')
+                    ->defaultImageUrl(url('assets/website/images/avatar.png')),
                 TextEntry::make('accreditation_period_start')
                     ->dateTime()
                     ->placeholder('-'),

@@ -193,8 +193,8 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function getLogoUrlAttribute(): ?string
     {
-        if ($this->attributes['logo'] ?? null) {
-            return Storage::url($this->attributes['logo']);
+        if (! empty($this->attributes['logo'])) {
+            return Storage::disk('public')->url($this->attributes['logo']);
         }
 
         return null;

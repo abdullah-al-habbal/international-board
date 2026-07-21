@@ -84,6 +84,7 @@ class TrainerForm
                 ->label(__('app.avatar'))
                 ->image()
                 ->avatar()
+                ->disk('public')
                 ->directory('trainers/avatars')
                 ->visibility('public')
                 ->nullable()

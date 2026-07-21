@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\CertifiedCenters\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -44,6 +45,14 @@ class CertifiedCenterForm
                     ->tel(),
                 TextInput::make('manager_name')
                     ->label(__('app.manager_name')),
+                FileUpload::make('logo')
+                    ->label(__('app.logo'))
+                    ->image()
+                    ->disk('public')
+                    ->directory('centers/logos')
+                    ->visibility('public')
+                    ->nullable()
+                    ->columnSpanFull(),
                 DateTimePicker::make('accreditation_period_start')
                     ->label(__('app.accreditation_period_start')),
                 DateTimePicker::make('accreditation_period_end')

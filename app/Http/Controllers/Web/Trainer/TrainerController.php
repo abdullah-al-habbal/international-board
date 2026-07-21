@@ -42,6 +42,15 @@ final class TrainerController extends Controller
         $trainerModel = $this->service->findActive($trainer);
         abort_if($trainerModel === null, 404);
 
+        $trainerModel->load([
+            'country',
+            'center',
+            'specializations',
+            'certifications',
+            'documentTypes',
+            'accreditationRequests',
+        ]);
+
         $this->seoService->setMeta(
             $trainerModel->name,
             $trainerModel->bio ?? __('web.pages.trainers.subtitle')

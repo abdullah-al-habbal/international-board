@@ -116,6 +116,7 @@ return [
     'iso_code_2' => 'رمز ISO (حرفان)',
     'descriptive_image' => 'الصورة الوصفية',
     'avatar' => 'الصورة الشخصية',
+    'logo' => 'الشعار',
     'biography' => 'السيرة الذاتية',
     'specializations' => 'التخصصات',
     'specializations_count' => 'عدد التخصصات',

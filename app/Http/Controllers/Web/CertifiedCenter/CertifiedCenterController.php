@@ -40,6 +40,15 @@ final class CertifiedCenterController extends Controller
         $center = $this->service->findActive($id);
         abort_if($center === null, 404);
 
+        $center->load([
+            'country',
+            'certifications',
+            'trainers',
+            'documentTypes',
+            'accreditationRequests',
+            'financialRequests',
+        ]);
+
         $this->seoService->setMeta(
             $center->name,
             $center->address ?? __('web.pages.centers.subtitle')
