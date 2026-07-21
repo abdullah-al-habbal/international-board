@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Trainees\Schemas;
 
 use App\Models\Country;
+use App\Models\Trainee;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class TraineeForm
 {
@@ -20,6 +22,7 @@ class TraineeForm
                 ->label(__('app.name'))
                 ->required()
                 ->maxLength(255)
+                ->unique(ignoreRecord: true)
                 ->autofocus()
                 ->columnSpanFull(),
 
@@ -28,6 +31,7 @@ class TraineeForm
                 ->email()
                 ->maxLength(255)
                 ->nullable()
+                ->unique(Trainee::class, 'email', ignoreRecord: true)
                 ->columnSpan(1),
 
             TextInput::make('phone')
@@ -35,17 +39,50 @@ class TraineeForm
                 ->tel()
                 ->maxLength(255)
                 ->nullable()
+                ->unique(Trainee::class, 'phone', ignoreRecord: true)
                 ->columnSpan(1),
 
             Select::make('country_id')
                 ->label(__('app.country'))
-                ->relationship('country', 'name')
                 ->searchable()
                 ->preload()
                 ->nullable()
+                ->getSearchResultsUsing(function (string $search): array {
+                    $locale = app()->getLocale();
+
+                    return Country::query()
+                        ->where(function (Builder $query) use ($search, $locale) {
+                            $query->whereRaw(
+                                "LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, '$.\"{$locale}\"'))) LIKE ?",
+                                ['%'.mb_strtolower($search).'%']
+                            );
+                        })
+                        ->orWhere(function (Builder $query) use ($search) {
+                            $query->whereRaw(
+                                'LOWER(name) LIKE ?',
+                                ['%'.mb_strtolower($search).'%']
+                            );
+                        })
+                        ->limit(50)
+                        ->get()
+                        ->mapWithKeys(fn (Country $country) => [
+                            $country->id => $country->getTranslation('name', $locale)
+                                ?? $country->getTranslation('name', 'en')
+                                ?? $country->name,
+                        ])
+                        ->toArray();
+                })
+                ->getOptionLabelUsing(fn (int $value): string => Country::find($value)?->getTranslation('name', app()->getLocale())
+                        ?? Country::find($value)?->getTranslation('name', 'en')
+                        ?? ''
+                )
                 ->createOptionForm([
-                    TextInput::make('name')->required()->maxLength(255),
+                    TextInput::make('name')
+                        ->label(__('app.name'))
+                        ->required()
+                        ->maxLength(255),
                     TextInput::make('code')
+                        ->label(__('app.code'))
                         ->required()
                         ->maxLength(3)
                         ->minLength(3)
@@ -53,6 +90,7 @@ class TraineeForm
                         ->unique(Country::class, 'code')
                         ->helperText(__('app.iso_code_3_helper')),
                     TextInput::make('code_2')
+                        ->label(__('app.code_2'))
                         ->required()
                         ->maxLength(2)
                         ->minLength(2)
@@ -65,6 +103,7 @@ class TraineeForm
             DatePicker::make('date_of_birth')
                 ->label(__('app.date_of_birth'))
                 ->nullable()
+                ->beforeOrEqual('today')
                 ->columnSpan(1),
 
             Select::make('gender')

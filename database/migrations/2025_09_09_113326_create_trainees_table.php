@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 255)->unique();
             $table->string('email')->nullable()->unique();
-            $table->string('phone')->nullable();
+            $table->string('phone')->nullable()->unique();
             $table->foreignId('country_id')->nullable()->constrained('countries')->nullOnDelete();
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
