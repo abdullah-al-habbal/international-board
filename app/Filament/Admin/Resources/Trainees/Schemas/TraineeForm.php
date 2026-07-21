@@ -67,12 +67,6 @@ class TraineeForm
                 ->nullable()
                 ->columnSpan(1),
 
-            TextInput::make('nationality')
-                ->label(__('app.nationality'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
             Select::make('gender')
                 ->label(__('app.gender'))
                 ->options([
@@ -82,42 +76,10 @@ class TraineeForm
                 ->nullable()
                 ->columnSpan(1),
 
-            TextInput::make('occupation')
-                ->label(__('app.occupation'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            TextInput::make('organization')
-                ->label(__('app.organization'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
             Textarea::make('address')
                 ->label(__('app.address'))
                 ->maxLength(65535)
                 ->rows(2)
-                ->nullable()
-                ->columnSpanFull(),
-
-            TextInput::make('emergency_contact_name')
-                ->label(__('app.emergency_contact_name'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            TextInput::make('emergency_contact_phone')
-                ->label(__('app.emergency_contact_phone'))
-                ->tel()
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            Textarea::make('medical_info')
-                ->label(__('app.medical_info'))
-                ->maxLength(65535)
-                ->rows(3)
                 ->nullable()
                 ->columnSpanFull(),
 

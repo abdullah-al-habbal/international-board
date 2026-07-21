@@ -22,82 +22,45 @@ class TraineeInfolist
                 ->label(__('app.email'))
                 ->icon('heroicon-o-envelope')
                 ->copyable()
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('phone')
                 ->label(__('app.phone'))
                 ->icon('heroicon-o-phone')
                 ->copyable()
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('country.name')
                 ->label(__('app.country'))
                 ->icon('heroicon-o-globe-alt')
-                ->placeholder('—')
-                ->columnSpan(1),
-
-            TextEntry::make('nationality')
-                ->label(__('app.nationality'))
-                ->icon('heroicon-o-flag')
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('gender')
                 ->label(__('app.gender'))
                 ->badge()
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('date_of_birth')
                 ->label(__('app.date_of_birth'))
                 ->date()
                 ->icon('heroicon-o-calendar-days')
-                ->placeholder('—')
-                ->columnSpan(1),
-
-            TextEntry::make('occupation')
-                ->label(__('app.occupation'))
-                ->icon('heroicon-o-briefcase')
-                ->placeholder('—')
-                ->columnSpan(1),
-
-            TextEntry::make('organization')
-                ->label(__('app.organization'))
-                ->icon('heroicon-o-building-office')
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('address')
                 ->label(__('app.address'))
                 ->icon('heroicon-o-map-pin')
-                ->placeholder('—')
-                ->columnSpanFull(),
-
-            TextEntry::make('emergency_contact_name')
-                ->label(__('app.emergency_contact_name'))
-                ->icon('heroicon-o-user-group')
-                ->placeholder('—')
-                ->columnSpan(1),
-
-            TextEntry::make('emergency_contact_phone')
-                ->label(__('app.emergency_contact_phone'))
-                ->icon('heroicon-o-phone')
-                ->copyable()
-                ->placeholder('—')
-                ->columnSpan(1),
-
-            TextEntry::make('medical_info')
-                ->label(__('app.medical_info'))
-                ->markdown()
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpanFull(),
 
             TextEntry::make('notes')
                 ->label(__('app.notes'))
                 ->markdown()
-                ->placeholder('—')
+                ->placeholder(__('app.not_set'))
                 ->columnSpanFull(),
 
             TextEntry::make('certifications_count')

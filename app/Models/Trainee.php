@@ -20,14 +20,8 @@ class Trainee extends Model
         'phone',
         'country_id',
         'date_of_birth',
-        'nationality',
         'gender',
-        'occupation',
-        'organization',
         'address',
-        'emergency_contact_name',
-        'emergency_contact_phone',
-        'medical_info',
         'notes',
     ];
 

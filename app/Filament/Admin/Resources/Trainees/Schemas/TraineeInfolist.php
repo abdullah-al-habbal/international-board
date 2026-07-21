@@ -22,88 +22,51 @@ class TraineeInfolist
                 ->label(__('app.email'))
                 ->icon('heroicon-o-envelope')
                 ->copyable()
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('phone')
                 ->label(__('app.phone'))
                 ->icon('heroicon-o-phone')
                 ->copyable()
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('country.name')
                 ->label(__('app.country'))
                 ->icon('heroicon-o-globe-alt')
-                ->placeholder(__('app.no_value'))
-                ->columnSpan(1),
-
-            TextEntry::make('nationality')
-                ->label(__('app.nationality'))
-                ->icon('heroicon-o-flag')
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('gender')
                 ->label(__('app.gender'))
                 ->badge()
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
             TextEntry::make('date_of_birth')
                 ->label(__('app.date_of_birth'))
                 ->icon('heroicon-o-calendar-days')
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpan(1)
                 ->formatStateUsing(function ($state) {
                     if (blank($state)) {
-                        return __('app.no_value');
+                        return __('app.not_set');
                     }
 
                     return $state;
                 }),
 
-            TextEntry::make('occupation')
-                ->label(__('app.occupation'))
-                ->icon('heroicon-o-briefcase')
-                ->placeholder(__('app.no_value'))
-                ->columnSpan(1),
-
-            TextEntry::make('organization')
-                ->label(__('app.organization'))
-                ->icon('heroicon-o-building-office')
-                ->placeholder(__('app.no_value'))
-                ->columnSpan(1),
-
             TextEntry::make('address')
                 ->label(__('app.address'))
                 ->icon('heroicon-o-map-pin')
-                ->placeholder(__('app.no_value'))
-                ->columnSpanFull(),
-
-            TextEntry::make('emergency_contact_name')
-                ->label(__('app.emergency_contact_name'))
-                ->icon('heroicon-o-user-group')
-                ->placeholder(__('app.no_value'))
-                ->columnSpan(1),
-
-            TextEntry::make('emergency_contact_phone')
-                ->label(__('app.emergency_contact_phone'))
-                ->icon('heroicon-o-phone')
-                ->copyable()
-                ->placeholder(__('app.no_value'))
-                ->columnSpan(1),
-
-            TextEntry::make('medical_info')
-                ->label(__('app.medical_info'))
-                ->markdown()
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpanFull(),
 
             TextEntry::make('notes')
                 ->label(__('app.notes'))
                 ->markdown()
-                ->placeholder(__('app.no_value'))
+                ->placeholder(__('app.not_set'))
                 ->columnSpanFull(),
 
             TextEntry::make('certifications_count')

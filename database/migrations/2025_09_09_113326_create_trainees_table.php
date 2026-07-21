@@ -15,14 +15,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->foreignId('country_id')->nullable()->constrained('countries')->nullOnDelete();
             $table->date('date_of_birth')->nullable();
-            $table->string('nationality')->nullable();
-            $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->string('occupation')->nullable();
-            $table->string('organization')->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
             $table->text('address')->nullable();
-            $table->string('emergency_contact_name')->nullable();
-            $table->string('emergency_contact_phone')->nullable();
-            $table->text('medical_info')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
