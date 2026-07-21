@@ -249,7 +249,7 @@ return [
             'required_headers' => [
                 'title' => 'Required Arabic Headers',
                 'trainee_name' => 'اسم المتدرب (Trainee Name)',
-                'serial_number' => 'الرقم المتسلسل المعتمد (Serial Number)',
+                'serial_number' => 'الرقم المتسلسل (Serial Number)',
                 'document_type' => 'نوع الوثيقة (Document Type)',
                 'accreditation_date' => 'تاريخ الاعتماد (Accreditation Date)',
                 'trainer_name' => 'اسم المدرب (Trainer Name)',
@@ -398,7 +398,7 @@ return [
     'blog_posts' => 'Blog Posts',
     'blog_post' => 'Blog Post',
 
-    'approved_document_types' => 'Approved Document Types',
+    'approved_document_types' => 'Document Types',
     'approved_document_type' => 'Approved Document Type',
     'document_type_request_approved' => 'Document type request approved successfully.',
     'document_type_request_rejected' => 'Document type request rejected successfully.',

@@ -23,7 +23,7 @@ return [
         'application_settings' => 'إعدادات التطبيق',
         'center_type_requests' => 'طلبات نوع المركز',
         'certifications' => 'الشهادات',
-        'certified_centers' => 'المراكز المعتمدة',
+        'certified_centers' => 'المراكز',
         'countries' => 'الدول',
         'document_types' => 'أنواع المستندات',
         'edit_requests' => 'طلبات التعديل',

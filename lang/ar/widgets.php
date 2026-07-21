@@ -7,7 +7,7 @@ return [
     'stats' => [
         'total_centers' => [
             'label' => 'إجمالي المراكز',
-            'description' => 'المراكز المعتمدة في النظام',
+            'description' => 'المراكز في النظام',
         ],
         'active_centers' => [
             'label' => 'المراكز النشطة',
