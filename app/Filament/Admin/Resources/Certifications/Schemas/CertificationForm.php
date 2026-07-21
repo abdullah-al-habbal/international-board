@@ -118,9 +118,7 @@ class CertificationForm
                                             ->preload(),
                                         DatePicker::make('date_of_birth')
                                             ->label(__('app.date_of_birth')),
-                                        TextInput::make('nationality')
-                                            ->label(__('app.nationality'))
-                                            ->maxLength(255),
+
                                     ])
                                     ->createOptionUsing(function (array $data): int {
                                         return Trainee::create($data)->getKey();
@@ -130,7 +128,7 @@ class CertificationForm
                         Grid::make(2)
                             ->schema([
                                 Select::make('country_id')
-                                    ->label(__('app.nationality'))
+                                    ->label(__('app.country'))
                                     ->relationship('country', 'name')
                                     ->searchable()
                                     ->preload()
@@ -150,8 +148,7 @@ class CertificationForm
                                             ->alpha()
                                             ->unique(Country::class, 'code_2')
                                             ->helperText(__('app.iso_code_2_helper')),
-                                        TextInput::make('nationality')
-                                            ->maxLength(255),
+
                                     ])
                                     ->createOptionUsing(function (array $data): int {
                                         return Country::create($data)->getKey();

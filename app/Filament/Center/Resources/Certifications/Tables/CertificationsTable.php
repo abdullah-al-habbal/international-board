@@ -95,13 +95,6 @@ class CertificationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-
-                SelectFilter::make('nationality')
-                    ->label(__('app.nationality'))
-                    ->relationship('country', 'nationality')
-                    ->searchable()
-                    ->preload(),
-
                 SelectFilter::make('paper_received')
                     ->label(__('app.paper_received'))
                     ->options([

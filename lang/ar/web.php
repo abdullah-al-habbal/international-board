@@ -162,7 +162,6 @@ return [
         'trainee' => 'المتدرب',
         'status' => 'الحالة',
         'certifications_count' => 'الشهادات المُصدَرة',
-        'nationality' => 'الجنسية',
         'no_trainer' => 'لا يوجد مدرب معين',
         'not_assigned' => 'غير محدد',
         'email' => 'البريد الإلكتروني',

@@ -40,11 +40,6 @@ class CountryForm
                     ->placeholder('US')
                     ->helperText(__('app.iso_code_2_helper')),
 
-                TextInput::make('nationality')
-                    ->label(__('app.nationality'))
-                    ->maxLength(255)
-                    ->placeholder(__('app.american')),
-
                 Toggle::make('is_active')
                     ->label(__('app.active'))
                     ->default(true)

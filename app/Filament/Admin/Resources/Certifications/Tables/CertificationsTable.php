@@ -53,14 +53,6 @@ class CertificationsTable
                     ->weight('bold')
                     ->getStateUsing(fn ($record) => $record->trainee?->name ?? __('app.unassigned')),
 
-                TextColumn::make('country.nationality')
-                    ->label(__('app.nationality'))
-                    ->searchable()
-                    ->badge()
-                    ->color('info')
-                    ->toggleable()
-                    ->getStateUsing(fn ($record) => $record->country?->nationality ?: __('app.no_nationality')),
-
                 TextColumn::make('accredited_serial_number')
                     ->label(__('app.serial_number'))
                     ->searchable()
@@ -149,13 +141,6 @@ class CertificationsTable
 
                         return $query->where('creator_type', $data['value']);
                     }),
-
-                SelectFilter::make('nationality')
-                    ->label(__('app.nationality'))
-                    ->relationship('country', 'nationality')
-                    ->searchable()
-                    ->preload()
-                    ->placeholder(__('app.filter_select_placeholder')),
 
                 SelectFilter::make('paper_received')
                     ->label(__('app.paper_received'))

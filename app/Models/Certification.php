@@ -115,15 +115,7 @@ class Certification extends Model
             $q->where('name', 'like', "%{$name}%");
         });
     }
-
-    #[Scope]
-    protected function byNationality(Builder $query, string $nationality): void
-    {
-        $query->whereHas('country', function (Builder $q) use ($nationality) {
-            $q->where('nationality', $nationality);
-        });
-    }
-
+    
     #[Scope]
     protected function createdThisMonth(Builder $query): void
     {

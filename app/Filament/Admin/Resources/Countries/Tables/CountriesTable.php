@@ -19,13 +19,6 @@ class CountriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->label(__('app.country_name'))
-                    ->searchable()
-                    ->sortable()
-                    ->weight('medium')
-                    ->description(fn ($record) => $record->nationality ?: __('app.no_value')),
-
                 TextColumn::make('code')
                     ->label(__('app.iso_code_3'))
                     ->badge()

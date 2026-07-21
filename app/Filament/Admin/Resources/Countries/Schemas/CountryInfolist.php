@@ -25,10 +25,6 @@ class CountryInfolist
                     ->label(__('app.iso_code_2'))
                     ->badge(),
 
-                TextEntry::make('nationality')
-                    ->label(__('app.nationality'))
-                    ->placeholder('-'),
-
                 IconEntry::make('is_active')
                     ->label(__('app.status'))
                     ->boolean(),

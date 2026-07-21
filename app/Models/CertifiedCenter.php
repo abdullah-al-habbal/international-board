@@ -80,11 +80,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         return $this->belongsTo(Country::class);
     }
 
-    public function centerTypeRequests(): HasMany
-    {
-        return $this->hasMany(CenterTypeRequest::class);
-    }
-
     public function documentTypes(): HasMany
     {
         return $this->hasMany(CertifiedCenterDocumentType::class);

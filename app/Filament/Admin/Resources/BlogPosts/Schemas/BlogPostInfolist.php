@@ -24,6 +24,9 @@ class BlogPostInfolist
 
                 TextEntry::make('slug')
                     ->label(__('app.slug'))
+                    ->icon('heroicon-o-link')
+                    ->copyable()
+                    ->copyableState(fn ($record) => url('/blog/'.$record->slug))
                     ->columnSpan(1),
 
                 ImageEntry::make('image')

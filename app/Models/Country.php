@@ -13,13 +13,12 @@ class Country extends Model
     use HasFactory;
     use HasTranslations;
 
-    public $translatable = ['name', 'nationality'];
+    public $translatable = ['name'];
 
     protected $fillable = [
         'name',
         'code',
         'code_2',
-        'nationality',
         'is_active',
     ];
 

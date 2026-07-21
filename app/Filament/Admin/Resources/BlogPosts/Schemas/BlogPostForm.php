@@ -12,6 +12,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class BlogPostForm
 {
@@ -26,6 +27,15 @@ class BlogPostForm
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
+                    ->prefix(url('/blog/'))
+                    ->placeholder('my-blog-post-title')
+                    ->helperText(__('app.slug_helper'))
+                    ->hint(__('app.slug_hint'))
+                    ->hintIcon('heroicon-m-question-mark-circle')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $set('slug', Str::slug($state));
+                    })
                     ->columnSpanFull(),
 
                 Tabs::make('Translations')
@@ -36,6 +46,13 @@ class BlogPostForm
                                     ->label(__('app.title')." ({$locale})")
                                     ->required()
                                     ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        $currentSlug = $get('slug');
+                                        if (blank($currentSlug) && filled($state)) {
+                                            $set('slug', Str::slug($state));
+                                        }
+                                    })
                                     ->columnSpanFull(),
 
                                 TextInput::make("excerpt.{$locale}")

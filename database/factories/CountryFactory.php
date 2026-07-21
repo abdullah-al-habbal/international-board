@@ -17,7 +17,6 @@ class CountryFactory extends Factory
             'name' => $this->faker->unique()->country(),
             'code' => strtoupper($this->faker->unique()->lexify('???')),
             'code_2' => strtoupper($this->faker->unique()->lexify('??')),
-            'nationality' => $this->faker->optional()->word(),
             'is_active' => $this->faker->boolean(90),
         ];
     }

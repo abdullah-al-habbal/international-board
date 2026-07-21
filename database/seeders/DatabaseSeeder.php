@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
             TraineeSeeder::class,
             CertifiedCenterPaymentAgentPersonSeeder::class,
             CertifiedCenterDocumentTypeSeeder::class,
-            CenterTypeRequestSeeder::class,
             CertifiedCenterFinancialRequestSeeder::class,
             AccreditationRequestSeeder::class,
             TrainerAccreditationRequestSeeder::class,

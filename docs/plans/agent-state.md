@@ -66,7 +66,6 @@ Excluded by design (not page routes): `*.auth.*`, logout, `*.exports.*`,
 `*.imports.*`, `*.download`, livewire internals, `storage.*`.
 
 ### Remaining 4xx warnings (all expected, not bugs)
-- **`admin … center-type-requests.view` 403** — authorization/policy gating.
 - **`trainer … trainer-accreditation-requests.create` 403** — accreditation gate.
 - **`web.health` 403** — health-token check (`config('services.health.token')`).
 - **`center … trainees.view` / `.edit` 404** — the Trainees resource scopes via

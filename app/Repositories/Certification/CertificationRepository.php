@@ -101,14 +101,6 @@ final class CertificationRepository
             ->get();
     }
 
-    public function getCertificationsByNationality(string $nationality): Collection
-    {
-        return $this->model
-            ->byNationality($nationality)
-            ->recentlyCreated()
-            ->get();
-    }
-
     public function getMonthlyCounts(?int $year = null): array
     {
         $year ??= now()->year;

@@ -6,8 +6,15 @@ namespace App\Filament\Admin\Resources\PaymentAgentPersons\Pages;
 
 use App\Filament\Admin\Resources\PaymentAgentPersons\PaymentAgentPersonResource;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Actions;
 
 class ListPaymentAgentPersons extends ListRecords
 {
     protected static string $resource = PaymentAgentPersonResource::class;
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+        ];
+    }
 }

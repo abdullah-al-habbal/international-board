@@ -106,20 +106,6 @@
                                         @endif
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>{{ __('web.labels.nationality') }}</th>
-                                    <td>
-                                        @if($certification->country?->nationality)
-                                            <span class="badge bg-dark">
-                                                {{ $certification->country->nationality }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-secondary opacity-75">
-                                                {{ __('web.labels.not_assigned') }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
 

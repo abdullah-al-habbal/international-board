@@ -95,7 +95,9 @@ return [
     'description' => 'Description',
     'content' => 'Content',
     'date' => 'Date',
-    'slug' => 'Slug',
+    'slug' => 'Article URL (Browser Link)',
+    'slug_helper' => 'This appears in the browser address bar. Example: '.url('/blog/').'my-training-course',
+    'slug_hint' => 'Tip: Write a short text without spaces. Auto-generated from title if left empty.',
     'start_date' => 'Start Date',
     'image' => 'Image',
     'sort_order' => 'Sort Order',
@@ -251,7 +253,6 @@ return [
                 'document_type' => 'نوع الوثيقة (Document Type)',
                 'accreditation_date' => 'تاريخ الاعتماد (Accreditation Date)',
                 'trainer_name' => 'اسم المدرب (Trainer Name)',
-                'nationality' => 'الجنسية (Nationality)',
             ],
             'process' => [
                 'title' => 'Import Process',

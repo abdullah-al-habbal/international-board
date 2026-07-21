@@ -8,7 +8,6 @@ use App\Enums\UserType;
 use App\Models\ApplicationSetting;
 use App\Models\BlogPost;
 use App\Models\CenterAccreditationRequest;
-use App\Models\CenterTypeRequest;
 use App\Models\Certification;
 use App\Models\CertifiedCenter;
 use App\Models\CertifiedCenterDocumentType;
@@ -51,7 +50,6 @@ final class Spider
         'application-settings' => ApplicationSetting::class,
         'blog-posts' => BlogPost::class,
         'center-accreditation-requests' => CenterAccreditationRequest::class,
-        'center-type-requests' => CenterTypeRequest::class,
         'certifications' => Certification::class,
         'certified-center-document-types' => CertifiedCenterDocumentType::class,
         'certified-center-financial-requests' => CertifiedCenterFinancialRequest::class,
@@ -151,8 +149,6 @@ final class Spider
         $owned = [
             'center.center-accreditation-requests' => fn () => $centerRequestKey,
             'center.center-financial-requests' => fn () => CertifiedCenterFinancialRequest::factory()
-                ->create(['certified_center_id' => $centerId])->getKey(),
-            'center.center-type-requests' => fn () => CenterTypeRequest::factory()
                 ->create(['certified_center_id' => $centerId])->getKey(),
             'center.trainers' => fn () => Trainer::factory()
                 ->create(['center_id' => $centerId])->getKey(),

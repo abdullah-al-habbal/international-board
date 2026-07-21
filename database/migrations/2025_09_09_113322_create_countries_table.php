@@ -13,7 +13,6 @@ return new class extends Migration
             $table->json('name');
             $table->string('code', 3)->nullable()->unique();
             $table->string('code_2', 2)->nullable()->unique();
-            $table->json('nationality')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
         });

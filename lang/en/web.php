@@ -155,7 +155,6 @@ return [
         'trainee' => 'Trainee',
         'status' => 'Status',
         'certifications_count' => 'Certifications Issued',
-        'nationality' => 'Nationality',
         'no_trainer' => 'No trainer assigned',
         'not_assigned' => 'N/A',
         'email' => 'Email',

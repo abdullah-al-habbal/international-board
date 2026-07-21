@@ -17,7 +17,6 @@ class CountrySeeder extends Seeder
             'name' => json_encode([$locale => $c['name']]),
             'code' => $c['code'],
             'code_2' => $c['code_2'],
-            'nationality' => json_encode([$locale => $c['nationality']]),
             'is_active' => $c['is_active'],
         ], config('countries'));
 
