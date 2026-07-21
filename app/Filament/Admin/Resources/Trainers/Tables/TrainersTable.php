@@ -52,21 +52,28 @@ class TrainersTable
                     ->label(__('app.country'))
                     ->searchable()
                     ->sortable()
-                    ->getStateUsing(fn ($record) => $record->country->name ?? __('app.no_value'))
+                    ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('center.name')
                     ->label(__('app.center'))
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
-                    ->getStateUsing(fn ($record) => $record->center?->name ?? __('app.no_center')),
+                    ->placeholder(__('app.no_center'))
+                    ->toggleable(),
+
+                TextColumn::make('specializations_count')
+                    ->label(__('app.specializations_count'))
+                    ->counts('specializations')
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('specializations.name')
                     ->label(__('app.specializations'))
                     ->badge()
                     ->separator(',')
-                    ->limit(2)
+                    ->limitList(2)
+                    ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
                 TextColumn::make('certifications_count')

@@ -73,6 +73,14 @@ class TrainerInfolist
                 ->placeholder('—')
                 ->columnSpanFull(),
 
+            TextEntry::make('specializations_count')
+                ->label(__('app.specializations_count'))
+                ->getStateUsing(fn ($record) => $record->specializations()->count())
+                ->badge()
+                ->color('primary')
+                ->icon('heroicon-o-academic-cap')
+                ->columnSpan(1),
+
             TextEntry::make('specializations.name')
                 ->label(__('app.specializations'))
                 ->badge()

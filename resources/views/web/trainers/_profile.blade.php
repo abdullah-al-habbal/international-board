@@ -21,11 +21,11 @@
             </div>
         @endif
 
-        @if (!empty($trainer->specializations))
+        @if ($trainer->specializations->isNotEmpty())
             <h5 class="mt-4 mb-3">{{ __('web.labels.specializations') }}</h5>
             <div class="d-flex flex-wrap gap-2">
-                @foreach ((array) $trainer->specializations as $spec)
-                    <span class="badge bg-info text-dark px-3 py-2">{{ $spec }}</span>
+                @foreach ($trainer->specializations as $spec)
+                    <span class="badge bg-info text-dark px-3 py-2">{{ $spec->getTranslation('name', app()->getLocale()) }}</span>
                 @endforeach
             </div>
         @endif

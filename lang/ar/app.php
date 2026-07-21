@@ -120,6 +120,7 @@ return [
     'avatar' => 'الصورة الشخصية',
     'biography' => 'السيرة الذاتية',
     'specializations' => 'التخصصات',
+    'specializations_count' => 'عدد التخصصات',
     'specialization' => 'التخصص',
     'create_specialization' => 'إنشاء تخصص',
     'edit_specialization' => 'تعديل تخصص',

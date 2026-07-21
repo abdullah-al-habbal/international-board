@@ -30,9 +30,9 @@ final class TrainerRepository
             )
             ->when(
                 isset($filters['specialization']) && $filters['specialization'] !== '',
-                fn ($q) => $q->whereJsonContains('specializations', $filters['specialization'])
+                fn ($q) => $q->whereHas('specializations', fn ($sq) => $sq->where('specializations.id', $filters['specialization']))
             )
-            ->with('country')
+            ->with(['country', 'specializations'])
             ->paginate($perPage);
     }
 
@@ -42,7 +42,7 @@ final class TrainerRepository
             ->newQuery()
             ->where('id', $id)
             ->where('is_active', true)
-            ->with(['country', 'certifications'])
+            ->with(['country', 'certifications', 'specializations'])
             ->first();
     }
 

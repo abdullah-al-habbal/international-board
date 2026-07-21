@@ -17,6 +17,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class TrainerResource extends Resource
@@ -84,6 +85,15 @@ class TrainerResource extends Resource
     public static function table(Table $table): Table
     {
         return TrainersTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with([
+            'country',
+            'center',
+            'specializations',
+        ]);
     }
 
     public static function getRelations(): array

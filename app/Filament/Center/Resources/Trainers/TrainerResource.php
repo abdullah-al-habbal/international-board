@@ -92,7 +92,8 @@ class TrainerResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('center_id', auth('certified_center')->id());
+            ->where('center_id', auth('certified_center')->id())
+            ->with(['country', 'specializations']);
     }
 
     public static function form(Schema $schema): Schema

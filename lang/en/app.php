@@ -155,6 +155,7 @@ return [
     'avatar' => 'Avatar',
     'biography' => 'Biography',
     'specializations' => 'Specializations',
+    'specializations_count' => 'Specializations Count',
     'specialization' => 'Specialization',
     'create_specialization' => 'Create Specialization',
     'edit_specialization' => 'Edit Specialization',
