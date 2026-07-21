@@ -51,12 +51,6 @@ class TraineeInfolist
                 ->placeholder(__('app.not_set'))
                 ->columnSpan(1),
 
-            TextEntry::make('address')
-                ->label(__('app.address'))
-                ->icon('heroicon-o-map-pin')
-                ->placeholder(__('app.not_set'))
-                ->columnSpanFull(),
-
             TextEntry::make('notes')
                 ->label(__('app.notes'))
                 ->markdown()

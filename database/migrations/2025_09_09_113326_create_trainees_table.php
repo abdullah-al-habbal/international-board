@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('country_id')->nullable()->constrained('countries')->nullOnDelete();
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
-            $table->text('address')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

@@ -56,13 +56,6 @@ class TraineesTable
                     ->label(__('app.date_of_birth'))
                     ->sortable()
                     ->placeholder(__('app.not_set'))
-                    ->formatStateUsing(function ($state) {
-                        if (blank($state)) {
-                            return __('app.not_set');
-                        }
-
-                        return $state;
-                    })
                     ->toggleable(),
 
                 TextColumn::make('certifications_count')

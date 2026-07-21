@@ -21,7 +21,6 @@ class TraineeFactory extends Factory
             'country_id' => Country::inRandomOrder()->first()?->id,
             'date_of_birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
             'gender' => $this->faker->randomElement(['male', 'female']),
-            'address' => $this->faker->address(),
             'notes' => $this->faker->paragraph(),
         ];
     }

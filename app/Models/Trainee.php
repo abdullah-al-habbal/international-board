@@ -21,7 +21,6 @@ class Trainee extends Model
         'country_id',
         'date_of_birth',
         'gender',
-        'address',
         'notes',
     ];
 

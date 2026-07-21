@@ -10,7 +10,8 @@ use Spatie\Translatable\HasTranslations;
 
 class Country extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
+    use HasTranslations;
 
     public $translatable = ['name', 'nationality'];
 

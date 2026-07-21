@@ -76,13 +76,6 @@ class TraineeForm
                 ->nullable()
                 ->columnSpan(1),
 
-            Textarea::make('address')
-                ->label(__('app.address'))
-                ->maxLength(65535)
-                ->rows(2)
-                ->nullable()
-                ->columnSpanFull(),
-
             Textarea::make('notes')
                 ->label(__('app.notes'))
                 ->maxLength(65535)
