@@ -70,6 +70,7 @@ return [
     'accreditation_number' => 'رقم الاعتماد',
     'accreditation_period_start' => 'بداية فترة الاعتماد',
     'accreditation_period_end' => 'نهاية فترة الاعتماد',
+    'accreditation_start_date' => 'تاريخ بداية الاعتماد',
     'accreditation_end_date' => 'تاريخ انتهاء الاعتماد',
     'status' => 'الحالة',
     'is_active' => 'نشط',

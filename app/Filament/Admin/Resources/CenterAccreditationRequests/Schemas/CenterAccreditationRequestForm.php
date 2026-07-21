@@ -36,6 +36,12 @@ class CenterAccreditationRequestForm
                     ->options(AccreditationStatus::class)
                     ->required(),
 
+                DateTimePicker::make('accreditation_start_date')
+                    ->label(__('app.accreditation_start_date'))
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->hiddenOn('create'),
+
                 DateTimePicker::make('accreditation_end_date')
                     ->label(__('app.accreditation_end_date'))
                     ->hiddenOn('create'),

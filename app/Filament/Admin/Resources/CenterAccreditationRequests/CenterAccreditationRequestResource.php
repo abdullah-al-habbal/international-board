@@ -68,6 +68,12 @@ class CenterAccreditationRequestResource extends Resource
         return __('app.accreditation_requests');
     }
 
+    /** Admin cannot create accreditation requests — only centers can */
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CenterAccreditationRequestForm::configure($schema);
