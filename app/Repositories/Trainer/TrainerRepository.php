@@ -51,6 +51,6 @@ final class TrainerRepository
 
     public function getStatistics(): array
     {
-        return ['total_active_trainers' => $this->countTotal()];
+        return ['total_trainers' => $this->countTotal()];
     }
 }

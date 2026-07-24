@@ -16,6 +16,7 @@ final class CertificationRepository
     {
         return $this->model->with([
             'creator',
+            'documentable',
             'assignedTrainer',
             'trainee:id,name',
             'country:id,name',
@@ -28,6 +29,7 @@ final class CertificationRepository
     {
         return $this->model->with([
             'creator',
+            'documentable',
             'assignedTrainer',
             'trainee:id,name',
             'country:id,name',

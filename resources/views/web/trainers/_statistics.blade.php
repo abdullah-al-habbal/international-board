@@ -5,7 +5,7 @@
             <div class="col-md-4 text-center">
                 <div class="counters-item">
                     <i class="tf-ion-ios-person-outline"></i>
-                    <span class="stat-counter" data-count="{{ $stats['total_active_trainers'] }}">0</span>
+                    <span class="stat-counter" data-count="{{ $stats['total_trainers'] }}">0</span>
                     <h3>{{ __('web.stats.active_trainers') }}</h3>
                 </div>
             </div>

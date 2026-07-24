@@ -39,9 +39,6 @@ class CertificationInfolist
                         ->label(__('app.accreditation_date'))
                         ->date(),
 
-                    TextEntry::make('paper_received')
-                        ->label(__('app.paper_received')),
-
                     TextEntry::make('notes')
                         ->label(__('app.notes'))
                         ->columnSpanFull(),

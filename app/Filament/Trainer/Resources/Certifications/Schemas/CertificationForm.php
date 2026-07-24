@@ -14,7 +14,6 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -124,11 +123,7 @@ class CertificationForm
 
                 Section::make(__('app.document_details_section'))
                     ->description(__('app.document_details_description'))
-                    ->schema([
-                        Toggle::make('paper_received')
-                            ->label(__('app.paper_document_received'))
-                            ->default(false),
-                    ]),
+                    ->schema([]),
 
                 Section::make(__('app.additional_information_section'))
                     ->description(__('app.additional_information_description'))

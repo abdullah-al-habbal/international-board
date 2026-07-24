@@ -31,7 +31,6 @@ class Certification extends Model
         'accreditation_number',
         'accreditation_date',
         'country_id',
-        'paper_received',
         'notes',
     ];
 

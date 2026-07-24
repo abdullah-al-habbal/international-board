@@ -184,9 +184,6 @@ class CertificationForm
                 Section::make(__('app.document_details_section'))
                     ->description(__('app.document_details_description'))
                     ->schema([
-                        Toggle::make('paper_received')
-                            ->label(__('app.paper_document_received'))
-                            ->default(false),
                     ]),
 
                 Section::make(__('app.additional_information_section'))

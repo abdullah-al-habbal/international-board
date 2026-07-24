@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('trainee_id')->nullable()->constrained('trainees')->nullOnDelete();
             $table->foreignId('assigned_trainer_id')->nullable()->constrained('trainers')->nullOnDelete();
             $table->text('notes')->nullable();
-            $table->string('paper_received', 10)->nullable();
             $table->nullableMorphs('documentable');
             $table->timestamps();
             $table->unique(['accredited_serial_number', 'document_code'], 'certifications_serial_doc_unique');

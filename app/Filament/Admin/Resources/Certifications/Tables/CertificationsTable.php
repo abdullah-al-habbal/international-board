@@ -106,20 +106,6 @@ class CertificationsTable
                         }
                     }),
 
-                IconColumn::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->getStateUsing(function ($record) {
-                        $value = strtoupper($record->paper_received ?? '');
-
-                        return $value === 'YES' || $value === 'YAS';
-                    })
-                    ->toggleable(),
-
                 TextColumn::make('created_at')
                     ->label(__('app.import_date'))
                     ->dateTime('M d, Y H:i')
@@ -148,14 +134,6 @@ class CertificationsTable
 
                         return $query->where('creator_type', $data['value']);
                     }),
-
-                SelectFilter::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->options([
-                        'YES' => __('app.yes'),
-                        'NO' => __('app.no'),
-                        'PENDING' => __('app.pending'),
-                    ]),
 
                 Filter::make('accreditation_date')
                     ->form([
@@ -238,26 +216,6 @@ class CertificationsTable
                                     'creator_type' => $data['creator_type'],
                                     'creator_id' => $data['creator_id'],
                                 ]);
-                            });
-                        }),
-
-                    BulkAction::make('updatePaperStatus')
-                        ->label(__('app.update_paper_status'))
-                        ->icon('heroicon-o-document-check')
-                        ->color('warning')
-                        ->form([
-                            Select::make('paper_received')
-                                ->label(__('app.paper_received_status'))
-                                ->options([
-                                    'YES' => __('app.yes'),
-                                    'NO' => __('app.no'),
-                                    'PENDING' => __('app.pending'),
-                                ])
-                                ->required(),
-                        ])
-                        ->action(function (array $data, $records) {
-                            $records->each(function ($record) use ($data) {
-                                $record->update(['paper_received' => $data['paper_received']]);
                             });
                         }),
                 ]),

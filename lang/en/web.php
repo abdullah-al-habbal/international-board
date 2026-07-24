@@ -152,6 +152,8 @@ return [
         'unknown' => 'Unknown',
         'issued_by' => 'Issued By',
         'assigned_trainer' => 'Assigned Trainer',
+        'training_type' => 'Training Type',
+        'training_info' => 'Training Information',
         'trainee' => 'Trainee',
         'status' => 'Status',
         'certifications_count' => 'Certifications Issued',

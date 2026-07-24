@@ -25,6 +25,7 @@ final class StatsOverview extends BaseWidget
             $this->createPendingRequestsStat($stats['requests']['pending']),
             $this->createAdminUsersStat($stats['users']['admins']),
             $this->createNumberOfTrainersStat($stats['trainers']['total']),
+            $this->createTraineesStat($stats['trainees']['total'] ?? 0),
             $this->createMonthlyContificationsStat($stats['certifications']['this_month']),
         ];
     }
@@ -134,6 +135,15 @@ final class StatsOverview extends BaseWidget
             ->descriptionIcon('heroicon-o-user')
             ->color('primary')
             ->extraAttributes($this->statAttributes('trainers'));
+    }
+
+    private function createTraineesStat(int $count): Stat
+    {
+        return Stat::make(__('widgets.stats.trainees.label'), $count)
+            ->description(__('widgets.stats.trainees.description'))
+            ->descriptionIcon('heroicon-o-user-group')
+            ->color('info')
+            ->extraAttributes($this->statAttributes('trainees'));
     }
 
     private function createMonthlyContificationsStat(int $count): Stat

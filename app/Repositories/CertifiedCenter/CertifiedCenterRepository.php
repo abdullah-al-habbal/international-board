@@ -50,7 +50,7 @@ final class CertifiedCenterRepository
     public function getStatistics(): array
     {
         return [
-            'total_active_centers' => $this->countActive(),
+            'total_centers' => $this->countTotal(),
             'active_countries' => $this->model->newQuery()
                 ->whereNotNull('country_id')
                 ->distinct('country_id')

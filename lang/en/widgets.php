@@ -28,6 +28,10 @@ return [
             'label' => 'Trainers',
             'description' => 'Registered trainers in system',
         ],
+        'trainees' => [
+            'label' => 'Trainees',
+            'description' => 'Total registered trainees',
+        ],
         'expired_centers' => [
             'label' => 'Expired Licenses',
             'description' => 'Centers with expired accreditation',

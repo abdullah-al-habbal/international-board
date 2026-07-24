@@ -51,12 +51,6 @@ class CertificationInfolist
                     ->badge()
                     ->color(fn ($record) => $record->country_id ? 'info' : 'gray'),
 
-                TextEntry::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => $state ? __('app.yes') : __('app.no'))
-                    ->color(fn ($state) => $state ? 'success' : 'danger'),
-
                 TextEntry::make('notes')
                     ->label(__('app.notes'))
                     ->placeholder('-')

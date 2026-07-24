@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Eloquent\Resolvers\Trainer;
+namespace App\Eloquent\Resolvers\Trainee;
 
-use App\Models\Trainer;
+use App\Models\Trainee;
 use Illuminate\Database\Eloquent\Builder;
 
-final class TrainerTrainersExportResolver
+final class TraineeTraineesExportResolver
 {
     public function __construct(
-        private readonly Trainer $model,
+        private readonly Trainee $model,
     ) {}
 
     public function query(): Builder
     {
         return $this->model->newQuery()
-            ->with(['country', 'center', 'specializations'])
+            ->with('country')
+            ->withCount('certifications')
             ->orderBy('created_at', 'desc');
     }
 }

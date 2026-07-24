@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Stats;
 
+use App\Models\Trainee;
 use App\Services\AccreditationRequest\AccreditationRequestService;
 use App\Services\Certification\CertificationService;
 use App\Services\CertifiedCenter\CertifiedCenterService;
@@ -28,6 +29,9 @@ final class StatsService
             'certifications' => $this->getCertificationStats(),
             'users' => $this->getUserStats(),
             'trainers' => $this->getTrainerStats(),
+            'trainees' => [
+                'total' => Trainee::query()->count(),
+            ],
         ];
     }
 

@@ -159,6 +159,8 @@ return [
         'unknown' => 'غير معروف',
         'issued_by' => 'صادر عن',
         'assigned_trainer' => 'المدرب المعين',
+        'training_type' => 'نوع التدريب',
+        'training_info' => 'معلومات التدريب',
         'trainee' => 'المتدرب',
         'status' => 'الحالة',
         'certifications_count' => 'الشهادات المُصدَرة',

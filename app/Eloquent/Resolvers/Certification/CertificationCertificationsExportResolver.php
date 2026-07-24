@@ -16,7 +16,7 @@ final class CertificationCertificationsExportResolver
     public function query(): Builder
     {
         return $this->model->newQuery()
-            ->with(['trainee', 'creator'])
+            ->with(['trainee', 'creator', 'assignedTrainer', 'country', 'documentable'])
             ->orderBy('created_at', 'desc');
     }
 }
