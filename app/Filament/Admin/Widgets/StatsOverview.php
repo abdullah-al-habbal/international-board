@@ -19,7 +19,6 @@ final class StatsOverview extends BaseWidget
 
         return [
             $this->createTotalCentersStat($stats['centers']['total']),
-            $this->createActiveCentersStat($stats['centers']['active']),
             $this->createExpiredCentersStat($stats['centers']['expired']),
             $this->createTotalCertificationsStat($stats['certifications']['total']),
             $this->createPendingRequestsStat($stats['requests']['pending']),
@@ -81,15 +80,6 @@ final class StatsOverview extends BaseWidget
             ->descriptionIcon('heroicon-o-building-office')
             ->color('success')
             ->extraAttributes($this->statAttributes('total_centers'));
-    }
-
-    private function createActiveCentersStat(int $count): Stat
-    {
-        return Stat::make(__('widgets.stats.active_centers.label'), $count)
-            ->description(__('widgets.stats.active_centers.description'))
-            ->descriptionIcon('heroicon-o-check-circle')
-            ->color('success')
-            ->extraAttributes($this->statAttributes('active_centers'));
     }
 
     private function createExpiredCentersStat(int $count): Stat

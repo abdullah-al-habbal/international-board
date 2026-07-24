@@ -29,16 +29,6 @@ final class CertifiedCenterService
         return $this->repo->countTotal();
     }
 
-    public function getActiveCount(): int
-    {
-        return $this->repo->countActive();
-    }
-
-    public function getInactiveCount(): int
-    {
-        return $this->repo->countInactive();
-    }
-
     public function getExpiredAccreditationCount(): int
     {
         return $this->repo->countExpiredAccreditation();

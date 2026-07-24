@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        {{-- Approved Document Types --}}
+        {{-- Document Types --}}
         @if($center->approvedDocumentTypes->isNotEmpty())
             <hr>
             <h5 class="mb-3">{{ __('web.labels.document_types') }}</h5>

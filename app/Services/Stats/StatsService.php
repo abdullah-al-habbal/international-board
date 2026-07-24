@@ -39,8 +39,6 @@ final class StatsService
     {
         return [
             'total' => $this->centerService->getTotalCount(),
-            'active' => $this->centerService->getActiveCount(),
-            'inactive' => $this->centerService->getInactiveCount(),
             'expired' => $this->centerService->getExpiredAccreditationCount(),
         ];
     }
@@ -75,7 +73,6 @@ final class StatsService
     {
         return [
             'total' => $this->trainerService->getTotalCount(),
-            'active' => $this->trainerService->getActiveCount(),
         ];
     }
 }

@@ -16,6 +16,8 @@ final class CertifiedCenterExpiredCentersExportResolver
     public function query(): Builder
     {
         return $this->model->accreditationExpired()
+            ->with('country')
+            ->withCount(['trainers', 'certifications', 'approvedDocumentTypes'])
             ->orderBy('created_at', 'desc');
     }
 }

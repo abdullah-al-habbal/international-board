@@ -19,12 +19,27 @@ final class CentersExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Name', 'Status', 'Created At'];
+        $headers = [
+            'ID', 'Name', 'Email', 'Phone', 'Country', 'Manager',
+            'Accreditation Number', 'Status', 'Accreditation Start',
+            'Accreditation End', 'Trainers', 'Certifications',
+            'Document Types', 'Created At',
+        ];
 
         $formatter = fn (CertifiedCenter $center): array => [
             $center->id,
             $center->name,
+            $center->email,
+            $center->phone,
+            $center->country?->name,
+            $center->manager_name,
+            $center->accreditation_number,
             $center->status?->label(),
+            $center->accreditation_period_start?->format('Y-m-d'),
+            $center->accreditation_period_end?->format('Y-m-d'),
+            $center->trainers_count ?? 0,
+            $center->certifications_count ?? 0,
+            $center->approved_document_types_count ?? 0,
             $center->created_at?->format('Y-m-d'),
         ];
 
