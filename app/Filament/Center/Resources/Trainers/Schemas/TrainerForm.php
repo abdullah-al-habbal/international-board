@@ -7,7 +7,6 @@ namespace App\Filament\Center\Resources\Trainers\Schemas;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class TrainerForm
@@ -58,11 +57,6 @@ class TrainerForm
                 ->preload()
                 ->nullable()
                 ->columnSpanFull(),
-
-            Toggle::make('is_active')
-                ->label(__('app.active'))
-                ->default(true)
-                ->inline(false),
         ]);
     }
 }

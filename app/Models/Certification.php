@@ -13,35 +13,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Str;
 
 #[UsePolicy(CertificationPolicy::class)]
 class Certification extends Model
 {
     use HasFactory;
-
-    protected static function booted(): void
-    {
-        static::creating(function (Certification $certification) {
-            if (empty($certification->document_code)) {
-                $certification->document_code = self::generateDocumentCode();
-            }
-
-            if (empty($certification->accredited_serial_number)) {
-                $certification->accredited_serial_number = self::generateAccreditedSerialNumber();
-            }
-        });
-    }
-
-    protected static function generateDocumentCode(): string
-    {
-        return 'CERT-'.now()->format('Ymd').'-'.strtoupper(Str::random(4));
-    }
-
-    protected static function generateAccreditedSerialNumber(): string
-    {
-        return 'SN-'.now()->format('Ymd').'-'.strtoupper(Str::random(6));
-    }
 
     protected $fillable = [
         'creator_type',

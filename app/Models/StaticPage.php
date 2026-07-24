@@ -21,27 +21,7 @@ class StaticPage extends Model
         'title',
         'image',
         'content',
-        'is_active',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-        ];
-    }
-
-    #[Scope]
-    protected function active(Builder $query): void
-    {
-        $query->where('is_active', true);
-    }
-
-    #[Scope]
-    protected function inactive(Builder $query): void
-    {
-        $query->where('is_active', false);
-    }
 
     #[Scope]
     protected function localizedSlug(Builder $query, string $slug): void

@@ -81,29 +81,15 @@ final class Spider
     /** @var array<string, mixed> resolver values for public route params */
     public array $publicRecords = [];
 
-    /**
-     * `{panel}.{resourceKey}` => record key owned by that panel's principal, so
-     * tenant-scoped `{record}` routes resolve to an in-scope record (200) rather
-     * than a foreign id (404). Best-effort: a null means fall back to generic.
-     *
-     * @var array<string, int|string|null>
-     */
     public array $ownedRecordKeys = [];
 
-    /**
-     * Seed the three authenticated principals (each passing its panel gate)
-     * plus the public-facing domain records used to resolve route params.
-     */
     public function seed(): void
     {
-        // A Country must exist: several factories reference Country::inRandomOrder().
         Country::factory()->create();
 
         $this->admin = User::factory()->create(['type' => UserType::Admin->value]);
 
-        // Center: is_active (panel access) + approved, non-expired request (gate).
         $this->center = CertifiedCenter::factory()->create([
-            'is_active' => true,
             'status' => 'active',
         ]);
         $centerRequest = CenterAccreditationRequest::factory()->create([
@@ -112,9 +98,7 @@ final class Spider
             'accreditation_end_date' => now()->addYear(),
         ]);
 
-        // Trainer: is_active + center_id null (panel access) + approved, non-expired request (gate).
         $this->trainer = Trainer::factory()->create([
-            'is_active' => true,
             'center_id' => null,
         ]);
         $trainerRequest = TrainerAccreditationRequest::factory()->create([
@@ -172,13 +156,6 @@ final class Spider
         }
     }
 
-    /**
-     * Mirror the global view data that ViewServiceProvider shares for public
-     * pages. The provider early-returns under `runningInConsole()` (i.e. during
-     * tests), so without this every public Blade view dies on the undefined
-     * `$navigationPages` global. This replicates only the populated branch of
-     * the provider; it does not touch application source.
-     */
     public function sharePublicViewGlobals(string $locale): void
     {
         app()->setLocale($locale);
@@ -252,7 +229,6 @@ final class Spider
             $uri = str_replace(['{'.$param.'}', '{'.$param.'?}'], (string) $value, $uri);
         }
 
-        // Any optional params left unfilled are dropped.
         $uri = preg_replace('/\{[^}]+\?}/', '', $uri) ?? $uri;
 
         return '/'.ltrim((string) $uri, '/');
@@ -290,13 +266,11 @@ final class Spider
      */
     private function recordKeyFor(string $routeName): int|string|null
     {
-        // filament.{panel}.resources.{resourceKey}.{page}
         if (! preg_match('/filament\.([^.]+)\.resources\.(.+)\.[^.]+$/', $routeName, $m)) {
             return null;
         }
         [$panel, $resourceKey] = [$m[1], $m[2]];
 
-        // Prefer a record owned by this panel's principal (in tenant scope).
         $ownedKey = $panel.'.'.$resourceKey;
         if (! empty($this->ownedRecordKeys[$ownedKey])) {
             return $this->ownedRecordKeys[$ownedKey];

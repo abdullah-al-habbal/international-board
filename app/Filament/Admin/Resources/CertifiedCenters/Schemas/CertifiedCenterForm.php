@@ -9,7 +9,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class CertifiedCenterForm
@@ -62,9 +61,6 @@ class CertifiedCenterForm
                     ->disabled()
                     ->dehydrated(false)
                     ->visible(fn ($record) => $record !== null),
-                Toggle::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->required(),
             ]);
     }
 }

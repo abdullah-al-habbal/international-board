@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Resources\Membership\Schemas;
 
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -43,11 +42,6 @@ class MembershipForm
                             ])
                         )->toArray()
                     )
-                    ->columnSpanFull(),
-
-                Toggle::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->default(true)
                     ->columnSpanFull(),
             ]);
     }

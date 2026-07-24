@@ -175,7 +175,6 @@ return [
         'phone' => 'الهاتف',
         'address' => 'العنوان',
         'accreditation_details' => 'تفاصيل الاعتماد',
-        'unique_trainer_code' => 'رمز المدرب',
         'document_types_count' => 'أنواع الوثائق',
         'accreditation_requests_count' => 'طلبات الاعتماد',
         'specializations_count' => 'التخصصات',

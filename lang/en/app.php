@@ -84,7 +84,6 @@ return [
     'status_approved' => 'Approved',
     'status_pending' => 'Pending',
     'status_rejected' => 'Rejected',
-    'is_active' => 'Active',
     'is_published' => 'Published',
     'created_at' => 'Created',
     'created_by' => 'Created By',

@@ -52,13 +52,11 @@ final class CertifiedCenterService
     public function getFilterCountries(): Collection
     {
         $countryIds = CertifiedCenter::query()
-            ->where('is_active', true)
             ->whereNotNull('country_id')
             ->distinct()
             ->pluck('country_id');
 
         return Country::query()
-            ->where('is_active', true)
             ->whereIn('id', $countryIds)
             ->get()
             ->sortBy(fn (Country $country): string => (string) $country->name)

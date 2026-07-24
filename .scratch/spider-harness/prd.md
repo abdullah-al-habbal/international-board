@@ -36,8 +36,8 @@ behaviour in `ViewServiceProvider::boot()` (see Implementation Decisions).
 
 1. As a backend developer, I want a single command that loads every panel page under the right guard, so that I know I haven't 500'd a screen on a panel I wasn't editing.
 2. As a backend developer, I want the harness to authenticate Admin as a `User` of type `Admin`, so that `User::canAccessPanel()` admits it and the admin panel is actually exercised.
-3. As a backend developer, I want the harness to authenticate Center as an `is_active` `CertifiedCenter` with an approved, non-expired accreditation request, so that `EnsureCenterIsAccredited` lets it past the gate instead of bouncing it.
-4. As a backend developer, I want the harness to authenticate Trainer as an `is_active` `Trainer` with `center_id = null` and an approved, non-expired accreditation request, so that both `canAccessPanel()` and `EnsureTrainerIsAccredited` admit it.
+3. As a backend developer, I want the harness to authenticate Center as an `CertifiedCenter` with an approved, non-expired accreditation request, so that `EnsureCenterIsAccredited` lets it past the gate instead of bouncing it.
+4. As a backend developer, I want the harness to authenticate Trainer as an  `Trainer` with `center_id = null` and an approved, non-expired accreditation request, so that both `canAccessPanel()` and `EnsureTrainerIsAccredited` admit it.
 5. As a backend developer, I want each panel crawled under its own guard rather than a shared user, so that the test reflects the real triple-guard authentication model.
 6. As a frontend/Blade developer, I want every public `/web` route rendered, so that a broken partial or view composer is caught before release.
 7. As an internationalisation maintainer, I want the public site crawled in both `en` and `ar`, so that locale-specific rendering and translation lookups are exercised.
@@ -70,10 +70,10 @@ behaviour in `ViewServiceProvider::boot()` (see Implementation Decisions).
   its own guard via `actingAs($model, $guard)`. The principals are seeded to pass
   each panel's real gate:
   - Admin → `User` with `type = Admin`.
-  - Center → `CertifiedCenter` `is_active` + approved non-expired
+  - Center → `CertifiedCenter`  + approved non-expired
     `CenterAccreditationRequest` (satisfies `EnsureCenterIsAccredited` /
     `canPerformActions()`).
-  - Trainer → `Trainer` `is_active`, `center_id = null`, + approved non-expired
+  - Trainer → `Trainer` , `center_id = null`, + approved non-expired
     `TrainerAccreditationRequest` (satisfies `EnsureTrainerIsAccredited`).
 - **Programmatic route discovery.** Routes are pulled from the live route table
   and partitioned by route-name prefix: `filament.admin.*` → `web`,

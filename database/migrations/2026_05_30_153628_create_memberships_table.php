@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->json('title');
             $table->json('description');
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -39,7 +39,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         'accreditation_period_end',
         'accreditation_number',
         'status',
-        'is_active',
         'country_id',
     ];
 
@@ -56,7 +55,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
             'accreditation_period_start' => 'datetime',
             'accreditation_period_end' => 'datetime',
             'status' => CenterStatus::class,
-            'is_active' => 'boolean',
         ];
     }
 
@@ -96,18 +94,6 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     }
 
     #[Scope]
-    protected function active(Builder $query): void
-    {
-        $query->where('is_active', true);
-    }
-
-    #[Scope]
-    protected function inactive(Builder $query): void
-    {
-        $query->where('is_active', false);
-    }
-
-    #[Scope]
     protected function ofStatus(Builder $query, CenterStatus $status): void
     {
         $query->where('status', $status->value);
@@ -128,7 +114,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return PanelId::tryFrom($panel->getId()) === PanelId::Center && $this->is_active;
+        return PanelId::tryFrom($panel->getId()) === PanelId::Center;
     }
 
     public function isAccreditationActive(): bool
@@ -171,15 +157,11 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function canPerformActions(): bool
     {
-        return $this->is_active && $this->hasApprovedNonExpiredRequest();
+        return $this->hasApprovedNonExpiredRequest();
     }
 
     public function accreditationBlockReason(): ?string
     {
-        if (! $this->is_active) {
-            return __('accreditation.blocked.center_inactive');
-        }
-
         if (! $this->hasApprovedNonExpiredRequest()) {
             return __('accreditation.blocked.no_approved_request');
         }

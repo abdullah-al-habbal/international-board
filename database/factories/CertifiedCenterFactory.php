@@ -19,9 +19,7 @@ class CertifiedCenterFactory extends Factory
             'manager_name' => fake()->name(),
             'accreditation_period_start' => now()->subDays(rand(30, 365)),
             'accreditation_period_end' => now()->addDays(rand(365, 730)),
-            'accreditation_number' => fake()->unique()->regexify('[A-Z]{2}[0-9]{6}'),
             'status' => fake()->randomElement(['active', 'inactive', 'pending', 'suspended']),
-            'is_active' => fake()->boolean(80),
         ];
     }
 }

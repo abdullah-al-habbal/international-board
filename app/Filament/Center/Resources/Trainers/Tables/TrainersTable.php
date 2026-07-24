@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Trainers\Tables;
 
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class TrainersTable
@@ -28,6 +26,14 @@ class TrainersTable
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
+
+                TextColumn::make('accreditation_number')
+                    ->label(__('app.accreditation_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->icon('heroicon-o-identification')
+                    ->copyable()
+                    ->placeholder('—'),
 
                 TextColumn::make('email')
                     ->label(__('app.email'))
@@ -59,15 +65,6 @@ class TrainersTable
                     ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
-                IconColumn::make('is_active')
-                    ->label(__('app.active'))
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->sortable(),
-
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()
@@ -75,12 +72,6 @@ class TrainersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TernaryFilter::make('is_active')
-                    ->label(__('app.active_status'))
-                    ->placeholder(__('app.all_trainers'))
-                    ->trueLabel(__('app.active_only'))
-                    ->falseLabel(__('app.inactive_only')),
-
                 SelectFilter::make('country_id')
                     ->label(__('app.country'))
                     ->relationship('country', 'name')

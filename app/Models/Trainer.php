@@ -18,35 +18,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class Trainer extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use Notifiable;
-
-    protected static function booted(): void
-    {
-        static::creating(function (Trainer $trainer) {
-            if (empty($trainer->unique_trainer_code)) {
-                $trainer->unique_trainer_code = self::generateUniqueCode();
-            }
-
-            if (empty($trainer->accreditation_number)) {
-                $trainer->accreditation_number = self::generateAccreditationNumber();
-            }
-        });
-    }
-
-    protected static function generateUniqueCode(): string
-    {
-        return strtoupper(Str::random(8));
-    }
-
-    protected static function generateAccreditationNumber(): string
-    {
-        return 'TR-'.now()->format('Ymd').'-'.strtoupper(Str::random(4));
-    }
 
     protected $fillable = [
         'name',
@@ -57,8 +33,6 @@ class Trainer extends Authenticatable implements FilamentUser
         'address',
         'country_id',
         'center_id',
-        'is_active',
-        'unique_trainer_code',
         'accreditation_number',
         'accreditation_period_start',
         'accreditation_period_end',
@@ -74,7 +48,6 @@ class Trainer extends Authenticatable implements FilamentUser
     {
         return [
             'address' => 'array',
-            'is_active' => 'boolean',
             'accreditation_period_start' => 'datetime',
             'accreditation_period_end' => 'datetime',
             'password' => 'hashed',
@@ -144,10 +117,6 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function isAccredited(): bool
     {
-        if (! $this->is_active) {
-            return false;
-        }
-
         return $this->hasApprovedNonExpiredRequest();
     }
 
@@ -179,14 +148,11 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function canPerformActions(): bool
     {
-        return $this->is_active && $this->hasApprovedNonExpiredRequest();
+        return $this->hasApprovedNonExpiredRequest();
     }
 
     public function accreditationBlockReason(): ?string
     {
-        if (! $this->is_active) {
-            return __('accreditation.blocked.trainer_inactive');
-        }
 
         if (! $this->hasApprovedNonExpiredRequest()) {
             return __('accreditation.blocked.no_approved_request');
@@ -201,7 +167,7 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $panel->getId() === 'trainer' && $this->is_active && is_null($this->center_id);
+        return $panel->getId() === 'trainer' && is_null($this->center_id);
     }
 
     public function getAvatarUrlAttribute(): ?string

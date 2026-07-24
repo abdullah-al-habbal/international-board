@@ -26,7 +26,6 @@ class StaticPageSeeder extends Seeder
                         'en' => $data['content']['en'] ?? '',
                     ],
                     'image' => $data['image'] ?? null,
-                    'is_active' => $data['is_active'] ?? true,
                 ]
             );
         }

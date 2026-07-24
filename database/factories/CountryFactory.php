@@ -17,21 +17,6 @@ class CountryFactory extends Factory
             'name' => $this->faker->unique()->country(),
             'code' => strtoupper($this->faker->unique()->lexify('???')),
             'code_2' => strtoupper($this->faker->unique()->lexify('??')),
-            'is_active' => $this->faker->boolean(90),
         ];
-    }
-
-    public function active(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => true,
-        ]);
-    }
-
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
     }
 }

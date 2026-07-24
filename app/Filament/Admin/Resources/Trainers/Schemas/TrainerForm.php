@@ -10,7 +10,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class TrainerForm
@@ -111,12 +110,6 @@ class TrainerForm
                 ->searchable()
                 ->preload()
                 ->nullable()
-                ->columnSpanFull(),
-
-            Toggle::make('is_active')
-                ->label(__('app.active'))
-                ->default(true)
-                ->inline(false)
                 ->columnSpanFull(),
 
             DateTimePicker::make('accreditation_period_start')

@@ -19,13 +19,5 @@ class Country extends Model
         'name',
         'code',
         'code_2',
-        'is_active',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-        ];
-    }
 }

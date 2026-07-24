@@ -19,7 +19,7 @@ final class TrainersExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Name', 'Email', 'Phone', 'Country', 'Specializations', 'Active', 'Created At'];
+        $headers = ['ID', 'Name', 'Email', 'Phone', 'Country', 'Specializations', 'Created At'];
 
         $formatter = fn (Trainer $trainer): array => [
             $trainer->id,
@@ -30,7 +30,6 @@ final class TrainersExport implements CsvStatExportable
             is_array($trainer->specializations)
                 ? implode(', ', $trainer->specializations)
                 : (string) $trainer->specializations,
-            $trainer->is_active ? 'Yes' : 'No',
             $trainer->created_at?->format('Y-m-d'),
         ];
 

@@ -28,7 +28,6 @@ final class CenterStatsService
     public function getAccreditationStatusData(CertifiedCenter $center): array
     {
         return [
-            'is_active' => $center->isAccreditationActive(),
             'status_label' => $center->isAccreditationActive() ? 'Active' : 'Expired',
             'description' => $this->getStatusDescription($center),
             'color' => $this->getStatusColor($center),

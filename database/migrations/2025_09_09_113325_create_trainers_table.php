@@ -18,8 +18,6 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('countries')
                 ->nullOnDelete();
-            $table->boolean('is_active')->default(true)->index();
-            $table->string('unique_trainer_code', 20)->unique()->nullable();
             $table->string('accreditation_number')->nullable();
             $table->date('membership_start_date')->nullable();
             $table->date('membership_end_date')->nullable();

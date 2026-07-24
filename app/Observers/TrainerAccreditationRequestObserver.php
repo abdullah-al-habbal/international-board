@@ -136,7 +136,6 @@ class TrainerAccreditationRequestObserver
     {
         $trainer->accreditation_period_start = $request->accreditation_start_date;
         $trainer->accreditation_period_end = $request->accreditation_end_date;
-        $trainer->is_active = true;
         $trainer->saveQuietly();
 
         Log::channel('accreditation')->info('[Trainer] Accreditation approved', [
@@ -158,7 +157,6 @@ class TrainerAccreditationRequestObserver
             ->exists();
 
         if (! $hasOtherActive) {
-            $trainer->is_active = false;
             $trainer->saveQuietly();
 
             Log::channel('accreditation')->info('[Trainer] Trainer deactivated after rejection', [

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->dateTime('accreditation_period_start')->nullable();
             $table->dateTime('accreditation_period_end')->nullable();
             $table->string('status')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

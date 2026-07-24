@@ -16,7 +16,6 @@ final class CertifiedCenterRepository
     {
         return $this->model
             ->newQuery()
-            ->where('is_active', true)
             ->when(
                 isset($filters['search']) && $filters['search'] !== '',
                 fn ($q) => $q->where('name', 'like', "%{$filters['search']}%")
@@ -34,7 +33,6 @@ final class CertifiedCenterRepository
         return $this->model
             ->newQuery()
             ->where('id', $id)
-            ->where('is_active', true)
             ->with(['country', 'approvedDocumentTypes', 'certifications'])
             ->first();
     }
@@ -64,7 +62,6 @@ final class CertifiedCenterRepository
         return [
             'total_active_centers' => $this->countActive(),
             'active_countries' => $this->model->newQuery()
-                ->where('is_active', true)
                 ->whereNotNull('country_id')
                 ->distinct('country_id')
                 ->count('country_id'),

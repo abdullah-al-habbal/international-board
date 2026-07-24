@@ -135,7 +135,6 @@ class CenterAccreditationRequestObserver
 
     private function handleApproved(CenterAccreditationRequest $request, CertifiedCenter $center): void
     {
-        $center->is_active = true;
         $center->saveQuietly();
 
         Log::channel('accreditation')->info('[Center] Accreditation approved', [
@@ -157,7 +156,6 @@ class CenterAccreditationRequestObserver
             ->exists();
 
         if (! $hasOtherActive) {
-            $center->is_active = false;
             $center->saveQuietly();
 
             Log::channel('accreditation')->info('[Center] Center deactivated after rejection', [

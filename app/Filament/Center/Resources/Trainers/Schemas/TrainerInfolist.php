@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Trainers\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -26,13 +25,11 @@ class TrainerInfolist
                 ->size('lg')
                 ->columnSpan(2),
 
-            IconEntry::make('is_active')
-                ->label(__('app.status'))
-                ->boolean()
-                ->trueIcon('heroicon-o-check-circle')
-                ->falseIcon('heroicon-o-x-circle')
-                ->trueColor('success')
-                ->falseColor('danger'),
+            TextEntry::make('accreditation_number')
+                ->label(__('app.accreditation_number'))
+                ->icon('heroicon-o-identification')
+                ->copyable()
+                ->placeholder('—'),
 
             TextEntry::make('email')
                 ->label(__('app.email'))

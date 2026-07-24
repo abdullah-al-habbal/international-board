@@ -168,7 +168,6 @@ return [
         'phone' => 'Phone',
         'address' => 'Address',
         'accreditation_details' => 'Accreditation Details',
-        'unique_trainer_code' => 'Trainer Code',
         'document_types_count' => 'Document Types',
         'accreditation_requests_count' => 'Accreditation Requests',
         'specializations_count' => 'Specializations',

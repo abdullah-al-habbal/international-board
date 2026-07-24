@@ -74,7 +74,6 @@ return [
     'accreditation_start_date' => 'تاريخ بداية الاعتماد',
     'accreditation_end_date' => 'تاريخ انتهاء الاعتماد',
     'status' => 'الحالة',
-    'is_active' => 'نشط',
     'created_at' => 'تاريخ الإنشاء',
     'created_by' => 'تم الإنشاء بواسطة',
     'updated_at' => 'تاريخ التحديث',

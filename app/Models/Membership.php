@@ -18,13 +18,5 @@ class Membership extends Model
         'slug',
         'title',
         'description',
-        'is_active',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-        ];
-    }
 }

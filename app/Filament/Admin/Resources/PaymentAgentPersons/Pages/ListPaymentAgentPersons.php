@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\PaymentAgentPersons\Pages;
 
 use App\Filament\Admin\Resources\PaymentAgentPersons\PaymentAgentPersonResource;
-use Filament\Resources\Pages\ListRecords;
 use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
 
 class ListPaymentAgentPersons extends ListRecords
 {
     protected static string $resource = PaymentAgentPersonResource::class;
+
     protected function getHeaderActions(): array
     {
         return [

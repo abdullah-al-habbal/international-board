@@ -17,7 +17,6 @@ class CreateTrainer extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['center_id'] = auth('certified_center')->id();
-        $data['is_active'] = true;
 
         return $data;
     }

@@ -3,19 +3,6 @@
     <div class="card-body p-0">
         <h3 class="mb-4">{{ $trainer->name }}</h3>
 
-        {{-- Status --}}
-        <div class="mb-4">
-            @if ($trainer->is_active)
-                <span class="badge bg-success px-3 py-2">
-                    <i class="tf-ion-ios-checkmark-outline mr-1"></i> {{ __('web.labels.active') }}
-                </span>
-            @else
-                <span class="badge bg-secondary px-3 py-2">
-                    <i class="tf-ion-ios-close-outline mr-1"></i> {{ __('web.labels.inactive') }}
-                </span>
-            @endif
-        </div>
-
         {{-- Basic info grid --}}
         <div class="row mb-2">
             <div class="col-sm-4 fw-bold">{{ __('web.labels.email') }}:</div>
@@ -59,10 +46,6 @@
         {{-- Accreditation details --}}
         <hr>
         <h5 class="mb-3">{{ __('web.labels.accreditation_details') }}</h5>
-        <div class="row mb-2">
-            <div class="col-sm-4 fw-bold">{{ __('web.labels.unique_trainer_code') }}:</div>
-            <div class="col-sm-8"><code>{{ $trainer->unique_trainer_code ?? '—' }}</code></div>
-        </div>
         <div class="row mb-2">
             <div class="col-sm-4 fw-bold">{{ __('web.labels.accreditation_number') }}:</div>
             <div class="col-sm-8">{{ $trainer->accreditation_number ?? '—' }}</div>

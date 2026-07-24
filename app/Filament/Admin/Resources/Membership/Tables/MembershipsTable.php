@@ -9,7 +9,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -40,10 +39,6 @@ class MembershipsTable
                     ->limit(50)
                     ->tooltip(fn (Membership $record): string => $record->getTranslation('description', app()->getLocale()) ?? '')
                     ->formatStateUsing(fn ($record) => $record->getTranslation('description', app()->getLocale()) ?: '—'),
-
-                IconColumn::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->boolean(),
 
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))

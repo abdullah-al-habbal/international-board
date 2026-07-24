@@ -16,7 +16,6 @@ final class CertifiedCenterActiveCentersExportResolver
     public function query(): Builder
     {
         return $this->model->newQuery()
-            ->where('is_active', true)
             ->orderBy('created_at', 'desc');
     }
 }

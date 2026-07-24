@@ -16,7 +16,6 @@ final class TrainerRepository
     {
         return $this->model
             ->newQuery()
-            ->where('is_active', true)
             ->when(
                 isset($filters['search']) && $filters['search'] !== '',
                 fn ($q) => $q->where(function ($inner) use ($filters): void {
@@ -41,7 +40,6 @@ final class TrainerRepository
         return $this->model
             ->newQuery()
             ->where('id', $id)
-            ->where('is_active', true)
             ->with(['country', 'certifications', 'specializations'])
             ->first();
     }
@@ -51,18 +49,8 @@ final class TrainerRepository
         return $this->model->newQuery()->count();
     }
 
-    public function countActive(): int
-    {
-        return $this->model->newQuery()->where('is_active', true)->count();
-    }
-
-    public function countInactive(): int
-    {
-        return $this->model->newQuery()->where('is_active', false)->count();
-    }
-
     public function getStatistics(): array
     {
-        return ['total_active_trainers' => $this->countActive()];
+        return ['total_active_trainers' => $this->countTotal()];
     }
 }

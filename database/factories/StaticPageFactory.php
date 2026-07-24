@@ -24,7 +24,6 @@ class StaticPageFactory extends Factory
                 'ar' => 'محتوى الصفحة '.fake()->paragraph(),
             ],
             'image' => fake()->boolean(30) ? fake()->imageUrl(800, 600) : null,
-            'is_active' => fake()->boolean(85),
         ];
     }
 }
