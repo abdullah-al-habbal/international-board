@@ -264,9 +264,8 @@ resources/views/web/
 ### Key Model Behaviors
 
 - **Trainer** — `accreditation_number` auto-generated (IBVTQ) via `TrainerObserver`.
-- **CertifiedCenter** — `accreditation_number` auto-generated (IBVTQ) via `CertifiedCenterObserver`.
+- **CertifiedCenter** — `accreditation_number` auto-generated (IBVTQ) via `CertifiedCenterObserver`. `notes` field for admin-written notes (read-only in Center panel, public on site).
 - **Certification** — `document_code` (`CERT-YYYYMMDD-XXXX`), `accredited_serial_number` (`SN-YYYYMMDD-XXXXXX`), and `accreditation_number` (IBVTQ) auto-generated via `CertificationObserver`.
-- **Certification** auto-generates `document_code` (`CERT-YYYYMMDD-XXXX`) and `accredited_serial_number` (`SN-YYYYMMDD-XXXXXX`) on creation.
 - **Certification** uses polymorphic `creator` (User/Trainer/CertifiedCenter) and `documentable` (DocumentType/TrainerDocumentType/CertifiedCenterDocumentType).
 - **DocumentType**, **TrainerDocumentType**, **CertifiedCenterDocumentType** all use `HasTranslations` trait with `$translatable = ['name']` for multilingual name storage (JSON in DB).
 - **File uploads**: Trainer `avatar` → `trainers/avatars/`, CertifiedCenter `logo` → `centers/logos/`, both on `public` disk.

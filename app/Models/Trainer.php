@@ -172,7 +172,7 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function getAvatarUrlAttribute(): ?string
     {
-        if (! empty($this->attributes['avatar'])) {
+        if (! empty($this->attributes['avatar']) && Storage::disk('public')->exists($this->attributes['avatar'])) {
             return Storage::disk('public')->url($this->attributes['avatar']);
         }
 

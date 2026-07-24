@@ -17,6 +17,7 @@ class CertifiedCenterFactory extends Factory
             'address' => fake()->address(),
             'phone' => fake()->phoneNumber(),
             'manager_name' => fake()->name(),
+            'notes' => fake()->paragraph(),
             'accreditation_period_start' => now()->subDays(rand(30, 365)),
             'accreditation_period_end' => now()->addDays(rand(365, 730)),
             'status' => fake()->randomElement(['active', 'inactive', 'pending', 'suspended']),

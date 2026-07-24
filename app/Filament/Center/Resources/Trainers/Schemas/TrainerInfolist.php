@@ -16,6 +16,7 @@ class TrainerInfolist
             ImageEntry::make('avatar')
                 ->label(__('app.avatar'))
                 ->circular()
+                ->getStateUsing(fn ($record) => $record->avatar_url)
                 ->defaultImageUrl(url('assets/website/images/avatar.png'))
                 ->columnSpanFull(),
 

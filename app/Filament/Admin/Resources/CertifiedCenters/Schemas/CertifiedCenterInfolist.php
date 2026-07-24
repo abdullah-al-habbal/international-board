@@ -25,9 +25,13 @@ class CertifiedCenterInfolist
                     ->placeholder('-'),
                 TextEntry::make('manager_name')
                     ->placeholder('-'),
+                TextEntry::make('notes')
+                    ->label(__('app.notes'))
+                    ->placeholder('-')
+                    ->columnSpanFull(),
                 ImageEntry::make('logo')
                     ->label(__('app.logo'))
-                    ->disk('public')
+                    ->getStateUsing(fn ($record) => $record->logo_url)
                     ->defaultImageUrl(url('assets/website/images/avatar.png')),
                 TextEntry::make('accreditation_period_start')
                     ->dateTime()

@@ -38,8 +38,8 @@ final class HomeService
     {
         return [
             'certifications' => Cache::rememberForever('home_stats_certifications', fn () => $this->certificationRepository->getTotalCount()),
-            'trainers' => Cache::rememberForever('home_stats_trainers', fn () => $this->trainerRepository->countActive()),
-            'centers' => Cache::rememberForever('home_stats_centers', fn () => $this->centerRepository->countActive()),
+            'trainers' => Cache::rememberForever('home_stats_trainers', fn () => $this->trainerRepository->countTotal()),
+            'centers' => Cache::rememberForever('home_stats_centers', fn () => $this->centerRepository->countTotal()),
         ];
     }
 

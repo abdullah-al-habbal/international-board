@@ -28,6 +28,12 @@
             <div class="col-sm-4 fw-bold">{{ __('web.labels.manager_name') }}:</div>
             <div class="col-sm-8">{{ $center->manager_name ?? '—' }}</div>
         </div>
+        @if($center->notes)
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">{{ __('app.notes') }}:</div>
+                <div class="col-sm-8">{{ $center->notes }}</div>
+            </div>
+        @endif
         <div class="row mb-2">
             <div class="col-sm-4 fw-bold">{{ __('web.labels.country') }}:</div>
             <div class="col-sm-8">

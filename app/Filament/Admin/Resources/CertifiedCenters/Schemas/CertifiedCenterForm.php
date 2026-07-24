@@ -44,6 +44,11 @@ class CertifiedCenterForm
                     ->tel(),
                 TextInput::make('manager_name')
                     ->label(__('app.manager_name')),
+                Textarea::make('notes')
+                    ->label(__('app.notes'))
+                    ->placeholder(__('app.notes_placeholder'))
+                    ->rows(3)
+                    ->columnSpanFull(),
                 FileUpload::make('logo')
                     ->label(__('app.logo'))
                     ->image()

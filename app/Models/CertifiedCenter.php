@@ -35,6 +35,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         'phone',
         'manager_name',
         'logo',
+        'notes',
         'accreditation_period_start',
         'accreditation_period_end',
         'accreditation_number',
@@ -175,7 +176,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
 
     public function getLogoUrlAttribute(): ?string
     {
-        if (! empty($this->attributes['logo'])) {
+        if (! empty($this->attributes['logo']) && Storage::disk('public')->exists($this->attributes['logo'])) {
             return Storage::disk('public')->url($this->attributes['logo']);
         }
 

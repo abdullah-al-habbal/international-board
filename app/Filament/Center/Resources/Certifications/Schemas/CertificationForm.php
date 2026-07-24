@@ -68,7 +68,8 @@ class CertificationForm
                                         TextInput::make('name')
                                             ->label(__('app.name'))
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->unique(Trainee::class, 'name'),
                                         TextInput::make('email')
                                             ->label(__('app.email'))
                                             ->email()

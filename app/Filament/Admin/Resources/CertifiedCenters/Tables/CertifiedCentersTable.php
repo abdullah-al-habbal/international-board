@@ -38,9 +38,15 @@ class CertifiedCentersTable
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
 
+                TextColumn::make('notes')
+                    ->label(__('app.notes'))
+                    ->limit(50)
+                    ->placeholder(__('app.no_value'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 ImageColumn::make('logo')
                     ->label(__('app.logo'))
-                    ->disk('public')
+                    ->getStateUsing(fn ($record) => $record->logo_url)
                     ->defaultImageUrl(url('assets/website/images/avatar.png')),
 
                 TextColumn::make('accreditation_period_start')

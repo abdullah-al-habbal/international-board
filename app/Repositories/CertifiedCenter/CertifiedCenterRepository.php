@@ -42,16 +42,6 @@ final class CertifiedCenterRepository
         return $this->model->newQuery()->count();
     }
 
-    public function countActive(): int
-    {
-        return $this->model->newQuery()->active()->count();
-    }
-
-    public function countInactive(): int
-    {
-        return $this->model->newQuery()->inactive()->count();
-    }
-
     public function countExpiredAccreditation(): int
     {
         return $this->model->newQuery()->accreditationExpired()->count();

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Center\Pages;
 
 use Filament\Auth\Pages\EditProfile;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 
 class CenterProfilePage extends EditProfile
 {
@@ -49,5 +51,20 @@ class CenterProfilePage extends EditProfile
         return TextInput::make('currentPassword')
             ->label(__('filament-panels::auth/pages/edit-profile.form.current_password.label'))
             ->hidden();
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema->components(array_merge(
+            parent::form($schema)->getComponents(),
+            [
+                Textarea::make('notes')
+                    ->label(__('app.notes'))
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->rows(3)
+                    ->columnSpanFull(),
+            ]
+        ));
     }
 }
