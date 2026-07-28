@@ -19,7 +19,7 @@ final class MembershipShowController extends Controller
 
     public function __invoke(int $id): View
     {
-        $membership = $this->service->findActive($id);
+        $membership = $this->service->findById($id);
         abort_if($membership === null, 404);
 
         $this->seoService->setMeta(

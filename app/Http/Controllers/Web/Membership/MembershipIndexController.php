@@ -25,7 +25,7 @@ final class MembershipIndexController extends Controller
             __('web.pages.memberships.subtitle')
         );
 
-        $memberships = $this->service->listActive();
+        $memberships = $this->service->listAll();
         $intro = $this->getMembershipIntro();
 
         return view('web.memberships.index', compact('memberships', 'intro'));
