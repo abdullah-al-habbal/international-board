@@ -25,7 +25,7 @@ final class CertificationRepository
             ->first();
     }
 
-    public function findBySerial(string $serial): ?Certification
+    public function findByAccreditationNumber(string $accreditationNumber): ?Certification
     {
         return $this->model->with([
             'creator',
@@ -34,10 +34,7 @@ final class CertificationRepository
             'trainee:id,name',
             'country:id,name',
         ])
-            ->where(function ($query) use ($serial): void {
-                $query->where('accredited_serial_number', $serial)
-                    ->orWhere('document_code', $serial);
-            })
+            ->where('accreditation_number', $accreditationNumber)
             ->first();
     }
 

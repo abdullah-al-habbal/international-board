@@ -58,6 +58,12 @@ class CertificationInfolist
                     ->copyMessage(__('app.copied'))
                     ->copyMessageDuration(1500),
 
+                TextEntry::make('accreditation_number')
+                    ->label(__('app.accreditation_number'))
+                    ->copyable()
+                    ->copyMessage(__('app.copied'))
+                    ->copyMessageDuration(1500),
+
                 TextEntry::make('document_code')
                     ->label(__('app.document_code')),
 

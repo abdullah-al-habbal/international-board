@@ -61,6 +61,12 @@ class CertificationsTable
                 ->searchable()
                 ->sortable(),
 
+            TextColumn::make('accreditation_number')
+                ->label(__('app.accreditation_number'))
+                ->searchable()
+                ->sortable()
+                ->copyable(),
+
             TextColumn::make('trainee.name')
                 ->label(__('app.trainee_name'))
                 ->searchable()

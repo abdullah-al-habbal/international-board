@@ -31,12 +31,12 @@ return [
         ],
         'certifications' => [
             'title' => 'Certification Verification',
-            'subtitle' => 'Enter a serial number to verify the authenticity of a certification.',
+            'subtitle' => 'Enter an accreditation number to verify the authenticity of a certification.',
             'search_title' => 'Verify a Certification',
-            'search_placeholder' => 'Enter certification serial or document code...',
+            'search_placeholder' => 'Enter certification accreditation number...',
             'result_valid' => 'Valid Certification',
             'result_not_found' => 'Certification Not Found',
-            'not_found_message' => 'No certification was found with the value ":serial". Please check and try again.',
+            'not_found_message' => 'No certification was found with the value ":accreditation_number". Please check and try again.',
         ],
         'centers' => [
             'title' => 'Certified Centers',
@@ -108,7 +108,7 @@ return [
     ],
     'cta' => [
         'title' => 'Verify a Certification Today',
-        'text' => 'Enter a serial number to instantly verify the authenticity and validity of any issued certification.',
+        'text' => 'Enter an accreditation number to instantly verify the authenticity and validity of any issued certification.',
         'button' => 'Verify Now',
     ],
     'buttons' => [

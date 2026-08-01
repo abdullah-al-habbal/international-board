@@ -43,6 +43,14 @@ class CertificationsTable
                     ->copyMessage(__('app.serial_copied'))
                     ->copyMessageDuration(1500),
 
+                TextColumn::make('accreditation_number')
+                    ->label(__('app.accreditation_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage(__('app.accreditation_copied'))
+                    ->copyMessageDuration(1500),
+
                 TextColumn::make('document_code')
                     ->label(__('app.document_code'))
                     ->searchable()

@@ -239,8 +239,8 @@ final class Spider
         switch ($param) {
             case 'locale':
                 return $locale ?? 'en';
-            case 'serial':
-                return $this->publicRecords['certification']->accredited_serial_number
+            case 'accreditationNumber':
+                return $this->publicRecords['certification']->accreditation_number
                     ?? $this->publicRecords['certification']->getKey();
             case 'trainer':
                 return $this->publicRecords['trainer']->getRouteKey();

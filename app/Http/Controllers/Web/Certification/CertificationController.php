@@ -31,25 +31,25 @@ final class CertificationController extends Controller
 
     public function search(CertificationSearchRequest $request): View
     {
-        $serial = $request->validated('serial');
-        $certification = $serial ? $this->service->getBySerial($serial) : null;
-        $notFound = $serial !== null && $serial !== '' && $certification === null;
+        $accreditationNumber = $request->validated('accreditation_number');
+        $certification = $accreditationNumber ? $this->service->getByAccreditationNumber($accreditationNumber) : null;
+        $notFound = $accreditationNumber !== null && $accreditationNumber !== '' && $certification === null;
 
         $this->seoService->setMeta(
-            __('web.pages.certifications.title').($serial ? ": {$serial}" : ''),
+            __('web.pages.certifications.title').($accreditationNumber ? ": {$accreditationNumber}" : ''),
             __('web.pages.certifications.subtitle')
         );
 
-        return view('web.certifications.search', compact('certification', 'serial', 'notFound'));
+        return view('web.certifications.search', compact('certification', 'accreditationNumber', 'notFound'));
     }
 
-    public function show(string $serial): View
+    public function show(string $accreditationNumber): View
     {
-        $certification = $this->service->getBySerial($serial);
+        $certification = $this->service->getByAccreditationNumber($accreditationNumber);
         abort_if($certification === null, 404);
 
         $this->seoService->setMeta(
-            "{$certification->trainee?->name} | ".__('web.labels.serial_number').": {$serial}",
+            "{$certification->trainee?->name} | ".__('web.labels.accreditation_number').": {$accreditationNumber}",
             __('web.pages.certifications.subtitle')
         );
 

@@ -16,7 +16,7 @@ final class CertificationSearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'serial' => ['nullable', 'string', 'max:100'],
+            'accreditation_number' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

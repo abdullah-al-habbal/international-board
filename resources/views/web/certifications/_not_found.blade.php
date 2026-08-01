@@ -10,7 +10,7 @@
                     </div>
                     <div class="card-body text-center py-4">
                         <p class="card-text text-muted">
-                            {{ __('web.pages.certifications.not_found_message', ['serial' => $serial]) }}
+                            {{ __('web.pages.certifications.not_found_message', ['accreditation_number' => $accreditationNumber]) }}
                         </p>
                         <a href="{{ route('web.certifications.index') }}" class="btn btn-main mt-2">
                             {{ __('web.buttons.back') }}
