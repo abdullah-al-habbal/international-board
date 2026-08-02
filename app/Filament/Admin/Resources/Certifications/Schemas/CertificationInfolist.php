@@ -8,6 +8,7 @@ use App\Models\CertifiedCenter;
 use App\Models\Trainer;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -92,6 +93,10 @@ class CertificationInfolist
                     ->label(__('app.notes'))
                     ->placeholder('-')
                     ->columnSpanFull(),
+
+                IconEntry::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean(),
 
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))

@@ -21,6 +21,7 @@ final class CertificationRepository
             'trainee:id,name',
             'country:id,name',
         ])
+            ->publiclyVisible()
             ->byDocumentCode($code)
             ->first();
     }
@@ -34,6 +35,7 @@ final class CertificationRepository
             'trainee:id,name',
             'country:id,name',
         ])
+            ->publiclyVisible()
             ->where('accreditation_number', $accreditationNumber)
             ->first();
     }
@@ -45,6 +47,7 @@ final class CertificationRepository
             'assignedTrainer',
             'trainee:id,name',
         ])
+            ->publiclyVisible()
             ->recentlyCreated()
             ->take($limit)
             ->get();
@@ -136,20 +139,24 @@ final class CertificationRepository
 
     public function getStatistics(): array
     {
-        $total = $this->model->newQuery()->count();
+        $total = $this->model->newQuery()->publiclyVisible()->count();
         $distinctCountries = $this->model->newQuery()
+            ->publiclyVisible()
             ->whereNotNull('country_id')
             ->distinct('country_id')
             ->count('country_id');
         $distinctTrainees = $this->model->newQuery()
+            ->publiclyVisible()
             ->whereNotNull('trainee_id')
             ->distinct('trainee_id')
             ->count('trainee_id');
         $distinctTrainers = $this->model->newQuery()
+            ->publiclyVisible()
             ->whereNotNull('assigned_trainer_id')
             ->distinct('assigned_trainer_id')
             ->count('assigned_trainer_id');
         $byCreatorRaw = $this->model->newQuery()
+            ->publiclyVisible()
             ->selectRaw('creator_type, count(*) as count')
             ->groupBy('creator_type')
             ->pluck('count', 'creator_type')

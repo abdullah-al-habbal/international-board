@@ -16,6 +16,7 @@ final class CertifiedCenterRepository
     {
         return $this->model
             ->newQuery()
+            ->publiclyVisible()
             ->when(
                 isset($filters['search']) && $filters['search'] !== '',
                 fn ($q) => $q->where('name', 'like', "%{$filters['search']}%")
@@ -32,6 +33,7 @@ final class CertifiedCenterRepository
     {
         return $this->model
             ->newQuery()
+            ->publiclyVisible()
             ->where('id', $id)
             ->with(['country', 'approvedDocumentTypes', 'certifications'])
             ->first();
@@ -50,8 +52,9 @@ final class CertifiedCenterRepository
     public function getStatistics(): array
     {
         return [
-            'total_centers' => $this->countTotal(),
+            'total_centers' => $this->model->newQuery()->publiclyVisible()->count(),
             'active_countries' => $this->model->newQuery()
+                ->publiclyVisible()
                 ->whereNotNull('country_id')
                 ->distinct('country_id')
                 ->count('country_id'),

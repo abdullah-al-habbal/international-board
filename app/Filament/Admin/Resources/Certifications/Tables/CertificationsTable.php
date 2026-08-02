@@ -8,9 +8,11 @@ use App\Models\CertifiedCenter;
 use App\Models\Trainer;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -111,6 +113,12 @@ class CertificationsTable
                     ->dateTime('M d, Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                IconColumn::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
 
@@ -156,8 +164,9 @@ class CertificationsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
-        
+
             ->defaultSort('created_at', 'desc')
             ->striped()
             ->paginated([10, 25, 50, 100]);

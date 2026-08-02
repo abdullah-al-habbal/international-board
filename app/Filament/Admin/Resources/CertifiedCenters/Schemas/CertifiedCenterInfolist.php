@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\CertifiedCenters\Schemas;
 
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -41,6 +42,9 @@ class CertifiedCenterInfolist
                     ->placeholder('-'),
                 TextEntry::make('accreditation_number')
                     ->placeholder('-'),
+                IconEntry::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

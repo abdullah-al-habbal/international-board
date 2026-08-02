@@ -117,6 +117,7 @@ return [
     'admin_notes' => 'Admin Notes',
     'reviewed_by' => 'Reviewed By',
     'reviewed_at' => 'Reviewed On',
+    'show_in_public_website' => 'Show in public website',
     'financial_management' => 'Financial Management',
     'accreditation_management' => 'Accreditation Management',
     'center_financial_requests' => 'Center Financial Requests',

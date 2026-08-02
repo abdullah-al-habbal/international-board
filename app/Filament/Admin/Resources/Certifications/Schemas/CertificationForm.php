@@ -15,6 +15,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -193,6 +194,10 @@ class CertificationForm
                             ->rows(4)
                             ->columnSpanFull()
                             ->placeholder(__('app.notes_placeholder')),
+
+                        Toggle::make('show_in_public_website')
+                            ->label(__('app.show_in_public_website'))
+                            ->columnSpanFull(),
                     ])
                     ->collapsible(),
             ]);

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,11 +24,14 @@ class Trainee extends Model
         'date_of_birth',
         'gender',
         'notes',
+        'show_in_public_website',
     ];
 
     protected function casts(): array
     {
-        return [];
+        return [
+            'show_in_public_website' => 'boolean',
+        ];
     }
 
     public function getDateOfBirthAttribute($value): ?string
@@ -49,5 +54,11 @@ class Trainee extends Model
     public function certifications(): HasMany
     {
         return $this->hasMany(Certification::class);
+    }
+
+    #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('show_in_public_website', true);
     }
 }

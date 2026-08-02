@@ -16,6 +16,7 @@ final class TrainerRepository
     {
         return $this->model
             ->newQuery()
+            ->publiclyVisible()
             ->when(
                 isset($filters['search']) && $filters['search'] !== '',
                 fn ($q) => $q->where(function ($inner) use ($filters): void {
@@ -39,6 +40,7 @@ final class TrainerRepository
     {
         return $this->model
             ->newQuery()
+            ->publiclyVisible()
             ->where('id', $id)
             ->with(['country', 'certifications', 'specializations'])
             ->first();
@@ -51,6 +53,6 @@ final class TrainerRepository
 
     public function getStatistics(): array
     {
-        return ['total_trainers' => $this->countTotal()];
+        return ['total_trainers' => $this->model->newQuery()->publiclyVisible()->count()];
     }
 }

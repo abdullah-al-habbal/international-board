@@ -46,7 +46,7 @@ final class TrainerController extends Controller
             'country',
             'center',
             'specializations',
-            'certifications',
+            'certifications' => fn ($q) => $q->publiclyVisible(),
             'documentTypes',
             'accreditationRequests',
         ]);

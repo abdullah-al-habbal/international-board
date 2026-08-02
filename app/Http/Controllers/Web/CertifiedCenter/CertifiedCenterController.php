@@ -42,8 +42,8 @@ final class CertifiedCenterController extends Controller
 
         $center->load([
             'country',
-            'certifications',
-            'trainers',
+            'certifications' => fn ($q) => $q->publiclyVisible(),
+            'trainers' => fn ($q) => $q->publiclyVisible(),
             'documentTypes',
             'accreditationRequests',
             'financialRequests',

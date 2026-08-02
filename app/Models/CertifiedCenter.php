@@ -41,6 +41,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         'accreditation_number',
         'status',
         'country_id',
+        'show_in_public_website',
     ];
 
     protected $hidden = [
@@ -56,6 +57,7 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
             'accreditation_period_start' => 'datetime',
             'accreditation_period_end' => 'datetime',
             'status' => CenterStatus::class,
+            'show_in_public_website' => 'boolean',
         ];
     }
 
@@ -98,6 +100,12 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
     protected function ofStatus(Builder $query, CenterStatus $status): void
     {
         $query->where('status', $status->value);
+    }
+
+    #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('show_in_public_website', true);
     }
 
     #[Scope]

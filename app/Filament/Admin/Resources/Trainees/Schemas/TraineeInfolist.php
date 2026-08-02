@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Trainees\Schemas;
 
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -68,6 +69,12 @@ class TraineeInfolist
                 ->numeric()
                 ->default(0)
                 ->icon('heroicon-o-document-text')
+                ->columnSpan(1),
+
+            IconEntry::make('show_in_public_website')
+                ->label(__('app.show_in_public_website'))
+                ->boolean()
+                ->icon('heroicon-o-globe-alt')
                 ->columnSpan(1),
 
             TextEntry::make('created_at')

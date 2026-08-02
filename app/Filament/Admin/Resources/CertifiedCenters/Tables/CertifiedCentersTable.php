@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -62,6 +63,12 @@ class CertifiedCentersTable
                 TextColumn::make('accreditation_number')
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
+
+                IconColumn::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->dateTime()

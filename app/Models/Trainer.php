@@ -37,6 +37,7 @@ class Trainer extends Authenticatable implements FilamentUser
         'accreditation_period_start',
         'accreditation_period_end',
         'password',
+        'show_in_public_website',
     ];
 
     protected $hidden = [
@@ -51,6 +52,7 @@ class Trainer extends Authenticatable implements FilamentUser
             'accreditation_period_start' => 'datetime',
             'accreditation_period_end' => 'datetime',
             'password' => 'hashed',
+            'show_in_public_website' => 'boolean',
         ];
     }
 
@@ -94,6 +96,12 @@ class Trainer extends Authenticatable implements FilamentUser
     protected function accreditationExpired(Builder $query): void
     {
         $query->where('accreditation_period_end', '<', now());
+    }
+
+    #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('show_in_public_website', true);
     }
 
     #[Scope]

@@ -6,9 +6,9 @@ declare(strict_types=1);
 namespace App\Services\Web;
 
 use App\Models\ApplicationSetting;
-use App\Repositories\Certification\CertificationRepository;
-use App\Repositories\CertifiedCenter\CertifiedCenterRepository;
-use App\Repositories\Trainer\TrainerRepository;
+use App\Models\Certification;
+use App\Models\CertifiedCenter;
+use App\Models\Trainer;
 use App\Services\Blog\BlogPostService;
 use App\Services\StaticPage\StaticPageService;
 use Illuminate\Support\Facades\Cache;
@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Cache;
 final class HomeService
 {
     public function __construct(
-        private readonly CertificationRepository $certificationRepository,
-        private readonly TrainerRepository $trainerRepository,
-        private readonly CertifiedCenterRepository $centerRepository,
         private readonly StaticPageService $staticPageService,
         private readonly BlogPostService $blogPostService
     ) {}
@@ -37,9 +34,9 @@ final class HomeService
     private function buildStatistics(): array
     {
         return [
-            'certifications' => Cache::rememberForever('home_stats_certifications', fn () => $this->certificationRepository->getTotalCount()),
-            'trainers' => Cache::rememberForever('home_stats_trainers', fn () => $this->trainerRepository->countTotal()),
-            'centers' => Cache::rememberForever('home_stats_centers', fn () => $this->centerRepository->countTotal()),
+            'certifications' => Cache::rememberForever('home_stats_certifications', fn () => Certification::query()->publiclyVisible()->count()),
+            'trainers' => Cache::rememberForever('home_stats_trainers', fn () => Trainer::query()->publiclyVisible()->count()),
+            'centers' => Cache::rememberForever('home_stats_centers', fn () => CertifiedCenter::query()->publiclyVisible()->count()),
         ];
     }
 

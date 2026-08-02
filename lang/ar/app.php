@@ -101,6 +101,7 @@ return [
     'admin_notes' => 'ملاحظات الإدارة',
     'reviewed_by' => 'تمت المراجعة بواسطة',
     'reviewed_at' => 'تاريخ المراجعة',
+    'show_in_public_website' => 'إظهار في الموقع العام',
     'certification_details_section' => 'تفاصيل الشهادة الرئيسية',
     'certification_details' => 'تفاصيل الشهادة',
     'certification_details_description' => 'اختر نوع الوثيقة ومعلومات المتدرب',

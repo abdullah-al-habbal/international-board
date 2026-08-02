@@ -10,6 +10,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class TrainerForm
@@ -123,6 +124,10 @@ class TrainerForm
                 ->required()
                 ->after('accreditation_period_start')
                 ->columnSpan(1),
+
+            Toggle::make('show_in_public_website')
+                ->label(__('app.show_in_public_website'))
+                ->columnSpanFull(),
         ])->columns(2);
     }
 }

@@ -11,6 +11,8 @@ class WelcomeWidget extends Widget
 {
     protected string $view = 'filament.widgets.welcome';
 
+    protected static ?int $sort = -2;
+
     protected int|string|array $columnSpan = 'full';
 
     public function getUserName(): string

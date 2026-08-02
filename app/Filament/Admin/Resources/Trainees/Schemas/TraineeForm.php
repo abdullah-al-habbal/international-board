@@ -10,6 +10,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -120,6 +121,10 @@ class TraineeForm
                 ->maxLength(65535)
                 ->rows(3)
                 ->nullable()
+                ->columnSpanFull(),
+
+            Toggle::make('show_in_public_website')
+                ->label(__('app.show_in_public_website'))
                 ->columnSpanFull(),
         ])->columns(2);
     }

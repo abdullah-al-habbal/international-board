@@ -1,4 +1,5 @@
 <?php
+
 // app/Models/Certification.php
 
 declare(strict_types=1);
@@ -33,12 +34,14 @@ class Certification extends Model
         'accreditation_date',
         'country_id',
         'notes',
+        'show_in_public_website',
     ];
 
     protected function casts(): array
     {
         return [
             'accreditation_date' => 'date',
+            'show_in_public_website' => 'boolean',
         ];
     }
 
@@ -83,6 +86,16 @@ class Certification extends Model
     protected function createdBy(Builder $query, string $type, int $id): void
     {
         $query->where('creator_type', $type)->where('creator_id', $id);
+    }
+
+    #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('show_in_public_website', true)
+            ->where(function (Builder $q) {
+                $q->whereNull('trainee_id')
+                    ->orWhereHas('trainee', fn (Builder $t) => $t->where('trainees.show_in_public_website', true));
+            });
     }
 
     #[Scope]
