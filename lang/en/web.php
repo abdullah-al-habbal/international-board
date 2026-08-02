@@ -38,15 +38,6 @@ return [
             'result_not_found' => 'Certification Not Found',
             'not_found_message' => 'No certification was found with the value ":accreditation_number". Please check and try again.',
         ],
-        'certificate' => [
-            'certificate_label' => 'Official certificate',
-            'verified' => 'Verified Certificate',
-            'title' => 'Certificate',
-            'certifies_that' => 'This certifies that',
-            'successfully_completed' => 'successfully completed',
-            'verify_authenticity' => 'Verify authenticity',
-            'qr_aria' => 'QR code for verification of this certificate',
-        ],
         'centers' => [
             'title' => 'Certified Centers',
             'subtitle' => 'Browse our network of accredited training centers.',
@@ -119,6 +110,15 @@ return [
         'title' => 'Verify a Certification Today',
         'text' => 'Enter an accreditation number to instantly verify the authenticity and validity of any issued certification.',
         'button' => 'Verify Now',
+    ],
+    'certificate' => [
+        'certificate_label' => 'Official certificate',
+        'verified' => 'Verified Certificate',
+        'title' => 'Certificate',
+        'certifies_that' => 'This certifies that',
+        'successfully_completed' => 'successfully completed',
+        'verify_authenticity' => 'Verify authenticity',
+        'qr_aria' => 'QR code for verification of this certificate',
     ],
     'buttons' => [
         'explore_us' => 'Explore Us',

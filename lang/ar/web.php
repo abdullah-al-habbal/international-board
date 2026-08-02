@@ -39,15 +39,6 @@ return [
             'result_not_found' => 'لم يتم العثور على الشهادة',
             'not_found_message' => 'لم يتم العثور على شهادة بالقيمة ":accreditation_number". يرجى التحقق والمحاولة مرة أخرى.',
         ],
-        'certificate' => [
-            'certificate_label' => 'شهادة رسمية',
-            'verified' => 'شهادة موثّقة',
-            'title' => 'شهادة',
-            'certifies_that' => 'تشهد هذه الشهادة بأن',
-            'successfully_completed' => 'قد أتمّ بنجاح',
-            'verify_authenticity' => 'تحقق من صحة الشهادة',
-            'qr_aria' => 'رمز الاستجابة السريعة للتحقق من هذه الشهادة',
-        ],
         'centers' => [
             'title' => 'المراكز المعتمدة',
             'subtitle' => 'تصفح شبكة مراكز التدريب المعتمدة.',
@@ -124,6 +115,15 @@ return [
         'title' => 'تحقق من شهادة اليوم',
         'text' => 'أدخل رقم الاعتماد للتحقق فوراً من صحة وصلاحية أي شهادة صادرة.',
         'button' => 'تحقق الآن',
+    ],
+    'certificate' => [
+        'certificate_label' => 'شهادة رسمية',
+        'verified' => 'شهادة موثّقة',
+        'title' => 'شهادة',
+        'certifies_that' => 'تشهد هذه الشهادة بأن',
+        'successfully_completed' => 'قد أتمّ بنجاح',
+        'verify_authenticity' => 'تحقق من صحة الشهادة',
+        'qr_aria' => 'رمز الاستجابة السريعة للتحقق من هذه الشهادة',
     ],
 
     'buttons' => [
