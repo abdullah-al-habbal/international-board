@@ -8,14 +8,9 @@ use App\Models\CertifiedCenter;
 use App\Models\Trainer;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Actions\Action;
-use Filament\Actions\BulkAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -161,64 +156,8 @@ class CertificationsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('generatePdf')
-                    ->label(__('app.certificate_pdf'))
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->color('success')
-                    ->action(function ($record) {}),
             ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-
-                    BulkAction::make('assignCreator')
-                        ->label(__('app.assign_creator'))
-                        ->icon('heroicon-o-user')
-                        ->color('info')
-                        ->form([
-                            Select::make('creator_type')
-                                ->label(__('app.issued_by'))
-                                ->options([
-                                    User::class => __('app.board_admin'),
-                                    CertifiedCenter::class => __('app.certified_center'),
-                                    Trainer::class => __('app.trainer'),
-                                ])
-                                ->reactive()
-                                ->required(),
-                            Select::make('creator_id')
-                                ->label(__('app.select_creator'))
-                                ->options(function (callable $get) {
-                                    $type = $get('creator_type');
-                                    if (! $type) {
-                                        return [];
-                                    }
-
-                                    return $type::query()->limit(20)->pluck('name', 'id');
-                                })
-                                ->getSearchResultsUsing(function (string $search, callable $get) {
-                                    $type = $get('creator_type');
-                                    if (! $type) {
-                                        return [];
-                                    }
-
-                                    return $type::query()
-                                        ->where('name', 'like', "%{$search}%")
-                                        ->limit(50)
-                                        ->pluck('name', 'id');
-                                })
-                                ->required()
-                                ->searchable(),
-                        ])
-                        ->action(function (array $data, $records) {
-                            $records->each(function ($record) use ($data) {
-                                $record->update([
-                                    'creator_type' => $data['creator_type'],
-                                    'creator_id' => $data['creator_id'],
-                                ]);
-                            });
-                        }),
-                ]),
-            ])
+        
             ->defaultSort('created_at', 'desc')
             ->striped()
             ->paginated([10, 25, 50, 100]);

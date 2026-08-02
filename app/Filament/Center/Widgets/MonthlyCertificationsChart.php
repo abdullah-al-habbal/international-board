@@ -29,7 +29,7 @@ class MonthlyCertificationsChart extends ChartWidget
     protected function getData(): array
     {
         $certificationService = app(CertificationService::class);
-        $centerId = Auth::guard('web')->id();
+        $centerId = Auth::guard('certified_center')->id();
         $chartData = $certificationService->getMonthlyCountsByCenter($centerId);
         $colors = ChartColors::getCenterChartColors();
 

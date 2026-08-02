@@ -1,4 +1,5 @@
 <?php
+// app/Services/Certification/CertificationExportHandler.php
 
 declare(strict_types=1);
 
@@ -67,7 +68,7 @@ final class CertificationExportHandler
             $certification->assignedTrainer?->name,
             $certification->document_code,
             $certification->accreditation_number,
-            $certification->accreditation_date?->format('Y-m-d'),
+            $certification->accreditation_date,
             $certification->country?->name,
             $certification->notes,
             $certification->created_at?->format('Y-m-d H:i:s'),
