@@ -6,10 +6,34 @@ namespace App\Services\Certification;
 
 use App\Models\Certification;
 use App\Repositories\Certification\CertificationRepository;
+use chillerlan\QRCode\Output\QROutputInterface;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 
 final class CertificationService
 {
     public function __construct(private readonly CertificationRepository $repo) {}
+
+    public function getVerificationQrSvg(Certification $certification): ?string
+    {
+        $accreditationNumber = $certification->accreditation_number;
+
+        if (blank($accreditationNumber)) {
+            return null;
+        }
+
+        $options = new QROptions([
+            'outputType' => QROutputInterface::MARKUP_SVG,
+            'scale' => 5,
+            'quietzoneSize' => 2,
+            'outputBase64' => false,
+            'svgAddXmlHeader' => false,
+        ]);
+
+        return (new QRCode($options))->render(
+            route('web.certifications.show', $accreditationNumber)
+        );
+    }
 
     public function getByCode(string $code): ?Certification
     {

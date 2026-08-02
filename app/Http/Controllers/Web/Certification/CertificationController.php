@@ -34,13 +34,14 @@ final class CertificationController extends Controller
         $accreditationNumber = $request->validated('accreditation_number');
         $certification = $accreditationNumber ? $this->service->getByAccreditationNumber($accreditationNumber) : null;
         $notFound = $accreditationNumber !== null && $accreditationNumber !== '' && $certification === null;
+        $qrSvg = $certification ? $this->service->getVerificationQrSvg($certification) : null;
 
         $this->seoService->setMeta(
             __('web.pages.certifications.title').($accreditationNumber ? ": {$accreditationNumber}" : ''),
             __('web.pages.certifications.subtitle')
         );
 
-        return view('web.certifications.search', compact('certification', 'accreditationNumber', 'notFound'));
+        return view('web.certifications.search', compact('certification', 'accreditationNumber', 'notFound', 'qrSvg'));
     }
 
     public function show(string $accreditationNumber): View
@@ -53,6 +54,8 @@ final class CertificationController extends Controller
             __('web.pages.certifications.subtitle')
         );
 
-        return view('web.certifications.show', compact('certification'));
+        $qrSvg = $this->service->getVerificationQrSvg($certification);
+
+        return view('web.certifications.show', compact('certification', 'qrSvg'));
     }
 }

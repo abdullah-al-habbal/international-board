@@ -38,6 +38,15 @@ return [
             'result_not_found' => 'Certification Not Found',
             'not_found_message' => 'No certification was found with the value ":accreditation_number". Please check and try again.',
         ],
+        'certificate' => [
+            'certificate_label' => 'Official certificate',
+            'verified' => 'Verified Certificate',
+            'title' => 'Certificate',
+            'certifies_that' => 'This certifies that',
+            'successfully_completed' => 'successfully completed',
+            'verify_authenticity' => 'Verify authenticity',
+            'qr_aria' => 'QR code for verification of this certificate',
+        ],
         'centers' => [
             'title' => 'Certified Centers',
             'subtitle' => 'Browse our network of accredited training centers.',
@@ -122,6 +131,10 @@ return [
         'view_details' => 'View Details',
         'back' => 'Back',
         'clear' => 'Clear Filters',
+        'print' => 'Print',
+        'save_pdf' => 'Save PDF',
+        'share' => 'Share',
+        'copy_link' => 'Copy link',
         'apply_membership' => 'Click here to apply for membership',
         'whatsapp_contact' => 'Click here to contact us via WhatsApp',
     ],
@@ -176,5 +189,6 @@ return [
         'trainers_count' => 'Trainers',
         'financial_requests_count' => 'Financial Requests',
         'latest_certifications' => 'Latest Certifications',
+        'link_copied' => 'Link copied',
     ],
 ];
