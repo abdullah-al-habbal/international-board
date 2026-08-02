@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\PaymentAgentPersons\Pages;
 
 use App\Filament\Admin\Resources\PaymentAgentPersons\PaymentAgentPersonResource;
 use App\Filament\Traits\RedirectsToShowPage;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPaymentAgentPerson extends EditRecord
@@ -13,4 +14,10 @@ class EditPaymentAgentPerson extends EditRecord
     use RedirectsToShowPage;
 
     protected static string $resource = PaymentAgentPersonResource::class;
+    protected function getHeaderActions(): array
+    {
+        return [
+            DeleteAction::make(),
+        ];
+    }
 }
