@@ -18,6 +18,6 @@ class WelcomeWidget extends Widget
         /** @var CertifiedCenter|null $center */
         $center = auth('certified_center')->user();
 
-        return $center?->name ?? __('app.guest');
+        return $center?->name;
     }
 }

@@ -38,6 +38,11 @@ class TrainerDocumentTypesTable
                     ->badge()
                     ->color(fn ($state) => $state?->color() ?? 'gray')
                     ->formatStateUsing(fn ($state) => $state?->label() ?? '—'),
+
+                TextColumn::make('reviewer.name')
+                    ->label(__('app.reviewed_by'))
+                    ->placeholder(__('app.no_value'))
+                    ->sortable(),
             ])
             ->recordActions([
                 ViewAction::make(),

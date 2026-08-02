@@ -34,11 +34,6 @@ final class CertifiedCenterService
         return $this->repo->countExpiredAccreditation();
     }
 
-    /**
-     * Active countries that have at least one active certified center (for index filters).
-     *
-     * @return Collection<int, Country>
-     */
     public function getFilterCountries(): Collection
     {
         $countryIds = CertifiedCenter::query()

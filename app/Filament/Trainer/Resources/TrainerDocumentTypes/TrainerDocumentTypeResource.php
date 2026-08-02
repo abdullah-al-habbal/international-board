@@ -9,6 +9,7 @@ use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\EditTrainerDocumen
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\ListTrainerDocumentTypes;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\ViewTrainerDocumentType;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Schemas\TrainerDocumentTypeForm;
+use App\Filament\Trainer\Resources\TrainerDocumentTypes\Schemas\TrainerDocumentTypeInfolist;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Tables\TrainerDocumentTypesTable;
 use App\Models\TrainerDocumentType;
 use BackedEnum;
@@ -68,6 +69,11 @@ class TrainerDocumentTypeResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return TrainerDocumentTypeForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return TrainerDocumentTypeInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table

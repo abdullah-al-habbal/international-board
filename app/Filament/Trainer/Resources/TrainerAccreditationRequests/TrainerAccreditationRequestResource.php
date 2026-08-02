@@ -10,6 +10,7 @@ use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\EditTraine
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ViewTrainerAccreditationRequest;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
 use App\Models\TrainerAccreditationRequest;
 use BackedEnum;
@@ -77,6 +78,11 @@ class TrainerAccreditationRequestResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return TrainerAccreditationRequestForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return TrainerAccreditationRequestInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table

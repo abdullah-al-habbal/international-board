@@ -33,6 +33,11 @@ class CertifiedCenterDocumentTypeInfolist
                 ->formatStateUsing(fn ($state) => $state?->label() ?? '—')
                 ->columnSpan(1),
 
+            TextEntry::make('reviewer.name')
+                ->label(__('app.reviewed_by'))
+                ->placeholder(__('app.no_value'))
+                ->columnSpan(1),
+
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))
                 ->dateTime()

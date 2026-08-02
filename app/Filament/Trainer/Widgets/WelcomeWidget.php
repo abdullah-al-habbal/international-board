@@ -18,6 +18,6 @@ class WelcomeWidget extends Widget
         /** @var Trainer|null $trainer */
         $trainer = auth('trainer')->user();
 
-        return $trainer?->name ?? __('app.guest');
+        return $trainer?->name;
     }
 }
