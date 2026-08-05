@@ -19,16 +19,13 @@ final class CsvImportHandler
         ];
 
         $batchSize = $options['batch_size'] ?? 500;
+        $maxErrors = $options['max_errors'] ?? 100;
         $batchInserter = $options['batch_inserter'] ?? null;
         $useTransaction = $options['transaction'] ?? true;
         $delimiter = $options['delimiter'] ?? ',';
         $headers = [];
         $dataBatch = [];
         $file = $this->openFile($filePath, $delimiter);
-
-        if ($useTransaction) {
-            DB::beginTransaction();
-        }
 
         try {
             foreach ($file as $index => $row) {
@@ -49,7 +46,10 @@ final class CsvImportHandler
 
                     if ($result === false) {
                         $stats['failed']++;
-                        $stats['errors'][] = "Row {$index}: processor returned false.";
+
+                        if (count($stats['errors']) < $maxErrors) {
+                            $stats['errors'][] = "Row {$index}: processor returned false.";
+                        }
 
                         continue;
                     }
@@ -58,7 +58,14 @@ final class CsvImportHandler
                         $dataBatch[] = $result;
 
                         if (count($dataBatch) >= $batchSize) {
-                            $batchInserter($dataBatch);
+                            if ($useTransaction) {
+                                DB::transaction(function () use ($batchInserter, &$dataBatch): void {
+                                    $batchInserter($dataBatch);
+                                });
+                            } else {
+                                $batchInserter($dataBatch);
+                            }
+
                             $dataBatch = [];
                         }
                     }
@@ -66,22 +73,23 @@ final class CsvImportHandler
                     $stats['success']++;
                 } catch (\Throwable $exception) {
                     $stats['failed']++;
-                    $stats['errors'][] = "Row {$index}: {$exception->getMessage()}";
+
+                    if (count($stats['errors']) < $maxErrors) {
+                        $stats['errors'][] = "Row {$index}: {$exception->getMessage()}";
+                    }
                 }
             }
 
             if ($batchInserter !== null && ! empty($dataBatch)) {
-                $batchInserter($dataBatch);
-            }
-
-            if ($useTransaction) {
-                DB::commit();
+                if ($useTransaction) {
+                    DB::transaction(function () use ($batchInserter, $dataBatch): void {
+                        $batchInserter($dataBatch);
+                    });
+                } else {
+                    $batchInserter($dataBatch);
+                }
             }
         } catch (\Throwable $exception) {
-            if ($useTransaction) {
-                DB::rollBack();
-            }
-
             throw new \RuntimeException('CSV import failed: '.$exception->getMessage(), 0, $exception);
         }
 

@@ -28,12 +28,6 @@ class EnsureCenterIsAccredited
             return $next($request);
         }
 
-        Log::channel('accreditation')->debug('[Center Middleware] Checking accreditation gate', [
-            'center_id' => $center->id,
-            'route' => $request->route()?->getName(),
-            'can_perform' => $this->gateService->currentCenterCanPerformActions(),
-        ]);
-
         if ($this->gateService->currentCenterCanPerformActions()) {
             return $next($request);
         }

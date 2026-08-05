@@ -1,0 +1,123 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Jobs;
+
+use App\Services\Certification\CertificationImportService;
+use Illuminate\Bus\Batchable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\LazyCollection;
+use SplFileObject;
+
+final class ImportCertificationChunkJob implements ShouldQueue
+{
+    use Batchable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
+    public int $tries = 3;
+
+    public array $backoff = [60, 120];
+
+    public function __construct(
+        private readonly string $chunkPath,
+        private readonly int $creatorId,
+        private readonly int $chunkIndex,
+        private readonly int $totalChunks,
+    ) {}
+
+    public function handle(CertificationImportService $importService): void
+    {
+        Log::channel('import')->info('Import chunk started', [
+            'chunk_index' => $this->chunkIndex,
+            'total_chunks' => $this->totalChunks,
+            'creator_id' => $this->creatorId,
+            'job_id' => $this->job?->getJobId(),
+        ]);
+
+        $stats = $importService->importChunk(
+            $this->readChunkRows(),
+            $this->creatorId,
+            $this->readChunkHeaders(),
+        );
+
+        Log::channel('import')->info('Import chunk completed', [
+            'chunk_index' => $this->chunkIndex,
+            'total_chunks' => $this->totalChunks,
+            'stats' => $stats,
+            'memory' => memory_get_usage(true),
+            'memory_peak' => memory_get_peak_usage(true),
+            'job_id' => $this->job?->getJobId(),
+        ]);
+    }
+
+    private function readChunkHeaders(): array
+    {
+        $file = new SplFileObject($this->chunkPath);
+        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::READ_AHEAD);
+        $file->setCsvControl(',');
+
+        foreach ($file as $row) {
+            if ($row !== false && ! $this->isEmptyRow($row)) {
+                return $row;
+            }
+        }
+
+        return [];
+    }
+
+    private function readChunkRows(): LazyCollection
+    {
+        return LazyCollection::make(function (): \Generator {
+            $file = new SplFileObject($this->chunkPath);
+            $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::READ_AHEAD);
+            $file->setCsvControl(',');
+
+            $isHeader = true;
+
+            foreach ($file as $row) {
+                if ($row === false || $this->isEmptyRow($row)) {
+                    continue;
+                }
+
+                if ($isHeader) {
+                    $isHeader = false;
+
+                    continue;
+                }
+
+                yield $row;
+            }
+        });
+    }
+
+    private function isEmptyRow(array $row): bool
+    {
+        foreach ($row as $cell) {
+            if ($cell !== null && $cell !== '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Log::channel('import')->error('Import chunk failed', [
+            'chunk_index' => $this->chunkIndex,
+            'total_chunks' => $this->totalChunks,
+            'creator_id' => $this->creatorId,
+            'exception' => $exception,
+            'job_id' => $this->job?->getJobId(),
+        ]);
+    }
+}

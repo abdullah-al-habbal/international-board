@@ -43,6 +43,7 @@ final class AdminPanelProvider extends PanelProvider
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: $config['widgets_path'])
             ->widgets([])
+            ->databaseNotifications()
             ->middleware($this->getMiddleware())
             ->authMiddleware($this->getAuthMiddleware());
     }

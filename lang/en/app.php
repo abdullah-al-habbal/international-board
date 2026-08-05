@@ -321,6 +321,22 @@ return [
             'assign_unassigned' => 'Assign Unassigned',
         ],
     ],
+    'import' => [
+        'actions' => [
+            'import_csv' => 'Import CSV',
+        ],
+        'fields' => [
+            'csv_file' => 'CSV File',
+        ],
+        'notifications' => [
+            'started_title' => 'Import Started',
+            'started_body' => 'Your file is being processed in the background. You will receive a notification when it is finished.',
+            'success_title' => 'Import Completed',
+            'success_body' => ':imported certifications imported successfully (:failed failed).',
+            'failed_title' => 'Import Failed',
+            'failed_body' => 'An error occurred during the import: :message',
+        ],
+    ],
     'not_assigned' => 'Not Assigned',
     'unassigned' => 'Unassigned',
     'no_center' => 'No Center',

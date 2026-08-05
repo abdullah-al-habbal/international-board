@@ -1,5 +1,5 @@
 <?php
-// /home/lenovo/work/projects/international-board/config/filesystems.php
+// config/filesystems.php
 declare(strict_types=1);
 return [
     'default' => env('FILESYSTEM_DISK', 'local'),

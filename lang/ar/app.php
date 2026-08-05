@@ -267,6 +267,22 @@ return [
             'assign_unassigned' => 'تخصيص غير المخصصة',
         ],
     ],
+    'import' => [
+        'actions' => [
+            'import_csv' => 'استيراد CSV',
+        ],
+        'fields' => [
+            'csv_file' => 'ملف CSV',
+        ],
+        'notifications' => [
+            'started_title' => 'بدأ الاستيراد',
+            'started_body' => 'يتم معالجة ملفك في الخلفية. ستتلقى إشعاراً عند الانتهاء.',
+            'success_title' => 'اكتمل الاستيراد',
+            'success_body' => 'تم استيراد :imported شهادة بنجاح (:failed فشلت).',
+            'failed_title' => 'فشل الاستيراد',
+            'failed_body' => 'حدث خطأ أثناء الاستيراد: :message',
+        ],
+    ],
     'not_assigned' => 'غير مخصص',
     'unassigned' => 'غير مخصص',
     'no_center' => 'لا يوجد مركز',
