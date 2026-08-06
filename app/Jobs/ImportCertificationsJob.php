@@ -18,6 +18,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Throwable;
 
 class ImportCertificationsJob implements ShouldQueue
@@ -32,6 +33,8 @@ class ImportCertificationsJob implements ShouldQueue
     public array $backoff = [60, 120];
 
     private const CHUNK_SIZE = 1000;
+
+    private const BATCH_JOBS_LIMIT = 500;
 
     public function __construct(
         public readonly string $filePath,
@@ -53,86 +56,151 @@ class ImportCertificationsJob implements ShouldQueue
         try {
             $chunkFiles = $this->splitIntoChunkFiles($chunkDir);
             $totalChunks = count($chunkFiles);
-            $jobs = [];
+            $totalGroups = (int) ceil($totalChunks / self::BATCH_JOBS_LIMIT);
 
-            foreach ($chunkFiles as $chunkIndex => $chunkPath) {
-                $jobs[] = new ImportCertificationChunkJob(
-                    $chunkPath,
-                    $this->userId,
-                    $chunkIndex,
-                    $totalChunks,
-                );
-            }
+            self::writeChunkManifest($chunkDir, $chunkFiles);
 
             $userId = $this->userId;
             $filePath = $this->filePath;
 
-            $batch = Bus::batch($jobs)
-                ->then(function (Batch $batch) use ($userId, $filePath, $chunkDir, $startedAt): void {
-                    Log::channel('import')->info('Import batch completed', [
-                        'batch_id' => $batch->id,
-                        'user_id' => $userId,
-                        'file' => $filePath,
-                        'pending_jobs' => $batch->pendingJobs,
-                        'failed_jobs' => $batch->failedJobs,
-                        'elapsed_time' => round(microtime(true) - $startedAt, 2),
-                    ]);
-
-                    self::cleanupFiles($chunkDir, $filePath);
-
-                    $user = User::find($userId);
-
-                    if ($user) {
-                        Notification::make()
-                            ->title(__('app.import.notifications.success_title'))
-                            ->body(__('app.import.notifications.success_body', [
-                                'imported' => $batch->totalJobs - $batch->failedJobs,
-                                'failed' => $batch->failedJobs,
-                            ]))
-                            ->success()
-                            ->sendToDatabase($user);
-                    }
-                })
-                ->catch(function (Batch $batch, Throwable $e) use ($userId, $filePath, $chunkDir, $startedAt): void {
-                    Log::channel('import')->error('Import batch failed', [
-                        'batch_id' => $batch->id,
-                        'user_id' => $userId,
-                        'file' => $filePath,
-                        'exception' => $e,
-                        'elapsed_time' => round(microtime(true) - $startedAt, 2),
-                    ]);
-
-                    self::cleanupFiles($chunkDir, $filePath);
-
-                    $user = User::find($userId);
-
-                    if ($user) {
-                        Notification::make()
-                            ->title(__('app.import.notifications.failed_title'))
-                            ->body(__('app.import.notifications.failed_body', ['message' => $e->getMessage()]))
-                            ->danger()
-                            ->sendToDatabase($user);
-                    }
-                })
-                ->dispatch();
+            $firstBatch = self::dispatchBatchGroup(0, $totalGroups, $userId, $filePath, $chunkDir, $startedAt);
 
             Log::channel('import')->info('Import split dispatched', [
                 'job_id' => $this->job?->getJobId(),
-                'user_id' => $this->userId,
-                'file' => $this->filePath,
-                'batch_id' => $batch->id,
+                'user_id' => $userId,
+                'file' => $filePath,
+                'batch_id' => $firstBatch->id,
                 'total_chunks' => $totalChunks,
+                'batch_groups' => $totalGroups,
                 'elapsed_time' => round(microtime(true) - $startedAt, 2),
                 'memory' => memory_get_usage(true),
             ]);
+        } catch (\RuntimeException $e) {
+            if (File::exists($chunkDir)) {
+                File::deleteDirectory($chunkDir);
+            }
+
+            self::notifyFailure($e, $this->userId, $this->filePath);
+
+            $this->fail($e);
         } catch (Throwable $e) {
             if (File::exists($chunkDir)) {
                 File::deleteDirectory($chunkDir);
             }
 
-            $this->notifyFailure($e);
+            self::notifyFailure($e, $this->userId, $this->filePath);
 
             throw $e;
+        }
+    }
+
+    /**
+     * Dispatches one sub-batch of chunk jobs. Each batch's completion handler
+     * dispatches the next sub-batch, keeping every serialised batch payload
+     * small regardless of the source file size.
+     */
+    private static function dispatchBatchGroup(
+        int $groupNumber,
+        int $totalGroups,
+        int $userId,
+        string $filePath,
+        string $chunkDir,
+        float $startedAt,
+    ): Batch {
+        $isLastGroup = $groupNumber === $totalGroups - 1;
+
+        $batch = Bus::batch(self::groupJobs($chunkDir, $groupNumber, $userId))
+            ->then(function (Batch $batch) use ($groupNumber, $totalGroups, $isLastGroup, $userId, $filePath, $chunkDir, $startedAt): void {
+                Log::channel('import')->info('Import batch completed', [
+                    'batch_id' => $batch->id,
+                    'group' => $groupNumber + 1,
+                    'groups_total' => $totalGroups,
+                    'user_id' => $userId,
+                    'pending_jobs' => $batch->pendingJobs,
+                    'failed_jobs' => $batch->failedJobs,
+                    'elapsed_time' => round(microtime(true) - $startedAt, 2),
+                ]);
+
+                if ($isLastGroup) {
+                    self::cleanupFiles($chunkDir, $filePath);
+
+                    self::notifySuccess($batch, $userId);
+
+                    return;
+                }
+
+                self::dispatchBatchGroup($groupNumber + 1, $totalGroups, $userId, $filePath, $chunkDir, $startedAt);
+            })
+            ->catch(function (Batch $batch, Throwable $e) use ($groupNumber, $totalGroups, $userId, $chunkDir, $startedAt): void {
+                Log::channel('import')->error('Import batch failed', [
+                    'batch_id' => $batch->id,
+                    'group' => $groupNumber + 1,
+                    'groups_total' => $totalGroups,
+                    'user_id' => $userId,
+                    'exception' => $e,
+                    'elapsed_time' => round(microtime(true) - $startedAt, 2),
+                ]);
+
+                self::cleanupFiles($chunkDir, $filePath);
+
+                self::notifyFailure($e, $userId, $filePath);
+            })
+            ->dispatch();
+
+        return $batch;
+    }
+
+    /**
+     * @return list<ImportCertificationChunkJob>
+     */
+    private static function groupJobs(string $chunkDir, int $groupNumber, int $userId): array
+    {
+        $chunkFiles = self::readChunkManifest($chunkDir);
+        $start = $groupNumber * self::BATCH_JOBS_LIMIT;
+        $slice = array_slice($chunkFiles, $start, self::BATCH_JOBS_LIMIT);
+        $totalChunks = count($chunkFiles);
+        $jobs = [];
+
+        foreach ($slice as $offset => $chunkPath) {
+            $jobs[] = new ImportCertificationChunkJob(
+                $chunkPath,
+                $userId,
+                $start + $offset,
+                $totalChunks,
+            );
+        }
+
+        return $jobs;
+    }
+
+    private static function writeChunkManifest(string $chunkDir, array $chunkFiles): void
+    {
+        File::put($chunkDir.'/manifest.json', (string) json_encode($chunkFiles));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function readChunkManifest(string $chunkDir): array
+    {
+        $manifest = File::get($chunkDir.'/manifest.json');
+
+        return json_decode($manifest, true) ?: [];
+    }
+
+    private static function notifySuccess(Batch $batch, int $userId): void
+    {
+        $user = User::find($userId);
+
+        if ($user) {
+            Notification::make()
+                ->title(__('app.import.notifications.success_title'))
+                ->body(__('app.import.notifications.success_body', [
+                    'imported' => $batch->totalJobs - $batch->failedJobs,
+                    'failed' => $batch->failedJobs,
+                ]))
+                ->success()
+                ->sendToDatabase($user);
         }
     }
 
@@ -146,6 +214,10 @@ class ImportCertificationsJob implements ShouldQueue
     {
         if (! File::makeDirectory($chunkDir, 0755, true)) {
             throw new \RuntimeException("Unable to create chunk directory: {$chunkDir}");
+        }
+
+        if (! is_file($this->filePath) || ! is_readable($this->filePath)) {
+            throw new \RuntimeException("Import file is not a readable regular file: {$this->filePath}");
         }
 
         $file = new \SplFileObject($this->filePath);
@@ -231,21 +303,20 @@ class ImportCertificationsJob implements ShouldQueue
         }
     }
 
-    private function notifyFailure(Throwable $e): void
+    private static function notifyFailure(Throwable $e, int $userId, string $filePath): void
     {
         Log::channel('import')->error('Import split failed', [
-            'job_id' => $this->job?->getJobId(),
-            'user_id' => $this->userId,
-            'file' => $this->filePath,
+            'user_id' => $userId,
+            'file' => $filePath,
             'exception' => $e,
         ]);
 
-        $user = User::find($this->userId);
+        $user = User::find($userId);
 
         if ($user) {
             Notification::make()
                 ->title(__('app.import.notifications.failed_title'))
-                ->body(__('app.import.notifications.failed_body', ['message' => $e->getMessage()]))
+                ->body(__('app.import.notifications.failed_body', ['message' => Str::limit($e->getMessage(), 300)]))
                 ->danger()
                 ->sendToDatabase($user);
         }

@@ -8,6 +8,7 @@ use App\Services\Certification\CertificationImportService;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -43,11 +44,25 @@ final class ImportCertificationChunkJob implements ShouldQueue
             'job_id' => $this->job?->getJobId(),
         ]);
 
-        $stats = $importService->importChunk(
-            $this->readChunkRows(),
-            $this->creatorId,
-            $this->readChunkHeaders(),
-        );
+        try {
+            $stats = $importService->importChunk(
+                $this->readChunkRows(),
+                $this->creatorId,
+                $this->readChunkHeaders(),
+            );
+        } catch (UniqueConstraintViolationException $e) {
+            Log::channel('import')->error('Import chunk failed: duplicate accreditation number', [
+                'chunk_index' => $this->chunkIndex,
+                'total_chunks' => $this->totalChunks,
+                'creator_id' => $this->creatorId,
+                'exception' => $e,
+                'job_id' => $this->job?->getJobId(),
+            ]);
+
+            $this->fail($e);
+
+            return;
+        }
 
         Log::channel('import')->info('Import chunk completed', [
             'chunk_index' => $this->chunkIndex,

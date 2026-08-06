@@ -40,7 +40,7 @@ final class CertificationImportService
         $this->warmUpHandlers();
 
         $batchInserter = static function (array $dataBatch): void {
-            DB::table('certifications')->insert($dataBatch);
+            self::upsertCertifications($dataBatch);
         };
 
         $this->logFileStart($filePath, $creatorId);
@@ -73,7 +73,7 @@ final class CertificationImportService
         $batchSize = 500;
         $dataBatch = [];
         $batchInserter = static function (array $dataBatch): void {
-            DB::table('certifications')->insert($dataBatch);
+            self::upsertCertifications($dataBatch);
         };
 
         foreach ($rows as $index => $row) {
@@ -123,6 +123,34 @@ final class CertificationImportService
         $this->countryHandler->warmUp();
         $this->trainerHandler->warmUp();
         $this->documentTypeHandler->warmUp();
+    }
+
+    /**
+     * Insert or update certifications keyed on the unique accreditation
+     * number so re-imports are idempotent.
+     *
+     * @param  list<array<string, mixed>>  $dataBatch
+     */
+    private static function upsertCertifications(array $dataBatch): void
+    {
+        DB::table('certifications')->upsert(
+            $dataBatch,
+            ['accreditation_number'],
+            [
+                'creator_type',
+                'creator_id',
+                'documentable_type',
+                'documentable_id',
+                'trainee_id',
+                'assigned_trainer_id',
+                'country_id',
+                'accredited_serial_number',
+                'document_code',
+                'accreditation_date',
+                'notes',
+                'updated_at',
+            ]
+        );
     }
 
     /**

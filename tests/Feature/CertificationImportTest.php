@@ -194,6 +194,21 @@ it('rejects rows with more columns than the header row', function () {
     @unlink($path);
 });
 
+it('updates existing certifications on re-import with the same accreditation number', function () {
+    $path = makeArabicImportCsv([
+        ['Ahmed Ali', 'IB100', '5', 'IB1005', 'Training Certificate', '2/14/2022', 'Maen Al Shammari', 'Syria', 'YAS', 'ملاحظة أولى'],
+    ]);
+
+    $firstStats = app(CertificationImportService::class)->importCertifications($path, 7);
+    $secondStats = app(CertificationImportService::class)->importCertifications($path, 7);
+
+    expect($firstStats)->toMatchArray(['total' => 1, 'success' => 1, 'failed' => 0])
+        ->and($secondStats)->toMatchArray(['total' => 1, 'success' => 1, 'failed' => 0])
+        ->and(DB::table('certifications')->count())->toBe(1);
+
+    @unlink($path);
+});
+
 it('sends a success database notification and deletes the file after a successful import', function () {
     $user = User::factory()->create();
     $path = makeImportCsv([
@@ -219,17 +234,12 @@ it('dispatches the import batch through the queue without serialization recursio
         ->and(storedNotificationTitles($user->id))->toBe([__('app.import.notifications.success_title')]);
 });
 
-it('sends a danger notification and rethrows on failure, keeping the file for retries', function () {
+it('fails fast on a directory path, sending a danger notification and keeping the file', function () {
     $user = User::factory()->create();
     $path = sys_get_temp_dir().'/import_fail_'.uniqid();
     mkdir($path);
 
-    try {
-        (new ImportCertificationsJob($path, $user->id))->handle(app(CertificationImportService::class));
-        $this->fail('Expected an exception to be thrown.');
-    } catch (Throwable $e) {
-        expect($e->getMessage())->not->toBeEmpty();
-    }
+    (new ImportCertificationsJob($path, $user->id))->handle(app(CertificationImportService::class));
 
     expect(storedNotificationTitles($user->id))->toBe([__('app.import.notifications.failed_title')])
         ->and(file_exists($path))->toBeTrue();
