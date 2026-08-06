@@ -15,22 +15,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-/**
- * The human end of entity resolution.
- *
- * Three modes, in ascending order of trust required:
- *
- *   --auto-exact   Merges only rows whose name_key is byte-identical. These are not
- *                  guesses: they are rows the normaliser already considers the same
- *                  entity, which exist only because the unique index was not there
- *                  yet. This is the pass that makes migration 3 applicable.
- *
- *   --review       Walks the pending fuzzy candidates one at a time and asks.
- *                  Every confirmation writes aliases, so each decision is made once.
- *
- *   --alias        Teaches a spelling directly, without deleting anything:
- *                  `entities:merge --alias --entity=countries --id=12 --spelling="like Syria"`
- */
 final class MergeEntitiesCommand extends Command
 {
     protected $signature = 'entities:merge
@@ -96,11 +80,6 @@ final class MergeEntitiesCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Byte-identical keys are safe to merge unattended: the normaliser has already
-     * decided they are one entity, and this is the state the unique index enforces
-     * from here on.
-     */
     private function mergeExactCollisions(EntityMerger $merger): int
     {
         $dryRun = (bool) $this->option('dry-run');
@@ -187,7 +166,7 @@ final class MergeEntitiesCommand extends Command
             }
 
             if ($choice === 'keep separate') {
-                // Recorded so the nightly scan never asks about this pair again.
+
                 $candidate->update([
                     'status' => EntityMergeCandidate::STATUS_REJECTED,
                     'reviewed_at' => Carbon::now(),

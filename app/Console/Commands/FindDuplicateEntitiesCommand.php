@@ -11,12 +11,6 @@ use App\Models\Trainer;
 use App\Services\Entity\MatchCandidateFinder;
 use Illuminate\Console\Command;
 
-/**
- * Populates the review queue. Schedule it nightly, or run it after a big import.
- *
- * It never changes an entity. Everything it produces is a suggestion in
- * entity_merge_candidates with status = pending.
- */
 final class FindDuplicateEntitiesCommand extends Command
 {
     protected $signature = 'entities:find-duplicates
@@ -51,8 +45,6 @@ final class FindDuplicateEntitiesCommand extends Command
 
             $this->line("  <fg=gray>{$result['scanned']} rows scanned, {$result['pairs']} candidates queued</>");
 
-            // Coverage limits are stated, not hidden: a skipped block is a group of
-            // records that were never compared to each other.
             foreach ($result['skipped_blocks'] as $strategy => $count) {
                 if ($count > 0) {
                     $this->components->warn(

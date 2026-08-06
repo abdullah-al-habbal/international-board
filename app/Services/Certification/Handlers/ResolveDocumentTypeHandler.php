@@ -4,56 +4,94 @@ declare(strict_types=1);
 
 namespace App\Services\Certification\Handlers;
 
+use App\Models\DocumentType;
 use App\Services\Certification\Exceptions\MissingValueException;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-final class ResolveDocumentTypeHandler
+final class ResolveDocumentTypeHandler extends ResolvesEntities
 {
-    use HasStringNormalization;
+    /** @var array<int, string>|null */
+    private ?array $pool = null;
 
-    private array $cache = [];
-
-    public function warmUp(): void
+    protected function table(): string
     {
-        DB::table('board_document_types')->orderBy('id')->chunk(5000, function ($docs): void {
-            foreach ($docs as $doc) {
-                $names = json_decode($doc->name, true);
-
-                if (is_array($names)) {
-                    foreach ($names as $name) {
-                        if (! empty($name)) {
-                            $this->cache[$this->normalizeString((string) $name)] = (int) $doc->id;
-                        }
-                    }
-                }
-            }
-        });
+        return 'board_document_types';
     }
 
+    protected function entityType(): string
+    {
+        return DocumentType::class;
+    }
+
+    protected function isClosedSet(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function noiseTokens(): array
+    {
+        return ['the', 'a', 'an', 'of', 'for', 'type', 'document', 'cert', 'unknown', 'na'];
+    }
+
+    protected function newEntityAttributes(string $rawName, string $normalized, string $key, array $context): array
+    {
+        return [
+            'key' => 'imported_'.Str::slug($rawName).'_'.Str::random(4),
+            'name' => json_encode(['en' => $rawName, 'ar' => $rawName], JSON_UNESCAPED_UNICODE),
+            'name_normalized' => $normalized,
+            'name_key' => $key,
+            'review_status' => 'provisional',
+        ];
+    }
+
+    protected function afterCreate(array $pending, array $created): void
+    {
+        foreach ($pending as $key => $item) {
+            $this->reportUnresolved($item['raw'], $created[$key] ?? null);
+        }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function suggestionPool(): array
+    {
+        if ($this->pool !== null) {
+            return $this->pool;
+        }
+
+        $this->pool = [];
+
+        foreach (DB::table('board_document_types')->select(['id', 'name'])->get() as $row) {
+            $decoded = json_decode((string) $row->name, true);
+            $label = is_array($decoded) ? (string) ($decoded['en'] ?? reset($decoded)) : (string) $row->name;
+
+            if ($label !== '') {
+                $this->pool[(int) $row->id] = $label;
+            }
+        }
+
+        return $this->pool;
+    }
+
+    /**
+     * @throws MissingValueException
+     */
     public function handle(string $name): int
     {
-        $now = Carbon::now();
-
-        if (empty(trim($name))) {
+        if (trim($name) === '') {
             throw new MissingValueException('document_type');
         }
 
-        $normalized = $this->normalizeString($name);
+        $id = $this->resolve($name);
 
-        if (isset($this->cache[$normalized])) {
-            return $this->cache[$normalized];
+        if ($id === null) {
+            throw new MissingValueException('document_type');
         }
-
-        $id = DB::table('board_document_types')->insertGetId([
-            'key' => 'imported_'.Str::slug($name).'_'.Str::random(4),
-            'name' => json_encode(['en' => $name, 'ar' => $name], JSON_UNESCAPED_UNICODE),
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-
-        $this->cache[$normalized] = $id;
 
         return $id;
     }

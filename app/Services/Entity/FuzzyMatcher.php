@@ -6,44 +6,10 @@ namespace App\Services\Entity;
 
 use App\Support\Text\NameNormalizer;
 
-/**
- * Similarity scoring for entity names.
- *
- * IMPORTANT — read before wiring this into an import path.
- *
- * This class exists to RANK candidates for a human, not to decide anything.
- * Measured against a real country list, the score distributions of "same entity"
- * and "different entity" pairs overlap completely:
- *
- *     libanon   -> lebanon    0.914   SAME       (want to match)
- *     ireland   -> iceland    0.914   DIFFERENT  (must not match)
- *     qater     -> qatar      0.907   SAME       (want to match)
- *     austria   -> australia  0.927   DIFFERENT  (must not match)
- *     allebanon -> lebanon    0.831   SAME       (want to match)
- *     niger     -> nigeria    0.943   DIFFERENT  (must not match)
- *
- * Any threshold low enough to catch "libanon" also merges Ireland into Iceland and
- * Niger into Nigeria. There is no safe cut-off, so there is no auto-merge here.
- * Human names are worse, not better: "Ali Hassan" and "Ali Hussain" are one edit
- * apart and are usually two people.
- *
- * Complexity note: score() is O(n·m) on string length. Never call it in a loop over
- * a full table during import — use MatchCandidateFinder, which blocks first.
- */
 final class FuzzyMatcher
 {
-    /** Beyond this length the pair is too long to be a plausible typo of each other. */
     private const LEVENSHTEIN_LIMIT = 255;
 
-    /**
-     * Composite similarity in [0.0, 1.0]. Higher is more similar.
-     *
-     * Three signals are combined by taking the maximum, because each catches a
-     * failure mode the others miss:
-     *   - Jaro-Winkler   : transpositions and shared prefixes ("egpyt"/"egypt")
-     *   - Levenshtein    : insertions and deletions ("moroco"/"morocco")
-     *   - Token Jaccard  : reordering ("Habal Abdullah"/"Abdullah Habal")
-     */
     public static function score(string $a, string $b): float
     {
         $left = NameNormalizer::normalize($a);
@@ -95,7 +61,6 @@ final class FuzzyMatcher
     {
         $jaro = self::jaro($a, $b);
 
-        // Winkler's prefix bonus is only defined for already-similar strings.
         if ($jaro < 0.7) {
             return $jaro;
         }
@@ -180,8 +145,6 @@ final class FuzzyMatcher
             return 1.0;
         }
 
-        // PHP's levenshtein() is byte-based and hard-capped; multibyte names that
-        // exceed it are not typo-variants of each other anyway.
         if ($max > self::LEVENSHTEIN_LIMIT) {
             return 0.0;
         }
@@ -189,7 +152,6 @@ final class FuzzyMatcher
         return 1.0 - levenshtein($a, $b) / $max;
     }
 
-    /** Order-independent overlap of whole tokens. */
     public static function tokenJaccard(string $a, string $b): float
     {
         $left = array_unique(explode(' ', $a));

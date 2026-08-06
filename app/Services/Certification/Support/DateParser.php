@@ -8,13 +8,6 @@ use App\Services\Certification\Exceptions\InvalidDateException;
 
 final class DateParser
 {
-    /**
-     * Tolerantly parse the date formats found in production imports.
-     *
-     * Returns a `Y-m-d` string, or throws InvalidDateException when the
-     * value cannot be unambiguously parsed into a real calendar date.
-     * An empty value yields null.
-     */
     public static function parse(string $value): ?string
     {
         $value = trim($value);

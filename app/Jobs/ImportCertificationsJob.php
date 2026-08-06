@@ -1,7 +1,5 @@
 <?php
 
-// filePath: app/Jobs/ImportCertificationsJob.php
-
 declare(strict_types=1);
 
 namespace App\Jobs;
@@ -94,11 +92,6 @@ class ImportCertificationsJob implements ShouldQueue
         }
     }
 
-    /**
-     * Dispatches one sub-batch of chunk jobs. Each batch's completion handler
-     * dispatches the next sub-batch, keeping every serialised batch payload
-     * small regardless of the source file size.
-     */
     private static function dispatchBatchGroup(
         int $groupNumber,
         int $totalGroups,
@@ -131,7 +124,7 @@ class ImportCertificationsJob implements ShouldQueue
 
                 self::dispatchBatchGroup($groupNumber + 1, $totalGroups, $userId, $filePath, $chunkDir, $startedAt);
             })
-            ->catch(function (Batch $batch, Throwable $e) use ($groupNumber, $totalGroups, $userId, $chunkDir, $startedAt): void {
+            ->catch(function (Batch $batch, Throwable $e) use ($groupNumber, $totalGroups, $userId, $filePath, $chunkDir, $startedAt): void {
                 Log::channel('import')->error('Import batch failed', [
                     'batch_id' => $batch->id,
                     'group' => $groupNumber + 1,

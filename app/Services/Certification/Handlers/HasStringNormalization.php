@@ -4,10 +4,17 @@ declare(strict_types=1);
 
 namespace App\Services\Certification\Handlers;
 
+use App\Support\Text\NameNormalizer;
+
 trait HasStringNormalization
 {
-    private function normalizeString(string $string): string
+    public function normalizeString(string $string): string
     {
-        return strtolower((string) preg_replace('/\s+/', '', $string));
+        return NameNormalizer::key($string);
+    }
+
+    public function canonicalString(string $string): string
+    {
+        return NameNormalizer::normalize($string);
     }
 }

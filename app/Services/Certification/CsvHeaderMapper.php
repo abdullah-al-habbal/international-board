@@ -14,7 +14,7 @@ final class CsvHeaderMapper
      * @var array<string, string>
      */
     private const ALIASES = [
-        // Arabic
+
         'اسم المتدرب' => 'trainee_name',
         'اسم المدرب' => 'trainer_name',
         'نوع الوثيقة' => 'document_type',
@@ -26,7 +26,7 @@ final class CsvHeaderMapper
         'الرمز' => 'document_code',
         'ملاحظات' => 'notes',
         'الحصول على الوثيقة ورقيا' => 'paper_delivery',
-        // English
+
         'trainee name' => 'trainee_name',
         'trainee_name' => 'trainee_name',
         'traineename' => 'trainee_name',

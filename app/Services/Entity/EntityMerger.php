@@ -15,18 +15,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
-/**
- * Folds a duplicate entity into a surviving one.
- *
- * The important side effect is the last step, not the first: every spelling the
- * duplicate answered to is rewritten as an alias of the survivor. That is what makes
- * the system get better instead of merely getting cleaned. A reviewer confirms
- * "allebanon is Lebanon" exactly once; from then on it is a rung-one exact hit on
- * every future import, with no fuzzy matching involved and no chance of drift.
- *
- * Merges are transactional and reference-complete: nothing is deleted until every
- * foreign key pointing at it has been repointed.
- */
 final class EntityMerger
 {
     /**
@@ -60,7 +48,7 @@ final class EntityMerger
         DocumentType::class => [
             'table' => 'board_document_types',
             'references' => [
-                // Polymorphic: only rows whose documentable_type matches are touched.
+
                 ['table' => 'certifications', 'column' => 'documentable_id'],
             ],
         ],
@@ -94,9 +82,6 @@ final class EntityMerger
             foreach ($config['references'] as $reference) {
                 $query = DB::table($reference['table'])->where($reference['column'], $duplicateId);
 
-                // Polymorphic columns must be constrained by their type column, or a
-                // trainee id would be rewritten because it happens to equal a
-                // document-type id.
                 if ($reference['column'] === 'documentable_id') {
                     $query->where('documentable_type', $entityType);
                 }
@@ -124,9 +109,6 @@ final class EntityMerger
         });
     }
 
-    /**
-     * Repoint the duplicate's aliases at the survivor and add its own key as one.
-     */
     private function transferAliases(string $entityType, int $survivorId, object $duplicate, ?int $reviewerId): int
     {
         $keys = [];
@@ -143,8 +125,6 @@ final class EntityMerger
                 $keys[$alias->alias_key] = $alias->alias_label;
             });
 
-        // Drop the duplicate's alias rows outright; they are re-inserted below
-        // pointing at the survivor, and the unique index would otherwise reject them.
         EntityAlias::query()
             ->where('aliasable_type', $entityType)
             ->where('aliasable_id', $duplicate->id)
@@ -202,10 +182,6 @@ final class EntityMerger
         return $name;
     }
 
-    /**
-     * Register an extra spelling for an entity without deleting anything.
-     * This is the "teach it "like Syria" means Syria" operation.
-     */
     public function addAlias(string $entityType, int $entityId, string $rawSpelling, ?int $reviewerId = null): bool
     {
         $key = NameNormalizer::key($rawSpelling);

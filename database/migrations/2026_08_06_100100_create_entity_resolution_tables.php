@@ -4,21 +4,9 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Step 2 of 3. The learning layer.
- *
- * entity_aliases is the dictionary the importer consults. Every confirmed merge
- * writes the losing spellings in here, so a variant a human resolves once is
- * resolved deterministically and instantly on every subsequent import.
- *
- * entity_merge_candidates is the review queue that fuzzy matching writes to.
- * Nothing in it takes effect until a human confirms it.
- *
- * import_unresolved_values records every value the importer could not confidently
- * resolve, so nobody has to grep logs to find out what the CSV actually contained.
- */
 return new class extends Migration
 {
     public function up(): void
@@ -29,20 +17,21 @@ return new class extends Migration
             $table->string('aliasable_type');
             $table->unsignedBigInteger('aliasable_id');
 
-            // Output of NameNormalizer::key() for this spelling.
-            $table->string('alias_key', 255)->collation('utf8mb4_bin');
+            $isSqlite = DB::connection()->getDriverName() === 'sqlite';
 
-            // The raw spelling as first seen, kept for auditability.
+            $aliasKey = $table->string('alias_key', 255);
+
+            if (! $isSqlite) {
+                $aliasKey->collation('utf8mb4_bin');
+            }
+
             $table->string('alias_label', 255)->nullable();
 
-            // manual | merge | seed | import
             $table->string('source', 20)->default('manual');
 
             $table->foreignId('created_by')->nullable();
             $table->timestamps();
 
-            // One key can only ever point at one entity of a given type. This is
-            // what makes alias lookup an unambiguous, deterministic resolution step.
             $table->unique(['aliasable_type', 'alias_key'], 'entity_aliases_type_key_unique');
             $table->index(['aliasable_type', 'aliasable_id'], 'entity_aliases_owner_idx');
         });
@@ -57,13 +46,10 @@ return new class extends Migration
             $table->string('primary_name', 255)->nullable();
             $table->string('duplicate_name', 255)->nullable();
 
-            // 0.0000 - 1.0000
             $table->decimal('score', 5, 4)->default(0);
 
-            // Which signal nominated the pair: block | article | noise | fuzzy
             $table->string('strategy', 20)->default('fuzzy');
 
-            // pending | merged | rejected
             $table->string('status', 20)->default('pending')->index();
 
             $table->foreignId('reviewed_by')->nullable();
@@ -84,11 +70,9 @@ return new class extends Migration
             $table->string('raw_value', 255);
             $table->string('normalized_value', 255)->nullable();
 
-            // What we did with it: created | skipped
             $table->string('resolution', 20)->default('created');
             $table->unsignedBigInteger('created_entity_id')->nullable();
 
-            // Ranked fuzzy suggestions, for the reviewer's convenience only.
             $table->json('suggestions')->nullable();
 
             $table->unsignedInteger('occurrences')->default(1);

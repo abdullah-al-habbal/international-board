@@ -4,54 +4,104 @@ declare(strict_types=1);
 
 namespace App\Services\Certification\Handlers;
 
-use Carbon\Carbon;
+use App\Models\Country;
 use Illuminate\Support\Facades\DB;
 
-final class ResolveCountryHandler
+final class ResolveCountryHandler extends ResolvesEntities
 {
-    use HasStringNormalization;
+    /** @var array<int, string>|null id => display name, built lazily for suggestions */
+    private ?array $pool = null;
 
-    private array $cache = [];
-
-    public function warmUp(): void
+    protected function table(): string
     {
-        DB::table('countries')->orderBy('id')->chunk(5000, function ($countries): void {
-            foreach ($countries as $country) {
-                $names = json_decode($country->name, true);
+        return 'countries';
+    }
 
-                if (is_array($names)) {
-                    foreach ($names as $name) {
-                        if (! empty($name)) {
-                            $this->cache[$this->normalizeString((string) $name)] = (int) $country->id;
-                        }
+    protected function entityType(): string
+    {
+        return Country::class;
+    }
+
+    protected function isClosedSet(): bool
+    {
+        return true;
+    }
+
+    protected function noiseTokens(): array
+    {
+        return [
+            'like', 'approx', 'approximately', 'about', 'maybe', 'probably',
+            'country', 'nationality', 'nation', 'from', 'of', 'the',
+            'unknown', 'unspecified', 'other', 'na', 'nil', 'none',
+        ];
+    }
+
+    protected function newEntityAttributes(string $rawName, string $normalized, string $key, array $context): array
+    {
+        return [
+            'name' => json_encode(['en' => $rawName, 'ar' => $rawName], JSON_UNESCAPED_UNICODE),
+            'name_normalized' => $normalized,
+            'name_key' => $key,
+            'review_status' => 'provisional',
+        ];
+    }
+
+    protected function afterCreate(array $pending, array $created): void
+    {
+        foreach ($pending as $key => $item) {
+            $this->reportUnresolved($item['raw'], $created[$key] ?? null);
+        }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function suggestionPool(): array
+    {
+        if ($this->pool !== null) {
+            return $this->pool;
+        }
+
+        $this->pool = [];
+
+        DB::table('countries')
+            ->select(['id', 'name'])
+            ->where('review_status', '!=', 'provisional')
+            ->orderBy('id')
+            ->chunk(1_000, function ($rows): void {
+                foreach ($rows as $row) {
+                    foreach ($this->decodeNames($row->name) as $name) {
+                        $this->pool[(int) $row->id] = $name;
                     }
                 }
-            }
-        });
+            });
+
+        return $this->pool;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function decodeNames(?string $json): array
+    {
+        if ($json === null || $json === '') {
+            return [];
+        }
+
+        $decoded = json_decode($json, true);
+
+        if (! is_array($decoded)) {
+            return [$json];
+        }
+
+        return array_values(array_filter(
+            array_map(static fn ($v): string => is_string($v) ? $v : '', $decoded),
+            static fn (string $v): bool => $v !== '',
+        ));
     }
 
     public function handle(string $name): ?int
     {
-        if (empty(trim($name))) {
-            return null;
-        }
-
-        $normalized = $this->normalizeString($name);
-
-        if (isset($this->cache[$normalized])) {
-            return $this->cache[$normalized];
-        }
-
-        $now = Carbon::now();
-
-        $id = DB::table('countries')->insertGetId([
-            'name' => json_encode(['en' => $name, 'ar' => $name], JSON_UNESCAPED_UNICODE),
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-
-        $this->cache[$normalized] = $id;
-
-        return $id;
+        return $this->resolve($name);
     }
 }

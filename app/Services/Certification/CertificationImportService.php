@@ -7,6 +7,7 @@ namespace App\Services\Certification;
 use App\Models\DocumentType;
 use App\Models\User;
 use App\Services\Certification\Exceptions\MissingValueException;
+use App\Services\Certification\Exceptions\RowLengthException;
 use App\Services\Certification\Handlers\ResolveCountryHandler;
 use App\Services\Certification\Handlers\ResolveDocumentTypeHandler;
 use App\Services\Certification\Handlers\ResolveTraineeHandler;
@@ -14,13 +15,22 @@ use App\Services\Certification\Handlers\ResolveTrainerHandler;
 use App\Services\Certification\Support\DateParser;
 use App\Services\Csv\CsvImportHandler;
 use Carbon\Carbon;
+use Generator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\LazyCollection;
 use Illuminate\Support\Str;
+use RuntimeException;
+use SplFileObject;
+use Throwable;
 
 final class CertificationImportService
 {
+    private const BATCH_SIZE = 500;
+
+    /** @var array<string, array<string, int>> */
+    private array $headerMapCache = [];
+
     public function __construct(
         private readonly CsvImportHandler $csvHandler,
         private readonly CsvHeaderMapper $headerMapper,
@@ -31,50 +41,117 @@ final class CertificationImportService
     ) {}
 
     /**
-     * @var array<string, array<string, int>>
+     * Single-file (non-chunked) import.
+     *
+     * This reads the CSV directly rather than going through CsvImportHandler::import().
+     * That callback-per-row API cannot express batched resolution: it hands rows over
+     * one at a time, which is precisely the shape that forced the old per-row lookups.
+     * $csvHandler is left injected for the rest of the class / other callers.
+     *
+     * @return array{total: int, success: int, failed: int, errors: list<string>}
      */
-    private array $headerMapCache = [];
-
     public function importCertifications(string $filePath, int $creatorId): array
     {
-        $this->warmUpHandlers();
-
-        $batchInserter = static function (array $dataBatch): void {
-            self::upsertCertifications($dataBatch);
-        };
-
         $this->logFileStart($filePath, $creatorId);
 
-        $stats = $this->csvHandler->import($filePath, function (array $row, int $index, array $headers) use ($creatorId) {
-            return $this->mapRow($row, $headers, $creatorId, $index);
-        }, [
-            'batch_size' => 500,
-            'batch_inserter' => $batchInserter,
-            'transaction' => true,
-            'has_header' => true,
-        ]);
+        if (! is_file($filePath) || ! is_readable($filePath)) {
+            throw new RuntimeException("Import file is not readable: {$filePath}");
+        }
+
+        $headers = $this->readHeaders($filePath);
+
+        if ($headers === []) {
+            throw new RuntimeException("Import file has no header row: {$filePath}");
+        }
+
+        $stats = $this->processRows($this->readRows($filePath), $creatorId, $headers);
 
         $this->logStats($stats, 'importCertifications', $filePath);
 
         return $stats;
     }
 
+    /**
+     * @return list<string>
+     */
+    private function readHeaders(string $filePath): array
+    {
+        foreach ($this->csvLines($filePath) as $row) {
+            return $row;
+        }
+
+        return [];
+    }
+
+    private function readRows(string $filePath): LazyCollection
+    {
+        return LazyCollection::make(function () use ($filePath): Generator {
+            $isHeader = true;
+
+            foreach ($this->csvLines($filePath) as $row) {
+                if ($isHeader) {
+                    $isHeader = false;
+
+                    continue;
+                }
+
+                yield $row;
+            }
+        });
+    }
+
+    /**
+     * @return Generator<int, list<string|null>>
+     */
+    private function csvLines(string $filePath): Generator
+    {
+        $file = new SplFileObject($filePath);
+        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::READ_AHEAD);
+        $file->setCsvControl(',');
+
+        foreach ($file as $row) {
+            if ($row === false || ! is_array($row)) {
+                continue;
+            }
+
+            $isEmpty = true;
+
+            foreach ($row as $cell) {
+                if ($cell !== null && $cell !== '') {
+                    $isEmpty = false;
+
+                    break;
+                }
+            }
+
+            if (! $isEmpty) {
+                yield $row;
+            }
+        }
+    }
+
+    /**
+     * @param  list<string>  $headers
+     * @return array{total: int, success: int, failed: int, errors: list<string>}
+     */
     public function importChunk(LazyCollection $rows, int $creatorId, array $headers): array
     {
-        $this->warmUpHandlers();
+        $stats = $this->processRows($rows, $creatorId, $headers);
 
-        $stats = [
-            'total' => 0,
-            'success' => 0,
-            'failed' => 0,
-            'errors' => [],
-        ];
+        $this->logStats($stats, 'importChunk', (string) $creatorId);
 
-        $batchSize = 500;
-        $dataBatch = [];
-        $batchInserter = static function (array $dataBatch): void {
-            self::upsertCertifications($dataBatch);
-        };
+        return $stats;
+    }
+
+    /**
+     * @param  iterable<int, mixed>  $rows
+     * @param  list<string>  $headers
+     * @return array{total: int, success: int, failed: int, errors: list<string>}
+     */
+    private function processRows(iterable $rows, int $creatorId, array $headers): array
+    {
+        $stats = ['total' => 0, 'success' => 0, 'failed' => 0, 'errors' => []];
+        $buffer = [];
 
         foreach ($rows as $index => $row) {
             if (! is_array($row)) {
@@ -82,22 +159,93 @@ final class CertificationImportService
             }
 
             $stats['total']++;
+            $buffer[$index] = $row;
 
+            if (count($buffer) >= self::BATCH_SIZE) {
+                $this->flushBatch($buffer, $headers, $creatorId, $stats);
+                $buffer = [];
+            }
+        }
+
+        if ($buffer !== []) {
+            $this->flushBatch($buffer, $headers, $creatorId, $stats);
+        }
+
+        return $stats;
+    }
+
+    /**
+     * Resolve every entity the batch mentions, then map and write the batch.
+     *
+     * @param  array<int, array<int, string|null>>  $buffer
+     * @param  list<string>  $headers
+     * @param  array{total: int, success: int, failed: int, errors: list<string>}  $stats
+     */
+    private function flushBatch(array $buffer, array $headers, int $creatorId, array &$stats): void
+    {
+        $mapping = $this->resolveHeaderMap($headers);
+        $extracted = [];
+
+        $countryNames = [];
+        $documentTypeNames = [];
+        $trainerNames = [];
+
+        foreach ($buffer as $index => $row) {
             try {
-                $result = $this->mapRow($row, $headers, $creatorId, $index);
+                $values = $this->extractValues($row, $headers, $mapping);
+            } catch (RowLengthException $exception) {
+                $stats['failed']++;
 
-                $dataBatch[] = $result;
-
-                if (count($dataBatch) >= $batchSize) {
-                    DB::transaction(function () use ($batchInserter, &$dataBatch): void {
-                        $batchInserter($dataBatch);
-                    });
-
-                    $dataBatch = [];
+                if (count($stats['errors']) < 100) {
+                    $stats['errors'][] = $exception->getMessage();
                 }
 
+                continue;
+            }
+
+            $extracted[$index] = $values;
+
+            if ($values['country_name'] !== '') {
+                $countryNames[$values['country_name']] = true;
+            }
+
+            if ($values['document_type'] !== '') {
+                $documentTypeNames[$values['document_type']] = true;
+            }
+
+            if ($values['trainer_name'] !== '') {
+                $trainerNames[$values['trainer_name']] = true;
+            }
+        }
+
+        $countries = $this->countryHandler->resolveMany(array_keys($countryNames));
+        $documentTypes = $this->documentTypeHandler->resolveMany(array_keys($documentTypeNames));
+        $trainers = $this->trainerHandler->resolveMany(array_keys($trainerNames));
+
+        $traineeNames = [];
+        $traineeContext = [];
+
+        foreach ($extracted as $values) {
+            if ($values['trainee_name'] === '') {
+                continue;
+            }
+
+            $traineeNames[$values['trainee_name']] = true;
+
+            $traineeContext[$values['trainee_name']] ??= [
+                'country_id' => $countries[$values['country_name']] ?? null,
+            ];
+        }
+
+        $trainees = $this->traineeHandler->resolveMany(array_keys($traineeNames), $traineeContext);
+
+        $payload = [];
+
+        foreach ($extracted as $index => $values) {
+            try {
+                $payload[] = $this->buildRow($values, $creatorId, $index, $countries, $documentTypes, $trainers, $trainees);
                 $stats['success']++;
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 $stats['failed']++;
 
                 if (count($stats['errors']) < 100) {
@@ -106,28 +254,122 @@ final class CertificationImportService
             }
         }
 
-        if (! empty($dataBatch)) {
-            DB::transaction(function () use ($batchInserter, $dataBatch): void {
-                $batchInserter($dataBatch);
-            });
+        if ($payload === []) {
+            return;
         }
 
-        $this->logStats($stats, 'importChunk', (string) $creatorId);
-
-        return $stats;
-    }
-
-    private function warmUpHandlers(): void
-    {
-        $this->traineeHandler->warmUp();
-        $this->countryHandler->warmUp();
-        $this->trainerHandler->warmUp();
-        $this->documentTypeHandler->warmUp();
+        DB::transaction(static function () use ($payload): void {
+            self::upsertCertifications($payload);
+        });
     }
 
     /**
-     * Insert or update certifications keyed on the unique accreditation
-     * number so re-imports are idempotent.
+     * @param  array<int, string|null>  $row
+     * @param  list<string>  $headers
+     * @param  array<string, int>  $mapping
+     * @return array<string, string>
+     */
+    private function extractValues(array $row, array $headers, array $mapping): array
+    {
+        if (count($row) > count($headers)) {
+            throw new RowLengthException(count($headers), count($row));
+        }
+
+        $row = array_pad($row, count($headers), null);
+
+        $value = static function (?int $index) use ($row): string {
+            if ($index === null || ! isset($row[$index])) {
+                return '';
+            }
+
+            return trim((string) $row[$index]);
+        };
+
+        return [
+            'trainee_name' => $value($mapping['trainee_name'] ?? null),
+            'country_name' => $value($mapping['country_name'] ?? null),
+            'trainer_name' => $value($mapping['trainer_name'] ?? null),
+            'document_type' => $value($mapping['document_type'] ?? null),
+            'accredited_serial_number' => $value($mapping['accredited_serial_number'] ?? null),
+            'document_code' => $value($mapping['document_code'] ?? null),
+            'accreditation_number' => $value($mapping['accreditation_number'] ?? null),
+            'accreditation_date' => $value($mapping['accreditation_date'] ?? null),
+            'notes' => $value($mapping['notes'] ?? null),
+            'column_count' => (string) count($row),
+        ];
+    }
+
+    /**
+     * @param  array<string, string>  $values
+     * @param  array<string, int>  $countries
+     * @param  array<string, int>  $documentTypes
+     * @param  array<string, int>  $trainers
+     * @param  array<string, int>  $trainees
+     * @return array<string, mixed>
+     */
+    private function buildRow(
+        array $values,
+        int $creatorId,
+        int $rowIndex,
+        array $countries,
+        array $documentTypes,
+        array $trainers,
+        array $trainees,
+    ): array {
+        if ($values['trainee_name'] === '') {
+            throw new MissingValueException('trainee_name', $rowIndex);
+        }
+
+        $traineeId = $trainees[$values['trainee_name']] ?? null;
+
+        if ($traineeId === null) {
+            throw new MissingValueException('trainee_name', $rowIndex);
+        }
+
+        $documentTypeId = $values['document_type'] === ''
+            ? null
+            : ($documentTypes[$values['document_type']] ?? null);
+
+        if ($documentTypeId === null) {
+            // Log::channel('import')->warning('Row imported without a document type', [
+            //     'row' => $rowIndex,
+            //     'trainee' => $values['trainee_name'],
+            // ]);
+        }
+
+        $now = Carbon::now();
+        $dateString = $now->format('Ymd');
+
+        return [
+            'creator_type' => User::class,
+            'creator_id' => $creatorId,
+            'documentable_type' => $documentTypeId !== null ? DocumentType::class : null,
+            'documentable_id' => $documentTypeId,
+            'trainee_id' => $traineeId,
+            'assigned_trainer_id' => $values['trainer_name'] === ''
+                ? null
+                : ($trainers[$values['trainer_name']] ?? null),
+            'country_id' => $values['country_name'] === ''
+                ? null
+                : ($countries[$values['country_name']] ?? null),
+            'accredited_serial_number' => $values['accredited_serial_number'] !== ''
+                ? $values['accredited_serial_number']
+                : 'SN-'.$dateString.'-'.strtoupper(Str::random(6)),
+            'document_code' => $values['document_code'] !== ''
+                ? $values['document_code']
+                : 'CERT-'.$dateString.'-'.strtoupper(Str::random(4)),
+            'accreditation_number' => $values['accreditation_number'] !== ''
+                ? $values['accreditation_number']
+                : null,
+            'accreditation_date' => DateParser::parse($values['accreditation_date']),
+            'notes' => $values['notes'] !== '' ? $values['notes'] : null,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ];
+    }
+
+    /**
+     * Keyed on accreditation_number so re-imports are idempotent.
      *
      * @param  list<array<string, mixed>>  $dataBatch
      */
@@ -137,100 +379,12 @@ final class CertificationImportService
             $dataBatch,
             ['accreditation_number'],
             [
-                'creator_type',
-                'creator_id',
-                'documentable_type',
-                'documentable_id',
-                'trainee_id',
-                'assigned_trainer_id',
-                'country_id',
-                'accredited_serial_number',
-                'document_code',
-                'accreditation_date',
-                'notes',
-                'updated_at',
+                'creator_type', 'creator_id', 'documentable_type', 'documentable_id',
+                'trainee_id', 'assigned_trainer_id', 'country_id',
+                'accredited_serial_number', 'document_code', 'accreditation_date',
+                'notes', 'updated_at',
             ]
         );
-    }
-
-    /**
-     * @param  list<string>  $headers
-     * @return array<string, mixed>
-     */
-    private function mapRow(array $row, array $headers, int $creatorId, int $rowIndex): array
-    {
-        $mapping = $this->resolveHeaderMap($headers);
-
-        if (count($row) > count($headers)) {
-            throw new \RuntimeException('Row has '.count($row).' columns, expected '.count($headers)." (row {$rowIndex}).");
-        }
-
-        $row = array_pad($row, count($headers), null);
-
-        $value = static function (array $data, ?int $index): string {
-            if ($index === null || ! isset($data[$index])) {
-                return '';
-            }
-
-            return trim((string) $data[$index]);
-        };
-
-        $traineeName = $value($row, $mapping['trainee_name'] ?? null);
-
-        if ($traineeName === '') {
-            throw new MissingValueException('trainee_name', $rowIndex);
-        }
-
-        $now = Carbon::now();
-        $dateString = $now->format('Ymd');
-
-        $documentTypeName = $value($row, $mapping['document_type'] ?? null);
-        $documentTypeId = $documentTypeName !== ''
-            ? $this->documentTypeHandler->handle($documentTypeName)
-            : null;
-
-        $countryName = $value($row, $mapping['country_name'] ?? null);
-        $countryId = $countryName !== '' ? $this->countryHandler->handle($countryName) : null;
-
-        $traineeId = $this->traineeHandler->handle($traineeName, $countryId);
-
-        $trainerName = $value($row, $mapping['trainer_name'] ?? null);
-        $trainerId = $trainerName !== '' ? $this->trainerHandler->handle($trainerName) : null;
-
-        $serialNumber = $value($row, $mapping['accredited_serial_number'] ?? null);
-        $documentCode = $value($row, $mapping['document_code'] ?? null);
-        $accreditationNumber = $value($row, $mapping['accreditation_number'] ?? null);
-        $notes = $value($row, $mapping['notes'] ?? null);
-
-        if ($documentTypeId === null) {
-            Log::channel('import')->warning('Row imported without a document type', [
-                'row' => $rowIndex,
-                'trainee' => $traineeName,
-            ]);
-        }
-
-        return [
-            'creator_type' => User::class,
-            'creator_id' => $creatorId,
-            'documentable_type' => $documentTypeId !== null ? DocumentType::class : null,
-            'documentable_id' => $documentTypeId,
-            'trainee_id' => $traineeId,
-            'assigned_trainer_id' => $trainerId,
-            'country_id' => $countryId,
-            'accredited_serial_number' => $serialNumber !== ''
-                ? $serialNumber
-                : 'SN-'.$dateString.'-'.strtoupper(Str::random(6)),
-            'document_code' => $documentCode !== ''
-                ? $documentCode
-                : 'CERT-'.$dateString.'-'.strtoupper(Str::random(4)),
-            'accreditation_number' => $accreditationNumber !== ''
-                ? $accreditationNumber
-                : null,
-            'accreditation_date' => DateParser::parse($value($row, $mapping['accreditation_date'] ?? null)),
-            'notes' => $notes !== '' ? $notes : null,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ];
     }
 
     /**

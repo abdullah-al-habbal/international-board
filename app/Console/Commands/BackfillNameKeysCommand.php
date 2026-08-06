@@ -13,19 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Populates name_normalized / name_key on existing rows, and seeds entity_aliases
- * with every language variant found in the JSON name columns.
- *
- * Run this after migration 1 and before migration 3 (the unique indexes). It also
- * prints the collisions it finds, which is the list of merges you actually have to
- * do before the unique index can be created.
- *
- * Safe to re-run. Re-run it whenever NameNormalizer's rules change — the keys are
- * derived data, and that is exactly why they are stored in a plain column rather
- * than a generated one: changing the rules is a backfill, not an ALTER TABLE on a
- * live table.
- */
 final class BackfillNameKeysCommand extends Command
 {
     protected $signature = 'entities:backfill-keys
@@ -95,9 +82,6 @@ final class BackfillNameKeysCommand extends Command
 
                     $updated++;
 
-                    // Every additional language spelling becomes an alias, which is
-                    // how "سوريا" resolves to the same country as "Syria" without any
-                    // cross-script transliteration guesswork.
                     foreach (array_slice($variants, 1) as $variant) {
                         $key = NameNormalizer::key($variant);
 
@@ -174,7 +158,6 @@ final class BackfillNameKeysCommand extends Command
             return [$json];
         }
 
-        // 'en' first so it becomes the primary key; the rest become aliases.
         $ordered = [];
 
         if (isset($decoded['en']) && is_string($decoded['en'])) {

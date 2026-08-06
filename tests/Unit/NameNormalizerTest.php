@@ -10,11 +10,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * These tests are the specification for what the importer will and will not treat
- * as the same entity. If a rule changes here, `entities:backfill-keys` must be
- * re-run, because every stored name_key is derived from this class.
- */
 final class NameNormalizerTest extends TestCase
 {
     /**
@@ -30,14 +25,16 @@ final class NameNormalizerTest extends TestCase
                 'abdullah  AL   HABAL ',
                 'ABDULLAH AL_HABAL',
                 "'Abdullah al-Habal'",
-                'Abdullah Al‑Habal',   // U+2011 non-breaking hyphen
+                'Abdullah Al‑Habal',
+
                 'Abdullah  Al . Habal',
             ]],
             'arabic diacritics and spacing' => [[
                 'عبد الله الحبال',
                 'عَبْدُ اللهِ الحَبّال',
                 'عبدالله الحبال',
-                'عبــد الله الحبال',    // tatweel
+                'عبــد الله الحبال',
+
             ]],
             'arabic hamza carriers' => [[
                 'أحمد',
@@ -98,8 +95,7 @@ final class NameNormalizerTest extends TestCase
     #[Test]
     public function block_key_is_order_independent_for_review_candidates(): void
     {
-        // Reordering must not auto-merge (see distinctEntities) but must still be
-        // nominated for a human to look at.
+
         $this->assertSame(
             NameNormalizer::blockKey('Habal, Abdullah Al'),
             NameNormalizer::blockKey('Abdullah Al-Habal'),
@@ -111,11 +107,8 @@ final class NameNormalizerTest extends TestCase
     {
         $this->assertSame('lebanon', NameNormalizer::articleStrippedKey('allebanon'));
 
-        // "Ali" must not be mangled into "i" — too short after stripping.
         $this->assertNull(NameNormalizer::articleStrippedKey('Ali'));
 
-        // "Algeria" is a real name; the exact key wins before this is ever consulted,
-        // and the stripped candidate has to miss on an exact lookup to be discarded.
         $this->assertSame('geria', NameNormalizer::articleStrippedKey('Algeria'));
         $this->assertSame('algeria', NameNormalizer::key('Algeria'));
     }
@@ -128,11 +121,8 @@ final class NameNormalizerTest extends TestCase
         $this->assertSame('syria', NameNormalizer::keyWithoutNoise('like Syria', $noise));
         $this->assertSame('syria', NameNormalizer::keyWithoutNoise('Syria (approx)', $noise));
 
-        // Nothing removed -> null, so the caller skips a pointless second lookup.
         $this->assertNull(NameNormalizer::keyWithoutNoise('Syria', $noise));
 
-        // "South Sudan" has no noise tokens and must stay whole — collapsing it to
-        // "Sudan" would be a different country.
         $this->assertNull(NameNormalizer::keyWithoutNoise('South Sudan', $noise));
     }
 
@@ -146,11 +136,6 @@ final class NameNormalizerTest extends TestCase
         $this->assertNotSame(NameNormalizer::key($a), NameNormalizer::key($b));
     }
 
-    /**
-     * Guards the decision NOT to auto-merge on similarity. If this test ever starts
-     * failing it means the scores separated, and only then is a threshold worth
-     * revisiting.
-     */
     #[Test]
     public function similarity_scores_of_same_and_different_entities_overlap(): void
     {

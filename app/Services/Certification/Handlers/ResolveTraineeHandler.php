@@ -4,49 +4,43 @@ declare(strict_types=1);
 
 namespace App\Services\Certification\Handlers;
 
+use App\Models\Trainee;
 use App\Services\Certification\Exceptions\MissingValueException;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
-final class ResolveTraineeHandler
+final class ResolveTraineeHandler extends ResolvesEntities
 {
-    use HasStringNormalization;
-
-    private array $cache = [];
-
-    public function warmUp(): void
+    protected function table(): string
     {
-        DB::table('trainees')->orderBy('id')->chunk(5000, function ($trainees): void {
-            foreach ($trainees as $trainee) {
-                if (! empty($trainee->name)) {
-                    $this->cache[$this->normalizeString((string) $trainee->name)] = (int) $trainee->id;
-                }
-            }
-        });
+        return 'trainees';
+    }
+
+    protected function entityType(): string
+    {
+        return Trainee::class;
+    }
+
+    protected function newEntityAttributes(string $rawName, string $normalized, string $key, array $context): array
+    {
+        return [
+            'name' => $rawName,
+            'name_normalized' => $normalized,
+            'name_key' => $key,
+            'country_id' => $context['country_id'] ?? null,
+            'review_status' => 'confirmed',
+        ];
     }
 
     public function handle(string $name, ?int $countryId): int
     {
-        $now = Carbon::now();
-
-        if (empty(trim($name))) {
+        if (trim($name) === '') {
             throw new MissingValueException('trainee_name');
         }
 
-        $normalized = $this->normalizeString($name);
+        $id = $this->resolve($name, ['country_id' => $countryId]);
 
-        if (isset($this->cache[$normalized])) {
-            return $this->cache[$normalized];
+        if ($id === null) {
+            throw new MissingValueException('trainee_name');
         }
-
-        $id = DB::table('trainees')->insertGetId([
-            'name' => $name,
-            'country_id' => $countryId,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-
-        $this->cache[$normalized] = $id;
 
         return $id;
     }
