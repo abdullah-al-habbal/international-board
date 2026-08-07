@@ -1,4 +1,5 @@
 <?php
+// app/Models/CertifiedCenterFinancialRequest.php
 
 declare(strict_types=1);
 
@@ -51,3 +52,4 @@ class CertifiedCenterFinancialRequest extends Model
         return $this->belongsTo(CertifiedCenterPaymentAgentPerson::class, 'agent_person_id');
     }
 }
+

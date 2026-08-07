@@ -115,13 +115,11 @@ class TrainerForm
 
             DateTimePicker::make('accreditation_period_start')
                 ->label(__('app.accreditation_period_start'))
-                ->required()
                 ->default(now())
                 ->columnSpan(1),
 
             DateTimePicker::make('accreditation_period_end')
                 ->label(__('app.accreditation_period_end'))
-                ->required()
                 ->after('accreditation_period_start')
                 ->columnSpan(1),
 

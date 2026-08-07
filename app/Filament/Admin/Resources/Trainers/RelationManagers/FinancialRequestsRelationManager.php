@@ -1,4 +1,5 @@
 <?php
+// filePath: app/Filament/Admin/Resources/Trainers/RelationManagers/FinancialRequestsRelationManager.php
 
 namespace App\Filament\Admin\Resources\Trainers\RelationManagers;
 

@@ -1,4 +1,5 @@
 <?php
+// filePath: app/Models/TrainerFinancialRequest.php
 
 declare(strict_types=1);
 
