@@ -1,8 +1,8 @@
-{{-- resources/views/web/certifications/partials/certificate_body.blade.php --}}
+{{-- filePath: resources/views/web/certifications/partials/certificate_body.blade.php --}}
 <div class="certificate-body">
     <img
         class="certificate-logo"
-        src="{{ asset($appSettings['site_logo_primary'] ?? 'assets/website/images/logo.png') }}"
+        src="{{ asset($appSettings['site_logo_primary'] ?? 'assets/website/images/logo.webp') }}"
         alt="{{ __('web.site_logo') }}"
         loading="lazy"
     >

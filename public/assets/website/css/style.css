@@ -343,6 +343,12 @@ a:focus, a:hover {
 .navigation .logo-default {
   display: none;
 }
+.navigation .logo-default,
+.navigation .logo-white {
+  max-height: 45px;
+  width: auto;
+  object-fit: contain;
+}
 .navigation .dropdown-toggle::before, .navigation .dropdown-toggle::after {
   display: none;
 }

@@ -8,11 +8,6 @@ use App\Services\Certification\Exceptions\MissingHeaderException;
 
 final class CsvHeaderMapper
 {
-    /**
-     * Normalized header -> internal key.
-     *
-     * @var array<string, string>
-     */
     private const ALIASES = [
 
         'اسم المتدرب' => 'trainee_name',
@@ -55,20 +50,7 @@ final class CsvHeaderMapper
         'paper delivery' => 'paper_delivery',
         'paper_delivery' => 'paper_delivery',
     ];
-
-    /**
-     * Columns without which a certification row is meaningless.
-     *
-     * @var list<string>
-     */
     private const REQUIRED = ['trainee_name'];
-
-    /**
-     * Normalize raw header cells and return internal key -> column index.
-     *
-     * @param  list<string>  $rawHeaders
-     * @return array<string, int>
-     */
     public function map(array $rawHeaders): array
     {
         $mapping = [];

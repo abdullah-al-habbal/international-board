@@ -79,9 +79,6 @@ final class ResolveCountryHandler extends ResolvesEntities
         return $this->pool;
     }
 
-    /**
-     * @return list<string>
-     */
     private function decodeNames(?string $json): array
     {
         if ($json === null || $json === '') {

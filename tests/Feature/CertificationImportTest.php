@@ -217,7 +217,10 @@ it('sends a success database notification and deletes the file after a successfu
 
     (new ImportCertificationsJob($path, $user->id))->handle(app(CertificationImportService::class));
 
-    expect(storedNotificationTitles($user->id))->toBe([__('app.import.notifications.success_title')])
+    expect(storedNotificationTitles($user->id))->toBe([
+        __('app.import.notifications.chunk_success_title'),
+        __('app.import.notifications.success_title'),
+    ])
         ->and(file_exists($path))->toBeFalse();
 });
 
@@ -231,7 +234,10 @@ it('dispatches the import batch through the queue without serialization recursio
 
     expect(DB::table('job_batches')->count())->toBe(1)
         ->and(file_exists($path))->toBeFalse()
-        ->and(storedNotificationTitles($user->id))->toBe([__('app.import.notifications.success_title')]);
+        ->and(storedNotificationTitles($user->id))->toBe([
+            __('app.import.notifications.chunk_success_title'),
+            __('app.import.notifications.success_title'),
+        ]);
 });
 
 it('fails fast on a directory path, sending a danger notification and keeping the file', function () {

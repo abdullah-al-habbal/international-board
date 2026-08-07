@@ -20,7 +20,7 @@ final class SeoService
         $meta = [
             'title' => $title,
             'description' => $description ?? __('web.pages.home.hero_text'),
-            'image' => $image ?? asset('assets/website/images/logo.png'),
+            'image' => $image ?? asset('assets/website/images/logo.webp'),
             'url' => $url ?? url()->current(),
         ];
 

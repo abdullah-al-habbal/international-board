@@ -49,7 +49,7 @@ abstract class ResolvesEntities
         $wanted = [];
 
         foreach ($rawNames as $raw) {
-            $raw = trim($raw);
+            $raw = trim((string) $raw);
 
             if ($raw === '') {
                 continue;
@@ -97,7 +97,7 @@ abstract class ResolvesEntities
 
     public function resolve(string $rawName, array $context = []): ?int
     {
-        $rawName = trim($rawName);
+        $rawName = trim((string) $rawName);
 
         if ($rawName === '') {
             return null;

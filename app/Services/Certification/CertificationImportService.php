@@ -13,7 +13,6 @@ use App\Services\Certification\Handlers\ResolveDocumentTypeHandler;
 use App\Services\Certification\Handlers\ResolveTraineeHandler;
 use App\Services\Certification\Handlers\ResolveTrainerHandler;
 use App\Services\Certification\Support\DateParser;
-use App\Services\Csv\CsvImportHandler;
 use Carbon\Carbon;
 use Generator;
 use Illuminate\Support\Facades\DB;
@@ -28,11 +27,9 @@ final class CertificationImportService
 {
     private const BATCH_SIZE = 500;
 
-    /** @var array<string, array<string, int>> */
     private array $headerMapCache = [];
 
     public function __construct(
-        private readonly CsvImportHandler $csvHandler,
         private readonly CsvHeaderMapper $headerMapper,
         private readonly ResolveTraineeHandler $traineeHandler,
         private readonly ResolveCountryHandler $countryHandler,
@@ -40,16 +37,6 @@ final class CertificationImportService
         private readonly ResolveDocumentTypeHandler $documentTypeHandler,
     ) {}
 
-    /**
-     * Single-file (non-chunked) import.
-     *
-     * This reads the CSV directly rather than going through CsvImportHandler::import().
-     * That callback-per-row API cannot express batched resolution: it hands rows over
-     * one at a time, which is precisely the shape that forced the old per-row lookups.
-     * $csvHandler is left injected for the rest of the class / other callers.
-     *
-     * @return array{total: int, success: int, failed: int, errors: list<string>}
-     */
     public function importCertifications(string $filePath, int $creatorId): array
     {
         $this->logFileStart($filePath, $creatorId);
@@ -71,9 +58,6 @@ final class CertificationImportService
         return $stats;
     }
 
-    /**
-     * @return list<string>
-     */
     private function readHeaders(string $filePath): array
     {
         foreach ($this->csvLines($filePath) as $row) {
@@ -99,10 +83,7 @@ final class CertificationImportService
             }
         });
     }
-
-    /**
-     * @return Generator<int, list<string|null>>
-     */
+    
     private function csvLines(string $filePath): Generator
     {
         $file = new SplFileObject($filePath);
@@ -130,10 +111,6 @@ final class CertificationImportService
         }
     }
 
-    /**
-     * @param  list<string>  $headers
-     * @return array{total: int, success: int, failed: int, errors: list<string>}
-     */
     public function importChunk(LazyCollection $rows, int $creatorId, array $headers): array
     {
         $stats = $this->processRows($rows, $creatorId, $headers);
@@ -143,11 +120,6 @@ final class CertificationImportService
         return $stats;
     }
 
-    /**
-     * @param  iterable<int, mixed>  $rows
-     * @param  list<string>  $headers
-     * @return array{total: int, success: int, failed: int, errors: list<string>}
-     */
     private function processRows(iterable $rows, int $creatorId, array $headers): array
     {
         $stats = ['total' => 0, 'success' => 0, 'failed' => 0, 'errors' => []];
@@ -174,13 +146,6 @@ final class CertificationImportService
         return $stats;
     }
 
-    /**
-     * Resolve every entity the batch mentions, then map and write the batch.
-     *
-     * @param  array<int, array<int, string|null>>  $buffer
-     * @param  list<string>  $headers
-     * @param  array{total: int, success: int, failed: int, errors: list<string>}  $stats
-     */
     private function flushBatch(array $buffer, array $headers, int $creatorId, array &$stats): void
     {
         $mapping = $this->resolveHeaderMap($headers);
@@ -263,12 +228,6 @@ final class CertificationImportService
         });
     }
 
-    /**
-     * @param  array<int, string|null>  $row
-     * @param  list<string>  $headers
-     * @param  array<string, int>  $mapping
-     * @return array<string, string>
-     */
     private function extractValues(array $row, array $headers, array $mapping): array
     {
         if (count($row) > count($headers)) {
@@ -299,14 +258,6 @@ final class CertificationImportService
         ];
     }
 
-    /**
-     * @param  array<string, string>  $values
-     * @param  array<string, int>  $countries
-     * @param  array<string, int>  $documentTypes
-     * @param  array<string, int>  $trainers
-     * @param  array<string, int>  $trainees
-     * @return array<string, mixed>
-     */
     private function buildRow(
         array $values,
         int $creatorId,
@@ -331,10 +282,6 @@ final class CertificationImportService
             : ($documentTypes[$values['document_type']] ?? null);
 
         if ($documentTypeId === null) {
-            // Log::channel('import')->warning('Row imported without a document type', [
-            //     'row' => $rowIndex,
-            //     'trainee' => $values['trainee_name'],
-            // ]);
         }
 
         $now = Carbon::now();
@@ -368,29 +315,28 @@ final class CertificationImportService
         ];
     }
 
-    /**
-     * Keyed on accreditation_number so re-imports are idempotent.
-     *
-     * @param  list<array<string, mixed>>  $dataBatch
-     */
     private static function upsertCertifications(array $dataBatch): void
     {
         DB::table('certifications')->upsert(
             $dataBatch,
             ['accreditation_number'],
             [
-                'creator_type', 'creator_id', 'documentable_type', 'documentable_id',
-                'trainee_id', 'assigned_trainer_id', 'country_id',
-                'accredited_serial_number', 'document_code', 'accreditation_date',
-                'notes', 'updated_at',
+                'creator_type',
+                'creator_id',
+                'documentable_type',
+                'documentable_id',
+                'trainee_id',
+                'assigned_trainer_id',
+                'country_id',
+                'accredited_serial_number',
+                'document_code',
+                'accreditation_date',
+                'notes',
+                'updated_at',
             ]
         );
     }
 
-    /**
-     * @param  list<string>  $headers
-     * @return array<string, int>
-     */
     private function resolveHeaderMap(array $headers): array
     {
         $cacheKey = md5(implode("\x1f", $headers));
@@ -417,9 +363,6 @@ final class CertificationImportService
         ]);
     }
 
-    /**
-     * @param  array{total: int, success: int, failed: int, errors: list<string>}  $stats
-     */
     private function logStats(array $stats, string $source, string $context): void
     {
         Log::channel('import')->info('Certification import completed', [

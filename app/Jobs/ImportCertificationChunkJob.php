@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Models\User;
 use App\Services\Certification\CertificationImportService;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -50,6 +52,8 @@ final class ImportCertificationChunkJob implements ShouldQueue
                 $this->creatorId,
                 $this->readChunkHeaders(),
             );
+
+            $this->notifySuccess($stats);
         } catch (UniqueConstraintViolationException $e) {
             Log::channel('import')->error('Import chunk failed: duplicate accreditation number', [
                 'chunk_index' => $this->chunkIndex,
@@ -72,6 +76,24 @@ final class ImportCertificationChunkJob implements ShouldQueue
             'memory_peak' => memory_get_peak_usage(true),
             'job_id' => $this->job?->getJobId(),
         ]);
+    }
+
+    private function notifySuccess(array $stats): void
+    {
+        $user = User::find($this->creatorId);
+
+        if ($user) {
+            Notification::make()
+                ->title(__('app.import.notifications.chunk_success_title'))
+                ->body(__('app.import.notifications.chunk_success_body', [
+                    'index' => $this->chunkIndex + 1,
+                    'total' => $this->totalChunks,
+                    'imported' => $stats['success'],
+                    'failed' => $stats['failed'],
+                ]))
+                ->success()
+                ->sendToDatabase($user);
+        }
     }
 
     private function readChunkHeaders(): array
@@ -134,5 +156,19 @@ final class ImportCertificationChunkJob implements ShouldQueue
             'exception' => $exception,
             'job_id' => $this->job?->getJobId(),
         ]);
+
+        $user = User::find($this->creatorId);
+
+        if ($user) {
+            Notification::make()
+                ->title(__('app.import.notifications.chunk_failed_title'))
+                ->body(__('app.import.notifications.chunk_failed_body', [
+                    'index' => $this->chunkIndex + 1,
+                    'total' => $this->totalChunks,
+                    'message' => $exception->getMessage(),
+                ]))
+                ->danger()
+                ->sendToDatabase($user);
+        }
     }
 }

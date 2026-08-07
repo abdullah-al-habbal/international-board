@@ -43,7 +43,7 @@ final class CenterPanelProvider extends PanelProvider
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.dashboard'))
-            ->favicon(asset('favicon.ico'))
+            ->favicon(asset('assets/website/images/logo.webp'))
             ->discoverResources(in: app_path('Filament/Center/Resources'), for: $config['resources_path'])
             ->discoverPages(in: app_path('Filament/Center/Pages'), for: $config['pages_path'])
             ->pages([Dashboard::class])

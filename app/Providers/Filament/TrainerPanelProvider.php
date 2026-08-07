@@ -42,6 +42,7 @@ final class TrainerPanelProvider extends PanelProvider
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.trainer_dashboard'))
+            ->favicon(asset('assets/website/images/logo.webp'))
             ->discoverResources(in: app_path('Filament/Trainer/Resources'), for: $config['resources_path'])
             ->discoverPages(in: app_path('Filament/Trainer/Pages'), for: $config['pages_path'])
             ->pages([Dashboard::class])

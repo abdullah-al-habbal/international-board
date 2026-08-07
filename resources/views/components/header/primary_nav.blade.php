@@ -1,11 +1,11 @@
-<!-- resources\views\components\header\primary_nav.blade.php -->
+<!-- filePath: resources\views\components\header\primary_nav.blade.php -->
 <header class="navigation fixed-top @if (Route::currentRouteName() !== 'web.home') nav-internal @endif">
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light px-0">
             <a class="navbar-brand logo" href="{{ route('web.home') }}">
-                <img loading="lazy" class="logo-default" src="{{ asset($appSettings['site_logo_primary'] ?? 'assets/website/images/logo.png') }}"
+                <img loading="lazy" class="logo-default" src="{{ asset($appSettings['site_logo_primary'] ?? 'assets/website/images/logo.webp') }}"
                     alt="{{ __('web.site_logo') }}" />
-                <img loading="lazy" class="logo-white" src="{{ asset($appSettings['site_logo_white'] ?? 'assets/website/images/logo-white.png') }}"
+                <img loading="lazy" class="logo-white" src="{{ asset($appSettings['site_logo_white'] ?? 'assets/website/images/w-logo.webp') }}"
                     alt="{{ __('web.site_logo') }}" />
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"

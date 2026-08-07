@@ -21,12 +21,17 @@ return [
     ],
     [
         'key' => 'site_logo_primary',
-        'value' => 'assets/website/images/logo.png',
+        'value' => 'assets/website/images/logo.webp',
         'type' => 'url',
     ],
     [
         'key' => 'site_logo_white',
-        'value' => 'assets/website/images/logo-white.png',
+        'value' => 'assets/website/images/w-logo.webp',
+        'type' => 'url',
+    ],
+    [
+        'key' => 'site_favicon',
+        'value' => 'assets/website/images/logo.webp',
         'type' => 'url',
     ],
     [
