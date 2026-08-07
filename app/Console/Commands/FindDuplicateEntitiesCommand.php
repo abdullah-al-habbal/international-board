@@ -9,17 +9,17 @@ use App\Models\DocumentType;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Services\Entity\MatchCandidateFinder;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('entities:find-duplicates
+            {--entity=all : trainees|trainers|countries|document-types|all}
+            {--floor=0.86 : Minimum similarity to record a candidate}
+            {--limit=5000 : Maximum candidates to record per entity type}')]
+#[Description('Find likely duplicate entities and queue them for human review')]
 final class FindDuplicateEntitiesCommand extends Command
 {
-    protected $signature = 'entities:find-duplicates
-                            {--entity=all : trainees|trainers|countries|document-types|all}
-                            {--floor=0.86 : Minimum similarity to record a candidate}
-                            {--limit=5000 : Maximum candidates to record per entity type}';
-
-    protected $description = 'Find likely duplicate entities and queue them for human review';
-
     /** @var array<string, array{type: class-string, table: string}> */
     private const ENTITIES = [
         'trainees' => ['type' => Trainee::class, 'table' => 'trainees'],

@@ -7,17 +7,19 @@ namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests;
 use App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas\CertifiedCenterFinancialRequestForm;
 use App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas\CertifiedCenterFinancialRequestInfolist;
 use App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Tables\CertifiedCenterFinancialRequestsTable;
-use App\Models\CertifiedCenterFinancialRequest;
+use App\Models\CertifiedCenter;
+use App\Models\FinancialRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class CertifiedCenterFinancialRequestResource extends Resource
 {
-    protected static ?string $model = CertifiedCenterFinancialRequest::class;
+    protected static ?string $model = FinancialRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -26,7 +28,7 @@ class CertifiedCenterFinancialRequestResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_centers');
     }
 
     protected static ?int $navigationSort = 11;
@@ -35,12 +37,17 @@ class CertifiedCenterFinancialRequestResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::count();
+        return (string) static::getEloquentQuery()->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
     {
         return 'primary';
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('requestable_type', CertifiedCenter::class);
     }
 
     public static function getNavigationLabel(): string
@@ -64,7 +71,7 @@ class CertifiedCenterFinancialRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->certifiedCenter?->name ?? 'Request #'.$record->id;
+        return $record->requestable?->name ?? 'Request #'.$record->id;
     }
 
     public static function form(Schema $schema): Schema

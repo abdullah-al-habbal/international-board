@@ -16,27 +16,28 @@ class CertifiedCenterFinancialRequestInfolist
                 ->label(__('app.id'))
                 ->size('sm')
                 ->columnSpan(1),
-            TextEntry::make('certifiedCenter.name')
+            TextEntry::make('requestable.name')
                 ->label(__('app.certified_center'))
                 ->weight('bold')
                 ->columnSpanFull(),
-            TextEntry::make('amount')
-                ->label(__('app.amount'))
-                ->money('SAR')
+            TextEntry::make('total_payment')
+                ->label(__('app.total_amount'))
+                ->money('USD')
                 ->columnSpan(1),
-            TextEntry::make('status')
-                ->label(__('app.status'))
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'pending' => 'warning',
-                    'approved' => 'success',
-                    'rejected' => 'danger',
-                    default => 'gray',
-                })
+            TextEntry::make('amount_paid')
+                ->label(__('app.paid_amount'))
+                ->money('USD')
                 ->columnSpan(1),
-            TextEntry::make('notes')
+            TextEntry::make('remaining_amount')
+                ->label(__('app.remaining_amount'))
+                ->money('USD')
+                ->columnSpan(1),
+            TextEntry::make('date')
+                ->label(__('app.date'))
+                ->date()
+                ->columnSpan(1),
+            TextEntry::make('reason')
                 ->label(__('app.notes'))
-                ->markdown()
                 ->columnSpanFull(),
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))

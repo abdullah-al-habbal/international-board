@@ -9,7 +9,8 @@ use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ViewTrainerFin
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
-use App\Models\TrainerFinancialRequest;
+use App\Models\FinancialRequest;
+use App\Models\Trainer;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainerFinancialRequestResource extends Resource
 {
-    protected static ?string $model = TrainerFinancialRequest::class;
+    protected static ?string $model = FinancialRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -29,7 +30,7 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_trainers');
     }
 
     public static function getNavigationLabel(): string
@@ -53,7 +54,7 @@ class TrainerFinancialRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->trainer?->name ?? 'Request #'.$record->id;
+        return $record->requestable?->name ?? 'Request #'.$record->id;
     }
 
     protected static ?int $navigationSort = 10;
@@ -70,7 +71,9 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('trainer_id', auth('trainer')->id());
+        return parent::getEloquentQuery()
+            ->where('requestable_type', Trainer::class)
+            ->where('requestable_id', auth('trainer')->id());
     }
 
     public static function canCreate(): bool

@@ -10,7 +10,7 @@ Runs first. Its job is to turn one large CSV into many small chunk files so that
 - Each chunk is written to `storage/app/import_chunks/{md5(file)}/chunk-N.csv` (header repeated per chunk so each chunk is independently importable). A `manifest.json` records the chunk list.
 - Chunk jobs are dispatched in **batch groups** of `BATCH_JOBS_LIMIT = 500`. Each group's completion handler dispatches the next group, so no single serialised batch payload contains thousands of jobs. The last group triggers cleanup and the success notification.
 - Failure paths: a `RuntimeException` (unreadable file, no importable rows) fails the job directly; any other `Throwable` is rethrown so the queue retries. Either way the chunk directory is deleted and the user is notified.
-- `tries = 3`, `backoff = [60, 120]`.
+- `#[Tries(3)]`, `#[Backoff([60, 120])]`.
 
 ## `ImportCertificationChunkJob` — the worker
 
@@ -18,7 +18,7 @@ Runs per chunk. Streams the chunk rows through a `LazyCollection` and hands them
 
 - A `UniqueConstraintViolationException` (duplicate accreditation number inside one chunk) fails the job immediately rather than letting it retry — it is a data problem, not a transient one.
 - The unique `name_key` index means two chunk jobs meeting the same new trainee cannot both insert: the loser's insert becomes a no-op and the follow-up SELECT reads the winner's id.
-- `tries = 3`, `backoff = [60, 120]`. `failed()` logs the terminal state.
+- `#[Tries(3)]`, `#[Backoff([60, 120])]`. `failed()` logs the terminal state.
 
 ## One source of truth
 

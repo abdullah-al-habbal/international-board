@@ -7,17 +7,19 @@ namespace App\Filament\Admin\Resources\TrainerFinancialRequests;
 use App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
 use App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
 use App\Filament\Admin\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
-use App\Models\TrainerFinancialRequest;
+use App\Models\FinancialRequest;
+use App\Models\Trainer;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class TrainerFinancialRequestResource extends Resource
 {
-    protected static ?string $model = TrainerFinancialRequest::class;
+    protected static ?string $model = FinancialRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -26,7 +28,7 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_trainers');
     }
 
     protected static ?int $navigationSort = 12;
@@ -35,12 +37,17 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::count();
+        return (string) static::getEloquentQuery()->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
     {
         return 'primary';
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('requestable_type', Trainer::class);
     }
 
     public static function getNavigationLabel(): string
@@ -64,7 +71,7 @@ class TrainerFinancialRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->trainer?->name ?? 'Request #'.$record->id;
+        return $record->requestable?->name ?? 'Request #'.$record->id;
     }
 
     public static function form(Schema $schema): Schema

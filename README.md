@@ -179,7 +179,7 @@ This project is agent-ready. Key files:
 - **`app/Providers/ObserverServiceProvider.php`** — Observer registrations
 
 When adding a new domain:
-1. Create Model in `app/Models/` with `$table`, `$fillable`, relationships
+1. Create Model in `app/Models/` with relationships
 2. Create migration in `database/migrations/`
 3. Create factory + seeder
 4. Create Repository in `app/Repositories/<Domain>/`

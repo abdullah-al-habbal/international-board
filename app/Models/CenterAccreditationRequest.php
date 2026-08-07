@@ -5,25 +5,28 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
+use App\Observers\CenterAccreditationRequestObserver;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy([CenterAccreditationRequestObserver::class])]
+#[Fillable([
+    'certified_center_id',
+    'request_notes',
+    'status',
+    'admin_notes',
+    'reviewed_by',
+    'reviewed_at',
+    'accreditation_start_date',
+    'accreditation_end_date',
+])]
 class CenterAccreditationRequest extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'certified_center_id',
-        'request_notes',
-        'status',
-        'admin_notes',
-        'reviewed_by',
-        'reviewed_at',
-        'accreditation_start_date',
-        'accreditation_end_date',
-    ];
 
     protected function casts(): array
     {

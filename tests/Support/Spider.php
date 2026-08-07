@@ -5,24 +5,23 @@ declare(strict_types=1);
 namespace Tests\Support;
 
 use App\Enums\UserType;
+use App\Models\AgentPerson;
 use App\Models\ApplicationSetting;
 use App\Models\BlogPost;
 use App\Models\CenterAccreditationRequest;
 use App\Models\Certification;
 use App\Models\CertifiedCenter;
 use App\Models\CertifiedCenterDocumentType;
-use App\Models\CertifiedCenterFinancialRequest;
-use App\Models\CertifiedCenterPaymentAgentPerson;
 use App\Models\ContactMessage;
 use App\Models\Country;
 use App\Models\DocumentType;
+use App\Models\FinancialRequest;
 use App\Models\Membership;
 use App\Models\StaticPage;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Models\TrainerAccreditationRequest;
 use App\Models\TrainerDocumentType;
-use App\Models\TrainerFinancialRequest;
 use App\Models\User;
 use App\Services\StaticPage\StaticPageService;
 use App\Support\LocaleConfig;
@@ -52,19 +51,20 @@ final class Spider
         'center-accreditation-requests' => CenterAccreditationRequest::class,
         'certifications' => Certification::class,
         'certified-center-document-types' => CertifiedCenterDocumentType::class,
-        'certified-center-financial-requests' => CertifiedCenterFinancialRequest::class,
-        'center-financial-requests' => CertifiedCenterFinancialRequest::class,
+        'certified-center-financial-requests' => FinancialRequest::class,
+        'center-financial-requests' => FinancialRequest::class,
         'certified-centers' => CertifiedCenter::class,
         'contact-messages' => ContactMessage::class,
         'countries' => Country::class,
         'document-types' => DocumentType::class,
         'memberships' => Membership::class,
-        'payment-agent-persons.payment-agent-people' => CertifiedCenterPaymentAgentPerson::class,
+        'payment-agent-persons.payment-agent-people' => AgentPerson::class,
         'static-pages' => StaticPage::class,
         'trainees' => Trainee::class,
         'trainer-accreditation-requests' => TrainerAccreditationRequest::class,
+        'trainer-agent-persons.trainer-agent-people' => AgentPerson::class,
         'trainer-document-types' => TrainerDocumentType::class,
-        'trainer-financial-requests' => TrainerFinancialRequest::class,
+        'trainer-financial-requests' => FinancialRequest::class,
         'trainers' => Trainer::class,
         'users' => User::class,
     ];
@@ -132,8 +132,9 @@ final class Spider
 
         $owned = [
             'center.center-accreditation-requests' => fn () => $centerRequestKey,
-            'center.center-financial-requests' => fn () => CertifiedCenterFinancialRequest::factory()
-                ->create(['certified_center_id' => $centerId])->getKey(),
+            'center.center-financial-requests' => fn () => FinancialRequest::factory()
+                ->for($this->center, 'requestable')
+                ->create(['agent_person_id' => AgentPerson::factory()])->getKey(),
             'center.trainers' => fn () => Trainer::factory()
                 ->create(['center_id' => $centerId])->getKey(),
             'center.certifications' => fn () => Certification::factory()
@@ -141,8 +142,9 @@ final class Spider
             'trainer.trainer-accreditation-requests' => fn () => $trainerRequestKey,
             'trainer.trainer-document-types' => fn () => TrainerDocumentType::factory()
                 ->create(['trainer_id' => $trainerId])->getKey(),
-            'trainer.trainer-financial-requests' => fn () => TrainerFinancialRequest::factory()
-                ->create(['trainer_id' => $trainerId])->getKey(),
+            'trainer.trainer-financial-requests' => fn () => FinancialRequest::factory()
+                ->for($this->trainer, 'requestable')
+                ->create(['agent_person_id' => AgentPerson::factory()])->getKey(),
             'trainer.certifications' => fn () => Certification::factory()
                 ->create(['creator_type' => Trainer::class, 'creator_id' => $trainerId])->getKey(),
         ];

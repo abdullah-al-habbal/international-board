@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Observers\CertificationObserver;
 use App\Policies\CertificationPolicy;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,26 +17,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+#[ObservedBy([CertificationObserver::class])]
 #[UsePolicy(CertificationPolicy::class)]
+#[Fillable([
+    'creator_type',
+    'creator_id',
+    'documentable_type',
+    'documentable_id',
+    'trainee_id',
+    'assigned_trainer_id',
+    'accredited_serial_number',
+    'document_code',
+    'accreditation_number',
+    'accreditation_date',
+    'country_id',
+    'notes',
+    'show_in_public_website',
+])]
 class Certification extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'creator_type',
-        'creator_id',
-        'documentable_type',
-        'documentable_id',
-        'trainee_id',
-        'assigned_trainer_id',
-        'accredited_serial_number',
-        'document_code',
-        'accreditation_number',
-        'accreditation_date',
-        'country_id',
-        'notes',
-        'show_in_public_website',
-    ];
 
     protected function casts(): array
     {

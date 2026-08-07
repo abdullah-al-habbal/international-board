@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -20,19 +22,17 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $alias_label
  * @property string $source
  */
+#[Table('entity_aliases')]
+#[Fillable([
+    'aliasable_type',
+    'aliasable_id',
+    'alias_key',
+    'alias_label',
+    'source',
+    'created_by',
+])]
 final class EntityAlias extends Model
 {
-    protected $table = 'entity_aliases';
-
-    protected $fillable = [
-        'aliasable_type',
-        'aliasable_id',
-        'alias_key',
-        'alias_label',
-        'source',
-        'created_by',
-    ];
-
     public function aliasable(): MorphTo
     {
         return $this->morphTo();

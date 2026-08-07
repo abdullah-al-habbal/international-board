@@ -17,7 +17,7 @@ class TrainerFinancialRequestsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('trainer.name')
+                TextColumn::make('requestable.name')
                     ->label(__('app.trainer')),
                 TextColumn::make('total_payment')
                     ->label(__('app.total_amount'))

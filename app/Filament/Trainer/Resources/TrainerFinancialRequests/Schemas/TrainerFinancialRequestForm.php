@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas;
 
-use App\Models\CertifiedCenterPaymentAgentPerson;
+use App\Models\AgentPerson;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -19,12 +19,7 @@ class TrainerFinancialRequestForm
             ->components([
                 Select::make('agent_person_id')
                     ->label(__('app.agent_person'))
-                    ->options(function () {
-                        return CertifiedCenterPaymentAgentPerson::with('certifiedCenter')
-                            ->get()
-                            ->groupBy(fn ($ap) => $ap->certifiedCenter?->name ?? __('app.unassigned'))
-                            ->map(fn ($group) => $group->pluck('name', 'id'));
-                    })
+                    ->options(AgentPerson::pluck('name', 'id'))
                     ->searchable()
                     ->preload()
                     ->required(),

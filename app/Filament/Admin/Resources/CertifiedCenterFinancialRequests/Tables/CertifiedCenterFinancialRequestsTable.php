@@ -13,10 +13,8 @@ class CertifiedCenterFinancialRequestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('certifiedCenter.name')
-                    ->label(__('app.certified_center'))
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('requestable.name')
+                    ->label(__('app.certified_center')),
                 TextColumn::make('agentPerson.name')
                     ->label(__('app.agent_person'))
                     ->sortable(),

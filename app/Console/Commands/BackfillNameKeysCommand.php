@@ -10,18 +10,18 @@ use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Support\Text\NameNormalizer;
 use Carbon\Carbon;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+#[Signature('entities:backfill-keys
+            {--table= : Restrict to one table}
+            {--chunk=1000 : Rows per batch}
+            {--dry-run : Report only, write nothing}')]
+#[Description('Compute normalisation keys for trainees, trainers, countries and document types')]
 final class BackfillNameKeysCommand extends Command
 {
-    protected $signature = 'entities:backfill-keys
-                            {--table= : Restrict to one table}
-                            {--chunk=1000 : Rows per batch}
-                            {--dry-run : Report only, write nothing}';
-
-    protected $description = 'Compute normalisation keys for trainees, trainers, countries and document types';
-
     /** @var array<string, array{type: class-string, json: bool}> */
     private const TABLES = [
         'trainees' => ['type' => Trainee::class, 'json' => false],

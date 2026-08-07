@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +19,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $strategy
  * @property string $status
  */
+#[Table('entity_merge_candidates')]
+#[Fillable([
+    'entity_type',
+    'primary_id',
+    'duplicate_id',
+    'primary_name',
+    'duplicate_name',
+    'score',
+    'strategy',
+    'status',
+    'reviewed_by',
+    'reviewed_at',
+])]
 final class EntityMergeCandidate extends Model
 {
     public const STATUS_PENDING = 'pending';
@@ -24,21 +39,6 @@ final class EntityMergeCandidate extends Model
     public const STATUS_MERGED = 'merged';
 
     public const STATUS_REJECTED = 'rejected';
-
-    protected $table = 'entity_merge_candidates';
-
-    protected $fillable = [
-        'entity_type',
-        'primary_id',
-        'duplicate_id',
-        'primary_name',
-        'duplicate_name',
-        'score',
-        'strategy',
-        'status',
-        'reviewed_by',
-        'reviewed_at',
-    ];
 
     protected function casts(): array
     {

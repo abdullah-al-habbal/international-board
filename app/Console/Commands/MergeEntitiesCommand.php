@@ -11,24 +11,24 @@ use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Services\Entity\EntityMerger;
 use Carbon\Carbon;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
+#[Signature('entities:merge
+            {--entity=all : trainees|trainers|countries|document-types|all}
+            {--auto-exact : Merge byte-identical name_key collisions without asking}
+            {--review : Step through pending fuzzy candidates interactively}
+            {--alias : Register a spelling for an existing entity}
+            {--id= : Target entity id (with --alias)}
+            {--spelling= : Raw spelling to register (with --alias)}
+            {--min-score=0.90 : Lowest score to surface in --review}
+            {--dry-run : Show what would happen, change nothing}')]
+#[Description('Merge duplicate entities and teach the resolver new spellings')]
 final class MergeEntitiesCommand extends Command
 {
-    protected $signature = 'entities:merge
-                            {--entity=all : trainees|trainers|countries|document-types|all}
-                            {--auto-exact : Merge byte-identical name_key collisions without asking}
-                            {--review : Step through pending fuzzy candidates interactively}
-                            {--alias : Register a spelling for an existing entity}
-                            {--id= : Target entity id (with --alias)}
-                            {--spelling= : Raw spelling to register (with --alias)}
-                            {--min-score=0.90 : Lowest score to surface in --review}
-                            {--dry-run : Show what would happen, change nothing}';
-
-    protected $description = 'Merge duplicate entities and teach the resolver new spellings';
-
     /** @var array<string, array{type: class-string, table: string}> */
     private const ENTITIES = [
         'trainees' => ['type' => Trainee::class, 'table' => 'trainees'],

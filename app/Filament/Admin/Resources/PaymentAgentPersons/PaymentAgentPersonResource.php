@@ -9,7 +9,7 @@ use App\Filament\Admin\Resources\PaymentAgentPersons\RelationManagers\TrainerFin
 use App\Filament\Admin\Resources\PaymentAgentPersons\Schemas\PaymentAgentPersonForm;
 use App\Filament\Admin\Resources\PaymentAgentPersons\Schemas\PaymentAgentPersonInfolist;
 use App\Filament\Admin\Resources\PaymentAgentPersons\Tables\PaymentAgentPersonsTable;
-use App\Models\CertifiedCenterPaymentAgentPerson;
+use App\Models\AgentPerson;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentAgentPersonResource extends Resource
 {
-    protected static ?string $model = CertifiedCenterPaymentAgentPerson::class;
+    protected static ?string $model = AgentPerson::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -28,7 +28,7 @@ class PaymentAgentPersonResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_centers');
     }
 
     protected static ?int $navigationSort = 10;
@@ -47,17 +47,17 @@ class PaymentAgentPersonResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.agent_persons');
+        return __('app.center_agent_persons');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.agent_person');
+        return __('app.center_agent_person');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.agent_persons');
+        return __('app.center_agent_persons');
     }
 
     public static function getRecordTitle(?Model $record): string

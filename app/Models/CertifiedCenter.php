@@ -7,10 +7,14 @@ namespace App\Models;
 use App\Enums\AccreditationStatus;
 use App\Enums\CenterStatus;
 use App\Enums\PanelId;
+use App\Observers\CertifiedCenterObserver;
 use App\Policies\CertifiedCenterPolicy;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,32 +26,31 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
+#[ObservedBy([CertifiedCenterObserver::class])]
 #[UsePolicy(CertifiedCenterPolicy::class)]
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'address',
+    'phone',
+    'manager_name',
+    'logo',
+    'notes',
+    'accreditation_period_start',
+    'accreditation_period_end',
+    'accreditation_number',
+    'status',
+    'country_id',
+    'show_in_public_website',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
 class CertifiedCenter extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
-
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'address',
-        'phone',
-        'manager_name',
-        'logo',
-        'notes',
-        'accreditation_period_start',
-        'accreditation_period_end',
-        'accreditation_number',
-        'status',
-        'country_id',
-        'show_in_public_website',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     protected function casts(): array
     {
@@ -91,9 +94,9 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         return $this->documentTypes()->where('status', 'approved');
     }
 
-    public function financialRequests(): HasMany
+    public function financialRequests(): MorphMany
     {
-        return $this->hasMany(CertifiedCenterFinancialRequest::class);
+        return $this->morphMany(FinancialRequest::class, 'requestable');
     }
 
     #[Scope]

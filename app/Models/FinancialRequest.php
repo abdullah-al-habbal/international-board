@@ -1,32 +1,33 @@
 <?php
-// filePath: app/Models/TrainerFinancialRequest.php
 
 declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Appends;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class TrainerFinancialRequest extends Model
+#[Table('financial_requests')]
+#[Fillable([
+    'requestable_type',
+    'requestable_id',
+    'agent_person_id',
+    'total_payment',
+    'amount_paid',
+    'reason',
+    'date',
+])]
+#[Appends([
+    'remaining_amount',
+])]
+class FinancialRequest extends Model
 {
     use HasFactory;
-
-    protected $table = 'trainer_financial_requests';
-
-    protected $fillable = [
-        'trainer_id',
-        'agent_person_id',
-        'total_payment',
-        'amount_paid',
-        'reason',
-        'date',
-    ];
-
-    protected $appends = [
-        'remaining_amount',
-    ];
 
     protected function casts(): array
     {
@@ -42,13 +43,13 @@ class TrainerFinancialRequest extends Model
         return $this->total_payment - $this->amount_paid;
     }
 
-    public function trainer(): BelongsTo
+    public function requestable(): MorphTo
     {
-        return $this->belongsTo(Trainer::class);
+        return $this->morphTo();
     }
 
     public function agentPerson(): BelongsTo
     {
-        return $this->belongsTo(CertifiedCenterPaymentAgentPerson::class, 'agent_person_id');
+        return $this->belongsTo(AgentPerson::class, 'agent_person_id');
     }
 }

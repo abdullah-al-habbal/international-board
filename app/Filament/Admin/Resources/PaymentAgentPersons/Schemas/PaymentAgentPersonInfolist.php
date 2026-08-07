@@ -17,15 +17,6 @@ class PaymentAgentPersonInfolist
                 ->weight('bold')
                 ->size('xl')
                 ->columnSpanFull(),
-            TextEntry::make('email')
-                ->label(__('app.email'))
-                ->icon('heroicon-o-envelope')
-                ->copyable()
-                ->columnSpan(1),
-            TextEntry::make('phone')
-                ->label(__('app.phone'))
-                ->icon('heroicon-o-phone')
-                ->columnSpan(1),
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))
                 ->dateTime()

@@ -13,10 +13,10 @@
         "bezhansalleh/filament-language-switch": "^4.0",
         "filament/filament": "^4.0",
         "laravel-lang/common": "^6.7",
-        "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0",
         "fakerphp/faker": "^1.23",
-        "spatie/laravel-translatable": "^6.11"
+        "spatie/laravel-translatable": "^6.14"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",
@@ -27,10 +27,10 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "nunomaduro/larastan": "^3.9",
-        "pestphp/pest": "^3.8",
-        "pestphp/pest-plugin-laravel": "^3.2",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5.3",
+        "phpunit/phpunit": "^12.0",
         "squizlabs/php_codesniffer": "^4.0"
     },
     "autoload": {

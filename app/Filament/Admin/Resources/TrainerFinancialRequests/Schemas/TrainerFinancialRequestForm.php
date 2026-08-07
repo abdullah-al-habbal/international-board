@@ -1,12 +1,15 @@
 <?php
+
 // app/Filament/Admin/Resources/TrainerFinancialRequests/Schemas/TrainerFinancialRequestForm.php
 
 declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas;
 
-use App\Models\CertifiedCenterPaymentAgentPerson;
+use App\Models\AgentPerson;
+use App\Models\Trainer;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -18,21 +21,18 @@ class TrainerFinancialRequestForm
     {
         return $schema
             ->components([
-                Select::make('trainer_id')
+                Hidden::make('requestable_type')
+                    ->default(Trainer::class),
+                Select::make('requestable_id')
                     ->label(__('app.trainer'))
-                    ->relationship('trainer', 'name')
+                    ->options(Trainer::pluck('name', 'id'))
                     ->required()
                     ->searchable()
                     ->preload()
                     ->live(),
                 Select::make('agent_person_id')
                     ->label(__('app.agent_person'))
-                    ->options(function () {
-                        return CertifiedCenterPaymentAgentPerson::with('certifiedCenter')
-                            ->get()
-                            ->groupBy(fn ($ap) => $ap->certifiedCenter?->name ?? __('app.unassigned'))
-                            ->map(fn ($group) => $group->pluck('name', 'id'));
-                    })
+                    ->options(AgentPerson::pluck('name', 'id'))
                     ->searchable()
                     ->preload()
                     ->live()

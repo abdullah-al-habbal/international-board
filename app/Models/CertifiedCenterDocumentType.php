@@ -5,29 +5,29 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\DocumentTypeRequestStatus;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\Attributes\Translatable;
 use Spatie\Translatable\HasTranslations;
 
+#[Translatable(['name'])]
+#[Table('certified_center_document_types')]
+#[Fillable([
+    'certified_center_id',
+    'key',
+    'name',
+    'status',
+    'admin_notes',
+    'reviewed_by_admin_id',
+])]
 class CertifiedCenterDocumentType extends Model
 {
     use HasFactory;
     use HasTranslations;
-
-    public array $translatable = ['name'];
-
-    protected $table = 'certified_center_document_types';
-
-    protected $fillable = [
-        'certified_center_id',
-        'key',
-        'name',
-        'status',
-        'admin_notes',
-        'reviewed_by_admin_id',
-    ];
 
     protected function casts(): array
     {

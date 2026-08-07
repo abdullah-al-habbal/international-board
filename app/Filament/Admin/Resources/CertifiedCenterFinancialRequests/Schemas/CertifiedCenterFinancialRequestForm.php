@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas;
 
-use App\Models\CertifiedCenterPaymentAgentPerson;
+use App\Models\AgentPerson;
+use App\Models\CertifiedCenter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -17,42 +19,21 @@ class CertifiedCenterFinancialRequestForm
     {
         return $schema
             ->components([
-                Select::make('certified_center_id')
+                Hidden::make('requestable_type')
+                    ->default(CertifiedCenter::class),
+                Select::make('requestable_id')
                     ->label(__('app.certified_center'))
-                    ->relationship('certifiedCenter', 'name')
+                    ->options(CertifiedCenter::pluck('name', 'id'))
                     ->required()
                     ->searchable()
                     ->preload()
                     ->live(),
                 Select::make('agent_person_id')
                     ->label(__('app.agent_person'))
-                    ->options(function (callable $get) {
-                        $centerId = $get('certified_center_id');
-                        if (! $centerId) {
-                            return [];
-                        }
-
-                        return CertifiedCenterPaymentAgentPerson::where('certified_center_id', $centerId)
-                            ->pluck('name', 'id');
-                    })
+                    ->options(AgentPerson::pluck('name', 'id'))
                     ->searchable()
                     ->preload()
-                    ->required()
-                    ->rule(function (callable $get) {
-                        $centerId = $get('certified_center_id');
-
-                        return function (string $attribute, mixed $value, \Closure $fail) use ($centerId) {
-                            if (! $centerId) {
-                                return;
-                            }
-                            $exists = CertifiedCenterPaymentAgentPerson::where('id', $value)
-                                ->where('certified_center_id', $centerId)
-                                ->exists();
-                            if (! $exists) {
-                                $fail(__('app.agent_person_mismatch'));
-                            }
-                        };
-                    }),
+                    ->required(),
                 TextInput::make('total_payment')
                     ->label(__('app.total_amount'))
                     ->numeric()

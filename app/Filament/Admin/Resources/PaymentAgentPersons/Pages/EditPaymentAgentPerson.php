@@ -14,6 +14,7 @@ class EditPaymentAgentPerson extends EditRecord
     use RedirectsToShowPage;
 
     protected static string $resource = PaymentAgentPersonResource::class;
+
     protected function getHeaderActions(): array
     {
         return [

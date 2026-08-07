@@ -1,4 +1,5 @@
 <?php
+
 // filePath: app/Filament/Center/Resources/CenterFinancialRequests/Schemas/CenterFinancialRequestForm.php
 
 declare(strict_types=1);
@@ -34,4 +35,3 @@ class CenterFinancialRequestForm
             ]);
     }
 }
-

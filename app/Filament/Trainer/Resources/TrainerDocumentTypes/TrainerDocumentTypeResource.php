@@ -31,7 +31,7 @@ class TrainerDocumentTypeResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_trainers');
     }
 
     public static function getNavigationLabel(): string

@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
+use App\Observers\TrainerObserver;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,31 +23,30 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
+#[ObservedBy([TrainerObserver::class])]
+#[Fillable([
+    'name',
+    'avatar',
+    'bio',
+    'email',
+    'phone',
+    'address',
+    'country_id',
+    'center_id',
+    'accreditation_number',
+    'accreditation_period_start',
+    'accreditation_period_end',
+    'password',
+    'show_in_public_website',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
 class Trainer extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use Notifiable;
-
-    protected $fillable = [
-        'name',
-        'avatar',
-        'bio',
-        'email',
-        'phone',
-        'address',
-        'country_id',
-        'center_id',
-        'accreditation_number',
-        'accreditation_period_start',
-        'accreditation_period_end',
-        'password',
-        'show_in_public_website',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     protected function casts(): array
     {
@@ -77,9 +80,9 @@ class Trainer extends Authenticatable implements FilamentUser
         return $this->morphMany(Certification::class, 'creator');
     }
 
-    public function financialRequests(): HasMany
+    public function financialRequests(): MorphMany
     {
-        return $this->hasMany(TrainerFinancialRequest::class);
+        return $this->morphMany(FinancialRequest::class, 'requestable');
     }
 
     public function documentTypes(): HasMany

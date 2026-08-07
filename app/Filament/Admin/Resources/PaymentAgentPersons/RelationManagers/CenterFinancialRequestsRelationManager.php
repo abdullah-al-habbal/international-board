@@ -17,7 +17,7 @@ class CenterFinancialRequestsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('certifiedCenter.name')
+                TextColumn::make('requestable.name')
                     ->label(__('app.certified_center')),
                 TextColumn::make('total_payment')
                     ->label(__('app.total_amount'))

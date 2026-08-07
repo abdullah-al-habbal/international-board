@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\SplFileInfo;
 
+#[Signature('cleanup:storage')]
+#[Description('Delete old logs and unwanted files in storage')]
 class CleanupStorageCommand extends Command
 {
-    protected $signature = 'cleanup:storage';
-
-    protected $description = 'Delete old logs and unwanted files in storage';
-
     private const LOG_RETENTION_DAYS = 7;
 
     private const TARGET_FILENAME = 't.txt';

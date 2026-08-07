@@ -98,8 +98,8 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | Model | Table | Key Relationships |
 |---|---|---|
 | `User` | `users` | `certifications()` MorphMany |
-| `Trainer` | `trainers` | `country()` BelongsTo, `center()` BelongsTo(CertifiedCenter), `specializations()` BelongsToMany, `certifications()` MorphMany, `documentTypes()` HasMany(TrainerDocumentType), `accreditationRequests()` HasMany, `financialRequests()` HasMany |
-| `CertifiedCenter` | `certified_centers` | `certifications()` MorphMany, `trainers()` HasMany(Trainer), `country()` BelongsTo, `documentTypes()` HasMany(CertifiedCenterDocumentType), `approvedDocumentTypes()` HasMany (status=approved), `accreditationRequests()` HasMany, `financialRequests()` HasMany |
+| `Trainer` | `trainers` | `country()` BelongsTo, `center()` BelongsTo(CertifiedCenter), `specializations()` BelongsToMany, `certifications()` MorphMany, `documentTypes()` HasMany(TrainerDocumentType), `accreditationRequests()` HasMany, `financialRequests()` MorphMany |
+| `CertifiedCenter` | `certified_centers` | `certifications()` MorphMany, `trainers()` HasMany(Trainer), `country()` BelongsTo, `documentTypes()` HasMany(CertifiedCenterDocumentType), `approvedDocumentTypes()` HasMany (status=approved), `accreditationRequests()` HasMany, `financialRequests()` MorphMany |
 | `Certification` | `certifications` | `creator()` MorphTo (User/Trainer/CertifiedCenter), `documentable()` MorphTo (DocumentType/TrainerDocumentType/CertifiedCenterDocumentType), `country()` BelongsTo, `trainee()` BelongsTo, `assignedTrainer()` BelongsTo(Trainer) |
 | `Trainee` | `trainees` | `country()` BelongsTo, `certifications()` HasMany |
 | `Country` | `countries` | — |
@@ -109,9 +109,8 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `CertifiedCenterDocumentType` | `certified_center_document_types` | `certifiedCenter()` BelongsTo, `certifications()` MorphMany, `reviewer()` BelongsTo(User). Uses `HasTranslations` (translatable: `name`) |
 | `TrainerAccreditationRequest` | `trainer_accreditation_requests` | `trainer()` BelongsTo, `reviewedBy()` BelongsTo(User) |
 | `CenterAccreditationRequest` | `center_accreditation_requests` | `certifiedCenter()` BelongsTo, `reviewer()` BelongsTo(User) |
-| `TrainerFinancialRequest` | `trainer_financial_requests` | `trainer()` BelongsTo, `agentPerson()` BelongsTo(CertifiedCenterPaymentAgentPerson) |
-| `CertifiedCenterFinancialRequest` | `certified_center_financial_requests` | `certifiedCenter()` BelongsTo, `agentPerson()` BelongsTo(CertifiedCenterPaymentAgentPerson) |
-| `CertifiedCenterPaymentAgentPerson` | `certified_center_payment_agent_persons` | `certifiedCenter()` BelongsTo, `centerFinancialRequests()` HasMany, `trainerFinancialRequests()` HasMany |
+| `FinancialRequest` | `financial_requests` | `requestable()` MorphTo (CertifiedCenter|Trainer), `agentPerson()` BelongsTo(AgentPerson) |
+| `AgentPerson` | `agent_persons` | `centerFinancialRequests()` HasMany, `trainerFinancialRequests()` HasMany |
 | `Membership` | `memberships` | — |
 | `BlogPost` | `blog_posts` | — |
 | `StaticPage` | `static_pages` | — |

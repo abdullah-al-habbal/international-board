@@ -12,12 +12,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\Attributes\Backoff;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\LazyCollection;
 use SplFileObject;
 
+#[Tries(3)]
+#[Backoff([60, 120])]
 final class ImportCertificationChunkJob implements ShouldQueue
 {
     use Batchable;
@@ -25,10 +29,6 @@ final class ImportCertificationChunkJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-
-    public int $tries = 3;
-
-    public array $backoff = [60, 120];
 
     public function __construct(
         private readonly string $chunkPath,

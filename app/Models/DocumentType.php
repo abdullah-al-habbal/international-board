@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\Attributes\Translatable;
 use Spatie\Translatable\HasTranslations;
 
+#[Translatable(['name'])]
+#[Table('board_document_types')]
+#[Fillable([
+    'key',
+    'name',
+])]
 class DocumentType extends Model
 {
     use HasFactory;
     use HasTranslations;
-
-    protected $table = 'board_document_types';
-
-    public array $translatable = ['name'];
-
-    protected $fillable = [
-        'key',
-        'name',
-    ];
 
     public function certifications(): MorphMany
     {

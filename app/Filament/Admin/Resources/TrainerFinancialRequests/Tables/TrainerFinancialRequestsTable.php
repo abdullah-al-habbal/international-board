@@ -13,10 +13,8 @@ class TrainerFinancialRequestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('trainer.name')
-                    ->label(__('app.trainer'))
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('requestable.name')
+                    ->label(__('app.trainer')),
                 TextColumn::make('agentPerson.name')
                     ->label(__('app.agent_person'))
                     ->sortable(),

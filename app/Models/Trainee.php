@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Observers\TraineeObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,20 +15,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ObservedBy([TraineeObserver::class])]
+#[Fillable([
+    'name',
+    'email',
+    'phone',
+    'country_id',
+    'date_of_birth',
+    'gender',
+    'notes',
+    'show_in_public_website',
+])]
 class Trainee extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'country_id',
-        'date_of_birth',
-        'gender',
-        'notes',
-        'show_in_public_website',
-    ];
 
     protected function casts(): array
     {

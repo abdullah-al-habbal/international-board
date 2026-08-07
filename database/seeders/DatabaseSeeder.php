@@ -23,13 +23,12 @@ class DatabaseSeeder extends Seeder
             SpecializationSeeder::class,
             TrainerSeeder::class,
             TraineeSeeder::class,
-            CertifiedCenterPaymentAgentPersonSeeder::class,
+            AgentPersonSeeder::class,
             CertifiedCenterDocumentTypeSeeder::class,
-            CertifiedCenterFinancialRequestSeeder::class,
+            FinancialRequestSeeder::class,
             AccreditationRequestSeeder::class,
             TrainerAccreditationRequestSeeder::class,
             TrainerDocumentTypeSeeder::class,
-            TrainerFinancialRequestSeeder::class,
             CertificationSeeder::class,
         ]);
     }

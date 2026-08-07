@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\SettingType;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,15 +14,14 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @method static Builder|static where($column, $operator = null, $value = null, $boolean = 'and')
  */
+#[Fillable([
+    'key',
+    'value',
+    'type',
+])]
 class ApplicationSetting extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'key',
-        'value',
-        'type',
-    ];
 
     protected function casts(): array
     {
