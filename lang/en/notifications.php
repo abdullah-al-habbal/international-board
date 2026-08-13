@@ -29,4 +29,15 @@ return [
         'deleted' => 'deleted',
         'view' => 'View',
     ],
+
+    'admin_action_notification' => [
+        'title' => 'Update on :label',
+        'body' => 'Your :label has been :action by the admin.',
+        'view' => 'View',
+        'actions' => [
+            'approved' => 'approved',
+            'rejected' => 'rejected',
+            'under_review' => 'marked under review',
+        ],
+    ],
 ];

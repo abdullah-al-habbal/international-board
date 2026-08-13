@@ -29,4 +29,15 @@ return [
         'deleted' => 'حذف',
         'view' => 'عرض',
     ],
+
+    'admin_action_notification' => [
+        'title' => 'تحديث على :label',
+        'body' => 'تم :action :label الخاص بك من قبل الإدارة.',
+        'view' => 'عرض',
+        'actions' => [
+            'approved' => 'الموافقة على',
+            'rejected' => 'رفض',
+            'under_review' => 'تحويله إلى قيد المراجعة',
+        ],
+    ],
 ];

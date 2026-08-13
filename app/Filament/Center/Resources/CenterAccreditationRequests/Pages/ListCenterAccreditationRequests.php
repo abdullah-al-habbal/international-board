@@ -31,8 +31,8 @@ class ListCenterAccreditationRequests extends ListRecords
         /** @var CertifiedCenter|null $center */
         $center = auth('certified_center')->user();
 
-        return $center instanceof CertifiedCenter && $center->hasActiveAccreditationRequest()
-            ? __('accreditation.create_disabled.has_active')
+        return $center instanceof CertifiedCenter
+            ? $center->accreditationBlockMessage()
             : null;
     }
 }

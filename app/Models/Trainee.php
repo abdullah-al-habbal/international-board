@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 #[ObservedBy([TraineeObserver::class])]
 #[Fillable([
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'gender',
     'notes',
     'show_in_public_website',
+    'owner_type',
+    'owner_id',
 ])]
 class Trainee extends Model
 {
@@ -59,6 +62,18 @@ class Trainee extends Model
     public function certifications(): HasMany
     {
         return $this->hasMany(Certification::class);
+    }
+
+    public function owner(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    #[Scope]
+    protected function ownedBy(Builder $query, string $type, int $id): void
+    {
+        $query->where('owner_type', $type)
+            ->where('owner_id', $id);
     }
 
     #[Scope]

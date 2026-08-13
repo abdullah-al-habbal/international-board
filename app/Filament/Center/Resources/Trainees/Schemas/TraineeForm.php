@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Center\Resources\Trainees\Schemas;
 
 use App\Filament\Components\DatePicker;
+use App\Models\CertifiedCenter;
 use App\Models\Country;
 use App\Models\Trainee;
 use Filament\Forms\Components\Select;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class TraineeForm
 {
@@ -22,7 +24,12 @@ class TraineeForm
                 ->label(__('app.name'))
                 ->required()
                 ->maxLength(255)
-                ->unique(ignoreRecord: true)
+                ->scopedUnique(
+                    Trainee::class,
+                    'name',
+                    ignoreRecord: true,
+                    modifyQueryUsing: static fn (Builder $query, ?Model $record = null): Builder => self::scopeToOwner($query, $record),
+                )
                 ->autofocus()
                 ->columnSpanFull(),
 
@@ -31,7 +38,12 @@ class TraineeForm
                 ->email()
                 ->maxLength(255)
                 ->nullable()
-                ->unique(Trainee::class, 'email', ignoreRecord: true)
+                ->scopedUnique(
+                    Trainee::class,
+                    'email',
+                    ignoreRecord: true,
+                    modifyQueryUsing: static fn (Builder $query, ?Model $record = null): Builder => self::scopeToOwner($query, $record),
+                )
                 ->columnSpan(1),
 
             TextInput::make('phone')
@@ -39,7 +51,12 @@ class TraineeForm
                 ->tel()
                 ->maxLength(255)
                 ->nullable()
-                ->unique(Trainee::class, 'phone', ignoreRecord: true)
+                ->scopedUnique(
+                    Trainee::class,
+                    'phone',
+                    ignoreRecord: true,
+                    modifyQueryUsing: static fn (Builder $query, ?Model $record = null): Builder => self::scopeToOwner($query, $record),
+                )
                 ->columnSpan(1),
 
             Select::make('country_id')
@@ -122,5 +139,16 @@ class TraineeForm
                 ->nullable()
                 ->columnSpanFull(),
         ])->columns(2);
+    }
+
+    private static function scopeToOwner(Builder $query, ?Model $record): Builder
+    {
+        if ($record !== null && $record->owner_type !== null && $record->owner_id !== null) {
+            return $query->where('owner_type', $record->owner_type)
+                ->where('owner_id', (int) $record->owner_id);
+        }
+
+        return $query->where('owner_type', CertifiedCenter::class)
+            ->where('owner_id', (int) auth('certified_center')->id());
     }
 }

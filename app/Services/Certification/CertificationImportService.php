@@ -83,7 +83,7 @@ final class CertificationImportService
             }
         });
     }
-    
+
     private function csvLines(string $filePath): Generator
     {
         $file = new SplFileObject($filePath);
@@ -122,6 +122,8 @@ final class CertificationImportService
 
     private function processRows(iterable $rows, int $creatorId, array $headers): array
     {
+        $this->traineeHandler->withOwner(User::class, $creatorId);
+
         $stats = ['total' => 0, 'success' => 0, 'failed' => 0, 'errors' => []];
         $buffer = [];
 

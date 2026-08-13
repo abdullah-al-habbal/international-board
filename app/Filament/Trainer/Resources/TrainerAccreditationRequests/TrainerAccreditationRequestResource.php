@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerAccreditationRequests;
 
-use App\Enums\AccreditationStatus;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\CreateTrainerAccreditationRequest;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\EditTrainerAccreditationRequest;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ListTrainerAccreditationRequests;
@@ -12,6 +11,7 @@ use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Pages\ViewTraine
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestForm;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Schemas\TrainerAccreditationRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerAccreditationRequests\Tables\TrainerAccreditationRequestsTable;
+use App\Models\Trainer;
 use App\Models\TrainerAccreditationRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -54,10 +54,14 @@ class TrainerAccreditationRequestResource extends Resource
 
     public static function canCreate(): bool
     {
-        return ! TrainerAccreditationRequest::query()
-            ->where('trainer_id', Auth::id())
-            ->where('status', '!=', AccreditationStatus::Rejected->value)
-            ->exists();
+        /** @var Trainer|null $trainer */
+        $trainer = auth('trainer')->user();
+
+        if (! $trainer instanceof Trainer) {
+            return false;
+        }
+
+        return ! $trainer->hasActiveAccreditationRequest();
     }
 
     public static function getNavigationBadge(): ?string

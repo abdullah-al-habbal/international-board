@@ -82,6 +82,11 @@ class Trainer extends Authenticatable implements FilamentUser
         return $this->morphMany(Certification::class, 'creator');
     }
 
+    public function trainees(): MorphMany
+    {
+        return $this->morphMany(Trainee::class, 'owner');
+    }
+
     public function financialRequests(): MorphMany
     {
         return $this->morphMany(FinancialRequest::class, 'requestable');
@@ -142,13 +147,45 @@ class Trainer extends Authenticatable implements FilamentUser
 
     public function hasActiveAccreditationRequest(): bool
     {
+        return $this->activeAccreditationRequestQuery()->exists();
+    }
+
+    public function activeAccreditationRequest(): ?TrainerAccreditationRequest
+    {
+        return $this->activeAccreditationRequestQuery()->latest()->first();
+    }
+
+    public function accreditationBlockMessage(): ?string
+    {
+        $request = $this->activeAccreditationRequest();
+
+        if (! $request) {
+            return null;
+        }
+
+        return in_array($request->status, [
+            AccreditationStatus::Pending,
+            AccreditationStatus::UnderReview,
+        ], true)
+            ? __('accreditation.errors.pending_request_exists')
+            : __('accreditation.errors.approved_request_exists');
+    }
+
+    private function activeAccreditationRequestQuery(): HasMany
+    {
         $now = Carbon::now();
 
         return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->where('accreditation_start_date', '<=', $now)
-            ->where('accreditation_end_date', '>=', $now)
-            ->exists();
+            ->where(function (Builder $query) use ($now) {
+                $query->whereIn('status', [
+                    AccreditationStatus::Pending->value,
+                    AccreditationStatus::UnderReview->value,
+                ])->orWhere(function (Builder $q) use ($now) {
+                    $q->where('status', AccreditationStatus::Approved->value)
+                        ->where('accreditation_start_date', '<=', $now)
+                        ->where('accreditation_end_date', '>=', $now);
+                });
+            });
     }
 
     public function hasApprovedNonExpiredRequest(): bool

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Enums\AccreditationStatus;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\TrainerAccreditationRequestResource;
 use App\Models\Trainer;
 use App\Models\TrainerAccreditationRequest;
+use App\Notifications\AdminActionNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -15,6 +17,7 @@ class TrainerAccreditationRequestObserver
     public function creating(TrainerAccreditationRequest $request): void
     {
         $this->assertNoDuplicateActiveRequest($request);
+        $this->assertNoTimeOverlap($request);
     }
 
     public function updating(TrainerAccreditationRequest $request): void
@@ -77,6 +80,15 @@ class TrainerAccreditationRequestObserver
             AccreditationStatus::Rejected => $this->handleRejected($request, $trainer),
             default => null,
         };
+
+        if (Auth::guard('web')->check() && $status->isReviewed()) {
+            $trainer->notify(new AdminActionNotification(
+                $request,
+                $status->value,
+                'trainer',
+                TrainerAccreditationRequestResource::class,
+            ));
+        }
     }
 
     private function assertNoDuplicateActiveRequest(TrainerAccreditationRequest $request): void
@@ -96,12 +108,20 @@ class TrainerAccreditationRequestObserver
             ->where('accreditation_end_date', '>=', now())
             ->exists();
 
-        if ($hasActive || $hasCurrentlyActiveApproved) {
-            Log::channel('accreditation')->warning('[Trainer] Blocked duplicate active request', [
+        if ($hasActive) {
+            Log::channel('accreditation')->warning('[Trainer] Blocked duplicate pending request', [
                 'trainer_id' => $request->trainer_id,
             ]);
 
-            throw new \DomainException(__('accreditation.errors.active_request_exists'));
+            throw new \DomainException(__('accreditation.errors.pending_request_exists'));
+        }
+
+        if ($hasCurrentlyActiveApproved) {
+            Log::channel('accreditation')->warning('[Trainer] Blocked duplicate active approved request', [
+                'trainer_id' => $request->trainer_id,
+            ]);
+
+            throw new \DomainException(__('accreditation.errors.approved_request_exists'));
         }
     }
 

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\CertifiedCenter;
 use App\Models\Country;
 use App\Models\Trainee;
+use App\Models\Trainer;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TraineeFactory extends Factory
@@ -14,6 +17,8 @@ class TraineeFactory extends Factory
 
     public function definition(): array
     {
+        $ownerAdminId = User::admin()->orderBy('id')->limit(1)->value('id');
+
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
@@ -22,7 +27,17 @@ class TraineeFactory extends Factory
             'date_of_birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
             'gender' => $this->faker->randomElement(['male', 'female']),
             'notes' => $this->faker->paragraph(),
+            'owner_type' => $ownerAdminId !== null ? User::class : null,
+            'owner_id' => $ownerAdminId,
         ];
+    }
+
+    public function ownedBy(User|CertifiedCenter|Trainer $owner): static
+    {
+        return $this->state(fn () => [
+            'owner_type' => $owner::class,
+            'owner_id' => $owner->getKey(),
+        ]);
     }
 
     public function complete(): static

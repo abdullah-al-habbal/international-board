@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Enums\DocumentTypeRequestStatus;
 use App\Models\Concerns\NotifiesAdminOnMutation;
+use App\Observers\CertifiedCenterDocumentTypeObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Translatable\Attributes\Translatable;
 use Spatie\Translatable\HasTranslations;
 
+#[ObservedBy([CertifiedCenterDocumentTypeObserver::class])]
 #[Translatable(['name'])]
 #[Table('certified_center_document_types')]
 #[Fillable([

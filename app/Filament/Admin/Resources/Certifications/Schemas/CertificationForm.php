@@ -19,6 +19,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class CertificationForm
 {
@@ -122,7 +123,13 @@ class CertificationForm
                                             ->label(__('app.name'))
                                             ->required()
                                             ->maxLength(255)
-                                            ->unique(Trainee::class, 'name'),
+                                            ->scopedUnique(
+                                                Trainee::class,
+                                                'name',
+                                                modifyQueryUsing: fn (Builder $query) => $query
+                                                    ->where('owner_type', User::class)
+                                                    ->where('owner_id', (int) auth('web')->id())
+                                            ),
                                         TextInput::make('email')
                                             ->label(__('app.email'))
                                             ->email()
@@ -141,7 +148,10 @@ class CertificationForm
 
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return Trainee::create($data)->getKey();
+                                        return Trainee::create($data + [
+                                            'owner_type' => User::class,
+                                            'owner_id' => auth('web')->id(),
+                                        ])->getKey();
                                     }),
                             ]),
 

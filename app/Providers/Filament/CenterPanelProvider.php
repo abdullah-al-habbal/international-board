@@ -36,6 +36,7 @@ final class CenterPanelProvider extends PanelProvider
             ->id($config['id'])
             ->path($config['path'])
             ->login()
+            ->databaseNotifications()
             ->colors(['primary' => $this->resolveColor($config['color'])])
             ->authGuard($config['guard'])
             ->authPasswordBroker($config['password_broker'])

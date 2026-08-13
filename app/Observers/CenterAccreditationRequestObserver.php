@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Enums\AccreditationStatus;
+use App\Filament\Center\Resources\CenterAccreditationRequests\CenterAccreditationRequestResource;
 use App\Models\CenterAccreditationRequest;
 use App\Models\CertifiedCenter;
+use App\Notifications\AdminActionNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -78,6 +80,15 @@ class CenterAccreditationRequestObserver
             AccreditationStatus::Rejected => $this->handleRejected($request, $center),
             default => null,
         };
+
+        if (Auth::guard('web')->check() && $status->isReviewed()) {
+            $center->notify(new AdminActionNotification(
+                $request,
+                $status->value,
+                'center',
+                CenterAccreditationRequestResource::class,
+            ));
+        }
     }
 
     private function assertNoDuplicateActiveRequest(CenterAccreditationRequest $request): void
@@ -97,12 +108,20 @@ class CenterAccreditationRequestObserver
             ->where('accreditation_end_date', '>=', now())
             ->exists();
 
-        if ($hasActive || $hasCurrentlyActiveApproved) {
-            Log::channel('accreditation')->warning('[Center] Blocked duplicate active request', [
+        if ($hasActive) {
+            Log::channel('accreditation')->warning('[Center] Blocked duplicate pending request', [
                 'certified_center_id' => $request->certified_center_id,
             ]);
 
-            throw new \DomainException(__('accreditation.errors.active_request_exists'));
+            throw new \DomainException(__('accreditation.errors.pending_request_exists'));
+        }
+
+        if ($hasCurrentlyActiveApproved) {
+            Log::channel('accreditation')->warning('[Center] Blocked duplicate active approved request', [
+                'certified_center_id' => $request->certified_center_id,
+            ]);
+
+            throw new \DomainException(__('accreditation.errors.approved_request_exists'));
         }
     }
 

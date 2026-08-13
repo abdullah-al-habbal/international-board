@@ -23,11 +23,21 @@ abstract class ResolvesEntities
 
     protected bool $warmed = false;
 
+    /** @var array{0: string, 1: int}|null owner_type, owner_id */
+    protected ?array $owner = null;
+
     abstract protected function table(): string;
 
     abstract protected function entityType(): string;
 
     abstract protected function newEntityAttributes(string $rawName, string $normalized, string $key, array $context): array;
+
+    public function withOwner(string $type, int $id): static
+    {
+        $this->owner = [$type, $id];
+
+        return $this;
+    }
 
     protected function isClosedSet(): bool
     {
@@ -162,22 +172,27 @@ abstract class ResolvesEntities
             $this->flush();
         }
 
-        DB::table($this->table())
+        $query = DB::table($this->table())
             ->select(['id', 'name_key'])
-            ->whereIn('name_key', $missing)
-            ->get()
+            ->whereIn('name_key', $missing);
+
+        $this->applyOwnerScope($query);
+
+        $query->get()
             ->each(function ($row): void {
                 $this->cache[(string) $row->name_key] = (int) $row->id;
             });
 
-        EntityAlias::query()
-            ->where('aliasable_type', $this->entityType())
-            ->whereIn('alias_key', $missing)
-            ->select(['alias_key', 'aliasable_id'])
-            ->get()
-            ->each(function ($row): void {
-                $this->cache[(string) $row->alias_key] ??= (int) $row->aliasable_id;
-            });
+        if ($this->owner === null) {
+            EntityAlias::query()
+                ->where('aliasable_type', $this->entityType())
+                ->whereIn('alias_key', $missing)
+                ->select(['alias_key', 'aliasable_id'])
+                ->get()
+                ->each(function ($row): void {
+                    $this->cache[(string) $row->alias_key] ??= (int) $row->aliasable_id;
+                });
+        }
 
         foreach ($missing as $key) {
             if (! isset($this->cache[$key])) {
@@ -231,9 +246,13 @@ abstract class ResolvesEntities
 
     protected function fetchByKey(string $key): ?int
     {
-        $id = DB::table($this->table())->where('name_key', $key)->value('id');
+        $query = DB::table($this->table())->where('name_key', $key);
 
-        if ($id === null) {
+        $this->applyOwnerScope($query);
+
+        $id = $query->value('id');
+
+        if ($id === null && $this->owner === null) {
             $id = EntityAlias::query()
                 ->where('aliasable_type', $this->entityType())
                 ->where('alias_key', $key)
@@ -254,15 +273,22 @@ abstract class ResolvesEntities
                 NameNormalizer::normalize($item['raw']),
                 $key,
                 $item['context'],
-            ) + ['created_at' => $now, 'updated_at' => $now];
+            ) + $this->ownerAttributes() + ['created_at' => $now, 'updated_at' => $now];
         }
 
-        DB::table($this->table())->upsert($rows, ['name_key'], ['name_key']);
+        $uniqueBy = $this->owner !== null
+            ? ['owner_type', 'owner_id', 'name_key']
+            : ['name_key'];
 
-        $ids = DB::table($this->table())
+        DB::table($this->table())->upsert($rows, $uniqueBy, ['name_key']);
+
+        $query = DB::table($this->table())
             ->select(['id', 'name_key'])
-            ->whereIn('name_key', array_keys($pending))
-            ->pluck('id', 'name_key');
+            ->whereIn('name_key', array_keys($pending));
+
+        $this->applyOwnerScope($query);
+
+        $ids = $query->pluck('id', 'name_key');
 
         $created = [];
 
@@ -325,5 +351,28 @@ abstract class ResolvesEntities
     protected function suggestionPool(): array
     {
         return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function ownerAttributes(): array
+    {
+        if ($this->owner === null) {
+            return [];
+        }
+
+        return [
+            'owner_type' => $this->owner[0],
+            'owner_id' => $this->owner[1],
+        ];
+    }
+
+    private function applyOwnerScope(object $query): void
+    {
+        if ($this->owner !== null) {
+            $query->where('owner_type', $this->owner[0])
+                ->where('owner_id', $this->owner[1]);
+        }
     }
 }

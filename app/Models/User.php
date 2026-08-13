@@ -55,6 +55,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->morphMany(Certification::class, 'creator');
     }
 
+    public function trainees(): MorphMany
+    {
+        return $this->morphMany(Trainee::class, 'owner');
+    }
+
     public function scopeOfType(Builder $query, UserType|string $type): Builder
     {
         return $query->where('type', $type instanceof UserType ? $type->value : $type);

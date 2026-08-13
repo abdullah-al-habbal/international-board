@@ -17,6 +17,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class CertificationForm
@@ -55,7 +56,13 @@ class CertificationForm
 
                                 Select::make('trainee_id')
                                     ->label(__('app.trainee_name'))
-                                    ->relationship('trainee', 'name')
+                                    ->relationship(
+                                        'trainee',
+                                        'name',
+                                        fn (Builder $query) => $query
+                                            ->where('owner_type', Trainer::class)
+                                            ->where('owner_id', (int) auth('trainer')->id())
+                                    )
                                     ->searchable()
                                     ->preload()
                                     ->required()
@@ -64,7 +71,13 @@ class CertificationForm
                                             ->label(__('app.name'))
                                             ->required()
                                             ->maxLength(255)
-                                            ->unique(Trainee::class, 'name'),
+                                            ->scopedUnique(
+                                                Trainee::class,
+                                                'name',
+                                                modifyQueryUsing: fn (Builder $query) => $query
+                                                    ->where('owner_type', Trainer::class)
+                                                    ->where('owner_id', (int) auth('trainer')->id())
+                                            ),
                                         TextInput::make('email')
                                             ->label(__('app.email'))
                                             ->email()
@@ -82,7 +95,10 @@ class CertificationForm
                                             ->label(__('app.date_of_birth')),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return Trainee::create($data)->getKey();
+                                        return Trainee::create($data + [
+                                            'owner_type' => Trainer::class,
+                                            'owner_id' => auth('trainer')->id(),
+                                        ])->getKey();
                                     }),
                             ]),
 
