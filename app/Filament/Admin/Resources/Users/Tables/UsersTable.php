@@ -43,7 +43,7 @@ class UsersTable
                         'client' => 'info',
                         default => 'gray',
                     })
-                    ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—'))
+                    ->formatStateUsing(fn ($state) => $state instanceof UserType ? $state->label() : ($state ?: '—'))
                     ->sortable(),
 
                 TextColumn::make('created_at')

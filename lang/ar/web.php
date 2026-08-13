@@ -44,7 +44,7 @@ return [
             'subtitle' => 'تصفح شبكة مراكز التدريب المعتمدة.',
         ],
         'trainers' => [
-            'title' => 'المدربون المعتمدون',
+            'title' => 'المدربين المعتمدون',
             'subtitle' => 'تصفح شبكتنا من المدربين المهنيين المعتمدين.',
             'evaluation_title' => 'تقييم المدرب',
             'intro_text' => 'يفتخر البورد الدولي للتدريب والتأهيل الاحترافي بفريق من المدربين والاستشاريين متعددي الجنسيات وذوي الخبرات العالية في مختلف المجالات والتخصصات الإدارية والمهنية، الحاصلين على أعلى الشهادات الدولية.',
@@ -101,14 +101,14 @@ return [
     'stats' => [
         'certifications' => 'إجمالي الشهادات',
         'countries' => 'الدول',
-        'trainees' => 'المتدربون',
-        'trainers' => 'المدربون',
+        'trainees' => 'المتدربين',
+        'trainers' => 'المدربين',
         'by_creator' => 'الشهادات حسب جهة الإصدار',
         'board' => 'مجلس الإدارة',
         'center' => 'مركز',
         'trainer' => 'مدرب',
         'active_centers' => 'المراكز النشطة',
-        'active_trainers' => 'المدربون النشطون',
+        'active_trainers' => 'المدربين النشطون',
     ],
 
     'cta' => [
@@ -193,7 +193,7 @@ return [
         'document_types_count' => 'أنواع الوثائق',
         'accreditation_requests_count' => 'طلبات الاعتماد',
         'specializations_count' => 'التخصصات',
-        'trainers_count' => 'المدربون',
+        'trainers_count' => 'المدربين',
         'financial_requests_count' => 'الطلبات المالية',
         'latest_certifications' => 'آخر الشهادات',
         'link_copied' => 'تم نسخ الرابط',

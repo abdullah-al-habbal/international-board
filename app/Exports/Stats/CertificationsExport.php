@@ -20,9 +20,9 @@ final class CertificationsExport implements CsvStatExportable
     public function export(): StreamedResponse
     {
         $headers = [
-            'ID', 'Serial Number', 'Document Code', 'Accreditation Number',
-            'Trainee', 'Document Type', 'Issued By', 'Assigned Trainer',
-            'Country', 'Accreditation Date', 'Created At',
+            __('exports.headers.id'), __('exports.headers.serial_number'), __('exports.headers.document_code'), __('exports.headers.accreditation_number'),
+            __('exports.headers.trainee'), __('exports.headers.document_type'), __('exports.headers.issued_by'), __('exports.headers.assigned_trainer'),
+            __('exports.headers.country'), __('exports.headers.accreditation_date'), __('exports.headers.created_at'),
         ];
 
         $formatter = fn (Certification $c): array => [
@@ -49,7 +49,7 @@ final class CertificationsExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Certifications';
+        return __('exports.titles.certifications');
     }
 
     private function documentTypeName(Certification $certification): string

@@ -26,6 +26,8 @@ class TraineeResource extends Resource
 {
     protected static ?string $model = Trainee::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function canCreate(): bool
     {
         return app(AccreditationGateService::class)->currentCenterCanPerformActions();

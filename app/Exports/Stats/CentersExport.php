@@ -20,10 +20,11 @@ final class CentersExport implements CsvStatExportable
     public function export(): StreamedResponse
     {
         $headers = [
-            'ID', 'Name', 'Email', 'Phone', 'Country', 'Manager',
-            'Accreditation Number', 'Status', 'Accreditation Start',
-            'Accreditation End', 'Trainers', 'Certifications',
-            'Document Types', 'Created At',
+            __('exports.headers.id'), __('exports.headers.name'), __('exports.headers.email'), __('exports.headers.phone'),
+            __('exports.headers.country'), __('exports.headers.manager'),
+            __('exports.headers.accreditation_number'), __('exports.headers.status'), __('exports.headers.accreditation_start'),
+            __('exports.headers.accreditation_end'), __('exports.headers.trainers'), __('exports.headers.certifications'),
+            __('exports.headers.document_types'), __('exports.headers.created_at'),
         ];
 
         $formatter = fn (CertifiedCenter $center): array => [
@@ -53,6 +54,6 @@ final class CentersExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Centers';
+        return __('exports.titles.centers');
     }
 }

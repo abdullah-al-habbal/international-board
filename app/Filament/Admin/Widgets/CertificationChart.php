@@ -41,7 +41,7 @@ final class CertificationChart extends ChartWidget
                     'fill' => true,
                 ],
             ],
-            'labels' => Charts::MONTH_LABELS,
+            'labels' => Charts::monthLabels(),
         ];
     }
 

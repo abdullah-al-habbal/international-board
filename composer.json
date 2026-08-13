@@ -62,6 +62,25 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
+        "restart-local": [
+            "@composer dump-autoload",
+            "@php artisan optimize:clear",
+            "@php artisan cache:clear",
+            "@php artisan config:clear",
+            "@php artisan route:clear",
+            "@php artisan view:clear",
+            "@php artisan migrate:fresh --seed",
+            "composer run dev"
+        ],
+        "restart-production": [
+            "@composer dump-autoload",
+            "@php artisan optimize:clear",
+            "@php artisan cache:clear",
+            "@php artisan config:clear",
+            "@php artisan route:clear",
+            "@php artisan view:clear",
+            "@php artisan migrate:fresh --seed"
+        ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:work --tries=3 --timeout=3600\" \"npm run dev\" --names=server,queue,vite --kill-others"

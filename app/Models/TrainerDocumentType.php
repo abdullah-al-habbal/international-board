@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\DocumentTypeRequestStatus;
+use App\Models\Concerns\NotifiesAdminOnMutation;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,6 +29,7 @@ class TrainerDocumentType extends Model
 {
     use HasFactory;
     use HasTranslations;
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {

@@ -71,7 +71,7 @@
         {{-- Biography --}}
         @if ($trainer->bio)
             <hr>
-            <h5 class="mb-2">{{ __('filament.labels.bio') ?? 'Biography' }}</h5>
+            <h5 class="mb-2">{{ __('filament.labels.bio') }}</h5>
             <p class="text-muted">{{ $trainer->bio }}</p>
         @endif
 

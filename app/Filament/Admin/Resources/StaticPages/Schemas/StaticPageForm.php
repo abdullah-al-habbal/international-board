@@ -22,7 +22,8 @@ class StaticPageForm
                     ->required()
                     ->unique(ignoreRecord: true),
 
-                Tabs::make('Translations')
+                Tabs::make('translations')
+                    ->label(__('app.translations'))
                     ->tabs(
                         collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
                             ->schema([

@@ -66,7 +66,7 @@ class PaymentAgentPersonResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->name ?? 'Agent #'.$record->id;
+        return $record->name ?? __('app.record.agent_n', ['id' => $record->id]);
     }
 
     public static function form(Schema $schema): Schema

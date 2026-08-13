@@ -25,7 +25,8 @@ class MembershipForm
                     ->unique(ignoreRecord: true)
                     ->columnSpanFull(),
 
-                Tabs::make('Translations')
+                Tabs::make('translations')
+                    ->label(__('app.translations'))
                     ->tabs(
                         collect($locales)->map(fn ($locale) => Tab::make(strtoupper($locale))
                             ->schema([

@@ -19,7 +19,9 @@ final class AdminUsersExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Name', 'Email', 'Created At'];
+        $headers = [
+            __('exports.headers.id'), __('exports.headers.name'), __('exports.headers.email'), __('exports.headers.created_at'),
+        ];
 
         $formatter = fn (User $user): array => [
             $user->id,
@@ -38,6 +40,6 @@ final class AdminUsersExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Admin Users';
+        return __('exports.titles.admin_users');
     }
 }

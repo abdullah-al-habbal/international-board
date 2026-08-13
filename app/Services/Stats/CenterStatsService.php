@@ -28,7 +28,7 @@ final class CenterStatsService
     public function getAccreditationStatusData(CertifiedCenter $center): array
     {
         return [
-            'status_label' => $center->isAccreditationActive() ? 'Active' : 'Expired',
+            'status_label' => $center->isAccreditationActive() ? __('widgets.status.active') : __('widgets.status.expired'),
             'description' => $this->getStatusDescription($center),
             'color' => $this->getStatusColor($center),
             'days_until_expiry' => $this->getDaysUntilExpiry($center),
@@ -38,15 +38,15 @@ final class CenterStatsService
     private function getStatusDescription(CertifiedCenter $center): string
     {
         if (! $center->accreditation_period_end) {
-            return 'No accreditation period set';
+            return __('widgets.status.no_accreditation_period');
         }
 
         $daysLeft = $this->getDaysUntilExpiry($center);
 
         return match (true) {
-            $daysLeft < 0 => 'Accreditation expired',
-            $daysLeft <= 30 => "Expires in {$daysLeft} days",
-            default => 'Valid until '.$center->accreditation_period_end->format('M d, Y'),
+            $daysLeft < 0 => __('widgets.status.accreditation_expired'),
+            $daysLeft <= 30 => __('widgets.status.expires_in_days', ['days' => $daysLeft]),
+            default => __('widgets.status.valid_until', ['date' => $center->accreditation_period_end->translatedFormat('M d, Y')]),
         };
     }
 

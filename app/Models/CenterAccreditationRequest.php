@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
+use App\Models\Concerns\NotifiesAdminOnMutation;
 use App\Observers\CenterAccreditationRequestObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CenterAccreditationRequest extends Model
 {
     use HasFactory;
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {

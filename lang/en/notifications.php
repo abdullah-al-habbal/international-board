@@ -16,4 +16,17 @@ return [
         'subject' => 'Accreditation Expiring Soon',
         'message' => 'Your accreditation will expire in :days days on :expiry_date. Please renew as soon as possible.',
     ],
+
+    'admin_action_performed' => [
+        'title' => 'New :label',
+        'body' => ':actor_type “:actor_name” :action :label.',
+        'actor' => [
+            'center' => 'Certified Center',
+            'trainer' => 'Trainer',
+        ],
+        'created' => 'created a new',
+        'updated' => 'updated',
+        'deleted' => 'deleted',
+        'view' => 'View',
+    ],
 ];

@@ -15,7 +15,7 @@ class CertifiedCenterInfolist
             ->components([
                 TextEntry::make('name'),
                 TextEntry::make('email')
-                    ->label('Email address'),
+                    ->label(__('app.email')),
                 TextEntry::make('email_verified_at')
                     ->dateTime()
                     ->placeholder('-'),

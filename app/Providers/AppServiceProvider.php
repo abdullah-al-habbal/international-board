@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Filament\Support\TranslatedLabels;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -14,6 +15,8 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        TranslatedLabels::register();
+
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->locales(['ar', 'en'])

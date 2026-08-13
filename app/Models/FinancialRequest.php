@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\NotifiesAdminOnMutation;
 use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class FinancialRequest extends Model
 {
     use HasFactory;
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {

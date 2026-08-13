@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'headers' => [
+        'id' => 'ID',
+        'name' => 'Name',
+        'email' => 'Email',
+        'phone' => 'Phone',
+        'country' => 'Country',
+        'manager' => 'Manager',
+        'accreditation_number' => 'Accreditation Number',
+        'accreditation_start' => 'Accreditation Start',
+        'accreditation_end' => 'Accreditation End',
+        'trainers' => 'Trainers',
+        'certifications' => 'Certifications',
+        'document_types' => 'Document Types',
+        'created_at' => 'Created At',
+        'serial_number' => 'Serial Number',
+        'document_code' => 'Document Code',
+        'trainee' => 'Trainee',
+        'document_type' => 'Document Type',
+        'issued_by' => 'Issued By',
+        'assigned_trainer' => 'Assigned Trainer',
+        'accreditation_date' => 'Accreditation Date',
+        'status' => 'Status',
+        'center' => 'Center',
+        'requested_start' => 'Requested Start',
+        'requested_end' => 'Requested End',
+        'date_of_birth' => 'Date of Birth',
+        'gender' => 'Gender',
+        'notes' => 'Notes',
+        'specializations' => 'Specializations',
+    ],
+    'titles' => [
+        'active_centers' => 'Active Centers',
+        'admin_users' => 'Admin Users',
+        'centers' => 'Centers',
+        'certifications' => 'Certifications',
+        'expired_centers' => 'Expired Centers',
+        'monthly_certifications' => 'Monthly Certifications',
+        'pending_requests' => 'Pending Requests',
+        'trainees' => 'Trainees',
+        'trainers' => 'Trainers',
+    ],
+];

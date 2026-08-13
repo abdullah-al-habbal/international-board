@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Trainees\Schemas;
 
+use App\Filament\Components\DatePicker;
 use App\Models\Country;
 use App\Models\Trainee;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;

@@ -17,6 +17,7 @@ return [
     ],
     'labels' => [
         'social_links' => 'روابط التواصل الاجتماعي',
+        'bio' => 'السيرة الذاتية',
     ],
     'resources' => [
         'accreditation_requests' => 'طلبات الاعتماد',
@@ -29,8 +30,8 @@ return [
         'edit_requests' => 'طلبات التعديل',
         'memberships' => 'العضويات',
         'static_pages' => 'الصفحات الثابتة',
-        'trainees' => 'المتدربون',
-        'trainers' => 'المدربون',
+        'trainees' => 'المتدربين',
+        'trainers' => 'المدربين',
         'users' => 'المستخدمون',
         'trainer_accreditation_requests' => 'طلبات اعتماد المدربين',
         'center_financial_requests' => 'الطلبات المالية للمراكز',

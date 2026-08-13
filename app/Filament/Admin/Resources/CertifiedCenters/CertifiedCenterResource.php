@@ -74,7 +74,7 @@ class CertifiedCenterResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->name ?? 'Center #'.$record->id;
+        return $record->name ?? __('app.record.center_n', ['id' => $record->id]);
     }
 
     public static function form(Schema $schema): Schema

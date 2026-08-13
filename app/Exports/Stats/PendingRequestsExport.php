@@ -19,7 +19,10 @@ final class PendingRequestsExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Center', 'Requested Start', 'Requested End', 'Created At'];
+        $headers = [
+            __('exports.headers.id'), __('exports.headers.center'), __('exports.headers.requested_start'),
+            __('exports.headers.requested_end'), __('exports.headers.created_at'),
+        ];
 
         $formatter = fn (CenterAccreditationRequest $request): array => [
             $request->id,
@@ -39,6 +42,6 @@ final class PendingRequestsExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Pending Requests';
+        return __('exports.titles.pending_requests');
     }
 }

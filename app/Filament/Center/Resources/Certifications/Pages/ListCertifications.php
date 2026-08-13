@@ -21,7 +21,7 @@ final class ListCertifications extends ListRecords
     {
         return [
             Action::make('export_csv')
-                ->label('Export CSV')
+                ->label(__('app.export_csv'))
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
                     $query = Certification::with([

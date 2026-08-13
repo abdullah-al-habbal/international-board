@@ -47,7 +47,7 @@ final class ListCertifications extends ListRecords
                 }),
 
             Action::make('export_csv')
-                ->label('Export CSV')
+                ->label(__('app.export_csv'))
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
                     return app(CertificationExportHandler::class)

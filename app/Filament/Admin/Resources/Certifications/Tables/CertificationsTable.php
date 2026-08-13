@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
+use App\Filament\Components\DatePicker;
 use App\Models\CertifiedCenter;
 use App\Models\Trainer;
 use App\Models\User;
@@ -11,7 +12,6 @@ use Carbon\Carbon;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;

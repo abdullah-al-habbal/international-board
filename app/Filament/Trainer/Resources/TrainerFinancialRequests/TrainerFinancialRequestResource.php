@@ -54,7 +54,7 @@ class TrainerFinancialRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->requestable?->name ?? 'Request #'.$record->id;
+        return $record->requestable?->name ?? __('app.record.request_n', ['id' => $record->id]);
     }
 
     protected static ?int $navigationSort = 10;

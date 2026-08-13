@@ -22,7 +22,7 @@ class CertifiedCentersTable
                     ->searchable(),
 
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('app.email'))
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
 

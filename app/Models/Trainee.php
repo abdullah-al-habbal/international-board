@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\NotifiesAdminOnMutation;
 use App\Observers\TraineeObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Trainee extends Model
 {
     use HasFactory;
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {

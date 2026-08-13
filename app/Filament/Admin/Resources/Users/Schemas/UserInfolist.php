@@ -37,7 +37,7 @@ class UserInfolist
                     'client' => 'info',
                     default => 'gray',
                 })
-                ->formatStateUsing(fn ($state) => $state instanceof UserType ? ucfirst($state->value) : ($state ?: '—')),
+                ->formatStateUsing(fn ($state) => $state instanceof UserType ? $state->label() : ($state ?: '—')),
 
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))

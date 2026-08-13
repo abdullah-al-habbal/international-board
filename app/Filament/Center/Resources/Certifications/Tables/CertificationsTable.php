@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
+use App\Filament\Components\DatePicker;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;

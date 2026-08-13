@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Trainer\Pages\TrainerProfilePage;
+use App\Filament\Trainer\Widgets\TrainerStatsOverview;
 use App\Filament\Trainer\Widgets\WelcomeWidget;
 use App\Http\Middleware\EnsureTrainerIsAccredited;
 use App\Providers\Traits\ResolvesFilamentColor;
@@ -49,6 +50,7 @@ final class TrainerPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Trainer/Widgets'), for: $config['widgets_path'])
             ->widgets([
                 WelcomeWidget::class,
+                TrainerStatsOverview::class,
             ])
             ->middleware($this->getMiddleware())
             ->authMiddleware($this->getAuthMiddleware());

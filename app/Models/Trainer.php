@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AccreditationStatus;
+use App\Models\Concerns\NotifiesAdminOnMutation;
 use App\Observers\TrainerObserver;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
@@ -47,6 +48,7 @@ class Trainer extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use Notifiable;
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {

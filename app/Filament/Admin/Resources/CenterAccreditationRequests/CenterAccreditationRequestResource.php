@@ -50,7 +50,7 @@ class CenterAccreditationRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->certifiedCenter?->name ?? 'Request #'.$record->id;
+        return $record->certifiedCenter?->name ?? __('app.record.request_n', ['id' => $record->id]);
     }
 
     public static function getNavigationLabel(): string
