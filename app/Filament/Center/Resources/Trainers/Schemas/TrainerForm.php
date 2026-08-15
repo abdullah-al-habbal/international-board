@@ -17,6 +17,7 @@ class TrainerForm
             TextInput::make('name')
                 ->label(__('app.name'))
                 ->required()
+                ->unique(ignoreRecord: true)
                 ->maxLength(255)
                 ->columnSpanFull(),
 

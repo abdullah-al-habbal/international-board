@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'trainer_accreditation_expired' => 'Oops! This trainer\'s accreditation period has ended. Please choose a trainer with active accreditation to continue.',
     'dashboard' => 'Dashboard',
     'navigation' => 'Navigation',
     'settings' => 'Settings',

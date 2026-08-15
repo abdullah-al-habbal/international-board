@@ -24,7 +24,8 @@ class CertifiedCenterForm
                 TextInput::make('email')
                     ->label(__('app.email'))
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true),
                 TextInput::make('password')
                     ->label(__('app.password'))
                     ->password()

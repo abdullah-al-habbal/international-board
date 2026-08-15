@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'trainer_accreditation_expired' => 'عذرًا! انتهت فترة اعتماد هذا المدرب. يرجى اختيار مدرب باعتماد ساري للمتابعة.',
     'dashboard' => 'لوحة التحكم',
     'navigation' => 'التنقل',
     'settings' => 'الإعدادات',

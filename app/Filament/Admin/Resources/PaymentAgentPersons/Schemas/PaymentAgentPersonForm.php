@@ -17,7 +17,7 @@ class PaymentAgentPersonForm
                     ->label(__('app.name'))
                     ->required()
                     ->maxLength(255)
-                    ->unique(),
+                    ->unique(ignoreRecord: true),
             ]);
     }
 }

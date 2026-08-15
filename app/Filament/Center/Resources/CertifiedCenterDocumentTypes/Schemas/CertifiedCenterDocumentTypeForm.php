@@ -6,6 +6,7 @@ namespace App\Filament\Center\Resources\CertifiedCenterDocumentTypes\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rules\Unique;
 
 class CertifiedCenterDocumentTypeForm
 {
@@ -17,6 +18,10 @@ class CertifiedCenterDocumentTypeForm
                     ->label(__('app.key'))
                     ->required()
                     ->maxLength(255)
+                    ->unique(
+                        ignoreRecord: true,
+                        modifyRuleUsing: static fn (Unique $rule): Unique => $rule->where('certified_center_id', auth('certified_center')->id()),
+                    )
                     ->helperText(__('app.document_type_key_helper'))
                     ->placeholder('training_certificate'),
 

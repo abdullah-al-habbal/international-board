@@ -16,6 +16,7 @@ class TrainerProfilePage extends EditProfile
             ->label(__('filament-panels::auth/pages/edit-profile.form.name.label'))
             ->required()
             ->maxLength(255)
+            ->unique(ignoreRecord: true)
             ->autofocus();
     }
 

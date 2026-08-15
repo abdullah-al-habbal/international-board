@@ -30,7 +30,16 @@ class CertificationForm
                     ->default(Trainer::class),
 
                 Hidden::make('creator_id')
-                    ->default(fn () => Auth::guard('trainer')->id()),
+                    ->default(fn () => Auth::guard('trainer')->id())
+                    ->rules([
+                        function (string $attribute, $value, \Closure $fail) {
+                            $trainer = Trainer::find($value);
+
+                            if (! $trainer?->isAccreditationActive()) {
+                                $fail(__('app.trainer_accreditation_expired'));
+                            }
+                        },
+                    ]),
 
                 Hidden::make('documentable_type')
                     ->default(TrainerDocumentType::class),

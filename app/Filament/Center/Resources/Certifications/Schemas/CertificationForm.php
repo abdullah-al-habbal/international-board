@@ -141,10 +141,26 @@ class CertificationForm
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
-                                    ->options(Trainer::where('center_id', Auth::id())->pluck('name', 'id'))
+                                    ->options(
+                                        Trainer::where('center_id', Auth::guard('certified_center')->id())
+                                            ->pluck('name', 'id')
+                                    )
                                     ->searchable()
                                     ->preload()
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->rules([
+                                        function (string $attribute, $value, \Closure $fail) {
+                                            if (blank($value)) {
+                                                return;
+                                            }
+
+                                            $trainer = Trainer::find($value);
+
+                                            if (! $trainer?->isAccreditationActive()) {
+                                                $fail(__('app.trainer_accreditation_expired'));
+                                            }
+                                        },
+                                    ]),
                             ]),
                     ]),
 

@@ -76,7 +76,22 @@ class CertificationForm
                                             ->pluck('name', 'id');
                                     })
                                     ->required()
-                                    ->searchable(),
+                                    ->searchable()
+                                    ->rules([
+                                        function (callable $get) {
+                                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                                if ($get('creator_type') !== Trainer::class || blank($value)) {
+                                                    return;
+                                                }
+
+                                                $trainer = Trainer::find($value);
+
+                                                if (! $trainer?->isAccreditationActive()) {
+                                                    $fail(__('app.trainer_accreditation_expired'));
+                                                }
+                                            };
+                                        },
+                                    ]),
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
@@ -93,7 +108,20 @@ class CertificationForm
                                     ->searchable()
                                     ->preload()
                                     ->visible(fn (callable $get) => $get('creator_type') === CertifiedCenter::class)
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->rules([
+                                        function (string $attribute, $value, \Closure $fail) {
+                                            if (blank($value)) {
+                                                return;
+                                            }
+
+                                            $trainer = Trainer::find($value);
+
+                                            if (! $trainer?->isAccreditationActive()) {
+                                                $fail(__('app.trainer_accreditation_expired'));
+                                            }
+                                        },
+                                    ]),
                             ]),
 
                         Grid::make(2)
