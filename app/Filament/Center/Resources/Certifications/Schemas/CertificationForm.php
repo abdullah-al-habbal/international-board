@@ -11,6 +11,7 @@ use App\Models\CertifiedCenterDocumentType;
 use App\Models\Country;
 use App\Models\Trainee;
 use App\Models\Trainer;
+use App\Rules\ActiveCenterTrainer;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -141,25 +142,17 @@ class CertificationForm
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
+                                    ->helperText(__('app.assigned_trainer_helper'))
                                     ->options(
                                         Trainer::where('center_id', Auth::guard('certified_center')->id())
+                                            ->accreditationActive()
                                             ->pluck('name', 'id')
                                     )
                                     ->searchable()
                                     ->preload()
                                     ->nullable()
                                     ->rules([
-                                        function (string $attribute, $value, \Closure $fail) {
-                                            if (blank($value)) {
-                                                return;
-                                            }
-
-                                            $trainer = Trainer::find($value);
-
-                                            if (! $trainer?->isAccreditationActive()) {
-                                                $fail(__('app.trainer_accreditation_expired'));
-                                            }
-                                        },
+                                        new ActiveCenterTrainer((int) Auth::guard('certified_center')->id()),
                                     ]),
                             ]),
                     ]),

@@ -11,6 +11,7 @@ use App\Models\DocumentType;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Models\User;
+use App\Rules\ActiveCenterTrainer;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -95,6 +96,7 @@ class CertificationForm
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
+                                    ->helperText(__('app.assigned_trainer_helper'))
                                     ->options(function (callable $get) {
                                         $creatorType = $get('creator_type');
                                         $creatorId = $get('creator_id');
@@ -103,6 +105,7 @@ class CertificationForm
                                         }
 
                                         return Trainer::where('center_id', $creatorId)
+                                            ->accreditationActive()
                                             ->pluck('name', 'id');
                                     })
                                     ->searchable()
@@ -110,17 +113,7 @@ class CertificationForm
                                     ->visible(fn (callable $get) => $get('creator_type') === CertifiedCenter::class)
                                     ->nullable()
                                     ->rules([
-                                        function (string $attribute, $value, \Closure $fail) {
-                                            if (blank($value)) {
-                                                return;
-                                            }
-
-                                            $trainer = Trainer::find($value);
-
-                                            if (! $trainer?->isAccreditationActive()) {
-                                                $fail(__('app.trainer_accreditation_expired'));
-                                            }
-                                        },
+                                        fn (callable $get) => new ActiveCenterTrainer((int) $get('creator_id')),
                                     ]),
                             ]),
 

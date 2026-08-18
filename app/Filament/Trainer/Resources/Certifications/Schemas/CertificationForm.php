@@ -32,7 +32,7 @@ class CertificationForm
                 Hidden::make('creator_id')
                     ->default(fn () => Auth::guard('trainer')->id())
                     ->rules([
-                        function (string $attribute, $value, \Closure $fail) {
+                        fn (): \Closure => function (string $attribute, $value, \Closure $fail): void {
                             $trainer = Trainer::find($value);
 
                             if (! $trainer?->isAccreditationActive()) {

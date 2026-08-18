@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'trainer_not_available' => 'هذا المدرب غير متاح لمركزك.',
     'trainer_accreditation_expired' => 'عذرًا! انتهت فترة اعتماد هذا المدرب. يرجى اختيار مدرب باعتماد ساري للمتابعة.',
     'dashboard' => 'لوحة التحكم',
     'navigation' => 'التنقل',
@@ -461,6 +462,7 @@ return [
     'trainer_name' => 'المدرب',
     'specializations_name' => 'التخصصات',
     'assigned_trainer_id' => 'المدرب المعين',
+    'assigned_trainer_helper' => 'يتم عرض المدربين ذوي الاعتماد الساري فقط. إذا لم يظهر مدرب في القائمة، فربما انتهت فترة اعتماده.',
     'assignedTrainer_name' => 'المدرب المعين',
     'name_en' => 'الاسم بالإنجليزية',
     'name_ar' => 'الاسم بالعربية',

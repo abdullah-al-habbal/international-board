@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'trainer_not_available' => 'This trainer is not available for your center.',
     'trainer_accreditation_expired' => 'Oops! This trainer\'s accreditation period has ended. Please choose a trainer with active accreditation to continue.',
     'dashboard' => 'Dashboard',
     'navigation' => 'Navigation',
@@ -463,6 +464,7 @@ return [
     'trainer_name' => 'Trainer',
     'specializations_name' => 'Specializations',
     'assigned_trainer_id' => 'Assigned Trainer',
+    'assigned_trainer_helper' => 'Only trainers with active accreditation are listed. If a trainer is not listed, their accreditation period may have ended.',
     'assignedTrainer_name' => 'Assigned Trainer',
     'name_en' => 'English Name',
     'name_ar' => 'Arabic Name',
