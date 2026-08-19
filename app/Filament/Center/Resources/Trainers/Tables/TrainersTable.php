@@ -66,6 +66,16 @@ class TrainersTable
                     ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
+                TextColumn::make('accreditation_period_start')
+                    ->label(__('app.accreditation_period_start'))
+                    ->dateTime()
+                    ->sortable(),
+
+                TextColumn::make('accreditation_period_end')
+                    ->label(__('app.accreditation_period_end'))
+                    ->dateTime()
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))
                     ->dateTime()

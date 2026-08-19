@@ -56,6 +56,14 @@ class TrainerInfolist
                 ->placeholder('—')
                 ->columnSpanFull(),
 
+            TextEntry::make('accreditation_period_start')
+                ->label(__('app.accreditation_period_start'))
+                ->dateTime(),
+
+            TextEntry::make('accreditation_period_end')
+                ->label(__('app.accreditation_period_end'))
+                ->dateTime(),
+
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))
                 ->dateTime()
