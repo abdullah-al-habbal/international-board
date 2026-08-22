@@ -161,6 +161,7 @@ return [
         'document_types' => 'Document Types',
         'trainer' => 'Trainer',
         'center' => 'Certified Center',
+        'trainer_role' => 'Trainer Role',
         'board' => 'Board',
         'unknown' => 'Unknown',
         'issued_by' => 'Issued By',

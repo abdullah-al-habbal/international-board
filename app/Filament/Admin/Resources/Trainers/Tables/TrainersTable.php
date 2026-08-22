@@ -70,6 +70,15 @@ class TrainersTable
                     ->placeholder(__('app.no_center'))
                     ->toggleable(),
 
+                TextColumn::make('trainerRole.name')
+                    ->label(__('app.trainer_role'))
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder(__('app.no_value'))
+                    ->badge()
+                    ->color('info')
+                    ->toggleable(),
+
                 TextColumn::make('specializations_count')
                     ->label(__('app.specializations_count'))
                     ->counts('specializations')

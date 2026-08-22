@@ -58,6 +58,15 @@ class TrainersTable
                     ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
+                TextColumn::make('trainerRole.name')
+                    ->label(__('app.trainer_role'))
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder(__('app.no_value'))
+                    ->badge()
+                    ->color('info')
+                    ->toggleable(),
+
                 TextColumn::make('specializations.name')
                     ->label(__('app.specializations'))
                     ->badge()

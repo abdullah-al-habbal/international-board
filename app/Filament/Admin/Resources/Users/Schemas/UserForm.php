@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
 use App\Enums\UserType;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -53,6 +54,18 @@ class UserForm
                 ->options(UserType::class)
                 ->default(UserType::Admin->value)
                 ->required()
+                ->columnSpan(1),
+
+            FileUpload::make('avatar')
+                ->label(__('app.avatar'))
+                ->image()
+                ->avatar()
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                ->maxSize(2048)
+                ->disk('public')
+                ->directory('users/avatars')
+                ->visibility('public')
+                ->nullable()
                 ->columnSpan(1),
         ])->columns(2);
     }

@@ -49,6 +49,13 @@ class TrainerInfolist
                 ->icon('heroicon-o-globe-alt')
                 ->placeholder('—'),
 
+            TextEntry::make('trainerRole.name')
+                ->label(__('app.trainer_role'))
+                ->icon('heroicon-o-identification')
+                ->badge()
+                ->color('info')
+                ->placeholder('—'),
+
             TextEntry::make('specializations.name')
                 ->label(__('app.specializations'))
                 ->badge()

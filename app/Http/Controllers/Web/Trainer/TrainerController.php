@@ -45,6 +45,7 @@ final class TrainerController extends Controller
         $trainerModel->load([
             'country',
             'center',
+            'trainerRole',
             'specializations',
             'certifications' => fn ($q) => $q->publiclyVisible(),
             'documentTypes',

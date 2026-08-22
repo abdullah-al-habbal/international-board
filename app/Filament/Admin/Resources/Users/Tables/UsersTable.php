@@ -10,6 +10,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -20,6 +21,13 @@ class UsersTable
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar')
+                    ->label(__('app.avatar'))
+                    ->circular()
+                    ->getStateUsing(fn ($record) => $record->avatar_url)
+                    ->defaultImageUrl(url('assets/website/images/avatar.png'))
+                    ->size(40),
+
                 TextColumn::make('name')
                     ->label(__('app.name'))
                     ->searchable()

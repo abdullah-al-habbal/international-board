@@ -73,6 +73,14 @@ class TrainerForm
                 ])
                 ->columnSpan(1),
 
+            Select::make('trainer_role_id')
+                ->label(__('app.trainer_role'))
+                ->relationship('trainerRole', 'name')
+                ->searchable()
+                ->preload()
+                ->nullable()
+                ->columnSpan(1),
+
             Select::make('center_id')
                 ->label(__('app.center'))
                 ->relationship('center', 'name')
@@ -85,6 +93,8 @@ class TrainerForm
                 ->label(__('app.avatar'))
                 ->image()
                 ->avatar()
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                ->maxSize(2048)
                 ->disk('public')
                 ->directory('trainers/avatars')
                 ->visibility('public')

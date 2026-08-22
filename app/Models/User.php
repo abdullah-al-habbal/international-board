@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\PanelId;
 use App\Enums\UserType;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -15,18 +16,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'name',
     'email',
     'password',
     'type',
+    'avatar',
 ])]
 #[Hidden([
     'password',
     'remember_token',
 ])]
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable;
 
@@ -109,5 +112,19 @@ class User extends Authenticatable implements FilamentUser
     public function scopeOrderByCreated(Builder $query, string $direction = 'desc'): Builder
     {
         return $query->orderBy('created_at', $direction);
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (! empty($this->attributes['avatar']) && Storage::disk('public')->exists($this->attributes['avatar'])) {
+            return Storage::disk('public')->url($this->attributes['avatar']);
+        }
+
+        return null;
     }
 }

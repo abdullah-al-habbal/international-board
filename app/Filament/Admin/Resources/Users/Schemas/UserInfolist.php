@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
 use App\Enums\UserType;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -14,6 +15,13 @@ class UserInfolist
     public static function configure(Schema $schema): Schema
     {
         return $schema->schema([
+            ImageEntry::make('avatar')
+                ->label(__('app.avatar'))
+                ->circular()
+                ->getStateUsing(fn ($record) => $record->avatar_url)
+                ->defaultImageUrl(url('assets/website/images/avatar.png'))
+                ->columnSpanFull(),
+
             TextEntry::make('name')
                 ->label(__('app.name'))
                 ->weight('bold')

@@ -54,6 +54,14 @@ class TrainerInfolist
                 ->placeholder('—')
                 ->columnSpan(1),
 
+            TextEntry::make('trainerRole.name')
+                ->label(__('app.trainer_role'))
+                ->icon('heroicon-o-identification')
+                ->badge()
+                ->color('info')
+                ->placeholder('—')
+                ->columnSpan(1),
+
             TextEntry::make('center.name')
                 ->label(__('app.center'))
                 ->icon('heroicon-o-building-office-2')

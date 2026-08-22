@@ -11,6 +11,7 @@ use App\Observers\CertifiedCenterObserver;
 use App\Policies\CertifiedCenterPolicy;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -48,7 +49,7 @@ use Illuminate\Support\Facades\Storage;
     'password',
     'remember_token',
 ])]
-class CertifiedCenter extends Authenticatable implements FilamentUser
+class CertifiedCenter extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable;
 
@@ -229,5 +230,10 @@ class CertifiedCenter extends Authenticatable implements FilamentUser
         }
 
         return null;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->logo_url;
     }
 }

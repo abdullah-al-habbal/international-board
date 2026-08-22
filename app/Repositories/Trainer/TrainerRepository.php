@@ -32,7 +32,7 @@ final class TrainerRepository
                 isset($filters['specialization']) && $filters['specialization'] !== '',
                 fn ($q) => $q->whereHas('specializations', fn ($sq) => $sq->where('specializations.id', $filters['specialization']))
             )
-            ->with(['country', 'specializations'])
+            ->with(['country', 'specializations', 'trainerRole'])
             ->paginate($perPage);
     }
 
@@ -42,7 +42,7 @@ final class TrainerRepository
             ->newQuery()
             ->publiclyVisible()
             ->where('id', $id)
-            ->with(['country', 'certifications', 'specializations'])
+            ->with(['country', 'certifications', 'specializations', 'trainerRole'])
             ->first();
     }
 

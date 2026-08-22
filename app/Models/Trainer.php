@@ -9,6 +9,7 @@ use App\Models\Concerns\NotifiesAdminOnMutation;
 use App\Observers\TrainerObserver;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Storage;
     'phone',
     'address',
     'country_id',
+    'trainer_role_id',
     'center_id',
     'accreditation_number',
     'accreditation_period_start',
@@ -44,7 +46,7 @@ use Illuminate\Support\Facades\Storage;
     'password',
     'remember_token',
 ])]
-class Trainer extends Authenticatable implements FilamentUser
+class Trainer extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory;
     use Notifiable;
@@ -64,6 +66,11 @@ class Trainer extends Authenticatable implements FilamentUser
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function trainerRole(): BelongsTo
+    {
+        return $this->belongsTo(TrainerRole::class);
     }
 
     public function center(): BelongsTo
@@ -227,5 +234,10 @@ class Trainer extends Authenticatable implements FilamentUser
         }
 
         return null;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
     }
 }

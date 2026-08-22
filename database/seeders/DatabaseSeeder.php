@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ContactMessageSeeder::class,
             CertifiedCenterSeeder::class,
             SpecializationSeeder::class,
+            TrainerRoleSeeder::class,
             TrainerSeeder::class,
             TraineeSeeder::class,
             AgentPersonSeeder::class,

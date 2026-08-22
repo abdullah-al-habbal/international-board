@@ -42,6 +42,14 @@
                 @endif
             </div>
         </div>
+        @if ($trainer->trainerRole)
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">{{ __('web.labels.trainer_role') }}:</div>
+                <div class="col-sm-8">
+                    <span class="badge bg-light text-dark border">{{ $trainer->trainerRole->name }}</span>
+                </div>
+            </div>
+        @endif
 
         {{-- Accreditation details --}}
         <hr>
