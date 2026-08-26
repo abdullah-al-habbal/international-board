@@ -22,7 +22,7 @@ composer ci-check:full  # install + pint --test + phpstan + test --stop-on-failu
 composer check-all      # full local: pint, config/route/view cache, optimize, test
 ```
 
-`tests/Unit` and `tests/Feature` are currently empty (only `.gitkeep`) — there is no existing test suite to mirror; phpunit is wired up and ready.
+Tests live in `tests/Feature` and `tests/Unit` (Pest, `RefreshDatabase` via `tests/Pest.php`, in-memory SQLite). `UnifiedPlatformSpiderTest` crawls all three panels plus the public site in every locale and is the broadest regression net.
 
 ## Architecture
 
@@ -98,12 +98,13 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | Model | Table | Key Relationships |
 |---|---|---|
 | `User` | `users` | `certifications()` MorphMany |
-| `Trainer` | `trainers` | `country()` BelongsTo, `center()` BelongsTo(CertifiedCenter), `specializations()` BelongsToMany, `certifications()` MorphMany, `documentTypes()` HasMany(TrainerDocumentType), `accreditationRequests()` HasMany, `financialRequests()` MorphMany |
+| `Trainer` | `trainers` | `country()` BelongsTo, `trainerRole()` BelongsTo(TrainerRole), `center()` BelongsTo(CertifiedCenter), `specializations()` BelongsToMany, `certifications()` MorphMany, `documentTypes()` HasMany(TrainerDocumentType), `accreditationRequests()` HasMany, `financialRequests()` MorphMany |
 | `CertifiedCenter` | `certified_centers` | `certifications()` MorphMany, `trainers()` HasMany(Trainer), `country()` BelongsTo, `documentTypes()` HasMany(CertifiedCenterDocumentType), `approvedDocumentTypes()` HasMany (status=approved), `accreditationRequests()` HasMany, `financialRequests()` MorphMany |
 | `Certification` | `certifications` | `creator()` MorphTo (User/Trainer/CertifiedCenter), `documentable()` MorphTo (DocumentType/TrainerDocumentType/CertifiedCenterDocumentType), `country()` BelongsTo, `trainee()` BelongsTo, `assignedTrainer()` BelongsTo(Trainer) |
 | `Trainee` | `trainees` | `country()` BelongsTo, `certifications()` HasMany |
 | `Country` | `countries` | — |
 | `Specialization` | `specializations` | `trainers()` BelongsToMany (pivot: `specialization_trainer`) |
+| `TrainerRole` | `trainer_roles` | `trainers()` HasMany(Trainer). Uses `HasTranslations` (translatable: `name`). Admin-managed lookup; `trainers.trainer_role_id` is nullable with `nullOnDelete()` |
 | `DocumentType` | `board_document_types` | `certifications()` MorphMany. Uses `HasTranslations` (translatable: `name`) |
 | `TrainerDocumentType` | `trainer_document_types` | `trainer()` BelongsTo, `certifications()` MorphMany, `reviewer()` BelongsTo(User). Uses `HasTranslations` (translatable: `name`) |
 | `CertifiedCenterDocumentType` | `certified_center_document_types` | `certifiedCenter()` BelongsTo, `certifications()` MorphMany, `reviewer()` BelongsTo(User). Uses `HasTranslations` (translatable: `name`) |
@@ -129,6 +130,7 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `TraineeResource` | `app/Filament/Admin/Resources/Trainees/` | Manage trainees |
 | `CountryResource` | `app/Filament/Admin/Resources/Countries/` | Manage countries |
 | `SpecializationResource` | `app/Filament/Admin/Resources/Specializations/` | Manage specializations |
+| `TrainerRoleResource` | `app/Filament/Admin/Resources/TrainerRoles/` | Manage trainer roles (admin only — Center/Trainer panels can assign but not administer) |
 | `DocumentTypeResource` | `app/Filament/Admin/Resources/DocumentTypes/` | Board document types |
 | `TrainerDocumentTypeResource` | `app/Filament/Admin/Resources/TrainerDocumentTypes/` | Approve/reject trainer doc types |
 | `CertifiedCenterDocumentTypeResource` | `app/Filament/Admin/Resources/CertifiedCenterDocumentTypes/` | Approve/reject center doc types |
@@ -267,4 +269,5 @@ resources/views/web/
 - **Certification** — `document_code` (`CERT-YYYYMMDD-XXXX`), `accredited_serial_number` (`SN-YYYYMMDD-XXXXXX`), and `accreditation_number` (IBVTQ) auto-generated via `CertificationObserver`.
 - **Certification** uses polymorphic `creator` (User/Trainer/CertifiedCenter) and `documentable` (DocumentType/TrainerDocumentType/CertifiedCenterDocumentType).
 - **DocumentType**, **TrainerDocumentType**, **CertifiedCenterDocumentType** all use `HasTranslations` trait with `$translatable = ['name']` for multilingual name storage (JSON in DB).
-- **File uploads**: Trainer `avatar` → `trainers/avatars/`, CertifiedCenter `logo` → `centers/logos/`, both on `public` disk.
+- **File uploads**: Trainer `avatar` → `trainers/avatars/`, CertifiedCenter `logo` → `centers/logos/`, User `avatar` → `users/avatars/`, all on the `public` disk. Every upload point is restricted to `acceptedFileTypes(['image/jpeg','image/png','image/webp'])` with `maxSize(2048)` — SVG is excluded deliberately (it can carry script and is served same-origin). Do not widen this back to `image/*`.
+- **Orphaned uploads**: Filament writes a new file on every replacement and never removes the old one. `CleanupStorageCommand` sweeps unreferenced files under those three directories, with a 24h grace period so an in-flight upload is never deleted.

@@ -168,7 +168,7 @@ return [
         'document_types' => 'أنواع الوثائق',
         'trainer' => 'المدرب',
         'center' => 'المركز المعتمد',
-        'trainer_role' => 'دور المدرب',
+        'trainer_role' => 'صفة المدرب',
         'board' => 'مجلس الإدارة',
         'unknown' => 'غير معروف',
         'issued_by' => 'صادر عن',
