@@ -22,7 +22,7 @@ rollout. Read **Status at a glance** first, then pick the next unchecked item fr
 | Push to `origin/production` | ✅ `61f6865..c2a65e3` |
 | CI/CD | ✅ Run `32608301548`, success, 43s |
 | Production deployment | ✅ Server on `c2a65e3`, both migrations applied |
-| Production reference data | ✅ 4 TrainerRoles seeded, idempotent |
+| Production reference data | ✅ Seeded once, then curated by admins — **do not re-seed** |
 | Production `APP_ENV` / `APP_DEBUG` | ✅ Fixed → `production` / `false` |
 | Orphaned avatar cleanup | ✅ Implemented in `CleanupStorageCommand` |
 | **Laravel root served under web root** | ⛔ **Open — needs a decision** |
@@ -38,9 +38,9 @@ git status    (clean)
 Laravel       13.24.0     PHP 8.5.4     Filament v4.12.6
 migrations    2026_08_19_000001_add_avatar_to_users_table ..... [6] Ran
               2026_08_21_000001_create_trainer_roles_table .... [6] Ran   (0 pending)
-data          trainers=14  certifications=4569  centers=12  users=5
-              trainer_roles=4  trainers_with_role=0
-uploads       23 files on disk, 17 referenced   storage symlink LINKED
+data (08-26)  trainers=15  certifications=4589  centers=13  users=5
+              trainer_roles=1 (admin-created)  trainers_with_role=0
+uploads       26 files on disk, 19 referenced, 7 orphans   storage symlink LINKED
 config        app.env=production  app.debug=false  isProduction=true
 ```
 
@@ -145,6 +145,23 @@ interacts badly with LiteSpeed, and option 3 deletes a file.
       this only surfaces an existing capability as a row action. Leaves an unused `Action`
       import (Pint failure). Unrelated to these features, so left uncommitted.
 
+### RW4 — Unrelated pre-existing bug (reported, untouched)
+
+Production logged twice on 2026-08-25:
+
+```
+production.ERROR: Route [filament.trainer.resources.trainees.view] not defined.
+```
+
+The Trainer panel has no Trainees resource (`Certifications`,
+`TrainerAccreditationRequests`, `TrainerDocumentTypes`, `TrainerFinancialRequests` only),
+and no code in the repo references that route name — so it comes from a runtime source,
+most likely a stored notification whose action URL points at a route that only exists in
+another panel. Unrelated to TrainerRole/Avatar (zero `trainerRole|avatar` matches in that
+log) and not introduced by either commit.
+
+- [ ] `RW4.1` — Trace the notification/link that builds that URL and repoint or guard it
+
 ### RW3 — Optional follow-ups
 
 - [ ] `RW3.1` — Decide whether trainers/centres should manage their own avatar. Today only
@@ -174,9 +191,10 @@ interacts badly with LiteSpeed, and option 3 deletes a file.
 
 ---
 
-## Why production was seeded
+## Seeding: what happened, and why not to repeat it
 
-`TrainerRoleSeeder` was run because production already carries its analogues' reference data:
+`TrainerRoleSeeder` was run once on 2026-08-23 because production already carried its
+analogues' reference data:
 
 ```
 countries            34
@@ -188,30 +206,29 @@ static_pages          6
 agent_persons         0   <- demo seeder, has a factory
 ```
 
-`SpecializationSeeder` is the closest analogue to `TrainerRoleSeeder` — same entity class
-(admin-managed localized lookup attached to `Trainer`), same shape (`json('name')`, en/ar),
-registered adjacently in `DatabaseSeeder` — and its output is present in production
-verbatim. Only `TrainerRoleSeeder` was run, twice, to prove idempotency (4 roles both
-times). No roles were assigned to existing trainers; `TrainerSeeder` was **not** run.
+`SpecializationSeeder` is the closest analogue — same entity class (admin-managed
+localized lookup attached to `Trainer`), same shape (`json('name')`, en/ar), registered
+adjacently in `DatabaseSeeder` — and its output is present in production verbatim.
+Only `TrainerRoleSeeder` was run, twice, to prove idempotency. No roles were assigned to
+existing trainers; `TrainerSeeder` was **not** run.
 
----
+### ⛔ Do not re-run `TrainerRoleSeeder` on production
 
-## Arabic terminology
-
-The stakeholder requires **صفة** (attribute/title), not **دور** (role), for the Arabic
-label of a Trainer Role. All Arabic keys use صفة:
+Within a day the admins **rejected the defaults**. As of 2026-08-26 production holds a
+single role they created themselves:
 
 ```
-app.trainer_roles        صفات المدربين
-app.trainer_role         صفة المدرب
-app.create_trainer_role  إنشاء صفة مدرب
-app.edit_trainer_role    تعديل صفة المدرب
-app.select_trainer_role  اختر صفة المدرب
-web.labels.trainer_role  صفة المدرب
+id=5  en="Administrator and Training Expert"  ar="مستشار وخبير تدريب"
+      trainers=0  created=2026-08-23 14:54:36     max_id=5
 ```
 
-English stays "Trainer Role", and the model/table/column names (`TrainerRole`,
-`trainer_roles`, `trainer_role_id`) are unchanged — this is a display-label decision only.
+All four seeded roles (ids 1-4) were deleted through the admin panel. Re-running the
+seeder would resurrect data an administrator deliberately removed. The business manages
+this vocabulary itself — treat `trainer_roles` as **admin-owned, not seeded**.
+
+This is also the strongest production proof the feature works end to end: an admin
+created a role, deleted four others, and all trainers survived (`nullOnDelete()` held,
+15/15 intact).
 
 ---
 
