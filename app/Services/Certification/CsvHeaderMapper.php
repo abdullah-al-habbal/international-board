@@ -50,7 +50,9 @@ final class CsvHeaderMapper
         'paper delivery' => 'paper_delivery',
         'paper_delivery' => 'paper_delivery',
     ];
+
     private const REQUIRED = ['trainee_name'];
+
     public function map(array $rawHeaders): array
     {
         $mapping = [];

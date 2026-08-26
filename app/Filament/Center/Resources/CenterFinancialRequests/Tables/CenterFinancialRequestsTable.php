@@ -15,9 +15,9 @@ class CenterFinancialRequestsTable
             ->columns([
                 TextColumn::make('date')->date()->sortable(),
                 TextColumn::make('agentPerson.name')->label(__('app.agent_person')),
-                TextColumn::make('total_payment')->money('USD'),
-                TextColumn::make('amount_paid')->money('USD'),
-                TextColumn::make('remaining_amount')->money('USD'),
+                TextColumn::make('total_payment')->money(fn ($record) => $record->currency?->code ?? 'USD'),
+                TextColumn::make('amount_paid')->money(fn ($record) => $record->currency?->code ?? 'USD'),
+                TextColumn::make('remaining_amount')->money(fn ($record) => $record->currency?->code ?? 'USD'),
             ])
             ->defaultSort('date', 'desc');
     }

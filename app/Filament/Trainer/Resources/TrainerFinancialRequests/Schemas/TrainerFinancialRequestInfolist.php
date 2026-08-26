@@ -22,13 +22,13 @@ class TrainerFinancialRequestInfolist
                             ->label(__('app.agent_person')),
                         TextEntry::make('total_payment')
                             ->label(__('app.total_amount'))
-                            ->money('USD'),
+                            ->money(fn ($record) => $record->currency?->code ?? 'USD'),
                         TextEntry::make('amount_paid')
                             ->label(__('app.paid_amount'))
-                            ->money('USD'),
+                            ->money(fn ($record) => $record->currency?->code ?? 'USD'),
                         TextEntry::make('remaining_amount')
                             ->label(__('app.remaining_amount'))
-                            ->money('USD'),
+                            ->money(fn ($record) => $record->currency?->code ?? 'USD'),
                         TextEntry::make('date')
                             ->label(__('app.date'))
                             ->date(),

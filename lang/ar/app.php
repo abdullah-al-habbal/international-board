@@ -378,6 +378,7 @@ return [
     'paid_amount' => 'المبلغ المدفوع',
     'remaining_amount' => 'المبلغ المتبقي',
     'total_amount' => 'المبلغ الإجمالي',
+    'currency' => 'العملة',
     'trainer_dashboard' => 'لوحة المدرب',
     'is_published' => 'منشور',
     'published_at' => 'تاريخ النشر',

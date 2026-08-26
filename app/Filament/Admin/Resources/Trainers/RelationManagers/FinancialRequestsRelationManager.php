@@ -1,4 +1,5 @@
 <?php
+
 // filePath: app/Filament/Admin/Resources/Trainers/RelationManagers/FinancialRequestsRelationManager.php
 
 namespace App\Filament\Admin\Resources\Trainers\RelationManagers;
@@ -22,13 +23,13 @@ class FinancialRequestsRelationManager extends RelationManager
                     ->label(__('app.agent_person')),
                 TextColumn::make('total_payment')
                     ->label(__('app.total_amount'))
-                    ->money('USD'),
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD'),
                 TextColumn::make('amount_paid')
                     ->label(__('app.paid_amount'))
-                    ->money('USD'),
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD'),
                 TextColumn::make('remaining_amount')
                     ->label(__('app.remaining_amount'))
-                    ->money('USD'),
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD'),
                 TextColumn::make('date')
                     ->label(__('app.date'))
                     ->date()

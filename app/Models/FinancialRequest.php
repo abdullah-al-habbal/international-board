@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
     'requestable_type',
     'requestable_id',
     'agent_person_id',
+    'currency_id',
     'total_payment',
     'amount_paid',
     'reason',
@@ -53,5 +54,10 @@ class FinancialRequest extends Model
     public function agentPerson(): BelongsTo
     {
         return $this->belongsTo(AgentPerson::class, 'agent_person_id');
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
     }
 }

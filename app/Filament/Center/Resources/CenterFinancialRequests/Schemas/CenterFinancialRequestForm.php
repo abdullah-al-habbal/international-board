@@ -22,13 +22,13 @@ class CenterFinancialRequestForm
                     ->formatStateUsing(fn ($record) => $record?->agentPerson?->name)
                     ->disabled(),
                 TextInput::make('total_payment')
-                    ->money('USD')
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD')
                     ->disabled(),
                 TextInput::make('amount_paid')
-                    ->money('USD')
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD')
                     ->disabled(),
                 TextInput::make('remaining_amount')
-                    ->money('USD')
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD')
                     ->disabled(),
                 DatePicker::make('date')->disabled(),
                 Textarea::make('reason')->disabled()->columnSpanFull(),

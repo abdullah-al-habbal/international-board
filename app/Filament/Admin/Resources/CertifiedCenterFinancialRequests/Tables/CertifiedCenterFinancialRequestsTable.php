@@ -20,15 +20,15 @@ class CertifiedCenterFinancialRequestsTable
                     ->sortable(),
                 TextColumn::make('total_payment')
                     ->label(__('app.total_amount'))
-                    ->money('USD')
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD')
                     ->sortable(),
                 TextColumn::make('amount_paid')
                     ->label(__('app.paid_amount'))
-                    ->money('USD')
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD')
                     ->sortable(),
                 TextColumn::make('remaining_amount')
                     ->label(__('app.remaining_amount'))
-                    ->money('USD')
+                    ->money(fn ($record) => $record->currency?->code ?? 'USD')
                     ->sortable(),
                 TextColumn::make('date')
                     ->label(__('app.date'))

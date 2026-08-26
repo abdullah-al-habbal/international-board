@@ -92,6 +92,7 @@ return [
     'updated_at' => 'Last Updated',
     'title' => 'Title',
     'total_amount' => 'Total Amount',
+    'currency' => 'Currency',
     'trainer_dashboard' => 'Trainer Dashboard',
     'description' => 'Description',
     'content' => 'Content',

@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas;
 use App\Filament\Components\DatePicker;
 use App\Models\AgentPerson;
 use App\Models\CertifiedCenter;
+use App\Models\Currency;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -34,6 +35,13 @@ class CertifiedCenterFinancialRequestForm
                     ->searchable()
                     ->preload()
                     ->required(),
+                Select::make('currency_id')
+                    ->label(__('app.currency'))
+                    ->options(Currency::pluck('name', 'id'))
+                    ->default(fn () => Currency::where('is_default', true)->value('id') ?? Currency::first()?->id)
+                    ->required()
+                    ->searchable()
+                    ->preload(),
                 TextInput::make('total_payment')
                     ->label(__('app.total_amount'))
                     ->numeric()
