@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
 use App\Filament\Components\DatePicker;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -114,11 +114,7 @@ class CertificationsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('generatePdf')
-                    ->label(__('app.certificate_pdf'))
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->color('success')
-                    ->action(function ($record) {}),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

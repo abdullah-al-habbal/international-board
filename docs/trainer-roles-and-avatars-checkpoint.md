@@ -4,7 +4,7 @@ Working checkpoint for the combined `TrainerRole` + `Avatar` feature and its pro
 rollout. Read **Status at a glance** first, then pick the next unchecked item from
 **Remaining work**.
 
-- **Last updated:** 2026-08-23
+- **Last updated:** 2026-08-26
 - **Branch:** `production` (deploy branch — a push triggers CI/CD)
 - **Feature commit:** `c2a65e3` — *feat(trainers): add trainer roles and avatar support*
 - **Follow-up commit:** *fix(storage): sweep orphaned avatar uploads* (this commit)
@@ -25,7 +25,10 @@ rollout. Read **Status at a glance** first, then pick the next unchecked item fr
 | Production reference data | ✅ Seeded once, then curated by admins — **do not re-seed** |
 | Production `APP_ENV` / `APP_DEBUG` | ✅ Fixed → `production` / `false` |
 | Orphaned avatar cleanup | ✅ Implemented in `CleanupStorageCommand` |
-| **Laravel root served under web root** | ⛔ **Open — needs a decision** |
+| Laravel root served under web root | ✅ Denied by a project-root `.htaccess` |
+| Self-service avatar / logo | ✅ Trainer + Center profile pages |
+| `delete:data-by-date` production guard | ✅ Refuses without `--force` |
+| Stale trainee-notification 500 | ✅ Root cause fixed in `AdminActionPerformed` |
 
 ---
 
@@ -96,77 +99,73 @@ keyword, so `check-destructive` resolved `is_destructive=false` and the deploy r
 
 ## Remaining work
 
-### RW1 — Laravel root is served under the web root ⛔ **needs a decision**
+### RW1 — Laravel root served under the web root ✅ done
 
-`public_html/index.php` is `require __DIR__ . '/production/public/index.php';` and
+`public_html/index.php` does `require __DIR__ . '/production/public/index.php'` and
 `public_html/.htaccess` only rewrites requests that do **not** match an existing file
-(`!-f !-d`). Real files under `/production/` are therefore served directly:
+(`!-f !-d`), so every real file under `/production/` was served as a static asset —
+`database/database.sqlite` (200, `SQLite format 3`), `storage/logs/*.log`,
+`composer.lock`, `package.json`.
 
-| Path | Result |
-|---|---|
-| `/production/database/database.sqlite` | **200** — 245 760 bytes, `SQLite format 3` |
-| `/production/storage/logs/laravel-2026-08-22.log` | **200** — stack traces, absolute paths |
-| `/production/composer.lock` | **200** — full dependency inventory |
-| `/production/package.json` | **200** |
-| `/production/.env`, `.env.*`, `.git/*`, `.gitignore` | 403 (dotfile rule) |
-| `/production/**/*.php` | 500 (executed, not disclosed) |
+Fixed with a **project-root `.htaccess`**, which deploys straight to
+`public_html/production/.htaccess`:
 
-Severity is bounded: the exposed SQLite file is an **empty leftover** — 21 tables,
-0 rows in `users`, `trainers`, `certifications`, `certified_centers`, `trainees` — so this
-is schema and log disclosure, not user-data disclosure. It is **pre-existing**
-infrastructure (docroot layout, unrelated to `c2a65e3`), and `APP_DEBUG=false` now
-limits what future logs contain.
+- `RewriteRule ^(app|bootstrap|config|database|docs|lang|node_modules|resources|routes|storage|tests|vendor)(/|$) - [F,L]`
+- `<FilesMatch>` deny on `.env .log .lock .sqlite .sqlite3 .db .bak .ini .sh .yml .yaml`
+- `<FilesMatch>` deny by name on `.env*`, `.git*`, `artisan`, `composer.*`, `package*.json`,
+  `phpunit.xml*`, `pint.json`, `phpstan*.neon`
+- `Options -Indexes`
 
-- [ ] `RW1.1` — Decide the fix. Options, least to most invasive:
-      1. Point the Hostinger domain docroot at `public_html/production/public` directly
-         (correct fix; hosting-panel change)
-      2. Add `RewriteRule ^production/(?!public/) - [F,L]` at the top of
-         `public_html/.htaccess`
-      3. Move `database/database.sqlite` out of the tree (it is unused — production is MySQL)
-- [ ] `RW1.2` — Apply and re-test the table above
+`public/` is deliberately absent from the directory list, so the front controller and the
+`storage` symlink are untouched. Both `Require all denied` (2.4) and `Order allow,deny`
+(2.2) forms are provided.
 
-Not done unattended: options 1 and 2 can take the live site down if the rewrite
-interacts badly with LiteSpeed, and option 3 deletes a file.
+- [ ] `RW1.1` — Re-test the exposure table against production after this deploys
 
-### RW2 — Two uncommitted local files ⛔ **needs a decision**
+### RW2 — The two loose files ✅ handled
 
-- [ ] `RW2.1` — `app/Console/Commands/DeleteDataByDate.php` (untracked). Deletes rows
-      from **every** table in a date range; `--disable-fk` issues
-      `SET FOREIGN_KEY_CHECKS=0`; with no argument it defaults to **today**. It has
-      `--dry-run` and `--exclude`, but **no confirmation prompt and no production guard**,
-      and it omits `declare(strict_types=1)` (fails Pint, 7 fixers).
-      **Deliberately not committed and never executed.** Needs a guard + confirmation
-      before it belongs in the repo.
-- [ ] `RW2.2` — `app/Filament/Center/Resources/Certifications/Tables/CertificationsTable.php`
-      (modified). Swaps a dead `generatePdf` stub (`->action(function ($record) {})`) for
-      `DeleteAction`. **Not a privilege escalation** — `CertificationResource::canDelete()`
-      / `canDeleteAny()` already gate on `AccreditationGateService`, `CertificationPolicy::delete()`
-      already allows the owning centre, and `DeleteBulkAction` was already in the toolbar;
-      this only surfaces an existing capability as a row action. Leaves an unused `Action`
-      import (Pint failure). Unrelated to these features, so left uncommitted.
+- [x] `RW2.1` — `app/Console/Commands/DeleteDataByDate.php` **kept, not deleted**, and
+      hardened: `declare(strict_types=1)`, a `--force` flag, and a guard at the top of
+      `handle()` that refuses to run when `app()->environment('production')` unless
+      `--force` is passed. The refusal explains that the command deletes from every table
+      and that production has no backups. 5 tests. The body stays MySQL-only
+      (`SHOW TABLES`, `information_schema`), so only the guard is exercised under SQLite.
+- [x] `RW2.2` — Center `CertificationsTable.php`: removed the genuinely unused import.
+      The task named `Filament\Tables\Actions\DeleteAction`, which this file never
+      imported — the unused one was `Filament\Actions\Action`, left behind when the dead
+      `generatePdf` stub was replaced. `Filament\Actions\DeleteAction` **is** used by
+      `DeleteAction::make()` and was kept; row actions and policies unchanged.
 
-### RW4 — Unrelated pre-existing bug (reported, untouched)
+### RW4 — Trainee notification route error ✅ fixed at source
 
-Production logged twice on 2026-08-25:
+Production logged `Route [filament.trainer.resources.trainees.view] not defined.`
 
-```
-production.ERROR: Route [filament.trainer.resources.trainees.view] not defined.
-```
+Root cause: `NotifiesAdminOnMutation` only fires while a **trainer/center** guard is
+authenticated, so the *active* panel at send time is theirs. `AdminActionPerformed::getViewUrl()`
+resolves an **Admin-panel** resource and then called `$resource::getUrl('view', [...])`
+with no panel argument, so Filament resolved against the acting panel and asked for
+`filament.trainer.resources.trainees.view`, which does not exist. The exception was thrown
+**while the notification was being sent**, so it broke the trainer's own write.
 
-The Trainer panel has no Trainees resource (`Certifications`,
-`TrainerAccreditationRequests`, `TrainerDocumentTypes`, `TrainerFinancialRequests` only),
-and no code in the repo references that route name — so it comes from a runtime source,
-most likely a stored notification whose action URL points at a route that only exists in
-another panel. Unrelated to TrainerRole/Avatar (zero `trainerRole|avatar` matches in that
-log) and not introduced by either commit.
+Fixed by naming the panel explicitly (`PanelId::Admin->value`), plus a
+`RouteNotFoundException` fallback in both `AdminActionPerformed` and
+`AdminActionNotification` so no future resource/panel mismatch can break a write.
+Mutation-tested: reverting the panel argument reproduces the exact production line.
 
-- [ ] `RW4.1` — Trace the notification/link that builds that URL and repoint or guard it
+**No fallback route and no prune command were added, deliberately.** The failure was at
+URL *generation*, not at click time, so nothing bad was ever persisted — production
+confirms `notifications` holds 3 rows, **0** containing `trainees.view`,
+`/trainer/resources` or `/center/resources`. A route named after a Filament panel route
+would only mask future mismatches behind a redirect.
 
 ### RW3 — Optional follow-ups
 
-- [ ] `RW3.1` — Decide whether trainers/centres should manage their own avatar. Today only
-      an admin (or the owning centre, for its trainers) can. No panel registers `->profile()`;
-      `TrainerProfilePage` / `CenterProfilePage` expose only name/email/password.
+- [x] `RW3.1` — Self-service uploads shipped. `TrainerProfilePage` gained an `avatar`
+      FileUpload into `trainers/avatars`, `CenterProfilePage` a `logo` FileUpload into
+      `centers/logos`, both `acceptedFileTypes(['image/jpeg','image/png','image/webp'])`
+      + `maxSize(2048)`. Both panels already registered `->profile(...)`. `EditProfile`
+      only ever writes the authenticated record, so a subject cannot touch another's
+      image — covered by a test. The orphan sweep already covers both directories.
 - [x] `RW3.2` — CLAUDE.md refresh (done in this commit): add a `TrainerRole` model/resource row, record
       `User avatar → users/avatars/` and the jpeg/png/webp + 2 MB rule, and fix the stale
       claim that `tests/Unit` and `tests/Feature` are empty (10 test files now).
@@ -249,3 +248,4 @@ php artisan test          # expect 108 passed
 |---|---|---|
 | 2026-08-23 | `c2a65e3` | Both features complete, audited, committed, pushed. CI/CD `32608301548` success; production on `c2a65e3`; both migrations applied. 100 tests / 405 assertions. |
 | 2026-08-23 | *this commit* | Orphan avatar sweep added to `CleanupStorageCommand` (+8 tests). Production `APP_ENV`/`APP_DEBUG` corrected. 4 TrainerRoles seeded in production. 108 tests / 425 assertions, PHPStan clean. Arabic labels switched to صفة per stakeholder. CLAUDE.md feature index refreshed. Docroot exposure (`RW1`) found and documented. |
+| 2026-08-26 | *this commit* | Web-root hardening (`.htaccess`), self-service trainer avatar / center logo, `delete:data-by-date` production guard, unused-import cleanup, and the trainee-notification route bug fixed at source. 142 tests / 516 assertions, PHPStan clean. |

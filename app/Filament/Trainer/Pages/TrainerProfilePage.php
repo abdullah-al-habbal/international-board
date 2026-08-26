@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Pages;
 
 use Filament\Auth\Pages\EditProfile;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 
 class TrainerProfilePage extends EditProfile
 {
@@ -50,5 +52,25 @@ class TrainerProfilePage extends EditProfile
         return TextInput::make('currentPassword')
             ->label(__('filament-panels::auth/pages/edit-profile.form.current_password.label'))
             ->hidden();
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema->components(array_merge(
+            parent::form($schema)->getComponents(),
+            [
+                FileUpload::make('avatar')
+                    ->label(__('app.avatar'))
+                    ->image()
+                    ->avatar()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(2048)
+                    ->disk('public')
+                    ->directory('trainers/avatars')
+                    ->visibility('public')
+                    ->nullable()
+                    ->columnSpanFull(),
+            ]
+        ));
     }
 }

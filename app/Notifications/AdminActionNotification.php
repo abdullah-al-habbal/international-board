@@ -6,6 +6,7 @@ namespace App\Notifications;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 final class AdminActionNotification extends Notification
 {
@@ -58,10 +59,14 @@ final class AdminActionNotification extends Notification
 
         $pages = $resource::getPages();
 
-        return match (true) {
-            array_key_exists('view', $pages) => $resource::getUrl('view', ['record' => $this->model->getKey()], true, $this->panelId),
-            array_key_exists('edit', $pages) => $resource::getUrl('edit', ['record' => $this->model->getKey()], true, $this->panelId),
-            default => $resource::getUrl(null, [], true, $this->panelId),
-        };
+        try {
+            return match (true) {
+                array_key_exists('view', $pages) => $resource::getUrl('view', ['record' => $this->model->getKey()], true, $this->panelId),
+                array_key_exists('edit', $pages) => $resource::getUrl('edit', ['record' => $this->model->getKey()], true, $this->panelId),
+                default => $resource::getUrl(null, [], true, $this->panelId),
+            };
+        } catch (RouteNotFoundException) {
+            return '/'.$this->panelId;
+        }
     }
 }

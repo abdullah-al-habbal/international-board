@@ -1,0 +1,45 @@
+# Application root hardening.
+#
+# On this host the document root is the directory ABOVE this one:
+# public_html/index.php does `require __DIR__ . '/production/public/index.php'`
+# and public_html/.htaccess only rewrites requests that do NOT match an existing
+# file (`!-f !-d`). Any real file under /production/ is therefore served as a
+# static asset unless it is denied here — which is how database/database.sqlite,
+# storage/logs/*.log and composer.lock became publicly readable.
+#
+# Only `public/` is meant to be web-reachable. It is deliberately absent from the
+# directory list below, so the front controller and the storage symlink keep
+# working exactly as before.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to application directories. Paths here are relative to
+    # this directory, so a request rewritten to production/public/... arrives as
+    # `public/...` and never matches.
+    RewriteRule ^(app|bootstrap|config|database|docs|lang|node_modules|resources|routes|storage|tests|vendor)(/|$) - [F,L]
+</IfModule>
+
+# Block sensitive file types anywhere below the application root.
+<FilesMatch "(?i)\.(env|log|lock|sqlite|sqlite3|db|bak|ini|sh|yml|yaml)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block sensitive files by name, including dotfiles such as .env.backup and .git*.
+<FilesMatch "(?i)^(\.env.*|\.git.*|\.editorconfig|artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml.*|pint\.json|phpstan.*\.neon)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

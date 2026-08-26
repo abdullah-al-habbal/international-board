@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Center\Pages;
 
 use Filament\Auth\Pages\EditProfile;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
@@ -58,6 +59,17 @@ class CenterProfilePage extends EditProfile
         return $schema->components(array_merge(
             parent::form($schema)->getComponents(),
             [
+                FileUpload::make('logo')
+                    ->label(__('app.logo'))
+                    ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(2048)
+                    ->disk('public')
+                    ->directory('centers/logos')
+                    ->visibility('public')
+                    ->nullable()
+                    ->columnSpanFull(),
+
                 Textarea::make('notes')
                     ->label(__('app.notes'))
                     ->disabled()
