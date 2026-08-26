@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\AccreditationStatus;
 use App\Enums\CenterStatus;
 use App\Enums\PanelId;
+use App\Models\Concerns\HasAccreditationPeriod;
 use App\Observers\CertifiedCenterObserver;
 use App\Policies\CertifiedCenterPolicy;
-use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
@@ -51,6 +50,7 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class CertifiedCenter extends Authenticatable implements FilamentUser, HasAvatar
 {
+    use HasAccreditationPeriod;
     use HasFactory, Notifiable;
 
     protected function casts(): array
@@ -120,107 +120,18 @@ class CertifiedCenter extends Authenticatable implements FilamentUser, HasAvatar
     #[Scope]
     protected function accreditationExpired(Builder $query): void
     {
-        $query->where('accreditation_period_end', '<', now());
+        $this->applyAccreditationExpiredScope($query);
     }
 
     #[Scope]
     protected function accreditationActive(Builder $query): void
     {
-        $query->where('accreditation_period_start', '<=', now())
-            ->where('accreditation_period_end', '>=', now());
+        $this->applyAccreditationActiveScope($query);
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
         return PanelId::tryFrom($panel->getId()) === PanelId::Center;
-    }
-
-    public function isAccreditationActive(): bool
-    {
-        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
-            return false;
-        }
-
-        return Carbon::now()->between(
-            $this->accreditation_period_start,
-            $this->accreditation_period_end
-        );
-    }
-
-    public function hasApprovedAccreditationRequest(): bool
-    {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->exists();
-    }
-
-    public function hasActiveAccreditationRequest(): bool
-    {
-        return $this->activeAccreditationRequestQuery()->exists();
-    }
-
-    public function activeAccreditationRequest(): ?CenterAccreditationRequest
-    {
-        return $this->activeAccreditationRequestQuery()->latest()->first();
-    }
-
-    public function accreditationBlockMessage(): ?string
-    {
-        $request = $this->activeAccreditationRequest();
-
-        if (! $request) {
-            return null;
-        }
-
-        return in_array($request->status, [
-            AccreditationStatus::Pending,
-            AccreditationStatus::UnderReview,
-        ], true)
-            ? __('accreditation.errors.pending_request_exists')
-            : __('accreditation.errors.approved_request_exists');
-    }
-
-    private function activeAccreditationRequestQuery(): HasMany
-    {
-        $now = Carbon::now();
-
-        return $this->accreditationRequests()
-            ->where(function (Builder $query) use ($now) {
-                $query->whereIn('status', [
-                    AccreditationStatus::Pending->value,
-                    AccreditationStatus::UnderReview->value,
-                ])->orWhere(function (Builder $q) use ($now) {
-                    $q->where('status', AccreditationStatus::Approved->value)
-                        ->where('accreditation_start_date', '<=', $now)
-                        ->where('accreditation_end_date', '>=', $now);
-                });
-            });
-    }
-
-    public function hasApprovedNonExpiredRequest(): bool
-    {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->where('accreditation_end_date', '>=', now())
-            ->exists();
-    }
-
-    public function canPerformActions(): bool
-    {
-        return $this->hasApprovedNonExpiredRequest();
-    }
-
-    public function accreditationBlockReason(): ?string
-    {
-        if (! $this->hasApprovedNonExpiredRequest()) {
-            return __('accreditation.blocked.no_approved_request');
-        }
-
-        if (! $this->hasActiveAccreditationRequest()) {
-            return __('accreditation.blocked.period_expired');
-        }
-
-        return null;
     }
 
     public function getLogoUrlAttribute(): ?string

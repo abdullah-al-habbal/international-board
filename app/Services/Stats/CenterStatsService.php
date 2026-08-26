@@ -70,6 +70,9 @@ final class CenterStatsService
             return 0;
         }
 
-        return (int) now()->diffInDays($center->accreditation_period_end, false);
+        // Whole days between today and the end date. Carbon 3 returns a float
+        // here, and truncating an unanchored diff reported 0 for a period that
+        // isAccreditationActive() had already called expired.
+        return (int) today()->diffInDays($center->accreditation_period_end->copy()->startOfDay(), false);
     }
 }

@@ -8,7 +8,7 @@ use App\Enums\AccreditationStatus;
 use App\Services\Accreditation\TrainerAccreditationApprovalService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
@@ -55,7 +55,7 @@ class TrainerAccreditationRequestsTable
                     ->color('success')
                     ->visible(fn ($record) => $record->status === AccreditationStatus::Pending || $record->status === AccreditationStatus::UnderReview)
                     ->form([
-                        DateTimePicker::make('accreditation_end_date')
+                        DatePicker::make('accreditation_end_date')
                             ->label(__('app.end_date'))
                             ->required()
                             ->after(fn () => now()),

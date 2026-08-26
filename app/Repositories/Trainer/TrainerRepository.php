@@ -36,13 +36,13 @@ final class TrainerRepository
             ->paginate($perPage);
     }
 
+    /** Relations are loaded by the caller, which knows which it needs as rows and which as counts. */
     public function findActiveByKey(int $id): ?Trainer
     {
         return $this->model
             ->newQuery()
             ->publiclyVisible()
             ->where('id', $id)
-            ->with(['country', 'certifications', 'specializations', 'trainerRole'])
             ->first();
     }
 

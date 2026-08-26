@@ -71,17 +71,32 @@ Single branch: `production`. Deployed to Hostinger via SSH git pull.
 # Standard deployment (safe, no data loss)
 git commit -m "Add new feature"
 git push origin production
-
-# Destructive deployment (drops all tables, re-runs migrations + seeders)
-git commit -m "[migrate:fresh] Redesign trainees table"
-git push origin production
 ```
 
-Destructive keywords: `[migrate:fresh]`, `[destructive]`, `[reset-db]`, `[fresh]`.
+### ⚠️ Production holds live data, and there are no backups
 
-Manual trigger: GitHub Actions → CI/CD Pipeline → Run workflow → check `force_migrate_fresh`.
+Production is **not** an empty environment. As of 2026-08-26 it holds thousands of
+certifications and trainees, plus the trainers and centers they belong to. No backups
+are taken, by explicit decision — so any dropped table is **permanently** lost.
 
-**No backups.** Acceptable because there is no production data.
+Because of that:
+
+- **Commit-message keywords do nothing.** `[migrate:fresh]`, `[destructive]`,
+  `[reset-db]` and `[fresh]` are no longer wired to anything. A push can only ever run
+  `php artisan migrate --force`. CI logs a warning if it sees one of these keywords, and
+  ignores it.
+- **Destructive migrations require a deliberate manual run:** GitHub Actions → CI/CD
+  Pipeline → Run workflow → check `force_migrate_fresh`. This drops every table and
+  re-seeds. There is no undo.
+- Write migrations to be additive and reversible. Never reach for `migrate:fresh` to fix
+  a schema mistake on production.
+
+### Timezone
+
+`APP_TIMEZONE=Asia/Damascus` must be set in every environment. Accreditation validity is
+evaluated against the operators' local day; with the framework default (`UTC`) the stack
+runs three hours behind the operators and expires credentials early. The deploy script
+fails fast if `APP_TIMEZONE` is missing from the production `.env`.
 
 CI/CD pipeline: `.github/workflows/ci.yml`
 

@@ -91,35 +91,27 @@
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.certifications_count') }}</div>
-                    <span class="badge bg-success fs-6">{{ $center->certifications->count() }}</span>
+                    <span class="badge bg-success fs-6">{{ $center->certifications_count }}</span>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.trainers_count') }}</div>
-                    <span class="badge bg-primary fs-6">{{ $center->trainers->count() }}</span>
+                    <span class="badge bg-primary fs-6">{{ $center->trainers_count }}</span>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.document_types_count') }}</div>
-                    <span class="badge bg-warning text-dark fs-6">{{ $center->documentTypes->count() }}</span>
+                    <span class="badge bg-warning text-dark fs-6">{{ $center->approved_document_types_count }}</span>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.accreditation_requests_count') }}</div>
-                    <span class="badge bg-info fs-6">{{ $center->accreditationRequests->count() }}</span>
+                    <span class="badge bg-info fs-6">{{ $center->accreditation_requests_count }}</span>
                 </div>
             </div>
-            @if($center->financialRequests->isNotEmpty())
-            <div class="col-6 col-md-3">
-                <div class="p-3 bg-light rounded text-center">
-                    <div class="fw-bold">{{ __('web.labels.financial_requests_count') }}</div>
-                    <span class="badge bg-dark fs-6">{{ $center->financialRequests->count() }}</span>
-                </div>
-            </div>
-            @endif
         </div>
 
         {{-- Latest certifications --}}

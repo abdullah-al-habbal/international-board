@@ -11,7 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -81,7 +81,7 @@ class CenterAccreditationRequestsTable
                     ->color('success')
                     ->requiresConfirmation()
                     ->form([
-                        DateTimePicker::make('accreditation_end_date')
+                        DatePicker::make('accreditation_end_date')
                             ->label(__('app.accreditation_end_date'))
                             ->required()
                             ->after(fn () => now()),

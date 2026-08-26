@@ -22,6 +22,7 @@ concurrency:
 env:
   PHP_VERSION: "8.5"
   APP_DOMAIN: internationalboard.uk
+  APP_TIMEZONE: "Asia/Damascus"
 
 jobs:
   check-destructive:
@@ -35,25 +36,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check commit message for destructive keyword
+      # Destructive migrations are reachable ONLY through a deliberate
+      # workflow_dispatch run with force_migrate_fresh checked.
+      #
+      # Commit-message keywords ([migrate:fresh], [destructive], [reset-db],
+      # [fresh]) NO LONGER trigger anything. Production carries live data
+      # (thousands of certifications and trainees) and there are no backups,
+      # so a commit subject line must never be able to drop the database.
+      - name: Resolve destructive trigger
         id: check
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "Commit message: $COMMIT_MSG"
-
-          if echo "$COMMIT_MSG" | grep -iqE "\[migrate:fresh\]|\[destructive\]|\[reset-db\]|\[fresh\]"; then
-            echo "is_destructive=true" >> $GITHUB_OUTPUT
-            echo "Destructive migration detected in commit message"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+            && [ "${{ inputs.force_migrate_fresh }}" = "true" ]; then
+            echo "is_destructive=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Destructive migration explicitly requested via workflow_dispatch."
           else
-            echo "is_destructive=false" >> $GITHUB_OUTPUT
+            echo "is_destructive=false" >> "$GITHUB_OUTPUT"
             echo "Standard migration"
           fi
 
-      - name: Check manual trigger for destructive
-        if: github.event.inputs.force_migrate_fresh == 'true'
+      - name: Warn on ignored destructive keyword in commit message
         run: |
-          echo "is_destructive=true" >> $GITHUB_OUTPUT
-          echo "Manual destructive migration triggered"
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if echo "$COMMIT_MSG" | grep -iqE "\[migrate:fresh\]|\[destructive\]|\[reset-db\]|\[fresh\]"; then
+            echo "::warning::Commit message contains a destructive keyword. It was IGNORED. Destructive migrations now require a manual workflow_dispatch run with force_migrate_fresh checked."
+          fi
 
   deploy:
     name: Deploy to Hostinger via Git
@@ -91,11 +98,21 @@ jobs:
             echo "Installing PHP dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
 
+            # Accreditation validity is evaluated against the operators' local
+            # day. Without APP_TIMEZONE the stack falls back to UTC while
+            # operators run at UTC+3, which expires credentials early.
+            if ! grep -q '^APP_TIMEZONE=' .env; then
+              echo "ERROR: APP_TIMEZONE missing from production .env."
+              echo "Accreditation date logic depends on it. Add APP_TIMEZONE=Asia/Damascus."
+              exit 1
+            fi
+            echo "Timezone: $(grep '^APP_TIMEZONE=' .env)"
+
             IS_DESTRUCTIVE="${{ needs.check-destructive.outputs.is_destructive }}"
 
             if [ "$IS_DESTRUCTIVE" = "true" ]; then
               echo "RUNNING DESTRUCTIVE MIGRATION: migrate:fresh --seed"
-              echo "WARNING: All data will be lost!"
+              echo "WARNING: this DROPS ALL TABLES. Production holds live data and there are no backups."
               php artisan migrate:fresh --force --seed
             else
               echo "Running standard migrations..."

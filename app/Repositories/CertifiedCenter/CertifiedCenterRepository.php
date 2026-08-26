@@ -29,13 +29,14 @@ final class CertifiedCenterRepository
             ->paginate($perPage);
     }
 
+    /** `certifications` is loaded by the caller, which needs it visibility-filtered. */
     public function findActiveById(int $id): ?CertifiedCenter
     {
         return $this->model
             ->newQuery()
             ->publiclyVisible()
             ->where('id', $id)
-            ->with(['country', 'approvedDocumentTypes', 'certifications'])
+            ->with(['approvedDocumentTypes'])
             ->first();
     }
 

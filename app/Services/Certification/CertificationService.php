@@ -60,6 +60,18 @@ final class CertificationService
         return $this->repo->getCountThisMonth();
     }
 
+    /** Certifications a trainer is credited with that a visitor may see. */
+    public function countPubliclyVisibleForTrainer(int $trainerId): int
+    {
+        return $this->repo->countPubliclyVisibleForTrainer($trainerId);
+    }
+
+    /** Every certification a trainer is credited with, visible or not. */
+    public function countAllForTrainer(int $trainerId): int
+    {
+        return $this->repo->countAllForTrainer($trainerId);
+    }
+
     public function getCountByDateRange(\DateTime $startDate, \DateTime $endDate): int
     {
         return $this->repo->getCountByDateRange($startDate, $endDate);

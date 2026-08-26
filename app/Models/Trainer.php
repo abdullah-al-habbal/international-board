@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\AccreditationStatus;
+use App\Models\Concerns\HasAccreditationPeriod;
 use App\Models\Concerns\NotifiesAdminOnMutation;
 use App\Observers\TrainerObserver;
-use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
@@ -48,6 +47,7 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class Trainer extends Authenticatable implements FilamentUser, HasAvatar
 {
+    use HasAccreditationPeriod;
     use HasFactory;
     use Notifiable;
     use NotifiesAdminOnMutation;
@@ -84,9 +84,16 @@ class Trainer extends Authenticatable implements FilamentUser, HasAvatar
             ->withTimestamps();
     }
 
+    /** Certifications this trainer authored. Most are issued by admins instead — see assignedCertifications(). */
     public function certifications(): MorphMany
     {
         return $this->morphMany(Certification::class, 'creator');
+    }
+
+    /** Certifications an admin issued and attributed to this trainer. */
+    public function assignedCertifications(): HasMany
+    {
+        return $this->hasMany(Certification::class, 'assigned_trainer_id');
     }
 
     public function trainees(): MorphMany
@@ -110,116 +117,21 @@ class Trainer extends Authenticatable implements FilamentUser, HasAvatar
     }
 
     #[Scope]
-    protected function accreditationExpired(Builder $query): void
-    {
-        $query->where('accreditation_period_end', '<', now());
-    }
-
-    #[Scope]
     protected function publiclyVisible(Builder $query): void
     {
         $query->where('show_in_public_website', true);
     }
 
     #[Scope]
+    protected function accreditationExpired(Builder $query): void
+    {
+        $this->applyAccreditationExpiredScope($query);
+    }
+
+    #[Scope]
     protected function accreditationActive(Builder $query): void
     {
-        $query->where('accreditation_period_start', '<=', now())
-            ->where('accreditation_period_end', '>=', now());
-    }
-
-    public function isAccreditationActive(): bool
-    {
-        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
-            return false;
-        }
-
-        return Carbon::now()->between(
-            $this->accreditation_period_start,
-            $this->accreditation_period_end
-        );
-    }
-
-    public function isAccredited(): bool
-    {
-        return $this->hasApprovedNonExpiredRequest();
-    }
-
-    public function hasApprovedAccreditationRequest(): bool
-    {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->exists();
-    }
-
-    public function hasActiveAccreditationRequest(): bool
-    {
-        return $this->activeAccreditationRequestQuery()->exists();
-    }
-
-    public function activeAccreditationRequest(): ?TrainerAccreditationRequest
-    {
-        return $this->activeAccreditationRequestQuery()->latest()->first();
-    }
-
-    public function accreditationBlockMessage(): ?string
-    {
-        $request = $this->activeAccreditationRequest();
-
-        if (! $request) {
-            return null;
-        }
-
-        return in_array($request->status, [
-            AccreditationStatus::Pending,
-            AccreditationStatus::UnderReview,
-        ], true)
-            ? __('accreditation.errors.pending_request_exists')
-            : __('accreditation.errors.approved_request_exists');
-    }
-
-    private function activeAccreditationRequestQuery(): HasMany
-    {
-        $now = Carbon::now();
-
-        return $this->accreditationRequests()
-            ->where(function (Builder $query) use ($now) {
-                $query->whereIn('status', [
-                    AccreditationStatus::Pending->value,
-                    AccreditationStatus::UnderReview->value,
-                ])->orWhere(function (Builder $q) use ($now) {
-                    $q->where('status', AccreditationStatus::Approved->value)
-                        ->where('accreditation_start_date', '<=', $now)
-                        ->where('accreditation_end_date', '>=', $now);
-                });
-            });
-    }
-
-    public function hasApprovedNonExpiredRequest(): bool
-    {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->where('accreditation_end_date', '>=', now())
-            ->exists();
-    }
-
-    public function canPerformActions(): bool
-    {
-        return $this->hasApprovedNonExpiredRequest();
-    }
-
-    public function accreditationBlockReason(): ?string
-    {
-
-        if (! $this->hasApprovedNonExpiredRequest()) {
-            return __('accreditation.blocked.no_approved_request');
-        }
-
-        if (! $this->hasActiveAccreditationRequest()) {
-            return __('accreditation.blocked.period_expired');
-        }
-
-        return null;
+        $this->applyAccreditationActiveScope($query);
     }
 
     public function canAccessPanel(Panel $panel): bool

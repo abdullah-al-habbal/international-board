@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\CenterAccreditationRequests\Schemas;
 
 use App\Enums\AccreditationStatus;
 use App\Models\User;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -36,14 +37,15 @@ class CenterAccreditationRequestForm
                     ->options(AccreditationStatus::class)
                     ->required(),
 
-                DateTimePicker::make('accreditation_start_date')
+                DatePicker::make('accreditation_start_date')
                     ->label(__('app.accreditation_start_date'))
                     ->disabled()
                     ->dehydrated(false)
                     ->hiddenOn('create'),
 
-                DateTimePicker::make('accreditation_end_date')
+                DatePicker::make('accreditation_end_date')
                     ->label(__('app.accreditation_end_date'))
+                    ->after('accreditation_start_date')
                     ->hiddenOn('create'),
 
                 Textarea::make('admin_notes')

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Web\Trainer;
 
+use App\Enums\DocumentTypeRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Trainer\TrainerIndexRequest;
 use App\Services\ApplicationSetting\ApplicationSettingService;
+use App\Services\Certification\CertificationService;
 use App\Services\Seo\SeoService;
 use App\Services\Trainer\TrainerService;
 use Illuminate\View\View;
@@ -16,7 +18,8 @@ final class TrainerController extends Controller
     public function __construct(
         private readonly TrainerService $service,
         private readonly SeoService $seoService,
-        private readonly ApplicationSettingService $appSettingService
+        private readonly ApplicationSettingService $appSettingService,
+        private readonly CertificationService $certificationService
     ) {}
 
     public function index(TrainerIndexRequest $request): View
@@ -47,9 +50,13 @@ final class TrainerController extends Controller
             'center',
             'trainerRole',
             'specializations',
-            'certifications' => fn ($q) => $q->publiclyVisible(),
-            'documentTypes',
+        ]);
+
+        // Counted, never listed — so load counts rather than the rows themselves.
+        $trainerModel->loadCount([
+            'documentTypes' => fn ($q) => $q->where('status', DocumentTypeRequestStatus::Approved->value),
             'accreditationRequests',
+            'specializations',
         ]);
 
         $this->seoService->setMeta(
@@ -57,7 +64,11 @@ final class TrainerController extends Controller
             $trainerModel->bio ?? __('web.pages.trainers.subtitle')
         );
 
-        return view('web.trainers.show', ['trainer' => $trainerModel]);
+        return view('web.trainers.show', [
+            'trainer' => $trainerModel,
+            'certificationsCount' => $this->certificationService
+                ->countPubliclyVisibleForTrainer($trainerModel->id),
+        ]);
     }
 
     public function evaluation(): View

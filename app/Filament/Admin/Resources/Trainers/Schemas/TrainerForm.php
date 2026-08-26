@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Trainers\Schemas;
 
 use App\Models\Country;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -124,12 +124,12 @@ class TrainerForm
                 ->nullable()
                 ->columnSpanFull(),
 
-            DateTimePicker::make('accreditation_period_start')
+            DatePicker::make('accreditation_period_start')
                 ->label(__('app.accreditation_period_start'))
                 ->default(now())
                 ->columnSpan(1),
 
-            DateTimePicker::make('accreditation_period_end')
+            DatePicker::make('accreditation_period_end')
                 ->label(__('app.accreditation_period_end'))
                 ->after('accreditation_period_start')
                 ->columnSpan(1),

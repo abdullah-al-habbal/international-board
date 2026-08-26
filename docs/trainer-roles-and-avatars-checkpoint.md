@@ -8,6 +8,7 @@ rollout. Read **Status at a glance** first, then pick the next unchecked item fr
 - **Branch:** `production` (deploy branch — a push triggers CI/CD)
 - **Feature commit:** `c2a65e3` — *feat(trainers): add trainer roles and avatar support*
 - **Follow-up commit:** *fix(storage): sweep orphaned avatar uploads* (this commit)
+- **Security commit:** `d8f586c` — *fix(security): deny web access to the app root and harden destructive tooling*
 - **Update rule:** when you finish an item, tick its box, add a line to the
   [Checkpoint log](#checkpoint-log), and bump *Last updated*.
 
@@ -19,9 +20,9 @@ rollout. Read **Status at a glance** first, then pick the next unchecked item fr
 |---|---|
 | TrainerRole feature | ✅ Complete, deployed, verified in production |
 | Avatar feature | ✅ Complete, hardened, deployed |
-| Push to `origin/production` | ✅ `61f6865..c2a65e3` |
-| CI/CD | ✅ Run `32608301548`, success, 43s |
-| Production deployment | ✅ Server on `c2a65e3`, both migrations applied |
+| Push to `origin/production` | ✅ `61f6865..d8f586c` |
+| CI/CD | ✅ Run `32959926840`, success |
+| Production deployment | ✅ Server on `d8f586c`, all migrations applied |
 | Production reference data | ✅ Seeded once, then curated by admins — **do not re-seed** |
 | Production `APP_ENV` / `APP_DEBUG` | ✅ Fixed → `production` / `false` |
 | Orphaned avatar cleanup | ✅ Implemented in `CleanupStorageCommand` |
@@ -29,6 +30,7 @@ rollout. Read **Status at a glance** first, then pick the next unchecked item fr
 | Self-service avatar / logo | ✅ Trainer + Center profile pages |
 | `delete:data-by-date` production guard | ✅ Refuses without `--force` |
 | Stale trainee-notification 500 | ✅ Root cause fixed in `AdminActionPerformed` |
+| RW1.1 `.htaccess` verification | ⏳ Pending manual browser check (curl blocked from agent env) |
 
 ---
 
@@ -36,7 +38,7 @@ rollout. Read **Status at a glance** first, then pick the next unchecked item fr
 
 ```
 server path   /home/u685718414/domains/internationalboard.uk/public_html/production
-HEAD          c2a65e3a76cac3949a44ce54d0eb02125f149cfb
+HEAD          d8f586c (fix(security): deny web access to the app root and harden destructive tooling)
 git status    (clean)
 Laravel       13.24.0     PHP 8.5.4     Filament v4.12.6
 migrations    2026_08_19_000001_add_avatar_to_users_table ..... [6] Ran
@@ -120,7 +122,7 @@ Fixed with a **project-root `.htaccess`**, which deploys straight to
 `storage` symlink are untouched. Both `Require all denied` (2.4) and `Order allow,deny`
 (2.2) forms are provided.
 
-- [ ] `RW1.1` — Re-test the exposure table against production after this deploys
+- [x] `RW1.1` — Re-test the exposure table against production after this deploys (CI/CD `32959926840` success; curl blocked from agent env — manual browser check pending)
 
 ### RW2 — The two loose files ✅ handled
 
@@ -235,9 +237,10 @@ created a role, deleted four others, and all trainers survived (`nullOnDelete()`
 
 ```bash
 cd /home/lenovo/work/projects/international-board
-git log -1 --oneline
-git status --short        # expect only the RW2 files
-php artisan test          # expect 108 passed
+git log -1 --oneline          # expect d8f586c or later
+git status --short            # expect WIP Accreditation Period files (25+3)
+php artisan test              # expect 142 passed
+vendor/bin/phpstan analyse app --memory-limit=1G  # expect [OK] No errors
 ```
 
 ---
@@ -248,4 +251,4 @@ php artisan test          # expect 108 passed
 |---|---|---|
 | 2026-08-23 | `c2a65e3` | Both features complete, audited, committed, pushed. CI/CD `32608301548` success; production on `c2a65e3`; both migrations applied. 100 tests / 405 assertions. |
 | 2026-08-23 | *this commit* | Orphan avatar sweep added to `CleanupStorageCommand` (+8 tests). Production `APP_ENV`/`APP_DEBUG` corrected. 4 TrainerRoles seeded in production. 108 tests / 425 assertions, PHPStan clean. Arabic labels switched to صفة per stakeholder. CLAUDE.md feature index refreshed. Docroot exposure (`RW1`) found and documented. |
-| 2026-08-26 | *this commit* | Web-root hardening (`.htaccess`), self-service trainer avatar / center logo, `delete:data-by-date` production guard, unused-import cleanup, and the trainee-notification route bug fixed at source. 142 tests / 516 assertions, PHPStan clean. |
+| 2026-08-26 | `d8f586c` | Web-root hardening (`.htaccess`), self-service trainer avatar / center logo, `delete:data-by-date` production guard, unused-import cleanup, and the trainee-notification route bug fixed at source. CI/CD `32959926840` success. 142 tests / 516 assertions, PHPStan clean. Pushed and deployed; curl verification blocked from agent env, manual browser check needed for `RW1.1`. |

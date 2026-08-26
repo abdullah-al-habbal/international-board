@@ -27,19 +27,33 @@ class CertificationResource extends Resource
         return true;
     }
 
+    /**
+     * Certifications an admin issued and assigned to this trainer are listed
+     * and viewable, but not editable or deletable — the trainer did not issue
+     * them and must not be able to alter the record.
+     */
     public static function canEdit(Model $record): bool
     {
-        return true;
+        return static::wasAuthoredByCurrentTrainer($record);
     }
 
     public static function canDelete(Model $record): bool
     {
-        return true;
+        return static::wasAuthoredByCurrentTrainer($record);
     }
 
     public static function canDeleteAny(): bool
     {
         return true;
+    }
+
+    private static function wasAuthoredByCurrentTrainer(Model $record): bool
+    {
+        $trainer = Auth::guard('trainer')->user();
+
+        return $trainer instanceof Trainer
+            && $record->creator_type === Trainer::class
+            && (int) $record->creator_id === $trainer->id;
     }
 
     public static function canViewAny(): bool
@@ -94,9 +108,11 @@ class CertificationResource extends Resource
 
         $trainer = Auth::guard('trainer')->user();
 
+        // Includes certifications an admin issued and assigned to this trainer,
+        // so the panel agrees with their public profile. Assigned records are
+        // read-only — see canEdit()/canDelete().
         if ($trainer instanceof Trainer) {
-            $query->where('creator_type', Trainer::class)
-                ->where('creator_id', $trainer->id);
+            $query->forTrainer($trainer->id);
         }
 
         return $query->with([

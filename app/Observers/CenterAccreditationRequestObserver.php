@@ -104,8 +104,8 @@ class CenterAccreditationRequestObserver
         $hasCurrentlyActiveApproved = CenterAccreditationRequest::query()
             ->where('certified_center_id', $request->certified_center_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
         if ($hasActive) {
@@ -134,8 +134,8 @@ class CenterAccreditationRequestObserver
         $query = CenterAccreditationRequest::query()
             ->where('certified_center_id', $request->certified_center_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<', $request->accreditation_end_date)
-            ->where('accreditation_end_date', '>', $request->accreditation_start_date);
+            ->where('accreditation_start_date', '<=', $request->accreditation_end_date->copy()->endOfDay())
+            ->where('accreditation_end_date', '>=', $request->accreditation_start_date->copy()->startOfDay());
 
         if ($excludeSelf) {
             $query->where('id', '!=', $request->id);
@@ -170,8 +170,8 @@ class CenterAccreditationRequestObserver
         $hasOtherActive = $center->accreditationRequests()
             ->where('id', '!=', $request->id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
         if (! $hasOtherActive) {

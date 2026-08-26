@@ -104,8 +104,8 @@ class TrainerAccreditationRequestObserver
         $hasCurrentlyActiveApproved = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
         if ($hasActive) {
@@ -134,8 +134,8 @@ class TrainerAccreditationRequestObserver
         $query = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<', $request->accreditation_end_date)
-            ->where('accreditation_end_date', '>', $request->accreditation_start_date);
+            ->where('accreditation_start_date', '<=', $request->accreditation_end_date->copy()->endOfDay())
+            ->where('accreditation_end_date', '>=', $request->accreditation_start_date->copy()->startOfDay());
 
         if ($excludeSelf) {
             $query->where('id', '!=', $request->id);
@@ -172,8 +172,8 @@ class TrainerAccreditationRequestObserver
         $hasOtherActive = $trainer->accreditationRequests()
             ->where('id', '!=', $request->id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
         if (! $hasOtherActive) {

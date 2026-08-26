@@ -58,6 +58,28 @@ final class CertificationRepository
         return $this->model->newQuery()->count();
     }
 
+    /**
+     * Certifications a trainer is credited with that a visitor may see.
+     *
+     * Counts authored and assigned certifications in one query, so the public
+     * profile agrees with the admin panel without double counting.
+     */
+    public function countPubliclyVisibleForTrainer(int $trainerId): int
+    {
+        return $this->model->newQuery()
+            ->publiclyVisible()
+            ->forTrainer($trainerId)
+            ->count();
+    }
+
+    /** Every certification a trainer is credited with, visible or not. */
+    public function countAllForTrainer(int $trainerId): int
+    {
+        return $this->model->newQuery()
+            ->forTrainer($trainerId)
+            ->count();
+    }
+
     public function getCountThisMonth(): int
     {
         return $this->model->createdThisMonth()->count();

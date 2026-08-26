@@ -100,25 +100,25 @@
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.certifications_count') }}</div>
-                    <span class="badge bg-success fs-6">{{ $trainer->certifications->count() }}</span>
+                    <span class="badge bg-success fs-6">{{ $certificationsCount }}</span>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.document_types_count') }}</div>
-                    <span class="badge bg-primary fs-6">{{ $trainer->documentTypes->count() }}</span>
+                    <span class="badge bg-primary fs-6">{{ $trainer->document_types_count }}</span>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.accreditation_requests_count') }}</div>
-                    <span class="badge bg-warning text-dark fs-6">{{ $trainer->accreditationRequests->count() }}</span>
+                    <span class="badge bg-warning text-dark fs-6">{{ $trainer->accreditation_requests_count }}</span>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-light rounded text-center">
                     <div class="fw-bold">{{ __('web.labels.specializations_count') }}</div>
-                    <span class="badge bg-info fs-6">{{ $trainer->specializations->count() }}</span>
+                    <span class="badge bg-info fs-6">{{ $trainer->specializations_count }}</span>
                 </div>
             </div>
         </div>

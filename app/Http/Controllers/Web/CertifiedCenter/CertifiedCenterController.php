@@ -42,11 +42,17 @@ final class CertifiedCenterController extends Controller
 
         $center->load([
             'country',
+            // Kept as rows: the view lists the latest few.
             'certifications' => fn ($q) => $q->publiclyVisible(),
-            'trainers' => fn ($q) => $q->publiclyVisible(),
-            'documentTypes',
+        ]);
+
+        // Counted, never listed. Counts are unscoped totals so the public page
+        // agrees with the admin panel; the listing above stays visibility-filtered.
+        $center->loadCount([
+            'certifications',
+            'trainers',
+            'approvedDocumentTypes',
             'accreditationRequests',
-            'financialRequests',
         ]);
 
         $this->seoService->setMeta(

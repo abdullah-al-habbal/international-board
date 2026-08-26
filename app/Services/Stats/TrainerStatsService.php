@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Stats;
 
+use App\Models\Certification;
 use App\Models\Trainer;
 
 final class TrainerStatsService
@@ -11,8 +12,11 @@ final class TrainerStatsService
     public function getTrainerDashboardStats(Trainer $trainer): array
     {
         return [
-            'total_certifications' => $trainer->certifications()->count(),
-            'this_month_certifications' => $trainer->certifications()->createdThisMonth()->count(),
+            'total_certifications' => Certification::query()->forTrainer($trainer->id)->count(),
+            'this_month_certifications' => Certification::query()
+                ->forTrainer($trainer->id)
+                ->createdThisMonth()
+                ->count(),
             'total_financial_requests' => $trainer->financialRequests()->count(),
             'accreditation_status' => $this->getAccreditationStatusData($trainer),
         ];
@@ -63,6 +67,9 @@ final class TrainerStatsService
             return 0;
         }
 
-        return (int) now()->diffInDays($trainer->accreditation_period_end, false);
+        // Whole days between today and the end date. Carbon 3 returns a float
+        // here, and truncating an unanchored diff reported 0 for a period that
+        // isAccreditationActive() had already called expired.
+        return (int) today()->diffInDays($trainer->accreditation_period_end->copy()->startOfDay(), false);
     }
 }

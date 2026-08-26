@@ -115,6 +115,29 @@ class Certification extends Model
         });
     }
 
+    /**
+     * Every certification a trainer is credited with, however it got there.
+     *
+     * A trainer is linked either by having authored the certification (the
+     * `creator` morph) or by being assigned to one an admin issued
+     * (`assigned_trainer_id`). In practice the second case is the overwhelming
+     * majority, so counting only the morph reports near-zero for trainers who
+     * hold hundreds of certifications.
+     *
+     * Written as a single OR predicate rather than two counts so a
+     * certification a trainer both created and was assigned is counted once.
+     */
+    #[Scope]
+    protected function forTrainer(Builder $query, int $trainerId): void
+    {
+        $query->where(function (Builder $related) use ($trainerId): void {
+            $related->where(function (Builder $created) use ($trainerId): void {
+                $created->where('creator_type', Trainer::class)
+                    ->where('creator_id', $trainerId);
+            })->orWhere('assigned_trainer_id', $trainerId);
+        });
+    }
+
     #[Scope]
     protected function createdThisMonth(Builder $query): void
     {
