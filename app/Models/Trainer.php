@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -139,13 +140,17 @@ class Trainer extends Authenticatable implements FilamentUser, HasAvatar
         return $panel->getId() === 'trainer' && is_null($this->center_id);
     }
 
-    public function getAvatarUrlAttribute(): ?string
+    protected function avatarUrl(): Attribute
     {
-        if (! empty($this->attributes['avatar']) && Storage::disk('public')->exists($this->attributes['avatar'])) {
-            return Storage::disk('public')->url($this->attributes['avatar']);
-        }
+        return Attribute::make(
+            get: function () {
+                if (! empty($this->attributes['avatar']) && Storage::disk('public')->exists($this->attributes['avatar'])) {
+                    return Storage::disk('public')->url($this->attributes['avatar']);
+                }
 
-        return null;
+                return null;
+            }
+        );
     }
 
     public function getFilamentAvatarUrl(): ?string

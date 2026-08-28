@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Certification;
 use App\Models\CertifiedCenterDocumentType;
 use App\Models\Country;
 use App\Models\DocumentType;
 use App\Models\Trainee;
 use App\Models\TrainerDocumentType;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Certification::class)]
 class CertificationFactory extends Factory
 {
     public function definition(): array

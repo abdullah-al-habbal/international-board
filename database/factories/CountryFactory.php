@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Country;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Country::class)]
 class CountryFactory extends Factory
 {
-    protected $model = Country::class;
-
     public function definition(): array
     {
         return [

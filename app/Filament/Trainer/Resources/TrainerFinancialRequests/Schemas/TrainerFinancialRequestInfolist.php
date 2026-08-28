@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas;
 
+use App\Filament\FinancialRequests\FinancialRequestFields;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -20,15 +21,7 @@ class TrainerFinancialRequestInfolist
                     ->schema([
                         TextEntry::make('agentPerson.name')
                             ->label(__('app.agent_person')),
-                        TextEntry::make('total_payment')
-                            ->label(__('app.total_amount'))
-                            ->money(fn ($record) => $record->currency?->code ?? 'USD'),
-                        TextEntry::make('amount_paid')
-                            ->label(__('app.paid_amount'))
-                            ->money(fn ($record) => $record->currency?->code ?? 'USD'),
-                        TextEntry::make('remaining_amount')
-                            ->label(__('app.remaining_amount'))
-                            ->money(fn ($record) => $record->currency?->code ?? 'USD'),
+                        ...FinancialRequestFields::amountEntries(),
                         TextEntry::make('date')
                             ->label(__('app.date'))
                             ->date(),

@@ -6,12 +6,12 @@ namespace Database\Factories;
 
 use App\Models\Country;
 use App\Models\Trainer;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Trainer::class)]
 class TrainerFactory extends Factory
 {
-    protected $model = Trainer::class;
-
     public function definition(): array
     {
         return [

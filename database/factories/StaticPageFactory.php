@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\StaticPage;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(StaticPage::class)]
 class StaticPageFactory extends Factory
 {
     public function definition(): array

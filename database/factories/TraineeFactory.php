@@ -9,12 +9,12 @@ use App\Models\Country;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Trainee::class)]
 class TraineeFactory extends Factory
 {
-    protected $model = Trainee::class;
-
     public function definition(): array
     {
         $ownerAdminId = User::admin()->orderBy('id')->limit(1)->value('id');

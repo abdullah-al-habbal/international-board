@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas;
 
 use App\Filament\Components\DatePicker;
-use App\Models\AgentPerson;
+use App\Filament\FinancialRequests\FinancialRequestFields;
 use App\Models\CertifiedCenter;
-use App\Models\Currency;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class CertifiedCenterFinancialRequestForm
@@ -22,39 +19,9 @@ class CertifiedCenterFinancialRequestForm
             ->components([
                 Hidden::make('requestable_type')
                     ->default(CertifiedCenter::class),
-                Select::make('requestable_id')
-                    ->label(__('app.certified_center'))
-                    ->options(CertifiedCenter::pluck('name', 'id'))
-                    ->required()
-                    ->searchable()
-                    ->preload()
-                    ->live(),
-                Select::make('agent_person_id')
-                    ->label(__('app.agent_person'))
-                    ->options(AgentPerson::pluck('name', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-                Select::make('currency_id')
-                    ->label(__('app.currency'))
-                    ->options(Currency::pluck('name', 'id'))
-                    ->default(fn () => Currency::where('is_default', true)->value('id') ?? Currency::first()?->id)
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                TextInput::make('total_payment')
-                    ->label(__('app.total_amount'))
-                    ->numeric()
-                    ->required()
-                    ->minValue(0.01)
-                    ->live(onBlur: true),
-                TextInput::make('amount_paid')
-                    ->label(__('app.paid_amount'))
-                    ->numeric()
-                    ->required()
-                    ->minValue(0)
-                    ->maxValue(fn (callable $get): float => (float) ($get('total_payment') ?? 0))
-                    ->live(onBlur: true),
+                FinancialRequestFields::requestableSelect(CertifiedCenter::class, __('app.certified_center')),
+                FinancialRequestFields::agentPersonSelect(),
+                ...FinancialRequestFields::amountFields(),
                 Textarea::make('reason')
                     ->label(__('app.notes'))
                     ->nullable()

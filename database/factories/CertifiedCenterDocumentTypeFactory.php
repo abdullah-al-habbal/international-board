@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\CertifiedCenter;
+use App\Models\CertifiedCenterDocumentType;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(CertifiedCenterDocumentType::class)]
 class CertifiedCenterDocumentTypeFactory extends Factory
 {
     public function definition(): array

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,16 +49,20 @@ class Certification extends Model
         ];
     }
 
-    public function getAccreditationDateAttribute($value): ?string
+    public function accreditationDate(): Attribute
     {
-        if (blank($value)) {
-            return null;
-        }
-        try {
-            return Carbon::parse($value)->toDateString();
-        } catch (\Throwable) {
-            return null;
-        }
+        return Attribute::make(
+            get: function ($value): ?string {
+                if (blank($value)) {
+                    return null;
+                }
+                try {
+                    return Carbon::parse($value)->toDateString();
+                } catch (\Throwable) {
+                    return null;
+                }
+            }
+        );
     }
 
     public function creator(): MorphTo

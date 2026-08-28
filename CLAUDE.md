@@ -125,8 +125,9 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `CertifiedCenterDocumentType` | `certified_center_document_types` | `certifiedCenter()` BelongsTo, `certifications()` MorphMany, `reviewer()` BelongsTo(User). Uses `HasTranslations` (translatable: `name`) |
 | `TrainerAccreditationRequest` | `trainer_accreditation_requests` | `trainer()` BelongsTo, `reviewedBy()` BelongsTo(User) |
 | `CenterAccreditationRequest` | `center_accreditation_requests` | `certifiedCenter()` BelongsTo, `reviewer()` BelongsTo(User) |
-| `FinancialRequest` | `financial_requests` | `requestable()` MorphTo (CertifiedCenter|Trainer), `agentPerson()` BelongsTo(AgentPerson) |
+| `FinancialRequest` | `financial_requests` | `requestable()` MorphTo (CertifiedCenter|Trainer), `agentPerson()` BelongsTo(AgentPerson), `currency()` BelongsTo(Currency) |
 | `AgentPerson` | `agent_persons` | `centerFinancialRequests()` HasMany, `trainerFinancialRequests()` HasMany |
+| `Currency` | `currencies` | `financialRequests()` HasMany. Uses `HasTranslations` (translatable: `name`, `symbol`). Admin-managed lookup; reference rows come from `config/currencies.php` |
 | `Membership` | `memberships` | — |
 | `BlogPost` | `blog_posts` | — |
 | `StaticPage` | `static_pages` | — |
@@ -154,6 +155,7 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `TrainerFinancialRequestResource` | `app/Filament/Admin/Resources/TrainerFinancialRequests/` | View trainer financial requests |
 | `CertifiedCenterFinancialRequestResource` | `app/Filament/Admin/Resources/CertifiedCenterFinancialRequests/` | View center financial requests |
 | `PaymentAgentPersonResource` | `app/Filament/Admin/Resources/PaymentAgentPersons/` | Payment agent persons |
+| `CurrencyResource` | `app/Filament/Admin/Resources/Currencies/` | Manage currencies (admin only) |
 | `MembershipResource` | `app/Filament/Admin/Resources/MembershipResource/` | Memberships |
 | `BlogPostResource` | `app/Filament/Admin/Resources/BlogPosts/` | Blog posts |
 | `StaticPageResource` | `app/Filament/Admin/Resources/StaticPages/` | Static pages |
@@ -170,7 +172,7 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `TraineeResource` | `app/Filament/Center/Resources/Trainees/` | Manage trainees |
 | `CertifiedCenterDocumentTypeResource` | `app/Filament/Center/Resources/CertifiedCenterDocumentTypes/` | CRUD for center's doc types (create/view/edit/delete) |
 | `CenterAccreditationRequestResource` | `app/Filament/Center/Resources/CenterAccreditationRequests/` | Submit accreditation requests |
-| `CenterFinancialRequestResource` | `app/Filament/Center/Resources/CenterFinancialRequests/` | Submit financial requests |
+| `CenterFinancialRequestResource` | `app/Filament/Center/Resources/CenterFinancialRequests/` | **Read-only** financial history (index + view only; no create/edit/delete) |
 | `CenterProfilePage` | `app/Filament/Center/Pages/CenterProfilePage.php` | Edit own profile |
 
 #### Trainer Panel (`/trainer`)
@@ -179,7 +181,7 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `CertificationResource` | `app/Filament/Trainer/Resources/Certifications/` | Trainer-scoped certifications |
 | `TrainerDocumentTypeResource` | `app/Filament/Trainer/Resources/TrainerDocumentTypes/` | CRUD for trainer's doc types (create/view/edit/delete) |
 | `TrainerAccreditationRequestResource` | `app/Filament/Trainer/Resources/TrainerAccreditationRequests/` | Submit accreditation requests |
-| `TrainerFinancialRequestResource` | `app/Filament/Trainer/Resources/TrainerFinancialRequests/` | Submit financial requests |
+| `TrainerFinancialRequestResource` | `app/Filament/Trainer/Resources/TrainerFinancialRequests/` | **Read-only** financial history (index + view only; no create/edit/delete) |
 | `TrainerProfilePage` | `app/Filament/Trainer/Pages/TrainerProfilePage.php` | Edit own profile |
 
 ### Public Website Routes
@@ -245,6 +247,8 @@ A knowledge graph exists at `graphify-out/`. For codebase questions prefer `grap
 | `CertifiedCenterObserver` | `CertifiedCenter` | Auto-generates `accreditation_number` (IBVTQ), clears cache |
 | `TrainerAccreditationRequestObserver` | `TrainerAccreditationRequest` | Prevents duplicate active requests, blocks time overlaps, auto-stamps reviewed_by/at, updates trainer period on approve/reject |
 | `CenterAccreditationRequestObserver` | `CenterAccreditationRequest` | Prevents duplicate active requests, blocks time overlaps, auto-stamps reviewed_by/at, activates/deactivates center on approve/reject |
+| `FinancialRequestObserver` | `FinancialRequest` | Enforces the money invariants on every write: `total_payment > 0`, `amount_paid >= 0`, `amount_paid <= total_payment`. Throws `DomainException` |
+| `CurrencyObserver` | `Currency` | Refuses to delete a currency referenced by a financial request (mirrors the `restrict` FK with a translated message) |
 
 ### Middleware
 
@@ -284,5 +288,7 @@ resources/views/web/
 - **Certification** — `document_code` (`CERT-YYYYMMDD-XXXX`), `accredited_serial_number` (`SN-YYYYMMDD-XXXXXX`), and `accreditation_number` (IBVTQ) auto-generated via `CertificationObserver`.
 - **Certification** uses polymorphic `creator` (User/Trainer/CertifiedCenter) and `documentable` (DocumentType/TrainerDocumentType/CertifiedCenterDocumentType).
 - **DocumentType**, **TrainerDocumentType**, **CertifiedCenterDocumentType** all use `HasTranslations` trait with `$translatable = ['name']` for multilingual name storage (JSON in DB).
+- **Money** — never do arithmetic on `total_payment` / `amount_paid` with PHP floats. They are `DECIMAL(12,2)` and Eloquent's `decimal:2` cast returns strings; every authoritative calculation goes through `App\Support\Money` (exact integer minor units, fixed-scale decimal strings out). `FinancialRequest::$remaining_amount` is the single source of truth and returns a string; the live form preview calls the same `Money::subtract()`, so the UI is never a second implementation. `amount_paid <= total_payment` is enforced by `FinancialRequestObserver`, not only by the Filament forms.
+- **Money in Filament** — reuse `App\Filament\Components\{MoneyInput,MoneyColumn,MoneyEntry}` and the compositions in `App\Filament\FinancialRequests\FinancialRequestFields`; do not re-inline `->money(fn ($record) => $record->currency?->code ?? 'USD')`. `MoneyInput` carries the Alpine `$money` mask plus `stripCharacters(',')`, and `dir="ltr"` so amounts stay left-to-right under Arabic. `MoneyColumn` / `MoneyEntry` read `$record->currency`, so any table or infolist showing them **must** eager-load `currency` — on a Filament v4 `RelationManager` that means `->modifyQueryUsing(...)` on the table (a static `getEloquentQuery()` override is never called), and Laravel only raises the lazy-load violation once a query returns more than one row, so test such tables with 2+ records.
 - **File uploads**: Trainer `avatar` → `trainers/avatars/`, CertifiedCenter `logo` → `centers/logos/`, User `avatar` → `users/avatars/`, all on the `public` disk. Every upload point is restricted to `acceptedFileTypes(['image/jpeg','image/png','image/webp'])` with `maxSize(2048)` — SVG is excluded deliberately (it can carry script and is served same-origin). Do not widen this back to `image/*`.
 - **Orphaned uploads**: Filament writes a new file on every replacement and never removes the old one. `CleanupStorageCommand` sweeps unreferenced files under those three directories, with a 24h grace period so an in-flight upload is never deleted.

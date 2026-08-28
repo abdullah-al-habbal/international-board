@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\CertifiedCenter;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(CertifiedCenter::class)]
 class CertifiedCenterFactory extends Factory
 {
     public function definition(): array

@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+#[Signature('delete:data-by-date
+            {date? : Target date (Y-m-d) or timestamp (Y-m-d H:i:s)}
+            {--around= : Central timestamp (Y-m-d H:i:s) to delete around}
+            {--range-hours=1 : Hours before/after the central timestamp}
+            {--dry-run : Show counts without deleting}
+            {--exclude=* : Table names to exclude}
+            {--disable-fk : Disable foreign key checks during delete}
+            {--force : Required to run in production}')]
+#[Description('Delete rows created or updated on a specific date/time range across all tables')]
 class DeleteDataByDate extends Command
 {
-    protected $signature = 'delete:data-by-date
-                            {date? : Target date (Y-m-d) or timestamp (Y-m-d H:i:s)}
-                            {--around= : Central timestamp (Y-m-d H:i:s) to delete around}
-                            {--range-hours=1 : Hours before/after the central timestamp}
-                            {--dry-run : Show counts without deleting}
-                            {--exclude=* : Table names to exclude}
-                            {--disable-fk : Disable foreign key checks during delete}
-                            {--force : Required to run in production}';
-
-    protected $description = 'Delete rows created or updated on a specific date/time range across all tables';
-
     protected array $dateColumns = ['created_at', 'updated_at'];
 
     public function handle(): int

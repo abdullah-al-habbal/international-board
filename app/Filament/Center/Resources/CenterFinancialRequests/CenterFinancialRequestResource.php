@@ -6,7 +6,6 @@ namespace App\Filament\Center\Resources\CenterFinancialRequests;
 
 use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ListCenterFinancialRequests;
 use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ViewCenterFinancialRequest;
-use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestForm;
 use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestInfolist;
 use App\Filament\Center\Resources\CenterFinancialRequests\Tables\CenterFinancialRequestsTable;
 use App\Models\CertifiedCenter;
@@ -74,12 +73,8 @@ class CenterFinancialRequestResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('requestable_type', CertifiedCenter::class)
-            ->where('requestable_id', auth('certified_center')->id());
-    }
-
-    public static function form(Schema $schema): Schema
-    {
-        return CenterFinancialRequestForm::configure($schema);
+            ->where('requestable_id', auth('certified_center')->id())
+            ->with(['currency']);
     }
 
     public static function infolist(Schema $schema): Schema

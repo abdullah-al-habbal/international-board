@@ -9,6 +9,7 @@ use App\Models\Concerns\NotifiesAdminOnMutation;
 use App\Observers\CenterAccreditationRequestObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,27 +51,32 @@ class CenterAccreditationRequest extends Model
         return $this->belongsTo(User::class, 'reviewed_by');
     }
 
-    public function scopePending(Builder $query): Builder
+    #[Scope]
+    protected function pending(Builder $query): Builder
     {
         return $query->where('status', AccreditationStatus::Pending);
     }
 
-    public function scopeUnderReview(Builder $query): Builder
+    #[Scope]
+    protected function underReview(Builder $query): Builder
     {
         return $query->where('status', AccreditationStatus::UnderReview);
     }
 
-    public function scopeApproved(Builder $query): Builder
+    #[Scope]
+    protected function approved(Builder $query): Builder
     {
         return $query->where('status', AccreditationStatus::Approved);
     }
 
-    public function scopeRejected(Builder $query): Builder
+    #[Scope]
+    protected function rejected(Builder $query): Builder
     {
         return $query->where('status', AccreditationStatus::Rejected);
     }
 
-    public function scopeForCenter(Builder $query, int $centerId): Builder
+    #[Scope]
+    protected function forCenter(Builder $query, int $centerId): Builder
     {
         return $query->where('certified_center_id', $centerId);
     }

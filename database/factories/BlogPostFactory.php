@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\BlogPost;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+#[UseModel(BlogPost::class)]
 class BlogPostFactory extends Factory
 {
-    protected $model = BlogPost::class;
-
     public function definition(): array
     {
         $titleEn = $this->faker->sentence();

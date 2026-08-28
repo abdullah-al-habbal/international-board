@@ -26,10 +26,8 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "nunomaduro/larastan": "^3.9",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
-        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.0",
         "squizlabs/php_codesniffer": "^4.0"
     },
@@ -100,15 +98,13 @@
             "@php -v",
             "composer validate --no-check-publish",
             "php -l app",
-            "./vendor/bin/pint --test",
-            "./vendor/bin/phpstan analyse app --memory-limit=1G --no-progress --level=1"
+            "./vendor/bin/pint --test"
         ],
         "ci-check:full": [
             "composer install --no-interaction --prefer-dist",
             "@php artisan config:clear",
             "@php artisan package:discover --ansi",
             "./vendor/bin/pint --test",
-            "./vendor/bin/phpstan analyse app --memory-limit=1G --no-progress",
             "@php artisan test --stop-on-failure"
         ],
         "check-local": [

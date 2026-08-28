@@ -6,7 +6,6 @@ namespace App\Filament\Trainer\Resources\TrainerFinancialRequests;
 
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ListTrainerFinancialRequests;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ViewTrainerFinancialRequest;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
 use App\Models\FinancialRequest;
@@ -73,7 +72,8 @@ class TrainerFinancialRequestResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('requestable_type', Trainer::class)
-            ->where('requestable_id', auth('trainer')->id());
+            ->where('requestable_id', auth('trainer')->id())
+            ->with(['currency']);
     }
 
     public static function canCreate(): bool
@@ -94,11 +94,6 @@ class TrainerFinancialRequestResource extends Resource
     public static function canDeleteAny(): bool
     {
         return false;
-    }
-
-    public static function form(Schema $schema): Schema
-    {
-        return TrainerFinancialRequestForm::configure($schema);
     }
 
     public static function infolist(Schema $schema): Schema

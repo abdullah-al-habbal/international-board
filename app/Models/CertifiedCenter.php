@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -134,13 +135,17 @@ class CertifiedCenter extends Authenticatable implements FilamentUser, HasAvatar
         return PanelId::tryFrom($panel->getId()) === PanelId::Center;
     }
 
-    public function getLogoUrlAttribute(): ?string
+    protected function logoUrl(): Attribute
     {
-        if (! empty($this->attributes['logo']) && Storage::disk('public')->exists($this->attributes['logo'])) {
-            return Storage::disk('public')->url($this->attributes['logo']);
-        }
+        return Attribute::make(
+            get: function () {
+                if (! empty($this->attributes['logo']) && Storage::disk('public')->exists($this->attributes['logo'])) {
+                    return Storage::disk('public')->url($this->attributes['logo']);
+                }
 
-        return null;
+                return null;
+            }
+        );
     }
 
     public function getFilamentAvatarUrl(): ?string

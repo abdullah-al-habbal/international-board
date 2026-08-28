@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\TrainerRole;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(TrainerRole::class)]
 class TrainerRoleFactory extends Factory
 {
-    protected $model = TrainerRole::class;
-
     /** @var list<array{en: string, ar: string}> */
     private const ROLES = [
         ['en' => 'Sales Manager', 'ar' => 'مدير مبيعات'],

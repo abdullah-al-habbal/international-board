@@ -47,7 +47,9 @@ class CertifiedCenterFinancialRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('requestable_type', CertifiedCenter::class);
+        return parent::getEloquentQuery()
+            ->where('requestable_type', CertifiedCenter::class)
+            ->with(['currency']);
     }
 
     public static function getNavigationLabel(): string

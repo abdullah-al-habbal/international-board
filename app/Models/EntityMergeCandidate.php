@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -48,7 +49,8 @@ final class EntityMergeCandidate extends Model
         ];
     }
 
-    public function scopePending(Builder $query): Builder
+    #[Scope]
+    protected function pending(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_PENDING);
     }

@@ -13,7 +13,6 @@ return new class extends Migration
         $start = '2026-08-26 00:00:00';
         $end = '2027-08-26 00:00:00';
 
-        // Skip if trainer 31 does not exist (e.g. test DB) or already has an approved request.
         if (! DB::table('trainers')->where('id', $trainerId)->exists()) {
             return;
         }
@@ -28,7 +27,6 @@ return new class extends Migration
             return;
         }
 
-        // Find the first admin user to stamp as reviewer.
         $adminId = DB::table('users')->min('id');
 
         DB::table('trainer_accreditation_requests')->insert([
@@ -43,7 +41,6 @@ return new class extends Migration
             'updated_at' => now(),
         ]);
 
-        // Stamp the trainer's own accreditation period to match.
         DB::table('trainers')
             ->where('id', $trainerId)
             ->update([
@@ -53,8 +50,5 @@ return new class extends Migration
             ]);
     }
 
-    public function down(): void
-    {
-        // Data-only — removing this would re-lock Trainer 31.
-    }
+    public function down(): void {}
 };

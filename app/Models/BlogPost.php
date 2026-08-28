@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -26,12 +27,16 @@ class BlogPost extends Model
         ];
     }
 
-    public function getImageUrlAttribute(): ?string
+    public function imageUrl(): Attribute
     {
-        if ($this->attributes['image'] ?? null) {
-            return Storage::url($this->attributes['image']);
-        }
+        return Attribute::make(
+            get: function () {
+                if ($this->attributes['image'] ?? null) {
+                    return Storage::url($this->attributes['image']);
+                }
 
-        return null;
+                return null;
+            }
+        );
     }
 }

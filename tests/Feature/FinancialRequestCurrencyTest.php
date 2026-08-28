@@ -23,7 +23,7 @@ it('creates a financial request with currency_id', function () {
 });
 
 it('loads the currency relationship', function () {
-    $currency = Currency::factory()->create(['code' => 'USD']);
+    $currency = Currency::factory()->create(['code' => 'TST']);
     $trainer = Trainer::factory()->create();
 
     $request = FinancialRequest::factory()->forTrainer()->create([
@@ -32,7 +32,7 @@ it('loads the currency relationship', function () {
     ]);
 
     expect($request->currency)->not->toBeNull()
-        ->and($request->currency->code)->toBe('USD');
+        ->and($request->currency->code)->toBe('TST');
 });
 
 it('allows null currency_id for backward compatibility', function () {
@@ -48,8 +48,8 @@ it('allows null currency_id for backward compatibility', function () {
 });
 
 it('calculates remaining amount correctly regardless of currency', function () {
-    $usd = Currency::factory()->create(['code' => 'USD']);
-    $syp = Currency::factory()->create(['code' => 'SYP']);
+    $usd = Currency::factory()->create(['code' => 'USA']);
+    $syp = Currency::factory()->create(['code' => 'SYA']);
     $trainer = Trainer::factory()->create();
 
     $usdRequest = FinancialRequest::factory()->forTrainer()->create([
@@ -66,17 +66,19 @@ it('calculates remaining amount correctly regardless of currency', function () {
         'amount_paid' => 200000.00,
     ]);
 
-    expect($usdRequest->remaining_amount)->toBe(700.00)
-        ->and($sypRequest->remaining_amount)->toBe(300000.00);
+    // remaining_amount is a fixed-scale decimal string, not a float.
+    expect($usdRequest->remaining_amount)->toBe('700.00')
+        ->and($sypRequest->remaining_amount)->toBe('300000.00');
 });
 
-it('backs financial request with USD currency', function () {
-    $usd = Currency::factory()->create(['code' => 'USD', 'is_default' => true]);
+it('backs financial request with default currency', function () {
+    Currency::query()->delete();
+    $currency = Currency::factory()->default()->create();
     $trainer = Trainer::factory()->create();
 
     $request = FinancialRequest::factory()->forTrainer()->create([
         'requestable_id' => $trainer->id,
-        'currency_id' => $usd->id,
+        'currency_id' => $currency->id,
     ]);
 
     expect($request->currency->code)->toBe('USD')
@@ -84,10 +86,25 @@ it('backs financial request with USD currency', function () {
 });
 
 it('seed currencies table contains USD and SYP', function () {
-    Currency::factory()->create(['code' => 'USD', 'is_default' => true]);
-    Currency::factory()->create(['code' => 'SYP', 'is_default' => false]);
+    Currency::query()->delete();
+    Currency::factory()->default()->create();
+    Currency::factory()->create(['code' => 'SYR']);
 
     expect(Currency::count())->toBe(2)
         ->and(Currency::where('code', 'USD')->first()->is_default)->toBeTrue()
-        ->and(Currency::where('code', 'SYP')->first()->is_default)->toBeFalse();
+        ->and(Currency::where('code', 'SYR')->first()->is_default)->toBeFalse();
+});
+
+it('stores localized name and symbol as translatable arrays', function () {
+    $currency = Currency::create([
+        'name' => ['en' => 'Euro', 'ar' => 'البيورو'],
+        'code' => 'EUR',
+        'symbol' => ['en' => 'EUR', 'ar' => '€'],
+        'is_default' => false,
+    ]);
+
+    expect($currency->getTranslation('name', 'en'))->toBe('Euro')
+        ->and($currency->getTranslation('name', 'ar'))->toBe('البيورو')
+        ->and($currency->getTranslation('symbol', 'en'))->toBe('EUR')
+        ->and($currency->getTranslation('symbol', 'ar'))->toBe('€');
 });

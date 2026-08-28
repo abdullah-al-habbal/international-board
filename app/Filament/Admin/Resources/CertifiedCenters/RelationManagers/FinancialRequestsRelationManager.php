@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\CertifiedCenters\RelationManagers;
 
 use App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\CertifiedCenterFinancialRequestResource;
+use App\Filament\FinancialRequests\FinancialRequestFields;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class FinancialRequestsRelationManager extends RelationManager
 {
@@ -16,18 +20,15 @@ class FinancialRequestsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            // MoneyColumn reads each record's currency, and
+            // preventLazyLoading is enabled globally, so the relation has to
+            // be eager-loaded here. (A static getEloquentQuery() override is
+            // never called on a Filament v4 RelationManager.)
+            ->modifyQueryUsing(static fn (Builder $query): Builder => $query->with('currency'))
             ->columns([
                 TextColumn::make('agentPerson.name')
                     ->label(__('app.agent_person')),
-                TextColumn::make('total_payment')
-                    ->label(__('app.total_amount'))
-                    ->money(fn ($record) => $record->currency?->code ?? 'USD'),
-                TextColumn::make('amount_paid')
-                    ->label(__('app.paid_amount'))
-                    ->money(fn ($record) => $record->currency?->code ?? 'USD'),
-                TextColumn::make('remaining_amount')
-                    ->label(__('app.remaining_amount'))
-                    ->money(fn ($record) => $record->currency?->code ?? 'USD'),
+                ...FinancialRequestFields::amountColumns(),
                 TextColumn::make('date')
                     ->label(__('app.date'))
                     ->date()

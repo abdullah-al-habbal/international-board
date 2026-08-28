@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas;
 
+use App\Filament\FinancialRequests\FinancialRequestFields;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -20,18 +21,7 @@ class CertifiedCenterFinancialRequestInfolist
                 ->label(__('app.certified_center'))
                 ->weight('bold')
                 ->columnSpanFull(),
-            TextEntry::make('total_payment')
-                ->label(__('app.total_amount'))
-                ->money(fn ($record) => $record->currency?->code ?? 'USD')
-                ->columnSpan(1),
-            TextEntry::make('amount_paid')
-                ->label(__('app.paid_amount'))
-                ->money(fn ($record) => $record->currency?->code ?? 'USD')
-                ->columnSpan(1),
-            TextEntry::make('remaining_amount')
-                ->label(__('app.remaining_amount'))
-                ->money(fn ($record) => $record->currency?->code ?? 'USD')
-                ->columnSpan(1),
+            ...FinancialRequestFields::amountEntries(),
             TextEntry::make('date')
                 ->label(__('app.date'))
                 ->date()

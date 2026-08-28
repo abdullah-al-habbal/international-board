@@ -47,7 +47,9 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('requestable_type', Trainer::class);
+        return parent::getEloquentQuery()
+            ->where('requestable_type', Trainer::class)
+            ->with(['currency']);
     }
 
     public static function getNavigationLabel(): string
