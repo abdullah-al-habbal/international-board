@@ -77,7 +77,12 @@ class CertificationsTable
 
                 TextColumn::make('country.name')
                     ->label(__('app.country'))
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('country', function (Builder $subQuery) use ($search) {
+                            $subQuery->where('name->en', 'like', "%{$search}%")
+                                ->orWhere('name->ar', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable()
                     ->toggleable()
                     ->getStateUsing(fn ($record) => $record->country?->name ?? __('app.unassigned')),

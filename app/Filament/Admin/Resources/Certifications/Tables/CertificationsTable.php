@@ -97,7 +97,12 @@ class CertificationsTable
 
                 TextColumn::make('country.name')
                     ->label(__('app.country'))
-                    ->searchable(['countries.name'])
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('country', function (Builder $subQuery) use ($search) {
+                            $subQuery->where('name->en', 'like', "%{$search}%")
+                                ->orWhere('name->ar', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable()
                     ->badge()
                     ->color(fn ($record) => $record->country_id ? 'info' : 'gray')
