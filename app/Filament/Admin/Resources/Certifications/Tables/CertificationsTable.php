@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
 use App\Models\CertifiedCenter;
+use App\Models\CertifiedCenterDocumentType;
+use App\Models\DocumentType;
 use App\Models\Trainer;
+use App\Models\TrainerDocumentType;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -29,10 +32,17 @@ class CertificationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('creator')
+                TextColumn::make('creator.name')
                     ->label(__('app.issued_by'))
-                    ->searchable()
-                    ->sortable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHasMorph(
+                            'creator',
+                            [User::class, CertifiedCenter::class, Trainer::class],
+                            function (Builder $subQuery) use ($search) {
+                                $subQuery->where('name', 'like', "%{$search}%");
+                            }
+                        );
+                    })
                     ->toggleable()
                     ->badge()
                     ->getStateUsing(fn ($record) => $record->creator?->name ?? __('app.unassigned'))
@@ -52,6 +62,20 @@ class CertificationsTable
                     ->sortable()
                     ->weight('bold')
                     ->getStateUsing(fn ($record) => $record->trainee?->name ?? __('app.unassigned')),
+
+                TextColumn::make('documentable.name')
+                    ->label(__('app.document_type'))
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHasMorph(
+                            'documentable',
+                            [DocumentType::class, CertifiedCenterDocumentType::class, TrainerDocumentType::class],
+                            function (Builder $subQuery) use ($search) {
+                                $subQuery->where('name', 'like', "%{$search}%");
+                            }
+                        );
+                    })
+                    ->toggleable()
+                    ->placeholder(__('app.unassigned')),
 
                 TextColumn::make('country.nationality')
                     ->label(__('app.nationality'))
