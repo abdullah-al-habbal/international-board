@@ -19,7 +19,10 @@ final class MonthlyCertificationsExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Serial Number', 'Trainee', 'Issued By', 'Created At'];
+        $headers = [
+            __('exports.headers.id'), __('exports.headers.serial_number'), __('exports.headers.trainee'),
+            __('exports.headers.issued_by'), __('exports.headers.created_at'),
+        ];
 
         $formatter = fn (Certification $certification): array => [
             $certification->id,
@@ -39,6 +42,6 @@ final class MonthlyCertificationsExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Monthly Certifications';
+        return __('exports.titles.monthly_certifications');
     }
 }

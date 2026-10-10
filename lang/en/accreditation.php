@@ -18,12 +18,16 @@ return [
         'action' => 'Manage Requests',
     ],
 
-    'create_disabled' => [
-        'has_active' => 'You already have an active or approved accreditation request.',
+    'messages' => [
+        'pending_title' => 'Request already in progress',
+        'pending_body' => 'You cannot create a new request because your previous accreditation request is still under review by the admin.',
+        'approved_title' => 'Accreditation already active',
+        'approved_body' => 'You have an approved accreditation until :end_date. Please wait until it finishes before creating a new request.',
     ],
 
     'errors' => [
-        'active_request_exists' => 'An active or pending accreditation request already exists for this account.',
+        'pending_request_exists' => 'You already have a pending accreditation request under review.',
+        'approved_request_exists' => 'You already have an active approved accreditation. You cannot create a new one until it expires.',
         'time_overlap' => 'Accreditation period overlaps with an existing approved request.',
     ],
 ];

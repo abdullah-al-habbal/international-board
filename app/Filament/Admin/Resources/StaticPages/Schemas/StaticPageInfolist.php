@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\StaticPages\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -29,11 +28,6 @@ class StaticPageInfolist
                 ImageEntry::make('image')
                     ->label(__('app.image'))
                     ->placeholder(__('app.no_image'))
-                    ->columnSpan(1),
-
-                IconEntry::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->boolean()
                     ->columnSpan(1),
 
                 TextEntry::make('content')

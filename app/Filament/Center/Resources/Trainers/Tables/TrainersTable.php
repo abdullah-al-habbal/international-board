@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Trainers\Tables;
 
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class TrainersTable
@@ -20,6 +18,7 @@ class TrainersTable
                 ImageColumn::make('avatar')
                     ->label(__('app.avatar'))
                     ->circular()
+                    ->getStateUsing(fn ($record) => $record->avatar_url)
                     ->defaultImageUrl(url('assets/website/images/avatar.png'))
                     ->size(40),
 
@@ -28,6 +27,14 @@ class TrainersTable
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
+
+                TextColumn::make('accreditation_number')
+                    ->label(__('app.accreditation_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->icon('heroicon-o-identification')
+                    ->copyable()
+                    ->placeholder('—'),
 
                 TextColumn::make('email')
                     ->label(__('app.email'))
@@ -51,6 +58,15 @@ class TrainersTable
                     ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
+                TextColumn::make('trainerRole.name')
+                    ->label(__('app.trainer_role'))
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder(__('app.no_value'))
+                    ->badge()
+                    ->color('info')
+                    ->toggleable(),
+
                 TextColumn::make('specializations.name')
                     ->label(__('app.specializations'))
                     ->badge()
@@ -59,13 +75,14 @@ class TrainersTable
                     ->placeholder(__('app.no_value'))
                     ->toggleable(),
 
-                IconColumn::make('is_active')
-                    ->label(__('app.active'))
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
+                TextColumn::make('accreditation_period_start')
+                    ->label(__('app.accreditation_period_start'))
+                    ->dateTime()
+                    ->sortable(),
+
+                TextColumn::make('accreditation_period_end')
+                    ->label(__('app.accreditation_period_end'))
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('created_at')
@@ -75,12 +92,6 @@ class TrainersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TernaryFilter::make('is_active')
-                    ->label(__('app.active_status'))
-                    ->placeholder(__('app.all_trainers'))
-                    ->trueLabel(__('app.active_only'))
-                    ->falseLabel(__('app.inactive_only')),
-
                 SelectFilter::make('country_id')
                     ->label(__('app.country'))
                     ->relationship('country', 'name')

@@ -6,12 +6,12 @@ namespace Database\Factories;
 
 use App\Models\Country;
 use App\Models\Trainer;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(Trainer::class)]
 class TrainerFactory extends Factory
 {
-    protected $model = Trainer::class;
-
     public function definition(): array
     {
         return [
@@ -22,23 +22,8 @@ class TrainerFactory extends Factory
             'avatar' => '',
             'address' => $this->faker->optional()->address(),
             'country_id' => Country::inRandomOrder()->first()?->id,
-            'is_active' => $this->faker->boolean(90),
             'password' => 'password',
         ];
-    }
-
-    public function active(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => true,
-        ]);
-    }
-
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
     }
 
     public function withoutContact(): static

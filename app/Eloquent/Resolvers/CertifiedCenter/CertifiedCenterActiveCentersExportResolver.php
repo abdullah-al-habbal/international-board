@@ -16,7 +16,8 @@ final class CertifiedCenterActiveCentersExportResolver
     public function query(): Builder
     {
         return $this->model->newQuery()
-            ->where('is_active', true)
+            ->with('country')
+            ->withCount(['trainers', 'certifications', 'approvedDocumentTypes'])
             ->orderBy('created_at', 'desc');
     }
 }

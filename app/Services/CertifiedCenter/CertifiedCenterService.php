@@ -29,36 +29,19 @@ final class CertifiedCenterService
         return $this->repo->countTotal();
     }
 
-    public function getActiveCount(): int
-    {
-        return $this->repo->countActive();
-    }
-
-    public function getInactiveCount(): int
-    {
-        return $this->repo->countInactive();
-    }
-
     public function getExpiredAccreditationCount(): int
     {
         return $this->repo->countExpiredAccreditation();
     }
 
-    /**
-     * Active countries that have at least one active certified center (for index filters).
-     *
-     * @return Collection<int, Country>
-     */
     public function getFilterCountries(): Collection
     {
         $countryIds = CertifiedCenter::query()
-            ->where('is_active', true)
             ->whereNotNull('country_id')
             ->distinct()
             ->pluck('country_id');
 
         return Country::query()
-            ->where('is_active', true)
             ->whereIn('id', $countryIds)
             ->get()
             ->sortBy(fn (Country $country): string => (string) $country->name)

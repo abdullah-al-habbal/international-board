@@ -6,19 +6,43 @@ namespace App\Services\Certification;
 
 use App\Models\Certification;
 use App\Repositories\Certification\CertificationRepository;
+use chillerlan\QRCode\Output\QROutputInterface;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 
 final class CertificationService
 {
     public function __construct(private readonly CertificationRepository $repo) {}
+
+    public function getVerificationQrSvg(Certification $certification): ?string
+    {
+        $accreditationNumber = $certification->accreditation_number;
+
+        if (blank($accreditationNumber)) {
+            return null;
+        }
+
+        $options = new QROptions([
+            'outputType' => QROutputInterface::MARKUP_SVG,
+            'scale' => 5,
+            'quietzoneSize' => 2,
+            'outputBase64' => false,
+            'svgAddXmlHeader' => false,
+        ]);
+
+        return (new QRCode($options))->render(
+            route('web.certifications.show', $accreditationNumber)
+        );
+    }
 
     public function getByCode(string $code): ?Certification
     {
         return $this->repo->findByDocumentCode($code);
     }
 
-    public function getBySerial(string $serial): ?Certification
+    public function getByAccreditationNumber(string $accreditationNumber): ?Certification
     {
-        return $this->repo->findBySerial($serial);
+        return $this->repo->findByAccreditationNumber($accreditationNumber);
     }
 
     public function getLatest()
@@ -34,6 +58,18 @@ final class CertificationService
     public function getCountThisMonth(): int
     {
         return $this->repo->getCountThisMonth();
+    }
+
+    /** Certifications a trainer is credited with that a visitor may see. */
+    public function countPubliclyVisibleForTrainer(int $trainerId): int
+    {
+        return $this->repo->countPubliclyVisibleForTrainer($trainerId);
+    }
+
+    /** Every certification a trainer is credited with, visible or not. */
+    public function countAllForTrainer(int $trainerId): int
+    {
+        return $this->repo->countAllForTrainer($trainerId);
     }
 
     public function getCountByDateRange(\DateTime $startDate, \DateTime $endDate): int

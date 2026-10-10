@@ -14,7 +14,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -37,12 +37,13 @@ final class AdminPanelProvider extends PanelProvider
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.dashboard'))
-            ->favicon(asset('favicon.ico'))
+            ->favicon(asset('assets/website/images/logo.webp'))
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: $config['resources_path'])
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: $config['pages_path'])
             ->pages([Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: $config['widgets_path'])
             ->widgets([])
+            ->databaseNotifications()
             ->middleware($this->getMiddleware())
             ->authMiddleware($this->getAuthMiddleware());
     }
@@ -55,7 +56,7 @@ final class AdminPanelProvider extends PanelProvider
             StartSession::class,
             AuthenticateSession::class,
             ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
+            PreventRequestForgery::class,
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,

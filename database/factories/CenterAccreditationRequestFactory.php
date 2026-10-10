@@ -6,12 +6,12 @@ namespace Database\Factories;
 
 use App\Models\CenterAccreditationRequest;
 use App\Models\CertifiedCenter;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(CenterAccreditationRequest::class)]
 class CenterAccreditationRequestFactory extends Factory
 {
-    protected $model = CenterAccreditationRequest::class;
-
     public function definition(): array
     {
         return [

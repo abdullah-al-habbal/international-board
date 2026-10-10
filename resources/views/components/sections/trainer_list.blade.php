@@ -9,9 +9,9 @@
             <div class="card-body p-0">
                 <h4 class="card-title mb-2">{{ $trainer->name }}</h4>
                 @if ($trainer->specializations->isNotEmpty())
-                    <div class="d-flex flex-wrap justify-content-center gap-1 mb-2">
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
                         @foreach ($trainer->specializations as $spec)
-                            <span class="badge bg-info text-dark">{{ $spec->getTranslation('name', app()->getLocale()) }}</span>
+                            <span class="badge bg-info text-dark px-2 py-1">{{ $spec->getTranslation('name', app()->getLocale()) }}</span>
                         @endforeach
                     </div>
                 @endif

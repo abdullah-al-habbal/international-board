@@ -5,17 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages;
 
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\TrainerFinancialRequestResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListTrainerFinancialRequests extends ListRecords
 {
     protected static string $resource = TrainerFinancialRequestResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make(),
-        ];
-    }
 }

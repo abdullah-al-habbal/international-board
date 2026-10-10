@@ -7,7 +7,7 @@ return [
     'stats' => [
         'total_centers' => [
             'label' => 'إجمالي المراكز',
-            'description' => 'المراكز المعتمدة في النظام',
+            'description' => 'المراكز في النظام',
         ],
         'active_centers' => [
             'label' => 'المراكز النشطة',
@@ -26,8 +26,12 @@ return [
             'description' => 'مديرو النظام',
         ],
         'trainers' => [
-            'label' => 'المدربون',
-            'description' => 'المدربون المسجلون في النظام',
+            'label' => 'المدربين',
+            'description' => 'المدربين المسجلون في النظام',
+        ],
+        'trainees' => [
+            'label' => 'المتدربين',
+            'description' => 'إجمالي المتدربين المسجلين',
         ],
         'expired_centers' => [
             'label' => 'انتهت تراخيص المراكز',
@@ -44,6 +48,20 @@ return [
         'accreditation_status' => [
             'label' => 'حالة الاعتماد',
             'description' => 'حالة الاعتماد الحالية',
+        ],
+        'trainer' => [
+            'total_certifications' => [
+                'label' => 'إجمالي الشهادات',
+                'description' => 'الشهادات التي أنشأتها',
+            ],
+            'this_month' => [
+                'label' => 'هذا الشهر',
+                'description' => 'الشهادات المنشأة هذا الشهر',
+            ],
+            'financial_requests' => [
+                'label' => 'الطلبات المالية',
+                'description' => 'إجمالي الطلبات المالية المقدمة',
+            ],
         ],
     ],
     'charts' => [

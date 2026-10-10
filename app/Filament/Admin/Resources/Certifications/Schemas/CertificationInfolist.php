@@ -8,6 +8,7 @@ use App\Models\CertifiedCenter;
 use App\Models\Trainer;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -46,8 +47,20 @@ class CertificationInfolist
                     ->badge()
                     ->color('warning'),
 
+                TextEntry::make('documentable.name')
+                    ->label(__('app.document_type'))
+                    ->placeholder(__('app.not_assigned'))
+                    ->badge()
+                    ->color('info'),
+
                 TextEntry::make('accredited_serial_number')
                     ->label(__('app.accredited_serial_number'))
+                    ->copyable()
+                    ->copyMessage(__('app.copied'))
+                    ->copyMessageDuration(1500),
+
+                TextEntry::make('accreditation_number')
+                    ->label(__('app.accreditation_number'))
                     ->copyable()
                     ->copyMessage(__('app.copied'))
                     ->copyMessageDuration(1500),
@@ -76,16 +89,14 @@ class CertificationInfolist
                     ->badge()
                     ->color(fn ($record) => $record->country_id ? 'info' : 'gray'),
 
-                TextEntry::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => $state ? __('app.yes') : __('app.no'))
-                    ->color(fn ($state) => $state ? 'success' : 'danger'),
-
                 TextEntry::make('notes')
                     ->label(__('app.notes'))
                     ->placeholder('-')
                     ->columnSpanFull(),
+
+                IconEntry::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean(),
 
                 TextEntry::make('created_at')
                     ->label(__('app.created_at'))

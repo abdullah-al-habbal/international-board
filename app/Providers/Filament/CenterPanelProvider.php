@@ -18,7 +18,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -36,6 +36,7 @@ final class CenterPanelProvider extends PanelProvider
             ->id($config['id'])
             ->path($config['path'])
             ->login()
+            ->databaseNotifications()
             ->colors(['primary' => $this->resolveColor($config['color'])])
             ->authGuard($config['guard'])
             ->authPasswordBroker($config['password_broker'])
@@ -43,7 +44,7 @@ final class CenterPanelProvider extends PanelProvider
             ->userMenuItems($this->getUserMenuItems())
             ->spa()
             ->brandName(__('app.dashboard'))
-            ->favicon(asset('favicon.ico'))
+            ->favicon(asset('assets/website/images/logo.webp'))
             ->discoverResources(in: app_path('Filament/Center/Resources'), for: $config['resources_path'])
             ->discoverPages(in: app_path('Filament/Center/Pages'), for: $config['pages_path'])
             ->pages([Dashboard::class])
@@ -64,7 +65,7 @@ final class CenterPanelProvider extends PanelProvider
             StartSession::class,
             AuthenticateSession::class,
             ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
+            PreventRequestForgery::class,
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,

@@ -26,6 +26,8 @@ class TraineeResource extends Resource
 {
     protected static ?string $model = Trainee::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function canCreate(): bool
     {
         return app(AccreditationGateService::class)->currentCenterCanPerformActions();
@@ -92,14 +94,8 @@ class TraineeResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $centerId = auth('certified_center')->id();
-
         return parent::getEloquentQuery()
-            ->whereHas(
-                'certifications',
-                fn ($q) => $q->where('creator_type', CertifiedCenter::class)
-                    ->where('creator_id', $centerId)
-            );
+            ->ownedBy(CertifiedCenter::class, (int) auth('certified_center')->id());
     }
 
     public static function form(Schema $schema): Schema

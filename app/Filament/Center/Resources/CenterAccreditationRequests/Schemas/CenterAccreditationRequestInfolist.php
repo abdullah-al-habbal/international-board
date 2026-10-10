@@ -52,6 +52,10 @@ class CenterAccreditationRequestInfolist
                             ->label(__('app.status'))
                             ->badge(),
 
+                        TextEntry::make('reviewer.name')
+                            ->label(__('app.reviewed_by'))
+                            ->placeholder(__('app.no_value')),
+
                         TextEntry::make('reviewed_at')
                             ->label(__('app.reviewed_at'))
                             ->dateTime()

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerFinancialRequests;
 
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\CreateTrainerFinancialRequest;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\EditTrainerFinancialRequest;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ListTrainerFinancialRequests;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Pages\ViewTrainerFinancialRequest;
-use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestForm;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Schemas\TrainerFinancialRequestInfolist;
 use App\Filament\Trainer\Resources\TrainerFinancialRequests\Tables\TrainerFinancialRequestsTable;
-use App\Models\TrainerFinancialRequest;
+use App\Models\FinancialRequest;
+use App\Models\Trainer;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -22,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainerFinancialRequestResource extends Resource
 {
-    protected static ?string $model = TrainerFinancialRequest::class;
+    protected static ?string $model = FinancialRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -31,7 +29,7 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_trainers');
     }
 
     public static function getNavigationLabel(): string
@@ -55,7 +53,7 @@ class TrainerFinancialRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->trainer?->name ?? 'Request #'.$record->id;
+        return $record->requestable?->name ?? __('app.record.request_n', ['id' => $record->id]);
     }
 
     protected static ?int $navigationSort = 10;
@@ -72,12 +70,30 @@ class TrainerFinancialRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('trainer_id', auth('trainer')->id());
+        return parent::getEloquentQuery()
+            ->where('requestable_type', Trainer::class)
+            ->where('requestable_id', auth('trainer')->id())
+            ->with(['currency']);
     }
 
-    public static function form(Schema $schema): Schema
+    public static function canCreate(): bool
     {
-        return TrainerFinancialRequestForm::configure($schema);
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
     }
 
     public static function infolist(Schema $schema): Schema
@@ -94,9 +110,7 @@ class TrainerFinancialRequestResource extends Resource
     {
         return [
             'index' => ListTrainerFinancialRequests::route('/'),
-            'create' => CreateTrainerFinancialRequest::route('/create'),
             'view' => ViewTrainerFinancialRequest::route('/{record}'),
-            'edit' => EditTrainerFinancialRequest::route('/{record}/edit'),
         ];
     }
 }

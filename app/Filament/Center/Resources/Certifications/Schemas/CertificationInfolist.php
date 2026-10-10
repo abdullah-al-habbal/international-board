@@ -24,8 +24,20 @@ class CertificationInfolist
                     ->badge()
                     ->color('warning'),
 
+                TextEntry::make('documentable.name')
+                    ->label(__('app.document_type'))
+                    ->placeholder(__('app.not_assigned'))
+                    ->badge()
+                    ->color('info'),
+
                 TextEntry::make('accredited_serial_number')
                     ->label(__('app.accredited_serial_number'))
+                    ->copyable()
+                    ->copyMessage(__('app.copied'))
+                    ->copyMessageDuration(1500),
+
+                TextEntry::make('accreditation_number')
+                    ->label(__('app.accreditation_number'))
                     ->copyable()
                     ->copyMessage(__('app.copied'))
                     ->copyMessageDuration(1500),
@@ -44,12 +56,6 @@ class CertificationInfolist
                     ->default(__('app.not_assigned'))
                     ->badge()
                     ->color(fn ($record) => $record->country_id ? 'info' : 'gray'),
-
-                TextEntry::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => $state ? __('app.yes') : __('app.no'))
-                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
                 TextEntry::make('notes')
                     ->label(__('app.notes'))

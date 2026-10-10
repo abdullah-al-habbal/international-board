@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas;
 
-use App\Models\CertifiedCenterPaymentAgentPerson;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
+use App\Filament\Components\DatePicker;
+use App\Filament\FinancialRequests\FinancialRequestFields;
+use App\Models\Trainer;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class TrainerFinancialRequestForm
@@ -17,38 +17,11 @@ class TrainerFinancialRequestForm
     {
         return $schema
             ->components([
-                Select::make('trainer_id')
-                    ->label(__('app.trainer'))
-                    ->relationship('trainer', 'name')
-                    ->required()
-                    ->searchable()
-                    ->preload()
-                    ->live(),
-                Select::make('agent_person_id')
-                    ->label(__('app.agent_person'))
-                    ->options(function () {
-                        return CertifiedCenterPaymentAgentPerson::with('certifiedCenter')
-                            ->get()
-                            ->groupBy(fn ($ap) => $ap->certifiedCenter?->name ?? __('app.unassigned'))
-                            ->map(fn ($group) => $group->pluck('name', 'id'));
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->required(),
-                TextInput::make('total_payment')
-                    ->label(__('app.total_amount'))
-                    ->numeric()
-                    ->required()
-                    ->minValue(0.01)
-                    ->live(onBlur: true),
-                TextInput::make('amount_paid')
-                    ->label(__('app.paid_amount'))
-                    ->numeric()
-                    ->required()
-                    ->minValue(0)
-                    ->maxValue(fn (callable $get): float => (float) ($get('total_payment') ?? 0))
-                    ->live(onBlur: true),
+                Hidden::make('requestable_type')
+                    ->default(Trainer::class),
+                FinancialRequestFields::requestableSelect(Trainer::class, __('app.trainer')),
+                FinancialRequestFields::agentPersonSelect(),
+                ...FinancialRequestFields::amountFields(),
                 Textarea::make('reason')
                     ->label(__('app.notes'))
                     ->nullable()

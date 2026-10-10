@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Tables;
 
+use App\Filament\Components\DatePicker;
 use App\Models\CertifiedCenter;
 use App\Models\CertifiedCenterDocumentType;
 use App\Models\DocumentType;
@@ -11,14 +12,9 @@ use App\Models\Trainer;
 use App\Models\TrainerDocumentType;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Actions\Action;
-use Filament\Actions\BulkAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -77,14 +73,6 @@ class CertificationsTable
                     ->toggleable()
                     ->placeholder(__('app.unassigned')),
 
-                TextColumn::make('country.nationality')
-                    ->label(__('app.nationality'))
-                    ->searchable()
-                    ->badge()
-                    ->color('info')
-                    ->toggleable()
-                    ->getStateUsing(fn ($record) => $record->country?->nationality ?: __('app.no_nationality')),
-
                 TextColumn::make('accredited_serial_number')
                     ->label(__('app.serial_number'))
                     ->searchable()
@@ -131,20 +119,6 @@ class CertificationsTable
                         }
                     }),
 
-                IconColumn::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->getStateUsing(function ($record) {
-                        $value = strtoupper($record->paper_received ?? '');
-
-                        return $value === 'YES' || $value === 'YAS';
-                    })
-                    ->toggleable(),
-
                 TextColumn::make('created_at')
                     ->label(__('app.import_date'))
                     ->dateTime('M d, Y H:i')
@@ -156,6 +130,12 @@ class CertificationsTable
                     ->dateTime('M d, Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                IconColumn::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
 
@@ -173,21 +153,6 @@ class CertificationsTable
 
                         return $query->where('creator_type', $data['value']);
                     }),
-
-                SelectFilter::make('nationality')
-                    ->label(__('app.nationality'))
-                    ->relationship('country', 'nationality')
-                    ->searchable()
-                    ->preload()
-                    ->placeholder(__('app.filter_select_placeholder')),
-
-                SelectFilter::make('paper_received')
-                    ->label(__('app.paper_received'))
-                    ->options([
-                        'YES' => __('app.yes'),
-                        'NO' => __('app.no'),
-                        'PENDING' => __('app.pending'),
-                    ]),
 
                 Filter::make('accreditation_date')
                     ->form([
@@ -216,84 +181,9 @@ class CertificationsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('generatePdf')
-                    ->label(__('app.certificate_pdf'))
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->color('success')
-                    ->action(function ($record) {}),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
 
-                    BulkAction::make('assignCreator')
-                        ->label(__('app.assign_creator'))
-                        ->icon('heroicon-o-user')
-                        ->color('info')
-                        ->form([
-                            Select::make('creator_type')
-                                ->label(__('app.issued_by'))
-                                ->options([
-                                    User::class => __('app.board_admin'),
-                                    CertifiedCenter::class => __('app.certified_center'),
-                                    Trainer::class => __('app.trainer'),
-                                ])
-                                ->reactive()
-                                ->required(),
-                            Select::make('creator_id')
-                                ->label(__('app.select_creator'))
-                                ->options(function (callable $get) {
-                                    $type = $get('creator_type');
-                                    if (! $type) {
-                                        return [];
-                                    }
-
-                                    return $type::query()->limit(20)->pluck('name', 'id');
-                                })
-                                ->getSearchResultsUsing(function (string $search, callable $get) {
-                                    $type = $get('creator_type');
-                                    if (! $type) {
-                                        return [];
-                                    }
-
-                                    return $type::query()
-                                        ->where('name', 'like', "%{$search}%")
-                                        ->limit(50)
-                                        ->pluck('name', 'id');
-                                })
-                                ->required()
-                                ->searchable(),
-                        ])
-                        ->action(function (array $data, $records) {
-                            $records->each(function ($record) use ($data) {
-                                $record->update([
-                                    'creator_type' => $data['creator_type'],
-                                    'creator_id' => $data['creator_id'],
-                                ]);
-                            });
-                        }),
-
-                    BulkAction::make('updatePaperStatus')
-                        ->label(__('app.update_paper_status'))
-                        ->icon('heroicon-o-document-check')
-                        ->color('warning')
-                        ->form([
-                            Select::make('paper_received')
-                                ->label(__('app.paper_received_status'))
-                                ->options([
-                                    'YES' => __('app.yes'),
-                                    'NO' => __('app.no'),
-                                    'PENDING' => __('app.pending'),
-                                ])
-                                ->required(),
-                        ])
-                        ->action(function (array $data, $records) {
-                            $records->each(function ($record) use ($data) {
-                                $record->update(['paper_received' => $data['paper_received']]);
-                            });
-                        }),
-                ]),
-            ])
             ->defaultSort('created_at', 'desc')
             ->striped()
             ->paginated([10, 25, 50, 100]);

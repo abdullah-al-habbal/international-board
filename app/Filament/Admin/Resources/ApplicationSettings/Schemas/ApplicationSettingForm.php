@@ -23,8 +23,8 @@ class ApplicationSettingForm
         return $schema
             ->components([
                 TextInput::make('key')
-                    ->label('Key')
-                    ->helperText('Use only English letters and underscores (e.g., site_title)')
+                    ->label(__('app.key'))
+                    ->helperText(__('app.key_helper'))
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->rules(['alpha_dash'])
@@ -32,7 +32,7 @@ class ApplicationSettingForm
                     ->dehydrated(fn ($state, $operation) => $operation === 'create'),
 
                 Select::make('type')
-                    ->label('Type')
+                    ->label(__('app.type'))
                     ->options(
                         collect(SettingType::cases())
                             ->mapWithKeys(fn (SettingType $case) => [

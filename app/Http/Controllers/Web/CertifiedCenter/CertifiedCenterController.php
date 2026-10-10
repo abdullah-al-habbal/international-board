@@ -40,6 +40,21 @@ final class CertifiedCenterController extends Controller
         $center = $this->service->findActive($id);
         abort_if($center === null, 404);
 
+        $center->load([
+            'country',
+            // Kept as rows: the view lists the latest few.
+            'certifications' => fn ($q) => $q->publiclyVisible(),
+        ]);
+
+        // Counted, never listed. Counts are unscoped totals so the public page
+        // agrees with the admin panel; the listing above stays visibility-filtered.
+        $center->loadCount([
+            'certifications',
+            'trainers',
+            'approvedDocumentTypes',
+            'accreditationRequests',
+        ]);
+
         $this->seoService->setMeta(
             $center->name,
             $center->address ?? __('web.pages.centers.subtitle')

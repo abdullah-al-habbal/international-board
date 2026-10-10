@@ -8,10 +8,10 @@
                     <div class="input-group input-group-lg">
                         <input
                             type="text"
-                            name="serial"
+                            name="accreditation_number"
                             class="form-control"
                             placeholder="{{ __('web.pages.certifications.search_placeholder') }}"
-                            value="{{ $serial ?? '' }}"
+                            value="{{ $accreditationNumber ?? '' }}"
                             autocomplete="off"
                             maxlength="100"
                         >
@@ -22,7 +22,7 @@
                     @if(isset($notFound) && $notFound)
                         <div class="mt-3 text-danger small">
                             <i class="tf-ion-ios-close-outline"></i>
-                            {{ __('web.pages.certifications.not_found_message', ['serial' => e($serial)]) }}
+                            {{ __('web.pages.certifications.not_found_message', ['accreditation_number' => e($accreditationNumber)]) }}
                         </div>
                     @endif
                 </form>

@@ -18,6 +18,7 @@ return [
 
     'labels' => [
         'social_links' => 'Social Links',
+        'bio' => 'Biography',
     ],
 
     'resources' => [

@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\AccreditationStatus;
-use Carbon\Carbon;
+use App\Models\Concerns\HasAccreditationPeriod;
+use App\Models\Concerns\NotifiesAdminOnMutation;
+use App\Observers\TrainerObserver;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -19,47 +25,53 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-class Trainer extends Authenticatable implements FilamentUser
+#[ObservedBy([TrainerObserver::class])]
+#[Fillable([
+    'name',
+    'avatar',
+    'bio',
+    'email',
+    'phone',
+    'address',
+    'country_id',
+    'trainer_role_id',
+    'center_id',
+    'accreditation_number',
+    'accreditation_period_start',
+    'accreditation_period_end',
+    'password',
+    'show_in_public_website',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
+class Trainer extends Authenticatable implements FilamentUser, HasAvatar
 {
+    use HasAccreditationPeriod;
     use HasFactory;
     use Notifiable;
-
-    protected $fillable = [
-        'name',
-        'avatar',
-        'bio',
-        'email',
-        'phone',
-        'address',
-        'country_id',
-        'center_id',
-        'is_active',
-        'unique_trainer_code',
-        'accreditation_number',
-        'accreditation_period_start',
-        'accreditation_period_end',
-        'password',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {
         return [
             'address' => 'array',
-            'is_active' => 'boolean',
             'accreditation_period_start' => 'datetime',
             'accreditation_period_end' => 'datetime',
             'password' => 'hashed',
+            'show_in_public_website' => 'boolean',
         ];
     }
 
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function trainerRole(): BelongsTo
+    {
+        return $this->belongsTo(TrainerRole::class);
     }
 
     public function center(): BelongsTo
@@ -73,14 +85,26 @@ class Trainer extends Authenticatable implements FilamentUser
             ->withTimestamps();
     }
 
+    /** Certifications this trainer authored. Most are issued by admins instead — see assignedCertifications(). */
     public function certifications(): MorphMany
     {
         return $this->morphMany(Certification::class, 'creator');
     }
 
-    public function financialRequests(): HasMany
+    /** Certifications an admin issued and attributed to this trainer. */
+    public function assignedCertifications(): HasMany
     {
-        return $this->hasMany(TrainerFinancialRequest::class);
+        return $this->hasMany(Certification::class, 'assigned_trainer_id');
+    }
+
+    public function trainees(): MorphMany
+    {
+        return $this->morphMany(Trainee::class, 'owner');
+    }
+
+    public function financialRequests(): MorphMany
+    {
+        return $this->morphMany(FinancialRequest::class, 'requestable');
     }
 
     public function documentTypes(): HasMany
@@ -94,98 +118,43 @@ class Trainer extends Authenticatable implements FilamentUser
     }
 
     #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('show_in_public_website', true);
+    }
+
+    #[Scope]
     protected function accreditationExpired(Builder $query): void
     {
-        $query->where('accreditation_period_end', '<', now());
+        $this->applyAccreditationExpiredScope($query);
     }
 
     #[Scope]
     protected function accreditationActive(Builder $query): void
     {
-        $query->where('accreditation_period_start', '<=', now())
-            ->where('accreditation_period_end', '>=', now());
-    }
-
-    public function isAccreditationActive(): bool
-    {
-        if (! $this->accreditation_period_start || ! $this->accreditation_period_end) {
-            return false;
-        }
-
-        return Carbon::now()->between(
-            $this->accreditation_period_start,
-            $this->accreditation_period_end
-        );
-    }
-
-    public function isAccredited(): bool
-    {
-        if (! $this->is_active) {
-            return false;
-        }
-
-        return $this->hasApprovedNonExpiredRequest();
-    }
-
-    public function hasApprovedAccreditationRequest(): bool
-    {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->exists();
-    }
-
-    public function hasActiveAccreditationRequest(): bool
-    {
-        $now = Carbon::now();
-
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->where('accreditation_start_date', '<=', $now)
-            ->where('accreditation_end_date', '>=', $now)
-            ->exists();
-    }
-
-    public function hasApprovedNonExpiredRequest(): bool
-    {
-        return $this->accreditationRequests()
-            ->where('status', AccreditationStatus::Approved)
-            ->where('accreditation_end_date', '>=', now())
-            ->exists();
-    }
-
-    public function canPerformActions(): bool
-    {
-        return $this->is_active && $this->hasApprovedNonExpiredRequest();
-    }
-
-    public function accreditationBlockReason(): ?string
-    {
-        if (! $this->is_active) {
-            return __('accreditation.blocked.trainer_inactive');
-        }
-
-        if (! $this->hasApprovedNonExpiredRequest()) {
-            return __('accreditation.blocked.no_approved_request');
-        }
-
-        if (! $this->hasActiveAccreditationRequest()) {
-            return __('accreditation.blocked.period_expired');
-        }
-
-        return null;
+        $this->applyAccreditationActiveScope($query);
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $panel->getId() === 'trainer' && $this->is_active && is_null($this->center_id);
+        return $panel->getId() === 'trainer' && is_null($this->center_id);
     }
 
-    public function getAvatarUrlAttribute(): ?string
+    protected function avatarUrl(): Attribute
     {
-        if ($this->attributes['avatar'] ?? null) {
-            return Storage::url($this->attributes['avatar']);
-        }
+        return Attribute::make(
+            get: function () {
+                if (! empty($this->attributes['avatar']) && Storage::disk('public')->exists($this->attributes['avatar'])) {
+                    return Storage::disk('public')->url($this->attributes['avatar']);
+                }
 
-        return null;
+                return null;
+            }
+        );
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
     }
 }

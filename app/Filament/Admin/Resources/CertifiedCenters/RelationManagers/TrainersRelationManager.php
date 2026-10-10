@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Resources\CertifiedCenters\RelationManagers;
 
 use App\Filament\Admin\Resources\Trainers\TrainerResource;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -49,15 +48,6 @@ class TrainersRelationManager extends RelationManager
                     ->limit(2)
                     ->getStateUsing(fn ($record) => ! empty($record->specializations) ? $record->specializations : __('app.no_value'))
                     ->toggleable(),
-
-                IconColumn::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger')
-                    ->sortable(),
             ])
             ->defaultSort('name');
     }

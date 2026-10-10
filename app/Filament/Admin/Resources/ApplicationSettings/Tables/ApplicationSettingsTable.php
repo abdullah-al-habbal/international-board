@@ -18,42 +18,42 @@ class ApplicationSettingsTable
         return $table
             ->columns([
                 TextColumn::make('key')
-                    ->label('Key')
+                    ->label(__('app.key'))
                     ->searchable()
                     ->copyable(),
 
                 TextColumn::make('value')
-                    ->label('Value')
+                    ->label(__('app.value'))
                     ->searchable()
                     ->getStateUsing(function ($record) {
                         $value = $record->getTypedValue();
 
                         if (is_bool($value)) {
-                            return $value ? 'Yes' : 'No';
+                            return $value ? __('app.yes') : __('app.no');
                         }
 
                         if (is_array($value)) {
                             return json_encode($value, JSON_UNESCAPED_UNICODE);
                         }
 
-                        return $value ?: 'No value';
+                        return $value ?: __('app.no_value');
                     })
                     ->limit(50),
 
                 TextColumn::make('type')
-                    ->label('Type')
+                    ->label(__('app.type'))
                     ->badge()
                     ->formatStateUsing(fn (?SettingType $state): string => $state?->label() ?? '')
                     ->searchable(),
 
                 TextColumn::make('created_at')
-                    ->label('Created At')
+                    ->label(__('app.created_at'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label('Updated At')
+                    ->label(__('app.updated_at'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -11,7 +11,6 @@ use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CenterPanelProvider;
 use App\Providers\Filament\TrainerPanelProvider;
 use App\Providers\MacroServiceProvider;
-use App\Providers\ObserverServiceProvider;
 use App\Providers\PerformanceServiceProvider;
 use App\Providers\QueryServiceProvider;
 use App\Providers\RepositoryServiceProvider;
@@ -32,7 +31,6 @@ return [
     MacroServiceProvider::class,
     RepositoryServiceProvider::class,
     ServiceRegistrationProvider::class,
-    ObserverServiceProvider::class,
     AdminPanelProvider::class,
     CenterPanelProvider::class,
     TrainerPanelProvider::class,

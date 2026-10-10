@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\DocumentTypes\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -28,13 +29,13 @@ class DocumentTypesTable
 
                 TextColumn::make('name_en')
                     ->label(__('app.name_english'))
-                    ->state(fn ($record) => $record->getTranslation('name', 'en') ?? '(no english)')
+                    ->state(fn ($record) => $record->getTranslation('name', 'en') ?? __('app.no_english'))
                     ->searchable(query: fn ($query, $search) => $query->where('name->en', 'like', "%{$search}%"))
                     ->sortable(query: fn ($query, $direction) => $query->orderBy('name->en', $direction)),
 
                 TextColumn::make('name_ar')
                     ->label(__('app.name_arabic'))
-                    ->state(fn ($record) => $record->getTranslation('name', 'ar') ?? '(no arabic)')
+                    ->state(fn ($record) => $record->getTranslation('name', 'ar') ?? __('app.no_arabic'))
                     ->searchable(query: fn ($query, $search) => $query->where('name->ar', 'like', "%{$search}%"))
                     ->sortable(query: fn ($query, $direction) => $query->orderBy('name->ar', $direction)),
 
@@ -54,6 +55,7 @@ class DocumentTypesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

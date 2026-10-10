@@ -50,7 +50,7 @@ class CenterAccreditationRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->certifiedCenter?->name ?? 'Request #'.$record->id;
+        return $record->certifiedCenter?->name ?? __('app.record.request_n', ['id' => $record->id]);
     }
 
     public static function getNavigationLabel(): string
@@ -66,6 +66,11 @@ class CenterAccreditationRequestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('app.accreditation_requests');
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 
     public static function form(Schema $schema): Schema

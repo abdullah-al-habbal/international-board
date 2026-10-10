@@ -17,7 +17,6 @@ final class StaticPageRepository
         return $this->model
             ->newQuery()
             ->where('slug', $slug)
-            ->where('is_active', true)
             ->first();
     }
 
@@ -25,7 +24,6 @@ final class StaticPageRepository
     {
         return $this->model
             ->newQuery()
-            ->where('is_active', true)
             ->orderBy('title')
             ->get(['id', 'slug', 'title']);
     }

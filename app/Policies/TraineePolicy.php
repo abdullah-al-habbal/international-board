@@ -6,6 +6,7 @@ namespace App\Policies;
 
 use App\Models\CertifiedCenter;
 use App\Models\Trainee;
+use App\Models\Trainer;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -13,70 +14,78 @@ class TraineePolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User|CertifiedCenter $user): bool
+    public function viewAny(User|CertifiedCenter|Trainer $user): bool
     {
-        return $this->isAdminUser($user) || $this->isCenterUser($user);
+        return $this->isAdminUser($user)
+            || $this->isCenterUser($user)
+            || $this->isTrainerUser($user);
     }
 
-    public function view(User|CertifiedCenter $user, Trainee $trainee): bool
-    {
-        if ($this->isAdminUser($user)) {
-            return true;
-        }
-
-        if ($this->isCenterUser($user)) {
-            return $trainee->certifications()->where('certified_center_id', $user->id)->exists();
-        }
-
-        return false;
-    }
-
-    public function create(User|CertifiedCenter $user): bool
-    {
-        return $this->isAdminUser($user) || $this->isActiveCenterUser($user);
-    }
-
-    public function update(User|CertifiedCenter $user, Trainee $trainee): bool
+    public function view(User|CertifiedCenter|Trainer $user, Trainee $trainee): bool
     {
         if ($this->isAdminUser($user)) {
             return true;
         }
 
-        if ($this->isCenterUser($user)) {
-            return $trainee->certifications()->where('certified_center_id', $user->id)->exists();
-        }
-
-        return false;
+        return $trainee->owner_type === $user::class
+            && (int) $trainee->owner_id === (int) $user->getKey();
     }
 
-    public function delete(User|CertifiedCenter $user, Trainee $trainee): bool
+    public function create(User|CertifiedCenter|Trainer $user): bool
+    {
+        return $this->isAdminUser($user)
+            || $this->isActiveCenterUser($user)
+            || $this->isActiveTrainerUser($user);
+    }
+
+    public function update(User|CertifiedCenter|Trainer $user, Trainee $trainee): bool
+    {
+        if ($this->isAdminUser($user)) {
+            return true;
+        }
+
+        return $trainee->owner_type === $user::class
+            && (int) $trainee->owner_id === (int) $user->getKey();
+    }
+
+    public function delete(User|CertifiedCenter|Trainer $user, Trainee $trainee): bool
     {
         // Only admin can delete trainees
         return $this->isAdminUser($user);
     }
 
-    public function restore(User|CertifiedCenter $user, Trainee $trainee): bool
+    public function restore(User|CertifiedCenter|Trainer $user, Trainee $trainee): bool
     {
         return $this->isAdminUser($user);
     }
 
-    public function forceDelete(User|CertifiedCenter $user, Trainee $trainee): bool
+    public function forceDelete(User|CertifiedCenter|Trainer $user, Trainee $trainee): bool
     {
         return $this->isAdminUser($user);
     }
 
-    private function isAdminUser(User|CertifiedCenter $user): bool
+    private function isAdminUser(User|CertifiedCenter|Trainer $user): bool
     {
         return $user instanceof User && method_exists($user, 'isAdmin') && $user->isAdmin();
     }
 
-    private function isCenterUser(User|CertifiedCenter $user): bool
+    private function isCenterUser(User|CertifiedCenter|Trainer $user): bool
     {
         return $user instanceof CertifiedCenter;
     }
 
-    private function isActiveCenterUser(User|CertifiedCenter $user): bool
+    private function isTrainerUser(User|CertifiedCenter|Trainer $user): bool
+    {
+        return $user instanceof Trainer;
+    }
+
+    private function isActiveCenterUser(User|CertifiedCenter|Trainer $user): bool
     {
         return $this->isCenterUser($user) && method_exists($user, 'canPerformActions') && $user->canPerformActions();
+    }
+
+    private function isActiveTrainerUser(User|CertifiedCenter|Trainer $user): bool
+    {
+        return $this->isTrainerUser($user) && method_exists($user, 'canPerformActions') && $user->canPerformActions();
     }
 }

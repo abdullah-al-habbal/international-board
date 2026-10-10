@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Trainer\Resources\TrainerDocumentTypes;
 
+use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\CreateTrainerDocumentType;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\EditTrainerDocumentType;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\ListTrainerDocumentTypes;
+use App\Filament\Trainer\Resources\TrainerDocumentTypes\Pages\ViewTrainerDocumentType;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Schemas\TrainerDocumentTypeForm;
+use App\Filament\Trainer\Resources\TrainerDocumentTypes\Schemas\TrainerDocumentTypeInfolist;
 use App\Filament\Trainer\Resources\TrainerDocumentTypes\Tables\TrainerDocumentTypesTable;
 use App\Models\TrainerDocumentType;
 use BackedEnum;
@@ -28,22 +31,22 @@ class TrainerDocumentTypeResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_trainers');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('app.approved_document_types');
+        return __('app.document_types');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.approved_document_type');
+        return __('app.document_type');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.approved_document_types');
+        return __('app.document_types');
     }
 
     protected static ?int $navigationSort = 12;
@@ -68,6 +71,11 @@ class TrainerDocumentTypeResource extends Resource
         return TrainerDocumentTypeForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return TrainerDocumentTypeInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return TrainerDocumentTypesTable::configure($table);
@@ -77,6 +85,8 @@ class TrainerDocumentTypeResource extends Resource
     {
         return [
             'index' => ListTrainerDocumentTypes::route('/'),
+            'create' => CreateTrainerDocumentType::route('/create'),
+            'view' => ViewTrainerDocumentType::route('/{record}'),
             'edit' => EditTrainerDocumentType::route('/{record}/edit'),
         ];
     }

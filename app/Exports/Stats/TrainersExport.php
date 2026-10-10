@@ -19,7 +19,11 @@ final class TrainersExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Name', 'Email', 'Phone', 'Country', 'Specializations', 'Active', 'Created At'];
+        $headers = [
+            __('exports.headers.id'), __('exports.headers.name'), __('exports.headers.email'), __('exports.headers.phone'),
+            __('exports.headers.country'), __('exports.headers.center'), __('exports.headers.accreditation_number'),
+            __('exports.headers.specializations'), __('exports.headers.created_at'),
+        ];
 
         $formatter = fn (Trainer $trainer): array => [
             $trainer->id,
@@ -27,10 +31,9 @@ final class TrainersExport implements CsvStatExportable
             $trainer->email,
             $trainer->phone,
             $trainer->country?->name,
-            is_array($trainer->specializations)
-                ? implode(', ', $trainer->specializations)
-                : (string) $trainer->specializations,
-            $trainer->is_active ? 'Yes' : 'No',
+            $trainer->center?->name,
+            $trainer->accreditation_number,
+            $trainer->specializations->pluck('name')->implode(', '),
             $trainer->created_at?->format('Y-m-d'),
         ];
 
@@ -44,6 +47,6 @@ final class TrainersExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Trainers';
+        return __('exports.titles.trainers');
     }
 }

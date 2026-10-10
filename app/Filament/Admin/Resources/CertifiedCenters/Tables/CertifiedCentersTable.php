@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -21,7 +22,7 @@ class CertifiedCentersTable
                     ->searchable(),
 
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('app.email'))
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
 
@@ -38,6 +39,17 @@ class CertifiedCentersTable
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
 
+                TextColumn::make('notes')
+                    ->label(__('app.notes'))
+                    ->limit(50)
+                    ->placeholder(__('app.no_value'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                ImageColumn::make('logo')
+                    ->label(__('app.logo'))
+                    ->getStateUsing(fn ($record) => $record->logo_url)
+                    ->defaultImageUrl(url('assets/website/images/avatar.png')),
+
                 TextColumn::make('accreditation_period_start')
                     ->dateTime()
                     ->placeholder(__('app.no_value'))
@@ -52,8 +64,11 @@ class CertifiedCentersTable
                     ->placeholder(__('app.no_value'))
                     ->searchable(),
 
-                IconColumn::make('is_active')
-                    ->boolean(),
+                IconColumn::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->dateTime()

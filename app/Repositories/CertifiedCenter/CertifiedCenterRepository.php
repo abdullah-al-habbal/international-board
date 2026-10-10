@@ -16,7 +16,7 @@ final class CertifiedCenterRepository
     {
         return $this->model
             ->newQuery()
-            ->where('is_active', true)
+            ->publiclyVisible()
             ->when(
                 isset($filters['search']) && $filters['search'] !== '',
                 fn ($q) => $q->where('name', 'like', "%{$filters['search']}%")
@@ -29,29 +29,20 @@ final class CertifiedCenterRepository
             ->paginate($perPage);
     }
 
+    /** `certifications` is loaded by the caller, which needs it visibility-filtered. */
     public function findActiveById(int $id): ?CertifiedCenter
     {
         return $this->model
             ->newQuery()
+            ->publiclyVisible()
             ->where('id', $id)
-            ->where('is_active', true)
-            ->with(['country', 'approvedDocumentTypes', 'certifications'])
+            ->with(['approvedDocumentTypes'])
             ->first();
     }
 
     public function countTotal(): int
     {
         return $this->model->newQuery()->count();
-    }
-
-    public function countActive(): int
-    {
-        return $this->model->newQuery()->active()->count();
-    }
-
-    public function countInactive(): int
-    {
-        return $this->model->newQuery()->inactive()->count();
     }
 
     public function countExpiredAccreditation(): int
@@ -62,9 +53,9 @@ final class CertifiedCenterRepository
     public function getStatistics(): array
     {
         return [
-            'total_active_centers' => $this->countActive(),
+            'total_centers' => $this->model->newQuery()->publiclyVisible()->count(),
             'active_countries' => $this->model->newQuery()
-                ->where('is_active', true)
+                ->publiclyVisible()
                 ->whereNotNull('country_id')
                 ->distinct('country_id')
                 ->count('country_id'),

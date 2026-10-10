@@ -22,6 +22,10 @@ class CertificationInfolist
                     TextEntry::make('country.name')
                         ->label(__('app.country')),
 
+                    TextEntry::make('documentable.name')
+                        ->label(__('app.document_type'))
+                        ->placeholder(__('app.not_assigned')),
+
                     TextEntry::make('accredited_serial_number')
                         ->label(__('app.accredited_serial_number')),
 
@@ -34,9 +38,6 @@ class CertificationInfolist
                     TextEntry::make('accreditation_date')
                         ->label(__('app.accreditation_date'))
                         ->date(),
-
-                    TextEntry::make('paper_received')
-                        ->label(__('app.paper_received')),
 
                     TextEntry::make('notes')
                         ->label(__('app.notes'))

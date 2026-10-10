@@ -1,5 +1,7 @@
 <?php
 
+// app/Filament/Admin/Resources/Certifications/CertificationResource.php
+
 namespace App\Filament\Admin\Resources\Certifications;
 
 use App\Filament\Admin\Resources\Certifications\Pages\CreateCertification;

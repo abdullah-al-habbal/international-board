@@ -5,18 +5,19 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Translatable\Attributes\Translatable;
 use Spatie\Translatable\HasTranslations;
 
+#[Translatable(['title', 'content', 'excerpt'])]
+#[Fillable(['title', 'slug', 'excerpt', 'content', 'image', 'is_published', 'published_at'])]
 class BlogPost extends Model
 {
     use HasFactory, HasTranslations;
-
-    public $translatable = ['title', 'content', 'excerpt'];
-
-    protected $fillable = ['title', 'slug', 'excerpt', 'content', 'image', 'is_published', 'published_at'];
 
     protected function casts(): array
     {
@@ -26,12 +27,16 @@ class BlogPost extends Model
         ];
     }
 
-    public function getImageUrlAttribute(): ?string
+    public function imageUrl(): Attribute
     {
-        if ($this->attributes['image'] ?? null) {
-            return Storage::url($this->attributes['image']);
-        }
+        return Attribute::make(
+            get: function () {
+                if ($this->attributes['image'] ?? null) {
+                    return Storage::url($this->attributes['image']);
+                }
 
-        return null;
+                return null;
+            }
+        );
     }
 }

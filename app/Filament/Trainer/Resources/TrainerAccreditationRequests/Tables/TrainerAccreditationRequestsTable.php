@@ -22,6 +22,10 @@ class TrainerAccreditationRequestsTable
                     ->label(__('app.status'))
                     ->badge()
                     ->color(fn (AccreditationStatus $state): string => $state->color()),
+                TextColumn::make('reviewedBy.name')
+                    ->label(__('app.reviewed_by'))
+                    ->placeholder(__('app.no_value'))
+                    ->sortable(),
                 TextColumn::make('accreditation_start_date')
                     ->label(__('app.start_date'))
                     ->date()

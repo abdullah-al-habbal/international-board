@@ -28,16 +28,6 @@ final class TrainerService
         return $this->repo->countTotal();
     }
 
-    public function getActiveCount(): int
-    {
-        return $this->repo->countActive();
-    }
-
-    public function getInactiveCount(): int
-    {
-        return $this->repo->countInactive();
-    }
-
     public function getEvaluationText(): string
     {
         return ApplicationSetting::get(

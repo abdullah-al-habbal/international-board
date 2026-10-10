@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenters\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -23,7 +24,8 @@ class CertifiedCenterForm
                 TextInput::make('email')
                     ->label(__('app.email'))
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true),
                 TextInput::make('password')
                     ->label(__('app.password'))
                     ->password()
@@ -44,18 +46,35 @@ class CertifiedCenterForm
                     ->tel(),
                 TextInput::make('manager_name')
                     ->label(__('app.manager_name')),
-                DateTimePicker::make('accreditation_period_start')
+                Textarea::make('notes')
+                    ->label(__('app.notes'))
+                    ->placeholder(__('app.notes_placeholder'))
+                    ->rows(3)
+                    ->columnSpanFull(),
+                FileUpload::make('logo')
+                    ->label(__('app.logo'))
+                    ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(2048)
+                    ->disk('public')
+                    ->directory('centers/logos')
+                    ->visibility('public')
+                    ->nullable()
+                    ->columnSpanFull(),
+                DatePicker::make('accreditation_period_start')
                     ->label(__('app.accreditation_period_start')),
-                DateTimePicker::make('accreditation_period_end')
-                    ->label(__('app.accreditation_period_end')),
+                DatePicker::make('accreditation_period_end')
+                    ->label(__('app.accreditation_period_end'))
+                    ->after('accreditation_period_start'),
                 TextInput::make('accreditation_number')
                     ->label(__('app.accreditation_number'))
                     ->disabled()
                     ->dehydrated(false)
                     ->visible(fn ($record) => $record !== null),
-                Toggle::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->required(),
+
+                Toggle::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
+                    ->columnSpanFull(),
             ]);
     }
 }

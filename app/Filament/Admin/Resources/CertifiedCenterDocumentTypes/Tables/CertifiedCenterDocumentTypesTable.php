@@ -47,6 +47,11 @@ class CertifiedCenterDocumentTypesTable
                     ->color(fn ($state) => $state?->color() ?? 'gray')
                     ->formatStateUsing(fn ($state) => $state?->label() ?? '—'),
 
+                TextColumn::make('reviewer.name')
+                    ->label(__('app.reviewed_by'))
+                    ->placeholder(__('app.no_value'))
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->label(__('app.assigned_at'))
                     ->dateTime()

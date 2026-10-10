@@ -6,6 +6,7 @@ namespace App\Filament\Trainer\Resources\TrainerDocumentTypes\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rules\Unique;
 
 class TrainerDocumentTypeForm
 {
@@ -17,6 +18,10 @@ class TrainerDocumentTypeForm
                     ->label(__('app.key'))
                     ->required()
                     ->maxLength(255)
+                    ->unique(
+                        ignoreRecord: true,
+                        modifyRuleUsing: static fn (Unique $rule): Unique => $rule->where('trainer_id', auth('trainer')->id()),
+                    )
                     ->helperText(__('app.document_type_key_helper'))
                     ->placeholder('training_certificate'),
 

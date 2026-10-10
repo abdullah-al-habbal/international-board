@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TrainerFinancialRequests\Tables;
 
+use App\Filament\FinancialRequests\FinancialRequestFields;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -13,29 +17,21 @@ class TrainerFinancialRequestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('trainer.name')
-                    ->label(__('app.trainer'))
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('requestable.name')
+                    ->label(__('app.trainer')),
                 TextColumn::make('agentPerson.name')
                     ->label(__('app.agent_person'))
                     ->sortable(),
-                TextColumn::make('total_payment')
-                    ->label(__('app.total_amount'))
-                    ->money('USD')
-                    ->sortable(),
-                TextColumn::make('amount_paid')
-                    ->label(__('app.paid_amount'))
-                    ->money('USD')
-                    ->sortable(),
-                TextColumn::make('remaining_amount')
-                    ->label(__('app.remaining_amount'))
-                    ->money('USD')
-                    ->sortable(),
+                ...FinancialRequestFields::amountColumns(),
                 TextColumn::make('date')
                     ->label(__('app.date'))
                     ->date()
                     ->sortable(),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->defaultSort('date', 'desc');
     }

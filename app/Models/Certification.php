@@ -4,79 +4,73 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\NotifiesAdminOnMutation;
+use App\Observers\CertificationObserver;
 use App\Policies\CertificationPolicy;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Str;
 
+#[ObservedBy([CertificationObserver::class])]
 #[UsePolicy(CertificationPolicy::class)]
+#[Fillable([
+    'creator_type',
+    'creator_id',
+    'documentable_type',
+    'documentable_id',
+    'trainee_id',
+    'assigned_trainer_id',
+    'accredited_serial_number',
+    'document_code',
+    'accreditation_number',
+    'accreditation_date',
+    'country_id',
+    'notes',
+    'show_in_public_website',
+])]
 class Certification extends Model
 {
     use HasFactory;
-
-    protected static function booted(): void
-    {
-        static::creating(function (Certification $certification) {
-            if (empty($certification->document_code)) {
-                $certification->document_code = self::generateDocumentCode();
-            }
-
-            if (empty($certification->accredited_serial_number)) {
-                $certification->accredited_serial_number = self::generateAccreditedSerialNumber();
-            }
-        });
-    }
-
-    protected static function generateDocumentCode(): string
-    {
-        return 'CERT-'.now()->format('Ymd').'-'.strtoupper(Str::random(4));
-    }
-
-    protected static function generateAccreditedSerialNumber(): string
-    {
-        return 'SN-'.now()->format('Ymd').'-'.strtoupper(Str::random(6));
-    }
-
-    protected $fillable = [
-        'creator_type',
-        'creator_id',
-        'trainee_id',
-        'assigned_trainer_id',
-        'accredited_serial_number',
-        'document_code',
-        'accreditation_number',
-        'accreditation_date',
-        'country_id',
-        'paper_received',
-        'notes',
-    ];
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {
         return [
             'accreditation_date' => 'date',
+            'show_in_public_website' => 'boolean',
         ];
     }
 
-    public function getAccreditationDateAttribute($value): ?string
+    public function accreditationDate(): Attribute
     {
-        if (blank($value)) {
-            return null;
-        }
-        try {
-            return Carbon::parse($value)->toDateString();
-        } catch (\Throwable) {
-            return null;
-        }
+        return Attribute::make(
+            get: function ($value): ?string {
+                if (blank($value)) {
+                    return null;
+                }
+                try {
+                    return Carbon::parse($value)->toDateString();
+                } catch (\Throwable) {
+                    return null;
+                }
+            }
+        );
     }
 
     public function creator(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function documentable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -103,6 +97,16 @@ class Certification extends Model
     }
 
     #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('show_in_public_website', true)
+            ->where(function (Builder $q) {
+                $q->whereNull('trainee_id')
+                    ->orWhereHas('trainee', fn (Builder $t) => $t->where('trainees.show_in_public_website', true));
+            });
+    }
+
+    #[Scope]
     protected function byDocumentCode(Builder $query, string $code): void
     {
         $query->where('document_code', $code);
@@ -116,11 +120,26 @@ class Certification extends Model
         });
     }
 
+    /**
+     * Every certification a trainer is credited with, however it got there.
+     *
+     * A trainer is linked either by having authored the certification (the
+     * `creator` morph) or by being assigned to one an admin issued
+     * (`assigned_trainer_id`). In practice the second case is the overwhelming
+     * majority, so counting only the morph reports near-zero for trainers who
+     * hold hundreds of certifications.
+     *
+     * Written as a single OR predicate rather than two counts so a
+     * certification a trainer both created and was assigned is counted once.
+     */
     #[Scope]
-    protected function byNationality(Builder $query, string $nationality): void
+    protected function forTrainer(Builder $query, int $trainerId): void
     {
-        $query->whereHas('country', function (Builder $q) use ($nationality) {
-            $q->where('nationality', $nationality);
+        $query->where(function (Builder $related) use ($trainerId): void {
+            $related->where(function (Builder $created) use ($trainerId): void {
+                $created->where('creator_type', Trainer::class)
+                    ->where('creator_id', $trainerId);
+            })->orWhere('assigned_trainer_id', $trainerId);
         });
     }
 

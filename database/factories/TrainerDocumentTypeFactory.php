@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Trainer;
+use App\Models\TrainerDocumentType;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+#[UseModel(TrainerDocumentType::class)]
 class TrainerDocumentTypeFactory extends Factory
 {
     public function definition(): array

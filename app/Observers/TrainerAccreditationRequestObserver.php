@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Enums\AccreditationStatus;
+use App\Filament\Trainer\Resources\TrainerAccreditationRequests\TrainerAccreditationRequestResource;
 use App\Models\Trainer;
 use App\Models\TrainerAccreditationRequest;
+use App\Notifications\AdminActionNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -15,6 +17,7 @@ class TrainerAccreditationRequestObserver
     public function creating(TrainerAccreditationRequest $request): void
     {
         $this->assertNoDuplicateActiveRequest($request);
+        $this->assertNoTimeOverlap($request);
     }
 
     public function updating(TrainerAccreditationRequest $request): void
@@ -77,6 +80,15 @@ class TrainerAccreditationRequestObserver
             AccreditationStatus::Rejected => $this->handleRejected($request, $trainer),
             default => null,
         };
+
+        if (Auth::guard('web')->check() && $status->isReviewed()) {
+            $trainer->notify(new AdminActionNotification(
+                $request,
+                $status->value,
+                'trainer',
+                TrainerAccreditationRequestResource::class,
+            ));
+        }
     }
 
     private function assertNoDuplicateActiveRequest(TrainerAccreditationRequest $request): void
@@ -92,16 +104,24 @@ class TrainerAccreditationRequestObserver
         $hasCurrentlyActiveApproved = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
-        if ($hasActive || $hasCurrentlyActiveApproved) {
-            Log::channel('accreditation')->warning('[Trainer] Blocked duplicate active request', [
+        if ($hasActive) {
+            Log::channel('accreditation')->warning('[Trainer] Blocked duplicate pending request', [
                 'trainer_id' => $request->trainer_id,
             ]);
 
-            throw new \DomainException(__('accreditation.errors.active_request_exists'));
+            throw new \DomainException(__('accreditation.errors.pending_request_exists'));
+        }
+
+        if ($hasCurrentlyActiveApproved) {
+            Log::channel('accreditation')->warning('[Trainer] Blocked duplicate active approved request', [
+                'trainer_id' => $request->trainer_id,
+            ]);
+
+            throw new \DomainException(__('accreditation.errors.approved_request_exists'));
         }
     }
 
@@ -114,8 +134,8 @@ class TrainerAccreditationRequestObserver
         $query = TrainerAccreditationRequest::query()
             ->where('trainer_id', $request->trainer_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<', $request->accreditation_end_date)
-            ->where('accreditation_end_date', '>', $request->accreditation_start_date);
+            ->where('accreditation_start_date', '<=', $request->accreditation_end_date->copy()->endOfDay())
+            ->where('accreditation_end_date', '>=', $request->accreditation_start_date->copy()->startOfDay());
 
         if ($excludeSelf) {
             $query->where('id', '!=', $request->id);
@@ -136,7 +156,6 @@ class TrainerAccreditationRequestObserver
     {
         $trainer->accreditation_period_start = $request->accreditation_start_date;
         $trainer->accreditation_period_end = $request->accreditation_end_date;
-        $trainer->is_active = true;
         $trainer->saveQuietly();
 
         Log::channel('accreditation')->info('[Trainer] Accreditation approved', [
@@ -153,12 +172,11 @@ class TrainerAccreditationRequestObserver
         $hasOtherActive = $trainer->accreditationRequests()
             ->where('id', '!=', $request->id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
         if (! $hasOtherActive) {
-            $trainer->is_active = false;
             $trainer->saveQuietly();
 
             Log::channel('accreditation')->info('[Trainer] Trainer deactivated after rejection', [

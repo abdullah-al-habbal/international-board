@@ -9,18 +9,18 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class MembershipService
 {
-    public function listActive(): Collection
+    public function listAll(): Collection
     {
-        return Membership::where('is_active', true)->orderBy('id')->get();
+        return Membership::orderBy('created_at', 'desc')->get();
     }
 
-    public function findActive(int $id): ?Membership
+    public function findById(int $id): ?Membership
     {
-        return Membership::where('id', $id)->where('is_active', true)->first();
+        return Membership::find($id);
     }
 
     public function findBySlug(string $slug): ?Membership
     {
-        return Membership::where('slug', $slug)->where('is_active', true)->first();
+        return Membership::where('slug', $slug)->first();
     }
 }

@@ -6,7 +6,8 @@
 @section('content')
     @include('components.partials.page_header', [
         'title'    => __('web.pages.certifications.title'),
-        'subtitle' => $certification->accredited_serial_number,
+        'subtitle' => ($certification->accreditation_number ?? '')
+            .($certification->accredited_serial_number ? ' · '.$certification->accredited_serial_number : ''),
     ])
 
     @include('web.certifications._result')

@@ -10,10 +10,8 @@ use App\Filament\Admin\Resources\Specializations\Pages\ListSpecializations;
 use App\Models\Specialization;
 use BackedEnum;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -71,11 +69,6 @@ class SpecializationResource extends Resource
                 ->required()
                 ->maxLength(255),
 
-            Toggle::make('is_active')
-                ->label(__('app.active'))
-                ->default(true)
-                ->inline(false)
-                ->columnSpanFull(),
         ]);
     }
 
@@ -84,20 +77,15 @@ class SpecializationResource extends Resource
         return $table->columns([
             TextColumn::make('name_en')
                 ->label(__('app.name_english'))
-                ->state(fn ($record) => $record->getTranslation('name', 'en') ?? '(no english)')
+                ->state(fn ($record) => $record->getTranslation('name', 'en') ?? __('app.no_english'))
                 ->searchable(query: fn ($query, $search) => $query->where('name->en', 'like', "%{$search}%"))
                 ->sortable(query: fn ($query, $direction) => $query->orderBy('name->en', $direction)),
 
             TextColumn::make('name_ar')
                 ->label(__('app.name_arabic'))
-                ->state(fn ($record) => $record->getTranslation('name', 'ar') ?? '(no arabic)')
+                ->state(fn ($record) => $record->getTranslation('name', 'ar') ?? __('app.no_arabic'))
                 ->searchable(query: fn ($query, $search) => $query->where('name->ar', 'like', "%{$search}%"))
                 ->sortable(query: fn ($query, $direction) => $query->orderBy('name->ar', $direction)),
-
-            IconColumn::make('is_active')
-                ->label(__('app.active'))
-                ->boolean()
-                ->sortable(),
 
             TextColumn::make('created_at')
                 ->label(__('app.created_at'))

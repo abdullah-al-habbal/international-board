@@ -28,6 +28,10 @@ return [
             'label' => 'Trainers',
             'description' => 'Registered trainers in system',
         ],
+        'trainees' => [
+            'label' => 'Trainees',
+            'description' => 'Total registered trainees',
+        ],
         'expired_centers' => [
             'label' => 'Expired Licenses',
             'description' => 'Centers with expired accreditation',
@@ -43,6 +47,20 @@ return [
         'accreditation_status' => [
             'label' => 'Accreditation Status',
             'description' => 'Current accreditation status',
+        ],
+        'trainer' => [
+            'total_certifications' => [
+                'label' => 'Total Certifications',
+                'description' => 'Certifications created by you',
+            ],
+            'this_month' => [
+                'label' => 'This Month',
+                'description' => 'Certifications created this month',
+            ],
+            'financial_requests' => [
+                'label' => 'Financial Requests',
+                'description' => 'Total financial requests submitted',
+            ],
         ],
     ],
     'charts' => [

@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'headers' => [
+        'id' => 'المعرف',
+        'name' => 'الاسم',
+        'email' => 'البريد الإلكتروني',
+        'phone' => 'الهاتف',
+        'country' => 'الدولة',
+        'manager' => 'المدير',
+        'accreditation_number' => 'رقم الاعتماد',
+        'accreditation_start' => 'بداية الاعتماد',
+        'accreditation_end' => 'نهاية الاعتماد',
+        'trainers' => 'المدربون',
+        'certifications' => 'الشهادات',
+        'document_types' => 'أنواع الوثائق',
+        'created_at' => 'تاريخ الإنشاء',
+        'serial_number' => 'الرقم التسلسلي',
+        'document_code' => 'رمز الوثيقة',
+        'trainee' => 'المتدرب',
+        'document_type' => 'نوع الوثيقة',
+        'issued_by' => 'أصدرت بواسطة',
+        'assigned_trainer' => 'المدرب المعين',
+        'accreditation_date' => 'تاريخ الاعتماد',
+        'status' => 'الحالة',
+        'center' => 'المركز',
+        'requested_start' => 'البداية المطلوبة',
+        'requested_end' => 'النهاية المطلوبة',
+        'date_of_birth' => 'تاريخ الميلاد',
+        'gender' => 'الجنس',
+        'notes' => 'ملاحظات',
+        'specializations' => 'التخصصات',
+    ],
+    'titles' => [
+        'active_centers' => 'المراكز النشطة',
+        'admin_users' => 'المستخدمون الإداريون',
+        'centers' => 'المراكز',
+        'certifications' => 'الشهادات',
+        'expired_centers' => 'المراكز منتهية الصلاحية',
+        'monthly_certifications' => 'شهادات هذا الشهر',
+        'pending_requests' => 'الطلبات المعلقة',
+        'trainees' => 'المتدربون',
+        'trainers' => 'المدربون',
+    ],
+];

@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - production
-  workflow_dispatch: # Allows manual triggering from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      force_migrate_fresh:
+        description: 'Force migrate:fresh + seed (destructive)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -16,16 +22,54 @@ concurrency:
 env:
   PHP_VERSION: "8.5"
   APP_DOMAIN: internationalboard.uk
+  APP_TIMEZONE: "Asia/Damascus"
 
 jobs:
-  deploy:
-    name: 🚀 Deploy to Hostinger via Git
+  check-destructive:
+    name: Check for destructive migration trigger
     runs-on: ubuntu-latest
+    outputs:
+      is_destructive: ${{ steps.check.outputs.is_destructive }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      # Destructive migrations are reachable ONLY through a deliberate
+      # workflow_dispatch run with force_migrate_fresh checked.
+      #
+      # Commit-message keywords ([migrate:fresh], [destructive], [reset-db],
+      # [fresh]) NO LONGER trigger anything. Production carries live data
+      # (thousands of certifications and trainees) and there are no backups,
+      # so a commit subject line must never be able to drop the database.
+      - name: Resolve destructive trigger
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+            && [ "${{ inputs.force_migrate_fresh }}" = "true" ]; then
+            echo "is_destructive=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Destructive migration explicitly requested via workflow_dispatch."
+          else
+            echo "is_destructive=false" >> "$GITHUB_OUTPUT"
+            echo "Standard migration"
+          fi
+
+      - name: Warn on ignored destructive keyword in commit message
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if echo "$COMMIT_MSG" | grep -iqE "\[migrate:fresh\]|\[destructive\]|\[reset-db\]|\[fresh\]"; then
+            echo "::warning::Commit message contains a destructive keyword. It was IGNORED. Destructive migrations now require a manual workflow_dispatch run with force_migrate_fresh checked."
+          fi
+
+  deploy:
+    name: Deploy to Hostinger via Git
+    runs-on: ubuntu-latest
+    needs: check-destructive
     if: github.ref == 'refs/heads/production'
 
     steps:
-      - name: 🚀 Deploy via SSH (Git Pull)
+      - name: Deploy via SSH (Git Pull)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOSTINGER_SERVER_IP }}
@@ -40,33 +84,48 @@ jobs:
 
             TARGET="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/domains/internationalboard.uk/public_html/production"
             DEPLOY_KEY="/home/${{ secrets.HOSTINGER_SSH_USERNAME }}/.ssh/deploy_key"
-            
-            # Tell Git to use the deploy key we created earlier
+
             export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY -o IdentitiesOnly=yes -o StrictHostKeyChecking=no"
 
-            echo "🎯 Deploying to: $TARGET"
+            echo "Deploying to: $TARGET"
             cd "$TARGET"
 
-            echo "📥 Fetching latest changes from Git..."
+            echo "Fetching latest changes from Git..."
             git fetch origin production
             git reset --hard origin/production
-            
-            # Clean any untracked files that might have been left behind (respects .gitignore)
             git clean -fd
 
-            echo "📦 Installing PHP dependencies..."
+            echo "Installing PHP dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
 
-            echo "🗄️ Running migrations..."
-            php artisan migrate --force
+            # Accreditation validity is evaluated against the operators' local
+            # day. Without APP_TIMEZONE the stack falls back to UTC while
+            # operators run at UTC+3, which expires credentials early.
+            if ! grep -q '^APP_TIMEZONE=' .env; then
+              echo "ERROR: APP_TIMEZONE missing from production .env."
+              echo "Accreditation date logic depends on it. Add APP_TIMEZONE=Asia/Damascus."
+              exit 1
+            fi
+            echo "Timezone: $(grep '^APP_TIMEZONE=' .env)"
 
-            echo "🧹 Clearing and caching..."
+            IS_DESTRUCTIVE="${{ needs.check-destructive.outputs.is_destructive }}"
+
+            if [ "$IS_DESTRUCTIVE" = "true" ]; then
+              echo "RUNNING DESTRUCTIVE MIGRATION: migrate:fresh --seed"
+              echo "WARNING: this DROPS ALL TABLES. Production holds live data and there are no backups."
+              php artisan migrate:fresh --force --seed
+            else
+              echo "Running standard migrations..."
+              php artisan migrate --force
+            fi
+
+            echo "Clearing and caching..."
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            echo "✅ Verifying application..."
+            echo "Verifying application..."
             php artisan about
 
-            echo "🎉 Deployment completed successfully"
+            echo "Deployment completed successfully"

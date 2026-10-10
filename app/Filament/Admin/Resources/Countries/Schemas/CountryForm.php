@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Countries\Schemas;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class CountryForm
@@ -39,16 +38,6 @@ class CountryForm
                     ->unique(ignoreRecord: true)
                     ->placeholder('US')
                     ->helperText(__('app.iso_code_2_helper')),
-
-                TextInput::make('nationality')
-                    ->label(__('app.nationality'))
-                    ->maxLength(255)
-                    ->placeholder(__('app.american')),
-
-                Toggle::make('is_active')
-                    ->label(__('app.active'))
-                    ->default(true)
-                    ->required(),
             ]);
     }
 }

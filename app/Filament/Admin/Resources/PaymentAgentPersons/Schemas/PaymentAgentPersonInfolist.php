@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\PaymentAgentPersons\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -18,19 +17,6 @@ class PaymentAgentPersonInfolist
                 ->weight('bold')
                 ->size('xl')
                 ->columnSpanFull(),
-            TextEntry::make('email')
-                ->label(__('app.email'))
-                ->icon('heroicon-o-envelope')
-                ->copyable()
-                ->columnSpan(1),
-            TextEntry::make('phone')
-                ->label(__('app.phone'))
-                ->icon('heroicon-o-phone')
-                ->columnSpan(1),
-            IconEntry::make('is_active')
-                ->label(__('app.is_active'))
-                ->boolean()
-                ->columnSpan(1),
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))
                 ->dateTime()

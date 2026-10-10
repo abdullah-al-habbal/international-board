@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Certifications\Schemas;
 
+use App\Filament\Components\DatePicker;
 use App\Models\CertifiedCenter;
 use App\Models\Country;
+use App\Models\DocumentType;
 use App\Models\Trainee;
 use App\Models\Trainer;
 use App\Models\User;
-use Filament\Forms\Components\DatePicker;
+use App\Rules\ActiveCenterTrainer;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +20,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class CertificationForm
 {
@@ -24,6 +28,9 @@ class CertificationForm
     {
         return $schema
             ->components([
+                Hidden::make('documentable_type')
+                    ->default(DocumentType::class),
+
                 Section::make(__('app.import_page.instructions.heading'))
                     ->description(__('app.certification_details_section'))
                     ->schema([
@@ -70,10 +77,26 @@ class CertificationForm
                                             ->pluck('name', 'id');
                                     })
                                     ->required()
-                                    ->searchable(),
+                                    ->searchable()
+                                    ->rules([
+                                        function (callable $get) {
+                                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                                if ($get('creator_type') !== Trainer::class || blank($value)) {
+                                                    return;
+                                                }
+
+                                                $trainer = Trainer::find($value);
+
+                                                if (! $trainer?->isAccreditationActive()) {
+                                                    $fail(__('app.trainer_accreditation_expired'));
+                                                }
+                                            };
+                                        },
+                                    ]),
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
+                                    ->helperText(__('app.assigned_trainer_helper'))
                                     ->options(function (callable $get) {
                                         $creatorType = $get('creator_type');
                                         $creatorId = $get('creator_id');
@@ -82,12 +105,30 @@ class CertificationForm
                                         }
 
                                         return Trainer::where('center_id', $creatorId)
+                                            ->accreditationActive()
                                             ->pluck('name', 'id');
                                     })
                                     ->searchable()
                                     ->preload()
                                     ->visible(fn (callable $get) => $get('creator_type') === CertifiedCenter::class)
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->rules([
+                                        fn (callable $get) => new ActiveCenterTrainer((int) $get('creator_id')),
+                                    ]),
+                            ]),
+
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('documentable_id')
+                                    ->label(__('app.document_type_name'))
+                                    ->options(function () {
+                                        return DocumentType::query()
+                                            ->get()
+                                            ->mapWithKeys(fn ($dt) => [$dt->id => $dt->name[app()->getLocale()] ?? $dt->name['en'] ?? $dt->key]);
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
                             ]),
 
                         Grid::make(2)
@@ -102,7 +143,14 @@ class CertificationForm
                                         TextInput::make('name')
                                             ->label(__('app.name'))
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->scopedUnique(
+                                                Trainee::class,
+                                                'name',
+                                                modifyQueryUsing: fn (Builder $query) => $query
+                                                    ->where('owner_type', User::class)
+                                                    ->where('owner_id', (int) auth('web')->id())
+                                            ),
                                         TextInput::make('email')
                                             ->label(__('app.email'))
                                             ->email()
@@ -118,19 +166,20 @@ class CertificationForm
                                             ->preload(),
                                         DatePicker::make('date_of_birth')
                                             ->label(__('app.date_of_birth')),
-                                        TextInput::make('nationality')
-                                            ->label(__('app.nationality'))
-                                            ->maxLength(255),
+
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return Trainee::create($data)->getKey();
+                                        return Trainee::create($data + [
+                                            'owner_type' => User::class,
+                                            'owner_id' => auth('web')->id(),
+                                        ])->getKey();
                                     }),
                             ]),
 
                         Grid::make(2)
                             ->schema([
                                 Select::make('country_id')
-                                    ->label(__('app.nationality'))
+                                    ->label(__('app.country'))
                                     ->relationship('country', 'name')
                                     ->searchable()
                                     ->preload()
@@ -150,8 +199,7 @@ class CertificationForm
                                             ->alpha()
                                             ->unique(Country::class, 'code_2')
                                             ->helperText(__('app.iso_code_2_helper')),
-                                        TextInput::make('nationality')
-                                            ->maxLength(255),
+
                                     ])
                                     ->createOptionUsing(function (array $data): int {
                                         return Country::create($data)->getKey();
@@ -167,9 +215,6 @@ class CertificationForm
                 Section::make(__('app.document_details_section'))
                     ->description(__('app.document_details_description'))
                     ->schema([
-                        Toggle::make('paper_received')
-                            ->label(__('app.paper_document_received'))
-                            ->default(false),
                     ]),
 
                 Section::make(__('app.additional_information_section'))
@@ -180,6 +225,10 @@ class CertificationForm
                             ->rows(4)
                             ->columnSpanFull()
                             ->placeholder(__('app.notes_placeholder')),
+
+                        Toggle::make('show_in_public_website')
+                            ->label(__('app.show_in_public_website'))
+                            ->columnSpanFull(),
                     ])
                     ->collapsible(),
             ]);

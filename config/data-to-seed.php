@@ -29,7 +29,6 @@ return [
                 'en' => '<p>The International Board for Professional Training and Qualification was established in 2016 with the primary goal of providing training, consulting and strategic solutions. We have agents and representatives across the world and strive to serve the regional and international community, leaving a mark on human resources development and work environments for all entities, companies, organisations and individuals. Our services combine market needs with the latest in training, development and consulting.</p><p><strong>Our Mission:</strong> Deliver professional training and development services aligned with labour market and community needs.</p><p><strong>Our Vision:</strong> Leadership and excellence in training and professional development.</p>',
             ],
             'image' => null,
-            'is_active' => true,
         ],
 
         [
@@ -43,7 +42,6 @@ return [
                 'en' => '<p>The International Board for Professional Training and Qualification offers a comprehensive range of training and consulting services that meet the needs of individuals and organisations at the highest quality standards.</p>',
             ],
             'image' => null,
-            'is_active' => true,
         ],
 
         [
@@ -57,7 +55,6 @@ return [
                 'en' => '<p>From this modest place, the website of the International Board for Professional Training and Qualification, I extend my deepest thanks and gratitude to everyone who has contributed their efforts and abilities to achieve this great success. Together we build and move forward.</p><p>We have placed our knowledge and experience at your disposal for mutual benefit. We live in an era dominated by technology, and I believe no aspect of life is untouched by technological advancement. Our academy’s motto is continuous development in all educational stages and facilitating electronic services and technology for every segment of society – children, youth, elders, women, men, educated and uneducated – so they can keep pace with progress and we can benefit from their expertise, building a future and a life that shines for all of us. You are the makers of life, and it is your duty to help and support those in need.</p><p>General Manager / Advisor Ahmed Al-Koud</p>',
             ],
             'image' => null,
-            'is_active' => true,
         ],
 
         [
@@ -71,7 +68,6 @@ return [
                 'en' => '<p>The International Board for Professional Training and Qualification is committed to providing everything that helps trainers carry out their duty and role in community development. The Board also takes pride in bringing together distinguished trainers capable of creating real change and strong impact in various fields and specialisations. We offer numerous services and benefits to trainers, including:</p><p><strong>1. Trainer Accreditation</strong><br>Trainers receive a membership card and certificate as a certified trainer from the Board.<br><a href="#">Click here to learn about memberships and benefits</a><br><a href="#">Click here to apply for membership</a></p><p><strong>2. Organising training courses for member trainers</strong><br>The Board provides marketing, organisational and administrative services for the training programmes of member trainers across the Arab world.<br><a href="#">Click here to request a paid course</a><br><a href="#">Click here to request a free course</a></p><p><strong>3. Training portfolios</strong><br>Providing high‑quality training portfolios that meet the needs of all trainers, centres and institutes across the Arab world.<br><a href="#">Click here to request portfolio accreditation</a></p><p><strong>4. Portfolio accreditation</strong><br>The Board grants certified trainers the advantage of accrediting their training portfolios, obtaining an official accreditation certificate with a unique number and date.</p><p><strong>5. Internationally and locally accredited certificates for trainees</strong><br>Trainers can issue certificates for their courses, whether inside or outside the Board, and obtain licences to issue international certificates via the Board.<br><a href="#">Click here to request certificates for trainees</a></p><p><strong>6. International accreditations</strong><br>The Board assists its trainers in obtaining international certifications as certified international trainers after meeting the required standards.</p><p><strong>7. Virtual classrooms (online)</strong><br>We provide virtual training rooms equipped with all simulation tools for courses, programmes and forums, supporting all smart devices.</p><p><strong>8. Facilitating trainer tasks in countries where we have agents</strong><br>As well as receiving all forms of support and assistance from Board experts throughout your dealings with the International Board for Professional Training and Qualification.<br><a href="#">Click here for instant WhatsApp contact with Board management</a></p>',
             ],
             'image' => null,
-            'is_active' => true,
         ],
 
         [
@@ -85,7 +81,6 @@ return [
                 'en' => '<p><strong>Our Training Programs</strong></p><p>The International Board for Professional Training and Qualification offers a wide range of training programmes and courses, delivered either in‑person at Board premises, remotely, or through partners, agents and representatives across Arab countries under flexible procedures and international standards. The Board continuously adds new programmes and updates its courses, and can design any programme to meet the diverse needs of individuals and public/private organisations.</p><p><strong>What distinguishes our programmes:</strong></p><ul><li>Comprehensiveness and quality.</li><li>Prepared and delivered by internationally qualified trainers and consultants.</li><li>Enable all members of society to work, develop and thrive in the job market.</li><li>Can be customised according to client needs.</li><li>Our courses and programmes are executed in all Arab countries.</li><li>A variety of programmes in management, finance, IT, languages, human development, self‑development, family and social, educational, media, and specialised training, among others.</li></ul>',
             ],
             'image' => null,
-            'is_active' => true,
         ],
 
         [
@@ -99,7 +94,6 @@ return [
                 'en' => '<p>You can reach us using the form below and we will get back to you as soon as possible.</p>',
             ],
             'image' => null,
-            'is_active' => true,
         ],
 
     ],

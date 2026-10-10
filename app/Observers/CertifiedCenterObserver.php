@@ -13,8 +13,7 @@ class CertifiedCenterObserver
     {
         if (empty($center->accreditation_number)) {
             do {
-                $number = random_int(10000, 99999);
-                $candidate = 'IBVTQ'.$number;
+                $candidate = 'IBVTQ'.now()->format('Ymd').random_int(10000, 99999);
             } while (CertifiedCenter::where('accreditation_number', $candidate)->exists());
 
             $center->accreditation_number = $candidate;

@@ -61,7 +61,7 @@ class TrainerAccreditationRequestResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->trainer?->name ?? 'Request #'.$record->id;
+        return $record->trainer?->name ?? __('app.record.request_n', ['id' => $record->id]);
     }
 
     protected static ?int $navigationSort = 20;

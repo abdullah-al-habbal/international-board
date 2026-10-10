@@ -19,14 +19,24 @@ final class CertificationsExport implements CsvStatExportable
 
     public function export(): StreamedResponse
     {
-        $headers = ['ID', 'Serial Number', 'Trainee', 'Issued By', 'Created At'];
+        $headers = [
+            __('exports.headers.id'), __('exports.headers.serial_number'), __('exports.headers.document_code'), __('exports.headers.accreditation_number'),
+            __('exports.headers.trainee'), __('exports.headers.document_type'), __('exports.headers.issued_by'), __('exports.headers.assigned_trainer'),
+            __('exports.headers.country'), __('exports.headers.accreditation_date'), __('exports.headers.created_at'),
+        ];
 
-        $formatter = fn (Certification $certification): array => [
-            $certification->id,
-            $certification->accredited_serial_number,
-            $certification->trainee?->name,
-            $certification->creator?->name,
-            $certification->created_at->format('Y-m-d'),
+        $formatter = fn (Certification $c): array => [
+            $c->id,
+            $c->accredited_serial_number,
+            $c->document_code,
+            $c->accreditation_number,
+            $c->trainee?->name,
+            $this->documentTypeName($c),
+            $c->creator?->name,
+            $c->assignedTrainer?->name,
+            $c->country?->name,
+            $c->accreditation_date,
+            $c->created_at?->format('Y-m-d'),
         ];
 
         return $this->csvExportHandler->export(
@@ -39,6 +49,17 @@ final class CertificationsExport implements CsvStatExportable
 
     public function label(): string
     {
-        return 'Certifications';
+        return __('exports.titles.certifications');
+    }
+
+    private function documentTypeName(Certification $certification): string
+    {
+        $name = $certification->documentable?->name;
+
+        if (is_array($name)) {
+            return $name[app()->getLocale()] ?? $name['en'] ?? '';
+        }
+
+        return (string) ($name ?? '');
     }
 }

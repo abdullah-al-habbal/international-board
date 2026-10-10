@@ -33,7 +33,7 @@ Route::prefix('web')->name('web.')->group(function (): void {
             ->name('index');
         Route::get('/search', [CertificationController::class, 'search'])
             ->name('search');
-        Route::get('/{serial}', [CertificationController::class, 'show'])
+        Route::get('/{accreditationNumber}', [CertificationController::class, 'show'])
             ->name('show');
     });
 

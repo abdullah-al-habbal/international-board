@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\CertifiedCenters\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -14,7 +15,7 @@ class CertifiedCenterInfolist
             ->components([
                 TextEntry::make('name'),
                 TextEntry::make('email')
-                    ->label('Email address'),
+                    ->label(__('app.email')),
                 TextEntry::make('email_verified_at')
                     ->dateTime()
                     ->placeholder('-'),
@@ -25,6 +26,14 @@ class CertifiedCenterInfolist
                     ->placeholder('-'),
                 TextEntry::make('manager_name')
                     ->placeholder('-'),
+                TextEntry::make('notes')
+                    ->label(__('app.notes'))
+                    ->placeholder('-')
+                    ->columnSpanFull(),
+                ImageEntry::make('logo')
+                    ->label(__('app.logo'))
+                    ->getStateUsing(fn ($record) => $record->logo_url)
+                    ->defaultImageUrl(url('assets/website/images/avatar.png')),
                 TextEntry::make('accreditation_period_start')
                     ->dateTime()
                     ->placeholder('-'),
@@ -33,7 +42,8 @@ class CertifiedCenterInfolist
                     ->placeholder('-'),
                 TextEntry::make('accreditation_number')
                     ->placeholder('-'),
-                IconEntry::make('is_active')
+                IconEntry::make('show_in_public_website')
+                    ->label(__('app.show_in_public_website'))
                     ->boolean(),
                 TextEntry::make('created_at')
                     ->dateTime()

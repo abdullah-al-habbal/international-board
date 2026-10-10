@@ -22,6 +22,8 @@ class TraineeResource extends Resource
 {
     protected static ?string $model = Trainee::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getNavigationIcon(): string|BackedEnum|null
     {
         return 'heroicon-o-users';
@@ -67,7 +69,7 @@ class TraineeResource extends Resource
             return static::getModelLabel();
         }
 
-        return $record->name ?? 'Trainee #'.$record->id;
+        return $record->name ?? __('app.record.trainee_n', ['id' => $record->id]);
     }
 
     public static function form(Schema $schema): Schema

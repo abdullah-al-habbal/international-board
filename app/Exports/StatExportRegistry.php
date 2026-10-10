@@ -12,6 +12,7 @@ use App\Exports\Stats\CertificationsExport;
 use App\Exports\Stats\ExpiredCentersExport;
 use App\Exports\Stats\MonthlyCertificationsExport;
 use App\Exports\Stats\PendingRequestsExport;
+use App\Exports\Stats\TraineesExport;
 use App\Exports\Stats\TrainersExport;
 use InvalidArgumentException;
 
@@ -25,6 +26,7 @@ final class StatExportRegistry
         'pending_requests' => PendingRequestsExport::class,
         'admin_users' => AdminUsersExport::class,
         'trainers' => TrainersExport::class,
+        'trainees' => TraineesExport::class,
         'monthly_certifications' => MonthlyCertificationsExport::class,
     ];
 

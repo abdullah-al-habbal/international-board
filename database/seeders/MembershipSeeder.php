@@ -25,7 +25,6 @@ class MembershipSeeder extends Seeder
                         'ar' => $data['description']['ar'] ?? '',
                         'en' => $data['description']['en'] ?? '',
                     ],
-                    'is_active' => $data['is_active'] ?? true,
                 ]
             );
         }

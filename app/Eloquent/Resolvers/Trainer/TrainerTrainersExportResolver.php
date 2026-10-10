@@ -16,6 +16,7 @@ final class TrainerTrainersExportResolver
     public function query(): Builder
     {
         return $this->model->newQuery()
+            ->with(['country', 'center', 'specializations'])
             ->orderBy('created_at', 'desc');
     }
 }

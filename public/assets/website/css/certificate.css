@@ -1,0 +1,382 @@
+/* ==========================================================================
+   Certificate Experience — design tokens, layout, responsive, print
+   Loaded only on certification pages via @push('css') from _result.blade.php
+   Scoped under .certificate-card to avoid leaking into the global theme.
+   ========================================================================== */
+
+.certificate-card {
+    /* Design tokens (PRD TASK-001) */
+    --cert-primary: #1e7a46;
+    --cert-primary-dark: #166038;
+    --cert-accent: #c89f3d;
+    --cert-accent-text: #9a7322; /* darker gold for text on white (WCAG contrast) */
+    --cert-text: #1f2937;
+    --cert-muted: #6b7280;
+    --cert-border: #e5e7eb;
+    --cert-bg: #fafafa;
+    --cert-success-soft: #e9f4ee;
+    --cert-radius: 14px;
+    --cert-shadow: 0 1px 2px rgba(31, 41, 55, 0.06), 0 8px 24px rgba(31, 41, 55, 0.08);
+    --cert-space-1: 0.5rem;
+    --cert-space-2: 1rem;
+    --cert-space-3: 1.5rem;
+    --cert-space-4: 2rem;
+    --cert-space-5: 3rem;
+
+    position: relative;
+    margin-inline: auto;
+    max-width: 860px;
+    background: #fff;
+    border: 1px solid var(--cert-border);
+    border-radius: var(--cert-radius);
+    box-shadow: var(--cert-shadow);
+    overflow: hidden;
+    color: var(--cert-text);
+}
+
+/* Accent bottom edge */
+.certificate-card::after {
+    content: "";
+    display: block;
+    height: 6px;
+    background: linear-gradient(90deg, var(--cert-primary), var(--cert-accent));
+}
+
+/* --------------------------------------------------------------------------
+   Header — verified ribbon
+   -------------------------------------------------------------------------- */
+
+.certificate-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cert-space-1);
+    padding: var(--cert-space-2) var(--cert-space-3);
+    background: var(--cert-primary);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.certificate-header i {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Body — logo, "This certifies that", name, course, number
+   -------------------------------------------------------------------------- */
+
+.certificate-body {
+    padding: var(--cert-space-4) var(--cert-space-3);
+    text-align: center;
+    background:
+        radial-gradient(ellipse at top, var(--cert-bg), #fff 70%);
+}
+
+.certificate-logo {
+    display: block;
+    margin: 0 auto var(--cert-space-3);
+    max-width: 220px;
+    max-height: 64px;
+    object-fit: contain;
+}
+
+.certificate-title {
+    font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--cert-muted);
+}
+
+.certificate-certifies {
+    margin: var(--cert-space-4) 0 var(--cert-space-1);
+    font-size: 1rem;
+    color: var(--cert-muted);
+}
+
+.certificate-trainee {
+    margin: 0;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--cert-text);
+    letter-spacing: 0.02em;
+}
+
+.certificate-completed {
+    margin: var(--cert-space-2) 0 var(--cert-space-1);
+    font-size: 1rem;
+    color: var(--cert-muted);
+}
+
+.certificate-training-type {
+    margin: 0 0 var(--cert-space-3);
+    font-size: clamp(1.25rem, 3.4vw, 1.75rem);
+    font-weight: 600;
+    color: var(--cert-accent-text);
+}
+
+.certificate-number {
+    display: inline-block;
+    margin: 0;
+    padding: var(--cert-space-1) var(--cert-space-2);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: var(--cert-muted);
+    background: var(--cert-bg);
+    border: 1px dashed var(--cert-border);
+    border-radius: 6px;
+    word-break: break-all;
+}
+
+/* --------------------------------------------------------------------------
+   Meta — 2x2 grid (TASK-003)
+   -------------------------------------------------------------------------- */
+
+.certificate-meta {
+    padding: 0 var(--cert-space-3) var(--cert-space-3);
+}
+
+.certificate-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 var(--cert-space-4);
+    margin: 0;
+    border-top: 1px solid var(--cert-border);
+}
+
+.certificate-meta-item {
+    padding-block: var(--cert-space-2);
+    border-bottom: 1px solid var(--cert-border);
+}
+
+.certificate-meta-item dt {
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cert-muted);
+}
+
+.certificate-meta-item dd {
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--cert-text);
+    word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   Notes
+   -------------------------------------------------------------------------- */
+
+.certificate-notes {
+    padding: var(--cert-space-3);
+    border-top: 1px solid var(--cert-border);
+    background: var(--cert-bg);
+}
+
+.certificate-notes-title {
+    margin: 0 0 var(--cert-space-1);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cert-muted);
+}
+
+.certificate-notes-text {
+    margin: 0;
+    color: var(--cert-text);
+    white-space: pre-line;
+}
+
+/* --------------------------------------------------------------------------
+   QR — verification (TASK-004)
+   -------------------------------------------------------------------------- */
+
+.certificate-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--cert-space-2);
+    padding: var(--cert-space-3);
+    border-top: 1px solid var(--cert-border);
+    text-align: center;
+}
+
+.certificate-qr-code {
+    padding: var(--cert-space-2);
+    background: #fff;
+    border: 1px solid var(--cert-border);
+    border-radius: 8px;
+    line-height: 0;
+}
+
+.certificate-qr-code svg {
+    width: 132px;
+    height: 132px;
+}
+
+.certificate-qr-title {
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+    color: var(--cert-text);
+}
+
+.certificate-qr-link {
+    color: var(--cert-primary);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.certificate-qr-link:hover,
+.certificate-qr-link:focus {
+    color: var(--cert-primary-dark);
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Actions (TASK-005/006 + folded TASK-007)
+   -------------------------------------------------------------------------- */
+
+.certificate-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--cert-space-1);
+    padding: 0 var(--cert-space-3) var(--cert-space-4);
+}
+
+.btn-certificate {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.925rem;
+    font-weight: 500;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-certificate:focus-visible {
+    outline: 2px solid var(--cert-primary);
+    outline-offset: 2px;
+}
+
+.btn-certificate-primary {
+    background: var(--cert-primary);
+    color: #fff;
+}
+
+.btn-certificate-primary:hover,
+.btn-certificate-primary:focus {
+    background: var(--cert-primary-dark);
+    color: #fff;
+}
+
+.btn-certificate-outline {
+    background: #fff;
+    color: var(--cert-primary);
+    border-color: var(--cert-border);
+}
+
+.btn-certificate-outline:hover,
+.btn-certificate-outline:focus {
+    border-color: var(--cert-primary);
+    color: var(--cert-primary-dark);
+    box-shadow: 0 0 0 1px var(--cert-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive (TASK-003)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+    .certificate-body {
+        padding-inline: var(--cert-space-2);
+    }
+
+    .certificate-meta {
+        padding-inline: var(--cert-space-2);
+    }
+
+    .certificate-actions {
+        padding-inline: var(--cert-space-2);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .certificate-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-logo {
+        max-width: 170px;
+        max-height: 48px;
+    }
+
+    .certificate-actions .btn-certificate {
+        flex: 1 1 calc(50% - var(--cert-space-1));
+        justify-content: center;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Print (TASK-005/006) — A4
+   -------------------------------------------------------------------------- */
+
+@page {
+    size: A4;
+    margin: 14mm;
+}
+
+@media print {
+    .navigation,
+    #preloader,
+    #footer,
+    .page-title {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+    .certificate-section {
+        padding-top: 0 !important;
+    }
+
+    .certificate-card {
+        max-width: 100%;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .certificate-card::after,
+    .certificate-header {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .certificate-actions,
+    .certificate-qr {
+        display: none !important;
+    }
+
+    .certificate-number {
+        word-break: break-all;
+    }
+}

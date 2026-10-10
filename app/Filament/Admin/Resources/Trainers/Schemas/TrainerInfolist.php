@@ -17,6 +17,7 @@ class TrainerInfolist
             ImageEntry::make('avatar')
                 ->label(__('app.avatar'))
                 ->circular()
+                ->getStateUsing(fn ($record) => $record->avatar_url)
                 ->defaultImageUrl(url('assets/website/images/avatar.png'))
                 ->columnSpanFull(),
 
@@ -26,13 +27,11 @@ class TrainerInfolist
                 ->size('lg')
                 ->columnSpan(2),
 
-            IconEntry::make('is_active')
-                ->label(__('app.status'))
-                ->boolean()
-                ->trueIcon('heroicon-o-check-circle')
-                ->falseIcon('heroicon-o-x-circle')
-                ->trueColor('success')
-                ->falseColor('danger')
+            TextEntry::make('accreditation_number')
+                ->label(__('app.accreditation_number'))
+                ->icon('heroicon-o-identification')
+                ->copyable()
+                ->placeholder('—')
                 ->columnSpan(1),
 
             TextEntry::make('email')
@@ -52,6 +51,14 @@ class TrainerInfolist
             TextEntry::make('country.name')
                 ->label(__('app.country'))
                 ->icon('heroicon-o-globe-alt')
+                ->placeholder('—')
+                ->columnSpan(1),
+
+            TextEntry::make('trainerRole.name')
+                ->label(__('app.trainer_role'))
+                ->icon('heroicon-o-identification')
+                ->badge()
+                ->color('info')
                 ->placeholder('—')
                 ->columnSpan(1),
 
@@ -93,6 +100,12 @@ class TrainerInfolist
                 ->numeric()
                 ->default(0)
                 ->icon('heroicon-o-document-text')
+                ->columnSpan(1),
+
+            IconEntry::make('show_in_public_website')
+                ->label(__('app.show_in_public_website'))
+                ->boolean()
+                ->icon('heroicon-o-globe-alt')
                 ->columnSpan(1),
 
             TextEntry::make('created_at')

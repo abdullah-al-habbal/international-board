@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Trainees\Schemas;
 
+use App\Filament\Components\DatePicker;
+use App\Models\CertifiedCenter;
 use App\Models\Country;
-use Filament\Forms\Components\DatePicker;
+use App\Models\Trainee;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class TraineeForm
 {
@@ -20,6 +24,12 @@ class TraineeForm
                 ->label(__('app.name'))
                 ->required()
                 ->maxLength(255)
+                ->scopedUnique(
+                    Trainee::class,
+                    'name',
+                    ignoreRecord: true,
+                    modifyQueryUsing: static fn (Builder $query, ?Model $record = null): Builder => self::scopeToOwner($query, $record),
+                )
                 ->autofocus()
                 ->columnSpanFull(),
 
@@ -28,6 +38,12 @@ class TraineeForm
                 ->email()
                 ->maxLength(255)
                 ->nullable()
+                ->scopedUnique(
+                    Trainee::class,
+                    'email',
+                    ignoreRecord: true,
+                    modifyQueryUsing: static fn (Builder $query, ?Model $record = null): Builder => self::scopeToOwner($query, $record),
+                )
                 ->columnSpan(1),
 
             TextInput::make('phone')
@@ -35,17 +51,55 @@ class TraineeForm
                 ->tel()
                 ->maxLength(255)
                 ->nullable()
+                ->scopedUnique(
+                    Trainee::class,
+                    'phone',
+                    ignoreRecord: true,
+                    modifyQueryUsing: static fn (Builder $query, ?Model $record = null): Builder => self::scopeToOwner($query, $record),
+                )
                 ->columnSpan(1),
 
             Select::make('country_id')
                 ->label(__('app.country'))
-                ->relationship('country', 'name')
                 ->searchable()
                 ->preload()
                 ->nullable()
+                ->getSearchResultsUsing(function (string $search): array {
+                    $locale = app()->getLocale();
+
+                    return Country::query()
+                        ->where(function (Builder $query) use ($search, $locale) {
+                            $query->whereRaw(
+                                "LOWER(JSON_UNQUOTE(JSON_EXTRACT(name, '$.\"{$locale}\"'))) LIKE ?",
+                                ['%'.mb_strtolower($search).'%']
+                            );
+                        })
+                        ->orWhere(function (Builder $query) use ($search) {
+                            $query->whereRaw(
+                                'LOWER(name) LIKE ?',
+                                ['%'.mb_strtolower($search).'%']
+                            );
+                        })
+                        ->limit(50)
+                        ->get()
+                        ->mapWithKeys(fn (Country $country) => [
+                            $country->id => $country->getTranslation('name', $locale)
+                                ?? $country->getTranslation('name', 'en')
+                                ?? $country->name,
+                        ])
+                        ->toArray();
+                })
+                ->getOptionLabelUsing(fn (int $value): string => Country::find($value)?->getTranslation('name', app()->getLocale())
+                        ?? Country::find($value)?->getTranslation('name', 'en')
+                        ?? ''
+                )
                 ->createOptionForm([
-                    TextInput::make('name')->required()->maxLength(255),
+                    TextInput::make('name')
+                        ->label(__('app.name'))
+                        ->required()
+                        ->maxLength(255),
                     TextInput::make('code')
+                        ->label(__('app.code'))
                         ->required()
                         ->maxLength(3)
                         ->minLength(3)
@@ -53,6 +107,7 @@ class TraineeForm
                         ->unique(Country::class, 'code')
                         ->helperText(__('app.iso_code_3_helper')),
                     TextInput::make('code_2')
+                        ->label(__('app.code_2'))
                         ->required()
                         ->maxLength(2)
                         ->minLength(2)
@@ -65,12 +120,7 @@ class TraineeForm
             DatePicker::make('date_of_birth')
                 ->label(__('app.date_of_birth'))
                 ->nullable()
-                ->columnSpan(1),
-
-            TextInput::make('nationality')
-                ->label(__('app.nationality'))
-                ->maxLength(255)
-                ->nullable()
+                ->beforeOrEqual('today')
                 ->columnSpan(1),
 
             Select::make('gender')
@@ -82,45 +132,6 @@ class TraineeForm
                 ->nullable()
                 ->columnSpan(1),
 
-            TextInput::make('occupation')
-                ->label(__('app.occupation'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            TextInput::make('organization')
-                ->label(__('app.organization'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            Textarea::make('address')
-                ->label(__('app.address'))
-                ->maxLength(65535)
-                ->rows(2)
-                ->nullable()
-                ->columnSpanFull(),
-
-            TextInput::make('emergency_contact_name')
-                ->label(__('app.emergency_contact_name'))
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            TextInput::make('emergency_contact_phone')
-                ->label(__('app.emergency_contact_phone'))
-                ->tel()
-                ->maxLength(255)
-                ->nullable()
-                ->columnSpan(1),
-
-            Textarea::make('medical_info')
-                ->label(__('app.medical_info'))
-                ->maxLength(65535)
-                ->rows(3)
-                ->nullable()
-                ->columnSpanFull(),
-
             Textarea::make('notes')
                 ->label(__('app.notes'))
                 ->maxLength(65535)
@@ -128,5 +139,16 @@ class TraineeForm
                 ->nullable()
                 ->columnSpanFull(),
         ])->columns(2);
+    }
+
+    private static function scopeToOwner(Builder $query, ?Model $record): Builder
+    {
+        if ($record !== null && $record->owner_type !== null && $record->owner_id !== null) {
+            return $query->where('owner_type', $record->owner_type)
+                ->where('owner_id', (int) $record->owner_id);
+        }
+
+        return $query->where('owner_type', CertifiedCenter::class)
+            ->where('owner_id', (int) auth('certified_center')->id());
     }
 }

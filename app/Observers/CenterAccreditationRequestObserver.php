@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Enums\AccreditationStatus;
+use App\Filament\Center\Resources\CenterAccreditationRequests\CenterAccreditationRequestResource;
 use App\Models\CenterAccreditationRequest;
 use App\Models\CertifiedCenter;
+use App\Notifications\AdminActionNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -78,6 +80,15 @@ class CenterAccreditationRequestObserver
             AccreditationStatus::Rejected => $this->handleRejected($request, $center),
             default => null,
         };
+
+        if (Auth::guard('web')->check() && $status->isReviewed()) {
+            $center->notify(new AdminActionNotification(
+                $request,
+                $status->value,
+                'center',
+                CenterAccreditationRequestResource::class,
+            ));
+        }
     }
 
     private function assertNoDuplicateActiveRequest(CenterAccreditationRequest $request): void
@@ -93,16 +104,24 @@ class CenterAccreditationRequestObserver
         $hasCurrentlyActiveApproved = CenterAccreditationRequest::query()
             ->where('certified_center_id', $request->certified_center_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
-        if ($hasActive || $hasCurrentlyActiveApproved) {
-            Log::channel('accreditation')->warning('[Center] Blocked duplicate active request', [
+        if ($hasActive) {
+            Log::channel('accreditation')->warning('[Center] Blocked duplicate pending request', [
                 'certified_center_id' => $request->certified_center_id,
             ]);
 
-            throw new \DomainException(__('accreditation.errors.active_request_exists'));
+            throw new \DomainException(__('accreditation.errors.pending_request_exists'));
+        }
+
+        if ($hasCurrentlyActiveApproved) {
+            Log::channel('accreditation')->warning('[Center] Blocked duplicate active approved request', [
+                'certified_center_id' => $request->certified_center_id,
+            ]);
+
+            throw new \DomainException(__('accreditation.errors.approved_request_exists'));
         }
     }
 
@@ -115,8 +134,8 @@ class CenterAccreditationRequestObserver
         $query = CenterAccreditationRequest::query()
             ->where('certified_center_id', $request->certified_center_id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<', $request->accreditation_end_date)
-            ->where('accreditation_end_date', '>', $request->accreditation_start_date);
+            ->where('accreditation_start_date', '<=', $request->accreditation_end_date->copy()->endOfDay())
+            ->where('accreditation_end_date', '>=', $request->accreditation_start_date->copy()->startOfDay());
 
         if ($excludeSelf) {
             $query->where('id', '!=', $request->id);
@@ -135,7 +154,6 @@ class CenterAccreditationRequestObserver
 
     private function handleApproved(CenterAccreditationRequest $request, CertifiedCenter $center): void
     {
-        $center->is_active = true;
         $center->saveQuietly();
 
         Log::channel('accreditation')->info('[Center] Accreditation approved', [
@@ -152,12 +170,11 @@ class CenterAccreditationRequestObserver
         $hasOtherActive = $center->accreditationRequests()
             ->where('id', '!=', $request->id)
             ->where('status', AccreditationStatus::Approved->value)
-            ->where('accreditation_start_date', '<=', now())
-            ->where('accreditation_end_date', '>=', now())
+            ->where('accreditation_start_date', '<=', today()->endOfDay())
+            ->where('accreditation_end_date', '>=', today()->startOfDay())
             ->exists();
 
         if (! $hasOtherActive) {
-            $center->is_active = false;
             $center->saveQuietly();
 
             Log::channel('accreditation')->info('[Center] Center deactivated after rejection', [

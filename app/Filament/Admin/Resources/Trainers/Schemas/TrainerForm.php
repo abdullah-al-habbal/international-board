@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Trainers\Schemas;
 
 use App\Models\Country;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,6 +21,7 @@ class TrainerForm
             TextInput::make('name')
                 ->label(__('app.name'))
                 ->required()
+                ->unique(ignoreRecord: true)
                 ->maxLength(255)
                 ->autofocus()
                 ->columnSpanFull(),
@@ -72,6 +73,14 @@ class TrainerForm
                 ])
                 ->columnSpan(1),
 
+            Select::make('trainer_role_id')
+                ->label(__('app.trainer_role'))
+                ->relationship('trainerRole', 'name')
+                ->searchable()
+                ->preload()
+                ->nullable()
+                ->columnSpan(1),
+
             Select::make('center_id')
                 ->label(__('app.center'))
                 ->relationship('center', 'name')
@@ -84,6 +93,9 @@ class TrainerForm
                 ->label(__('app.avatar'))
                 ->image()
                 ->avatar()
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                ->maxSize(2048)
+                ->disk('public')
                 ->directory('trainers/avatars')
                 ->visibility('public')
                 ->nullable()
@@ -112,23 +124,19 @@ class TrainerForm
                 ->nullable()
                 ->columnSpanFull(),
 
-            Toggle::make('is_active')
-                ->label(__('app.active'))
-                ->default(true)
-                ->inline(false)
-                ->columnSpanFull(),
-
-            DateTimePicker::make('accreditation_period_start')
+            DatePicker::make('accreditation_period_start')
                 ->label(__('app.accreditation_period_start'))
-                ->required()
                 ->default(now())
                 ->columnSpan(1),
 
-            DateTimePicker::make('accreditation_period_end')
+            DatePicker::make('accreditation_period_end')
                 ->label(__('app.accreditation_period_end'))
-                ->required()
                 ->after('accreditation_period_start')
                 ->columnSpan(1),
+
+            Toggle::make('show_in_public_website')
+                ->label(__('app.show_in_public_website'))
+                ->columnSpanFull(),
         ])->columns(2);
     }
 }

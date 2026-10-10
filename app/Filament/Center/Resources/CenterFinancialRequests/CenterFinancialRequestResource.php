@@ -6,20 +6,21 @@ namespace App\Filament\Center\Resources\CenterFinancialRequests;
 
 use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ListCenterFinancialRequests;
 use App\Filament\Center\Resources\CenterFinancialRequests\Pages\ViewCenterFinancialRequest;
-use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestForm;
 use App\Filament\Center\Resources\CenterFinancialRequests\Schemas\CenterFinancialRequestInfolist;
 use App\Filament\Center\Resources\CenterFinancialRequests\Tables\CenterFinancialRequestsTable;
-use App\Models\CertifiedCenterFinancialRequest;
+use App\Models\CertifiedCenter;
+use App\Models\FinancialRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class CenterFinancialRequestResource extends Resource
 {
-    protected static ?string $model = CertifiedCenterFinancialRequest::class;
+    protected static ?string $model = FinancialRequest::class;
 
     public static function getNavigationIcon(): string|BackedEnum|null
     {
@@ -28,7 +29,7 @@ class CenterFinancialRequestResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.financial_management');
+        return __('app.financial_management_centers');
     }
 
     public static function getNavigationLabel(): string
@@ -48,14 +49,32 @@ class CenterFinancialRequestResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
-    public static function getEloquentQuery(): Builder
+    public static function canCreate(): bool
     {
-        return parent::getEloquentQuery()->where('certified_center_id', auth('certified_center')->id());
+        return false;
     }
 
-    public static function form(Schema $schema): Schema
+    public static function canEdit(Model $record): bool
     {
-        return CenterFinancialRequestForm::configure($schema);
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('requestable_type', CertifiedCenter::class)
+            ->where('requestable_id', auth('certified_center')->id())
+            ->with(['currency']);
     }
 
     public static function infolist(Schema $schema): Schema

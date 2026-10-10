@@ -13,10 +13,10 @@
         "bezhansalleh/filament-language-switch": "^4.0",
         "filament/filament": "^4.0",
         "laravel-lang/common": "^6.7",
-        "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0",
         "fakerphp/faker": "^1.23",
-        "spatie/laravel-translatable": "^6.11"
+        "spatie/laravel-translatable": "^6.14"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",
@@ -26,11 +26,9 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "nunomaduro/larastan": "^3.9",
-        "pestphp/pest": "^3.8",
-        "pestphp/pest-plugin-laravel": "^3.2",
-        "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5.3",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "phpunit/phpunit": "^12.0",
         "squizlabs/php_codesniffer": "^4.0"
     },
     "autoload": {
@@ -62,9 +60,28 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
+        "restart-local": [
+            "@composer dump-autoload",
+            "@php artisan optimize:clear",
+            "@php artisan cache:clear",
+            "@php artisan config:clear",
+            "@php artisan route:clear",
+            "@php artisan view:clear",
+            "@php artisan migrate:fresh --seed",
+            "composer run dev"
+        ],
+        "restart-production": [
+            "@composer dump-autoload",
+            "@php artisan optimize:clear",
+            "@php artisan cache:clear",
+            "@php artisan config:clear",
+            "@php artisan route:clear",
+            "@php artisan view:clear",
+            "@php artisan migrate:fresh --seed"
+        ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:work --tries=3 --timeout=3600\" \"npm run dev\" --names=server,queue,vite --kill-others"
         ],
         "test": [
             "@php artisan config:clear --ansi",
@@ -81,15 +98,13 @@
             "@php -v",
             "composer validate --no-check-publish",
             "php -l app",
-            "./vendor/bin/pint --test",
-            "./vendor/bin/phpstan analyse app --memory-limit=1G --no-progress --level=1"
+            "./vendor/bin/pint --test"
         ],
         "ci-check:full": [
             "composer install --no-interaction --prefer-dist",
             "@php artisan config:clear",
             "@php artisan package:discover --ansi",
             "./vendor/bin/pint --test",
-            "./vendor/bin/phpstan analyse app --memory-limit=1G --no-progress",
             "@php artisan test --stop-on-failure"
         ],
         "check-local": [

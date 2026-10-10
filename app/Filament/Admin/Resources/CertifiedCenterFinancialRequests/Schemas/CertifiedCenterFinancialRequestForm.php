@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\CertifiedCenterFinancialRequests\Schemas;
 
-use App\Models\CertifiedCenterPaymentAgentPerson;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
+use App\Filament\Components\DatePicker;
+use App\Filament\FinancialRequests\FinancialRequestFields;
+use App\Models\CertifiedCenter;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class CertifiedCenterFinancialRequestForm
@@ -17,55 +17,11 @@ class CertifiedCenterFinancialRequestForm
     {
         return $schema
             ->components([
-                Select::make('certified_center_id')
-                    ->label(__('app.certified_center'))
-                    ->relationship('certifiedCenter', 'name')
-                    ->required()
-                    ->searchable()
-                    ->preload()
-                    ->live(),
-                Select::make('agent_person_id')
-                    ->label(__('app.agent_person'))
-                    ->options(function (callable $get) {
-                        $centerId = $get('certified_center_id');
-                        if (! $centerId) {
-                            return [];
-                        }
-
-                        return CertifiedCenterPaymentAgentPerson::where('certified_center_id', $centerId)
-                            ->pluck('name', 'id');
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->rule(function (callable $get) {
-                        $centerId = $get('certified_center_id');
-
-                        return function (string $attribute, mixed $value, \Closure $fail) use ($centerId) {
-                            if (! $centerId) {
-                                return;
-                            }
-                            $exists = CertifiedCenterPaymentAgentPerson::where('id', $value)
-                                ->where('certified_center_id', $centerId)
-                                ->exists();
-                            if (! $exists) {
-                                $fail(__('app.agent_person_mismatch'));
-                            }
-                        };
-                    }),
-                TextInput::make('total_payment')
-                    ->label(__('app.total_amount'))
-                    ->numeric()
-                    ->required()
-                    ->minValue(0.01)
-                    ->live(onBlur: true),
-                TextInput::make('amount_paid')
-                    ->label(__('app.paid_amount'))
-                    ->numeric()
-                    ->required()
-                    ->minValue(0)
-                    ->maxValue(fn (callable $get): float => (float) ($get('total_payment') ?? 0))
-                    ->live(onBlur: true),
+                Hidden::make('requestable_type')
+                    ->default(CertifiedCenter::class),
+                FinancialRequestFields::requestableSelect(CertifiedCenter::class, __('app.certified_center')),
+                FinancialRequestFields::agentPersonSelect(),
+                ...FinancialRequestFields::amountFields(),
                 Textarea::make('reason')
                     ->label(__('app.notes'))
                     ->nullable()

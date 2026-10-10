@@ -9,7 +9,7 @@ use App\Filament\Admin\Resources\CenterAccreditationRequests\CenterAccreditation
 use App\Models\CenterAccreditationRequest;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +28,7 @@ class ViewCenterAccreditationRequest extends ViewRecord
                 ->color('success')
                 ->requiresConfirmation()
                 ->form([
-                    DateTimePicker::make('accreditation_end_date')
+                    DatePicker::make('accreditation_end_date')
                         ->label(__('app.accreditation_end_date'))
                         ->required()
                         ->after(fn () => now()),

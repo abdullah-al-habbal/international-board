@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace App\Filament\Center\Resources\Certifications\Schemas;
 
+use App\Enums\DocumentTypeRequestStatus;
+use App\Filament\Components\DatePicker;
+use App\Models\CertifiedCenter;
+use App\Models\CertifiedCenterDocumentType;
 use App\Models\Country;
 use App\Models\Trainee;
 use App\Models\Trainer;
-use Filament\Forms\Components\DatePicker;
+use App\Rules\ActiveCenterTrainer;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class CertificationForm
@@ -23,14 +28,46 @@ class CertificationForm
     {
         return $schema
             ->components([
+                Hidden::make('creator_type')
+                    ->default(CertifiedCenter::class),
+
+                Hidden::make('creator_id')
+                    ->default(fn () => Auth::guard('certified_center')->id()),
+
+                Hidden::make('documentable_type')
+                    ->default(CertifiedCenterDocumentType::class),
+
                 Section::make(__('app.certification_details_section'))
                     ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('documentable_id')
+                                    ->label(__('app.document_type'))
+                                    ->options(function () {
+                                        $centerId = Auth::guard('certified_center')->id();
+
+                                        return CertifiedCenterDocumentType::where('certified_center_id', $centerId)
+                                            ->where('status', DocumentTypeRequestStatus::Approved)
+                                            ->get()
+                                            ->mapWithKeys(fn ($dt) => [$dt->id => $dt->name[app()->getLocale()] ?? $dt->name['en'] ?? $dt->key]);
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                            ]),
+
                         Grid::make(2)
                             ->schema([
 
                                 Select::make('trainee_id')
                                     ->label(__('app.trainee_name'))
-                                    ->relationship('trainee', 'name')
+                                    ->relationship(
+                                        'trainee',
+                                        'name',
+                                        fn (Builder $query) => $query
+                                            ->where('owner_type', CertifiedCenter::class)
+                                            ->where('owner_id', (int) auth('certified_center')->id())
+                                    )
                                     ->searchable()
                                     ->preload()
                                     ->required()
@@ -38,7 +75,14 @@ class CertificationForm
                                         TextInput::make('name')
                                             ->label(__('app.name'))
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->scopedUnique(
+                                                Trainee::class,
+                                                'name',
+                                                modifyQueryUsing: fn (Builder $query) => $query
+                                                    ->where('owner_type', CertifiedCenter::class)
+                                                    ->where('owner_id', (int) auth('certified_center')->id())
+                                            ),
                                         TextInput::make('email')
                                             ->label(__('app.email'))
                                             ->email()
@@ -54,19 +98,19 @@ class CertificationForm
                                             ->preload(),
                                         DatePicker::make('date_of_birth')
                                             ->label(__('app.date_of_birth')),
-                                        TextInput::make('nationality')
-                                            ->label(__('app.nationality'))
-                                            ->maxLength(255),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
-                                        return Trainee::create($data)->getKey();
+                                        return Trainee::create($data + [
+                                            'owner_type' => CertifiedCenter::class,
+                                            'owner_id' => auth('certified_center')->id(),
+                                        ])->getKey();
                                     }),
                             ]),
 
                         Grid::make(2)
                             ->schema([
                                 Select::make('country_id')
-                                    ->label(__('app.nationality'))
+                                    ->label(__('app.country'))
                                     ->relationship('country', 'name')
                                     ->searchable()
                                     ->preload()
@@ -86,8 +130,6 @@ class CertificationForm
                                             ->alpha()
                                             ->unique(Country::class, 'code_2')
                                             ->helperText(__('app.iso_code_2_helper')),
-                                        TextInput::make('nationality')
-                                            ->maxLength(255),
                                     ])
                                     ->createOptionUsing(function (array $data): int {
                                         return Country::create($data)->getKey();
@@ -100,18 +142,23 @@ class CertificationForm
 
                                 Select::make('assigned_trainer_id')
                                     ->label(__('app.assigned_trainer'))
-                                    ->options(Trainer::where('center_id', Auth::id())->pluck('name', 'id'))
+                                    ->helperText(__('app.assigned_trainer_helper'))
+                                    ->options(
+                                        Trainer::where('center_id', Auth::guard('certified_center')->id())
+                                            ->accreditationActive()
+                                            ->pluck('name', 'id')
+                                    )
                                     ->searchable()
                                     ->preload()
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->rules([
+                                        new ActiveCenterTrainer((int) Auth::guard('certified_center')->id()),
+                                    ]),
                             ]),
                     ]),
 
                 Section::make(__('app.document_details_section'))
                     ->schema([
-                        Toggle::make('paper_received')
-                            ->label(__('app.paper_document_received'))
-                            ->default(false),
                     ]),
 
                 Section::make(__('app.additional_information_section'))

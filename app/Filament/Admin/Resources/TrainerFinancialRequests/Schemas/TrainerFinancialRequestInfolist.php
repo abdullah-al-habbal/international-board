@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TrainerFinancialRequests\Schemas;
 
+use App\Filament\FinancialRequests\FinancialRequestFields;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -16,27 +17,17 @@ class TrainerFinancialRequestInfolist
                 ->label(__('app.id'))
                 ->size('sm')
                 ->columnSpan(1),
-            TextEntry::make('trainer.name')
+            TextEntry::make('requestable.name')
                 ->label(__('app.trainer'))
                 ->weight('bold')
                 ->columnSpanFull(),
-            TextEntry::make('amount')
-                ->label(__('app.amount'))
-                ->money('SAR')
+            ...FinancialRequestFields::amountEntries(),
+            TextEntry::make('date')
+                ->label(__('app.date'))
+                ->date()
                 ->columnSpan(1),
-            TextEntry::make('status')
-                ->label(__('app.status'))
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    'pending' => 'warning',
-                    'approved' => 'success',
-                    'rejected' => 'danger',
-                    default => 'gray',
-                })
-                ->columnSpan(1),
-            TextEntry::make('notes')
+            TextEntry::make('reason')
                 ->label(__('app.notes'))
-                ->markdown()
                 ->columnSpanFull(),
             TextEntry::make('created_at')
                 ->label(__('app.created_at'))

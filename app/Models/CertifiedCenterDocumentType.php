@@ -5,24 +5,34 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\DocumentTypeRequestStatus;
+use App\Models\Concerns\NotifiesAdminOnMutation;
+use App\Observers\CertifiedCenterDocumentTypeObserver;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\Attributes\Translatable;
+use Spatie\Translatable\HasTranslations;
 
+#[ObservedBy([CertifiedCenterDocumentTypeObserver::class])]
+#[Translatable(['name'])]
+#[Table('certified_center_document_types')]
+#[Fillable([
+    'certified_center_id',
+    'key',
+    'name',
+    'status',
+    'admin_notes',
+    'reviewed_by_admin_id',
+])]
 class CertifiedCenterDocumentType extends Model
 {
     use HasFactory;
-
-    protected $table = 'certified_center_document_types';
-
-    protected $fillable = [
-        'certified_center_id',
-        'key',
-        'name',
-        'status',
-        'admin_notes',
-        'reviewed_by_admin_id',
-    ];
+    use HasTranslations;
+    use NotifiesAdminOnMutation;
 
     protected function casts(): array
     {
@@ -35,6 +45,11 @@ class CertifiedCenterDocumentType extends Model
     public function certifiedCenter(): BelongsTo
     {
         return $this->belongsTo(CertifiedCenter::class);
+    }
+
+    public function certifications(): MorphMany
+    {
+        return $this->morphMany(Certification::class, 'documentable');
     }
 
     public function reviewer(): BelongsTo

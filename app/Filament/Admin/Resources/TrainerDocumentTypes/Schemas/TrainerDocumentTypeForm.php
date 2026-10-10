@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\TrainerDocumentTypes\Schemas;
 
-use App\Enums\DocumentTypeRequestStatus;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -13,10 +13,6 @@ class TrainerDocumentTypeForm
     {
         return $schema
             ->components([
-                Select::make('trainer_id')
-                    ->relationship('trainer', 'name')
-                    ->required(),
-
                 TextInput::make('key')
                     ->label(__('app.key'))
                     ->required()
@@ -35,12 +31,6 @@ class TrainerDocumentTypeForm
                     ->required()
                     ->maxLength(255)
                     ->placeholder('شهادة تدريب'),
-
-                Select::make('status')
-                    ->label(__('app.status'))
-                    ->options(collect(DocumentTypeRequestStatus::cases())->mapWithKeys(fn ($case) => [$case->value => $case->label()]))
-                    ->default(DocumentTypeRequestStatus::Pending->value)
-                    ->required(),
             ]);
     }
 }

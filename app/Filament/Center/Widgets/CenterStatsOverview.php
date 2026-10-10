@@ -37,31 +37,31 @@ final class CenterStatsOverview extends BaseWidget
 
     private function createTotalCertificationsStat(int $count): Stat
     {
-        return Stat::make('Total Certifications', $count)
-            ->description('Certificates issued by your center')
+        return Stat::make(__('widgets.stats.total_certifications.label'), $count)
+            ->description(__('widgets.stats.total_certifications.description'))
             ->descriptionIcon('heroicon-o-academic-cap')
             ->color('success');
     }
 
     private function createThisMonthStat(int $count): Stat
     {
-        return Stat::make('This Month', $count)
-            ->description('Certificates issued this month')
+        return Stat::make(__('widgets.stats.this_month.label'), $count)
+            ->description(__('widgets.stats.this_month.description'))
             ->descriptionIcon('heroicon-o-calendar')
             ->color('info');
     }
 
     private function createPendingRequestsStat(int $count): Stat
     {
-        return Stat::make('Pending Requests', $count)
-            ->description('Accreditation requests pending')
+        return Stat::make(__('widgets.stats.pending_requests.label'), $count)
+            ->description(__('widgets.stats.pending_requests.description'))
             ->descriptionIcon('heroicon-o-clock')
             ->color('warning');
     }
 
     private function createAccreditationStatusStat(array $statusData): Stat
     {
-        return Stat::make('Accreditation Status', $statusData['status_label'])
+        return Stat::make(__('widgets.stats.accreditation_status.label'), $statusData['status_label'])
             ->description($statusData['description'])
             ->descriptionIcon('heroicon-o-shield-check')
             ->color($statusData['color']);

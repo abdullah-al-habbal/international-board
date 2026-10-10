@@ -9,7 +9,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -45,10 +44,6 @@ class StaticPagesTable
                     ->limit(50)
                     ->tooltip(fn (StaticPage $record): string => $record->getTranslation('content', app()->getLocale()) ?? '')
                     ->formatStateUsing(fn ($record) => $record->getTranslation('content', app()->getLocale()) ?: '—'),
-
-                IconColumn::make('is_active')
-                    ->label(__('app.is_active'))
-                    ->boolean(),
 
                 TextColumn::make('created_at')
                     ->label(__('app.created_at'))

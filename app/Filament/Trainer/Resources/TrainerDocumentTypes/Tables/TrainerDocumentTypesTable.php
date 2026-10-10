@@ -6,6 +6,7 @@ namespace App\Filament\Trainer\Resources\TrainerDocumentTypes\Tables;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -37,8 +38,14 @@ class TrainerDocumentTypesTable
                     ->badge()
                     ->color(fn ($state) => $state?->color() ?? 'gray')
                     ->formatStateUsing(fn ($state) => $state?->label() ?? '—'),
+
+                TextColumn::make('reviewer.name')
+                    ->label(__('app.reviewed_by'))
+                    ->placeholder(__('app.no_value'))
+                    ->sortable(),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

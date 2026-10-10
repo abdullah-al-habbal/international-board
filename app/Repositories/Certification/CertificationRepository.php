@@ -16,26 +16,27 @@ final class CertificationRepository
     {
         return $this->model->with([
             'creator',
+            'documentable',
             'assignedTrainer',
             'trainee:id,name',
             'country:id,name',
         ])
+            ->publiclyVisible()
             ->byDocumentCode($code)
             ->first();
     }
 
-    public function findBySerial(string $serial): ?Certification
+    public function findByAccreditationNumber(string $accreditationNumber): ?Certification
     {
         return $this->model->with([
             'creator',
+            'documentable',
             'assignedTrainer',
             'trainee:id,name',
             'country:id,name',
         ])
-            ->where(function ($query) use ($serial): void {
-                $query->where('accredited_serial_number', $serial)
-                    ->orWhere('document_code', $serial);
-            })
+            ->publiclyVisible()
+            ->where('accreditation_number', $accreditationNumber)
             ->first();
     }
 
@@ -46,6 +47,7 @@ final class CertificationRepository
             'assignedTrainer',
             'trainee:id,name',
         ])
+            ->publiclyVisible()
             ->recentlyCreated()
             ->take($limit)
             ->get();
@@ -54,6 +56,28 @@ final class CertificationRepository
     public function getTotalCount(): int
     {
         return $this->model->newQuery()->count();
+    }
+
+    /**
+     * Certifications a trainer is credited with that a visitor may see.
+     *
+     * Counts authored and assigned certifications in one query, so the public
+     * profile agrees with the admin panel without double counting.
+     */
+    public function countPubliclyVisibleForTrainer(int $trainerId): int
+    {
+        return $this->model->newQuery()
+            ->publiclyVisible()
+            ->forTrainer($trainerId)
+            ->count();
+    }
+
+    /** Every certification a trainer is credited with, visible or not. */
+    public function countAllForTrainer(int $trainerId): int
+    {
+        return $this->model->newQuery()
+            ->forTrainer($trainerId)
+            ->count();
     }
 
     public function getCountThisMonth(): int
@@ -101,14 +125,6 @@ final class CertificationRepository
             ->get();
     }
 
-    public function getCertificationsByNationality(string $nationality): Collection
-    {
-        return $this->model
-            ->byNationality($nationality)
-            ->recentlyCreated()
-            ->get();
-    }
-
     public function getMonthlyCounts(?int $year = null): array
     {
         $year ??= now()->year;
@@ -145,20 +161,24 @@ final class CertificationRepository
 
     public function getStatistics(): array
     {
-        $total = $this->model->newQuery()->count();
+        $total = $this->model->newQuery()->publiclyVisible()->count();
         $distinctCountries = $this->model->newQuery()
+            ->publiclyVisible()
             ->whereNotNull('country_id')
             ->distinct('country_id')
             ->count('country_id');
         $distinctTrainees = $this->model->newQuery()
+            ->publiclyVisible()
             ->whereNotNull('trainee_id')
             ->distinct('trainee_id')
             ->count('trainee_id');
         $distinctTrainers = $this->model->newQuery()
+            ->publiclyVisible()
             ->whereNotNull('assigned_trainer_id')
             ->distinct('assigned_trainer_id')
             ->count('assigned_trainer_id');
         $byCreatorRaw = $this->model->newQuery()
+            ->publiclyVisible()
             ->selectRaw('creator_type, count(*) as count')
             ->groupBy('creator_type')
             ->pluck('count', 'creator_type')
