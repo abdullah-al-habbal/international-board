@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TrainerFinancialRequests\Tables;
 
 use App\Filament\FinancialRequests\FinancialRequestFields;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -24,6 +27,11 @@ class TrainerFinancialRequestsTable
                     ->label(__('app.date'))
                     ->date()
                     ->sortable(),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->defaultSort('date', 'desc');
     }
