@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Center\Resources\Certifications\Tables;
 
 use App\Filament\Components\DatePicker;
+use App\Models\CertifiedCenterDocumentType;
+use App\Models\DocumentType;
+use App\Models\TrainerDocumentType;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -30,8 +33,15 @@ class CertificationsTable
 
                 TextColumn::make('documentable.name')
                     ->label(__('app.document_type'))
-                    ->searchable()
-                    ->sortable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHasMorph(
+                            'documentable',
+                            [DocumentType::class, CertifiedCenterDocumentType::class, TrainerDocumentType::class],
+                            function (Builder $subQuery) use ($search) {
+                                $subQuery->where('name', 'like', "%{$search}%");
+                            }
+                        );
+                    })
                     ->toggleable()
                     ->placeholder(__('app.unassigned')),
 

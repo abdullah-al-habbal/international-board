@@ -3,7 +3,10 @@
 namespace App\Filament\Trainer\Resources\Certifications\Tables;
 
 use App\Models\Certification;
+use App\Models\CertifiedCenterDocumentType;
+use App\Models\DocumentType;
 use App\Models\Trainer;
+use App\Models\TrainerDocumentType;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -53,8 +56,16 @@ class CertificationsTable
         return [
             TextColumn::make('documentable.name')
                 ->label(__('app.document_type'))
-                ->searchable()
-                ->sortable(),
+                ->searchable(query: function (Builder $query, string $search): Builder {
+                    return $query->whereHasMorph(
+                        'documentable',
+                        [DocumentType::class, CertifiedCenterDocumentType::class, TrainerDocumentType::class],
+                        function (Builder $subQuery) use ($search) {
+                            $subQuery->where('name', 'like', "%{$search}%");
+                        }
+                    );
+                })
+                ->toggleable(),
 
             TextColumn::make('accredited_serial_number')
                 ->label(__('app.accredited_serial_number'))
@@ -87,8 +98,7 @@ class CertificationsTable
                 ->sortable(),
 
             TextColumn::make('creator.name')
-                ->label(__('app.created_by'))
-                ->sortable(),
+                ->label(__('app.created_by')),
 
             TextColumn::make('created_at')
                 ->label(__('app.created_at'))
